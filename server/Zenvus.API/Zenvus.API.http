@@ -1,0 +1,6 @@
+@Zenvus.API_HostAddress = http://localhost:5117
+
+GET {{Zenvus.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
