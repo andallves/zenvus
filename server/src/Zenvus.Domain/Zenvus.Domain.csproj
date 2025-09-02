@@ -16,4 +16,9 @@
         <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.8" />
     </ItemGroup>
 
+    <ItemGroup>
+        <ProjectReference Include="..\Zenvus.Core\Zenvus.Core.csproj" />
+    </ItemGroup>
+
+
 </Project>

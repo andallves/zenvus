@@ -1,5 +1,5 @@
 using MediatR;
-using Zenvus.Application.Commands.ValueObjects;
+using Zenvus.Application.ValueObjects;
 
 namespace Zenvus.Application.Commands;
 

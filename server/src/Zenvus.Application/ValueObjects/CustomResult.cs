@@ -1,4 +1,4 @@
-namespace Zenvus.Application.Commands.ValueObjects;
+namespace Zenvus.Application.ValueObjects;
 
 public class CustomResult<T>
 {
