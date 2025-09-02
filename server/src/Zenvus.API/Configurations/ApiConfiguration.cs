@@ -1,15 +1,12 @@
 using System.Net;
-using Newtonsoft.Json;
-using System.Globalization;
-using Zenvus.Infra.Database;
-using Microsoft.AspNetCore.Mvc;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
-using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using Newtonsoft.Json;
 
-namespace Zenvus.API.Configuration;
+namespace Zenvus.API.Configurations;
 
 public static class ApiConfiguration
 {
@@ -90,4 +87,5 @@ public static class ApiConfiguration
                 ? null 
                 : Regex.Replace(value.ToString() ?? string.Empty, "([a-z])([A-Z])", "$1-$2").ToLower();
     }
+ 
 }
