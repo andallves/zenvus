@@ -1,8 +1,10 @@
 using System.Globalization;
+using System.Reflection;
 using Microsoft.AspNetCore.HttpOverrides;
 using Serilog;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc;
 using Zenvus.API;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,14 +24,8 @@ builder
     .SetBasePath(builder.Environment.ContentRootPath)
     .AddJsonFile("appsettings.json", true, true)
     .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", true, true)
-    .AddEnvironmentVariables();
-
-builder
-    .Services
-    .AddResponseCompression(options =>
-    {
-        options.EnableForHttps = true;
-    });
+    .AddEnvironmentVariables()
+    .AddUserSecrets(Assembly.GetExecutingAssembly(), true, true);
 
 builder
     .Host
@@ -38,6 +34,23 @@ builder
 builder
     .Services
     .AddApiLayer(builder.Configuration, builder.Environment);
+
+builder
+    .Services
+    .AddCors(o
+        => o.AddDefaultPolicy(p
+            => p
+                .WithExposedHeaders()
+                .AllowAnyOrigin()
+                .AllowAnyHeader()
+                .AllowAnyMethod()));
+
+builder
+    .Services
+    .Configure<ApiBehaviorOptions>(options =>
+    {
+        options.SuppressModelStateInvalidFilter = true;
+    });
 
 var app = builder.Build();
 

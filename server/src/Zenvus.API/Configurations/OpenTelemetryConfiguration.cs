@@ -1,10 +1,12 @@
-using OpenTelemetry.Context.Propagation;
-using OpenTelemetry.Exporter;
+using OpenTelemetry;
 using OpenTelemetry.Logs;
-using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
+using OpenTelemetry.Exporter;
+using OpenTelemetry.Resources;
+using Zenvus.Infra.Redis;
 using Zenvus.Core.Settings;
-using Sdk = OpenTelemetry.Sdk;
+using OpenTelemetry.Context.Propagation;
+using B3Propagator = OpenTelemetry.Extensions.Propagators.B3Propagator;
 
 namespace Zenvus.API.Configurations;
 

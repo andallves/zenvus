@@ -1,4 +1,6 @@
+using System.Text.Json.Serialization;
 using Jaeger;
+using Microsoft.AspNetCore.DataProtection;
 using Serilog;
 using Zenvus.API.Configurations;
 using Zenvus.API.Exceptions;
@@ -6,6 +8,8 @@ using Zenvus.Application;
 using Zenvus.Core.Settings;
 using Zenvus.Infra;
 using Zenvus.Infra.Configurations;
+using Zenvus.Infra.Database;
+using Zenvus.Infra.Redis;
 
 namespace Zenvus.API;
 
@@ -20,9 +24,9 @@ public static class Extension
 
     public static IServiceCollection AddApiLayer(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment)
     {
+        services.AddApplicationLayer();
+        services.AddMySql(configuration);
         services.Configure<ApplicationSettings>(configuration.GetSection(ApplicationSettings.SectionName));
-        
-        services.AddMySql(Configuration);
         
         services.AddResponseCompression(options =>
         {
@@ -31,7 +35,6 @@ public static class Extension
 
         services.AddApiConfiguration();
 
-        services.AddApplicationLayer();
         
         services.AddVersioning();
         
@@ -41,14 +44,44 @@ public static class Extension
             .AddHealthChecks()
             .ConfigureApplicationHealthChecks(configuration, services);
         
-        services.AddOpenTelemetry();
+        services.ConfigureOpenTelemetry(configuration, environment);
+        
+        services
+            .AddControllers()
+            .AddJsonOptions(o =>
+            {
+                o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+            });
+        
+        services.ConfigureDataProtection(configuration, environment);
+        
+        services.AddHttpContextAccessor();
+        services.AddDistributedCaching(configuration, environment);
 
         return services;
+    }
+    
+    private static void ConfigureDataProtection(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment)
+    {
+        if (configuration.HasRedisConnection())
+        {
+            var keyName = $"Intranet-{environment.EnvironmentName}-DataProtection-Keys";
+            services
+                .AddDataProtection()
+                .PersistKeysToStackExchangeRedis(configuration.GetConnectionMultiplexer(), keyName);
+            return;
+        }
+
+        services
+            .AddDataProtection()
+            .PersistKeysToFileSystem(new DirectoryInfo("./DataProtectionKeys"));
     }
         
     public static IApplicationBuilder UseApiLayer(this IApplicationBuilder app)
     {
         app.UseSerilogRequestLogging();
+        
+        app.UseHttpsRedirection();
 
         app.UseStaticFiles();
         

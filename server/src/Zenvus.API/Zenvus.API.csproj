@@ -4,68 +4,58 @@
         <TargetFramework>net9.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <UserSecretsId>acd1195a-25a7-460f-95eb-609c0e86f477</UserSecretsId>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="DateOnlyTimeOnly.AspNet" Version="2.0.0" />
-        <PackageReference Include="DateOnlyTimeOnly.AspNet.Swashbuckle" Version="2.0.0" />
+        <PackageReference Include="DateOnlyTimeOnly.AspNet" Version="2.1.1" />
+        <PackageReference Include="DateOnlyTimeOnly.AspNet.Swashbuckle" Version="2.1.1" />
+        <PackageReference Include="Extensions.FluentValidation.Br" Version="1.0.2" />
         <PackageReference Include="Jaeger" Version="1.0.3" />
-        <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="6.0.18" />
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.18" />
+        <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.1.0" />
+        
+        <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="9.0.8" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="9.0.8" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.1.0" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.8">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.2" />
-        <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="6.0.18" />
-        <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="7.0.0" />
-        <PackageReference Include="NetDevPack.Security.Jwt.AspNetCore" Version="6.0.7" />
-        <PackageReference Include="NetDevPack.Security.Jwt.Core" Version="6.0.7" />
-        <PackageReference Include="NetDevPack.Security.Jwt.Store.FileSystem" Version="6.0.7" />
-        <PackageReference Include="OpenTelemetry" Version="1.9.0" />
-        <PackageReference Include="OpenTelemetry.AutoInstrumentation" Version="1.7.0" />
-        <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.9.0" />
-        <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.9.0" />
-        <PackageReference Include="OpenTelemetry.Extensions.Propagators" Version="1.9.0" />
-        <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.9.0" />
+        <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="9.0.8" />
+        <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="9.0.8" />
+        
+        <PackageReference Include="NetDevPack.Security.Jwt.AspNetCore" Version="8.2.2" />
+        <PackageReference Include="NetDevPack.Security.Jwt.Store.FileSystem" Version="8.2.2" />
+
+        <PackageReference Include="OpenTelemetry" Version="1.10.0" />
+        <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.10.0" />
+        <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.10.0" />
+        <PackageReference Include="OpenTelemetry.Extensions.Propagators" Version="1.10.0" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.10.1" />
         <PackageReference Include="OpenTelemetry.Instrumentation.EntityFrameworkCore" Version="1.0.0-beta.12" />
-        <PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.9.0" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.10.0" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" Version="1.10.0" />
         <PackageReference Include="OpenTelemetry.Instrumentation.Process" Version="0.5.0-beta.6" />
-        <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" Version="1.9.0" />
-        <PackageReference Include="OpenTelemetry.Instrumentation.StackExchangeRedis" Version="1.0.0-rc9.15" />
-        <PackageReference Include="OpenTelemetry.Resources.Container" Version="1.0.0-beta.9" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.StackExchangeRedis" Version="1.9.0-beta.1" />
         <PackageReference Include="OpenTelemetry.Resources.Host" Version="0.1.0-beta.2" />
         <PackageReference Include="OpenTelemetry.Resources.Process" Version="0.1.0-beta.2" />
+        <PackageReference Include="OpenTelemetry.Resources.Container" Version="1.0.0-beta.9" />
         <PackageReference Include="OpenTelemetry.Resources.ProcessRuntime" Version="0.1.0-beta.2" />
 
-        <PackageReference Include="Serilog.AspNetCore" Version="7.0.0" />
-        <PackageReference Include="Serilog.Sinks.OpenTelemetry" Version="1.0.1-dev-00218" />
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
-        <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.5.0" />
-        <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="6.5.0" />
-        <PackageReference Include="Swashbuckle.AspNetCore.ReDoc" Version="6.5.0" />
+        <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
+        <PackageReference Include="Serilog.Enrichers.ClientInfo" Version="2.4.0" />
+        <PackageReference Include="Serilog.Enrichers.CorrelationId" Version="3.0.1" />
+        <PackageReference Include="Serilog.Enrichers.Environment" Version="3.0.1" />
+        <PackageReference Include="Serilog.Enrichers.OpenTelemetry" Version="1.0.1" />
+        <PackageReference Include="Serilog.Enrichers.Process" Version="3.0.0" />
+        <PackageReference Include="Serilog.Enrichers.Thread" Version="4.0.0" />
+        <PackageReference Include="Serilog.Sinks.OpenTelemetry" Version="4.2.0" />
+        
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.4" />
+        <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="9.0.4" />
+        <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="9.0.4" />
+        <PackageReference Include="Swashbuckle.AspNetCore.ReDoc" Version="9.0.4" />
     </ItemGroup>
 
 
     <ItemGroup>
-      <ProjectReference Include="..\src\Zenvus.Core\Zenvus.Core.csproj" />
       <ProjectReference Include="..\Zenvus.Application\Zenvus.Application.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <Content Update="appsettings.Development.json">
-            <DependentUpon>appsettings.json</DependentUpon>
-        </Content>
-        <Content Update="appsettings.Staging.json">
-            <DependentUpon>appsettings.json</DependentUpon>
-        </Content>
-        <Content Update="appsettings.Exemplo.json">
-            <DependentUpon>appsettings.json</DependentUpon>
-        </Content>
-        <Content Update="appsettings.Production.json">
-            <DependentUpon>appsettings.json</DependentUpon>
-        </Content>
     </ItemGroup>
 
     <ItemGroup>

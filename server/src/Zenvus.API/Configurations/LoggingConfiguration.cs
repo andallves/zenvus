@@ -2,11 +2,6 @@ using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.OpenTelemetry;
 using Zenvus.Core.Settings;
-
-
-using Serilog;
-using Serilog.Events;
-using Serilog.Sinks.OpenTelemetry;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Serilog.Enrichers.OpenTelemetry;
@@ -33,7 +28,7 @@ public static class LoggingExtensions
                 .WriteTo.Console();
 
             config
-                .Enrich.WithEnvironment(environment.EnvironmentName)
+                .Enrich.WithEnvironmentName()
                 .Enrich.WithThreadId()
                 .Enrich.WithThreadName()
                 .Enrich.WithMachineName()
@@ -41,7 +36,7 @@ public static class LoggingExtensions
                 .Enrich.WithCorrelationIdHeader()
                 .Enrich.WithOpenTelemetrySpanId()
                 .Enrich.WithOpenTelemetryTraceId()
-                .Enrich.WithUserName();
+                .Enrich.WithEnvironmentUserName();
             
             var settings = configuration.GetSection("OpenTelemetry").Get<OpenTelemetrySettings>();
             if (settings is not null && settings.Ativo)

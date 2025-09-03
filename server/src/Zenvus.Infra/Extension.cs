@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using Zenvus.Infra.Abstractions;
 using Zenvus.Infra.Configurations;
+using Zenvus.Infra.Database;
 
 namespace Zenvus.Infra;
 
@@ -11,7 +12,7 @@ public static class Extension
 {
     private const string SectionName = "ConnectionStrings";
     
-    internal static IServiceCollection AddMySql(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddMySql(this IServiceCollection services, IConfiguration configuration)
     {
         services.Configure<ConnectionStrings>(configuration.GetSection(SectionName));
         services.AddHostedService<DbContextAppInitializer>();
@@ -42,6 +43,13 @@ public static class Extension
             );
 
         services.AddScoped<IRepository<T>, Repository<T>>();
+        
+        return services;
+    }
+    
+    public static IServiceCollection AddInfraLayer(this IServiceCollection services)
+    {
+        services.AddMySql<ZenvusDbContext>();
         
         return services;
     }
