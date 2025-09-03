@@ -48,7 +48,7 @@ public class ConfigureSwaggerOptions : IConfigureNamedOptions<SwaggerGenOptions>
     {
         var info = new OpenApiInfo
         {
-            Title = "IFCE - Intranet API",
+            Title = "Zenvus - API",
             Version = description.ApiVersion.ToString(),
             Description =
                 $"<span class='redoc-description'>Acesse <a href='/docs-{description.GroupName}/index.html' target='blank'>ReDoc</a> documentation.</span>"

@@ -81,6 +81,8 @@ public static class Extension
     {
         app.UseSerilogRequestLogging();
         
+        app.UseSwaggerConfig();
+        
         app.UseHttpsRedirection();
 
         app.UseStaticFiles();
