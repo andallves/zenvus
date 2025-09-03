@@ -67,19 +67,6 @@ public static class ApiConfiguration
             });
     }
 
-    public static void UseApiConfiguration(this IApplicationBuilder app, IServiceProvider services, IHostEnvironment env)
-    {
-        if (!env.IsDevelopment())
-            app.UseMigrations(services);
-        
-        app.UseForwardedHeaders(new ForwardedHeadersOptions
-        {
-            ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-        });
-        
-        app.UseCors("default");
-    }
-
     private sealed class SlugifyParameterTransformer : IOutboundParameterTransformer
     {
         public string? TransformOutbound(object? value) =>

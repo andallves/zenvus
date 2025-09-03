@@ -5,11 +5,11 @@ using Microsoft.AspNetCore.Authorization;
 using Zenvus.Application.Commands;
 using Zenvus.API.Responses;
 using Zenvus.Application.Queries;
-using Zenvus.Application.ValueObjects;
+using Zenvus.Core.ValueObjects;
+using Zenvus.Infra.Configurations;
 
 
 namespace Zenvus.API.Controllers;
-
 
 [Authorize]
 [ApiController]

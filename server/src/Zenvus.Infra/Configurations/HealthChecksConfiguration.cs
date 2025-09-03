@@ -1,10 +1,15 @@
-using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Text.Json;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using System.Diagnostics.CodeAnalysis;
+using Microsoft.AspNetCore.Builder;
+using Zenvus.Infra.Database;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Zenvus.API.Configurations;
+namespace Zenvus.Infra.Configurations;
 
 [ExcludeFromCodeCoverage]
 public static class HealthChecksConfiguration
@@ -40,8 +45,7 @@ public static class HealthChecksConfiguration
         }
     }
 
-
-    public static void UseApplicationHealthCheck(this WebApplication app)
+    public static void UseApplicationHealthChecks(this IApplicationBuilder app)
     {
         app.UseHealthChecks("/health-check", new HealthCheckOptions
         {
@@ -93,6 +97,6 @@ public static class HealthChecksConfiguration
 }
 
 public interface IDbContextHealthCheck
-{
+{   
     void AddHealthCheck(IHealthChecksBuilder builder);
 }

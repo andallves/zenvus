@@ -7,8 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AspNetCore.HealthChecks.MySql" Version="6.0.2" />
-        <PackageReference Include="AspNetCore.HealthChecks.Redis" Version="6.0.4" />
         <PackageReference Include="DateOnlyTimeOnly.AspNet" Version="2.0.0" />
         <PackageReference Include="DateOnlyTimeOnly.AspNet.Swashbuckle" Version="2.0.0" />
         <PackageReference Include="Jaeger" Version="1.0.3" />
@@ -24,7 +22,6 @@
         <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="7.0.0" />
         <PackageReference Include="NetDevPack.Security.Jwt.AspNetCore" Version="6.0.7" />
         <PackageReference Include="NetDevPack.Security.Jwt.Core" Version="6.0.7" />
-        <PackageReference Include="NetDevPack.Security.Jwt.Store.EntityFrameworkCore" Version="6.0.7" />
         <PackageReference Include="NetDevPack.Security.Jwt.Store.FileSystem" Version="6.0.7" />
         <PackageReference Include="OpenTelemetry" Version="1.9.0" />
         <PackageReference Include="OpenTelemetry.AutoInstrumentation" Version="1.7.0" />

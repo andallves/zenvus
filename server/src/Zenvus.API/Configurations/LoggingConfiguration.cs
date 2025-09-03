@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Serilog.Enrichers.OpenTelemetry;
 using Microsoft.Extensions.Configuration;
-using IFCE.Intranet.Shared.Api.Configurations.OpenTelemetry;
+
 
 namespace Zenvus.API.Configurations;
 

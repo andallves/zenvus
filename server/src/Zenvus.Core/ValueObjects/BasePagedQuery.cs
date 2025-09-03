@@ -1,10 +1,10 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using MediatR;
-using Zenvus.Application.ValueObjects;
 using Zenvus.Core.Utils;
+using Zenvus.Core.ValueObjects;
 
-namespace Zenvus.Application.Queries;
+namespace Zenvus.Core.ValueObjects;
 
 [ExcludeFromCodeCoverage]
 public abstract class BasePagedQuery<TSearchEntity, TResultDto> : PagedSearch, IRequest<PagedResult<TResultDto>>

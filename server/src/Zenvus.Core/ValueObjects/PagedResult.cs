@@ -1,6 +1,6 @@
 using AutoMapper;
 
-namespace Zenvus.Application.ValueObjects;
+namespace Zenvus.Core.ValueObjects;
 
 public sealed class PagedResult<T>
 {

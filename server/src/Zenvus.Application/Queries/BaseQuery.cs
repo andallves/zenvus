@@ -1,6 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using MediatR;
-using Zenvus.Application.ValueObjects;
+using Zenvus.Core.ValueObjects;
 
 namespace Zenvus.Application.Queries;
 
