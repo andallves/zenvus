@@ -1,0 +1,8 @@
+div.description div.renderedMarkdown p span {
+    font-size: 1.2rem !important;
+}
+
+div.description div.renderedMarkdown p span a {
+    text-decoration: none !important;
+    font-size: 1.2rem !important;
+}
