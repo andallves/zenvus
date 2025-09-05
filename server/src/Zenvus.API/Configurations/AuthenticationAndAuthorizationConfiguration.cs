@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using ScottBrady91.AspNetCore.Identity;
+using Zenvus.Core.Auth;
 using Zenvus.Core.Settings;
 
 namespace Zenvus.API.Configurations;
@@ -48,22 +49,6 @@ public static class AuthenticationAndAuthorizationConfiguration
                 };
             });
         
-        services.AddAuthorization(options =>
-        {
-            // PermissoesHubs
-            //     .Claims
-            //     .ToList()
-            //     .ForEach(claim =>
-            //     {
-            //         options.AddPolicy(claim, builder =>
-            //         {
-            //             builder
-            //                 .RequireAuthenticatedUser()
-            //                 .RequireClaim("permissoes", PermissaoClaim.FormatarParaClaim(claim, EPermissaoTipo.Full));
-            //         });
-            //     });
-        });
-        
         services
             .AddJwksManager(o =>
             {
@@ -71,6 +56,8 @@ public static class AuthenticationAndAuthorizationConfiguration
                 o.KeyPrefix = "Zenvus";
             })
             .UseJwtValidation();
+        
+        services.AddScoped<IAuthenticatedUser, AuthenticatedUser>();
     }
 
     public static void UseAuthenticationAndAuthorization(this IApplicationBuilder app)
