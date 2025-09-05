@@ -1,5 +1,6 @@
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using Zenvus.Core.Utils;
 using Zenvus.Infra.Abstractions;
 using Zenvus.Infra.Database;
 
@@ -39,7 +40,12 @@ public class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
             .NotNull()
             .NotEmpty()
             .MaximumLength(12);
-
+        
+        RuleFor(x => x.Password)
+            .NotEmpty().WithMessage("A senha é obrigatória.")
+            .Must(pass => new PasswordValidator().Validate(pass).IsValid)
+            .WithMessage("A senha deve conter ao menos 8 caracteres, incluindo letras maiúsculas, minúsculas, números e símbolos.");
+        
         When(x => x.Photo != null, () =>
         {
             RuleFor(x => x.Photo)
