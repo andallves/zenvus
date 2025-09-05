@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using ScottBrady91.AspNetCore.Identity;
 using SixLabors.Fonts;
 using Zenvus.Application.Commands;
+using Zenvus.Application.Services.Auth;
 using Zenvus.Infra;
 using IdentityUser = Zenvus.Domain.Entities.IdentityUser;
 
@@ -21,21 +22,29 @@ public static class Extensions
         services
             .AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
         
-        services.AddMediatR(Assembly.GetExecutingAssembly());
-        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+        services
+            .AddMediatR(Assembly.GetExecutingAssembly());
+        services
+            .AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
         
-        services.AddSingleton<FontCollection>(_ => 
+        services
+            .AddSingleton<FontCollection>(_ => 
         {
             var collection = new FontCollection();
             collection.AddSystemFonts();
             return collection;
         });
         
-        services.AddScoped<IPasswordHasher<IdentityUser>, Argon2PasswordHasher<IdentityUser>>();
+        services
+            .AddScoped<IPasswordHasher<IdentityUser>, Argon2PasswordHasher<IdentityUser>>();
+        services
+            .AddScoped<ITokenService, TokenService>();
         
-        services.AddAutoMapper(Assembly.GetExecutingAssembly());
+        services
+            .AddAutoMapper(Assembly.GetExecutingAssembly());
         
-        services.AddInfraLayer();
+        services
+            .AddInfraLayer();
 
         return services;
     }

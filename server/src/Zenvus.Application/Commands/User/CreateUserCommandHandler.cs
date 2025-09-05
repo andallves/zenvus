@@ -1,12 +1,10 @@
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-using Org.BouncyCastle.Crypto.Generators;
-using Zenvus.Application.DTO.Users;
+using Zenvus.Application.DTO.User;
 using Zenvus.Core.ValueObjects;
 using Zenvus.Infra.Abstractions;
 using Zenvus.Infra.Database;
-using Zenvus.Infra.Redis;
 using IdentityUser = Zenvus.Domain.Entities.IdentityUser;
 
 namespace Zenvus.Application.Commands.User;

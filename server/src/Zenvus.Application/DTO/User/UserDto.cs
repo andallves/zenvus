@@ -1,3 +1,5 @@
+using Zenvus.Domain.Entities;
+
 namespace Zenvus.Application.DTO.User;
 
 public class UserDto
@@ -9,6 +11,16 @@ public class UserDto
     public string Telephone { get; set; } = null!;
     public string? Photo { get; set; }
     public string? Password { get; set; }
+    
+    public IdentityUser ToIdentityUser()
+    {
+        return new IdentityUser()
+        {
+            Id = Id,
+            Password = Password ?? string.Empty
+        };
+    }
+    
 
     public static UserDto From(Domain.Entities.User user, bool copyPassword = false)
     {
