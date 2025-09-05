@@ -25,16 +25,14 @@ public static class Extension
     public static IServiceCollection AddApiLayer(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment)
     {
         services.AddApplicationLayer();
-        services.AddMySql(configuration);
         services.Configure<ApplicationSettings>(configuration.GetSection(ApplicationSettings.SectionName));
+        
+        services.AddMySql(configuration);
         
         services.AddResponseCompression(options =>
         {
             options.EnableForHttps = true;
         });
-
-        services.AddApiConfiguration();
-
         
         services.AddVersioning();
         
@@ -44,19 +42,19 @@ public static class Extension
             .AddHealthChecks()
             .ConfigureApplicationHealthChecks(configuration, services);
         
-        services.ConfigureOpenTelemetry(configuration, environment);
-        
-        services
-            .AddControllers()
-            .AddJsonOptions(o =>
-            {
-                o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
-            });
-        
-        services.ConfigureDataProtection(configuration, environment);
+        // services.ConfigureDataProtection(configuration, environment);
         
         services.AddHttpContextAccessor();
+        
         services.AddDistributedCaching(configuration, environment);
+
+        services.ConfigureOpenTelemetry(configuration, environment);
+        
+        services.AddEndpointsApiExplorer();
+        
+        services.AddApiConfiguration();
+        
+        services.AddAuthenticationAndAuthorization(configuration);
 
         return services;
     }
@@ -65,7 +63,7 @@ public static class Extension
     {
         if (configuration.HasRedisConnection())
         {
-            var keyName = $"Intranet-{environment.EnvironmentName}-DataProtection-Keys";
+            var keyName = $"Zenvus-{environment.EnvironmentName}-DataProtection-Keys";
             services
                 .AddDataProtection()
                 .PersistKeysToStackExchangeRedis(configuration.GetConnectionMultiplexer(), keyName);
@@ -92,6 +90,8 @@ public static class Extension
         app.UseApplicationHealthChecks();
         
         app.UseRouting();
+        
+        app.UseAuthenticationAndAuthorization();
         
         return app;
     }

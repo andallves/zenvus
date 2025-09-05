@@ -18,13 +18,19 @@ public static class SwaggerConfiguration
         services.AddSwaggerGen(options =>
         {
             options.EnableAnnotations();
+            
             options.UseDateOnlyTimeOnlyStringConverters();
 
             options.ParameterFilter<CustomParameterFilter>();
+            
             options.CustomSchemaIds(x => x.FullName);
+            
             options.OperationFilter<FileUploadFilter>();
+            
             options.OperationFilter<SwaggerDefaultValues>();
+            
             options.DocumentFilter<LowercaseDocumentFilter>();
+            
             options.DocumentFilter<OrderDocumentFilter>();
 
             options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()

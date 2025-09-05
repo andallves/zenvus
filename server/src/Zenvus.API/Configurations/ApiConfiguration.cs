@@ -36,6 +36,7 @@ public static class ApiConfiguration
             .AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
             })
             .AddNewtonsoftJson(options =>
             {
@@ -58,6 +59,7 @@ public static class ApiConfiguration
         services
             .Configure<ApiBehaviorOptions>(options =>
             {
+                options.SuppressModelStateInvalidFilter = true;
                 options.InvalidModelStateResponseFactory = context => new BadRequestObjectResult(new
                 {
                     Title = "Model inválida!",

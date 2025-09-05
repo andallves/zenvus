@@ -35,22 +35,6 @@ builder
     .Services
     .AddApiLayer(builder.Configuration, builder.Environment);
 
-builder
-    .Services
-    .AddCors(o
-        => o.AddDefaultPolicy(p
-            => p
-                .WithExposedHeaders()
-                .AllowAnyOrigin()
-                .AllowAnyHeader()
-                .AllowAnyMethod()));
-
-builder
-    .Services
-    .Configure<ApiBehaviorOptions>(options =>
-    {
-        options.SuppressModelStateInvalidFilter = true;
-    });
 
 var app = builder.Build();
 

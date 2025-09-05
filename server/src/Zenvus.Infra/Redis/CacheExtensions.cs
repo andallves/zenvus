@@ -26,7 +26,7 @@ public static class CacheExtensions
         
         services.AddStackExchangeRedisCache(options =>
         {
-            options.InstanceName = $"Intranet-{environment.EnvironmentName}-";
+            options.InstanceName = $"Zenvus-{environment.EnvironmentName}-";
             options.ConnectionMultiplexerFactory = () =>
             {
                 var serviceProvider = services.BuildServiceProvider();
