@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using Zenvus.Application.Commands.User;
-using Zenvus.Application.DTO.Users;
+using Zenvus.Application.DTO.User;
 
 namespace Zenvus.API.Controllers.V1;
 

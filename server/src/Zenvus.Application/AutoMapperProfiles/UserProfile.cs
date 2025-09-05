@@ -1,6 +1,6 @@
 using AutoMapper;
 using Zenvus.Application.Commands.User;
-using Zenvus.Application.DTO.Users;
+using Zenvus.Application.DTO.User;
 using Zenvus.Core.ValueObjects;
 using Zenvus.Domain.Entities;
 
