@@ -1,0 +1,86 @@
+<section class="page-section">
+  <aside class="container-content">
+    <header class="container-content__header">
+      <h1 id="brand-name">Zenvus</h1>
+      <p>Dê o primeiro passo rumo ao controle total da sua vida financeira. Simples, seguro e do seu jeito.</p>
+    </header>
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+      <app-input-text
+        [ariaLabel]="'Campo para inserir o nome'"
+        [label]="'Nome'"
+        [placeholder]="'Insira seu nome'"
+        [required]="true"
+        type="text"
+        formControlName="name"
+        role="textbox"
+      ></app-input-text>
+
+      <app-input-text
+        [ariaLabel]="'Campo para inserir o email'"
+        [label]="'Email'"
+        [placeholder]="'Insira seu email'"
+        [required]="true"
+        formControlName="email"
+        role="textbox"
+        type="email"
+      ></app-input-text>
+
+      <app-input-text
+        [ariaLabel]="'Campo para inserir o telefone'"
+        [label]="'Telefone'"
+        [placeholder]="'(85) 9 9999-9999'"
+        [required]="true"
+        formControlName="phone"
+        role="textbox"
+        type="text"
+      ></app-input-text>
+
+      <app-input-text
+        [ariaLabel]="'Campo para inserir a senha'"
+        [label]="'Senha'"
+        [placeholder]="'********'"
+        [required]="true"
+        formControlName="password"
+        role="textbox"
+        type="password"
+      ></app-input-text>
+
+      <app-input-text
+        [ariaLabel]="'Campo para inserir a senha novamente para confirmação'"
+        [label]="'Confirme sua senha'"
+        [placeholder]="'********'"
+        [required]="true"
+        formControlName="confirmPassword"
+        role="textbox"
+        type="password"
+      ></app-input-text>
+
+      <app-primary-button
+        type="submit"
+        [textButton]="'Cadastrar'"
+        [disabled]="false"
+        (onButtonClicked)="onSubmit()"
+      ></app-primary-button>
+
+      <div class="divider">
+        <div class="divider__divider-item--first"></div>
+        <div class="divider__divider-item--text">OU</div>
+        <div class="divider__divider-item--last"></div>
+      </div>
+
+      <button> Login </button>
+    </form>
+  </aside>
+  <div class="container-image">
+    <div class="wrapper-image">
+      <div class="wrapper-image__text-wrapper">
+        <p class="wrapper-image__text">
+          Organize hoje. Tranquilidade amanhã.
+        </p>
+      </div>
+      <div>
+        <img src="images/girl_watering_money.png">
+      </div>
+    </div>
+  </div>
+</section>

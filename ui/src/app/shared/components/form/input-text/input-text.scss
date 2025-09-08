@@ -1,0 +1,19 @@
+:host {
+  outline: none;
+  border: none;
+  width: 100%;
+
+  .input-label {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 8px;
+  }
+
+  input {
+    width: 100%;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+  }
+}

@@ -1,0 +1,86 @@
+@import "variables";
+
+.page-section {
+  display: flex;
+  width: 100%;
+  height: 100%;
+
+  .container-content {
+    width: 40%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+
+    &__header {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
+      margin: 50px auto 0;
+      padding: 30px;
+      gap: 1rem;
+
+      #brand-name {
+        font-family: "Monoton", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 32px;
+        color: $primaryColor;
+      }
+
+      p {
+        font-size: 14px;
+        color: #666;
+        text-align: center;
+      }
+    }
+
+    form {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      padding: 30px;
+
+      .divider {
+        width: 100%;
+        display: flex;
+        align-items: center; // centraliza verticalmente
+        text-align: center;
+
+        &__divider-item {
+          &--first,
+          &--last {
+            flex: 1;                  // ocupa todo o espaço disponível
+            height: 1px;
+            background-color: #979797;
+          }
+
+          &--text {
+            color: #999;
+            font-size: 14px;
+            margin: 0 12px;           // espaço entre o texto e os traços
+            white-space: nowrap;      // evita quebra de linha no "ou"
+          }
+        }
+      }
+
+    }
+  }
+
+  .container-image {
+    width: 100%;
+    height: 100%;
+    background-color: gray;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+}
