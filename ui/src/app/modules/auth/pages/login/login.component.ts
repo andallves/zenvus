@@ -64,7 +64,7 @@ export class LoginComponent {
   }
 
   navigateToHome(): void {
-    this.router.navigateByUrl('auth/registro').then();
+    this.router.navigateByUrl('auth/cadastro').then();
   }
 
   private login(userData: FormData) {

@@ -14,7 +14,7 @@ export class PhoneFormatDirective {
   ) {}
 
   @HostListener('input', ['$event'])
-  onInput(event: Event) {
+  onInput() {
     if (!this.enabled) return; // só aplica se estiver habilitado
 
     const input = this.el.nativeElement as HTMLInputElement;

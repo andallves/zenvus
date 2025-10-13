@@ -5,12 +5,20 @@ import {RegisterComponent} from '@modules/auth/pages/register/register.component
 
 const routes: Routes = [
   {
-    path: 'registro',
+    path: 'cadastro',
     component: RegisterComponent,
+    data: {
+      title: 'Cadastro',
+      description: 'Página de cadastro de novos usuários'
+    }
   },
   {
     path: 'login',
-    component: LoginComponent
+    component: LoginComponent,
+    data: {
+      title: 'Login',
+      description: 'Página de login de usuários'
+    }
   },
 
 ];
