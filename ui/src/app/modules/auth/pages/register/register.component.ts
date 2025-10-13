@@ -1,18 +1,15 @@
 import {Component, signal} from '@angular/core';
-import {
-  UnauthenticatedCommonLayoutComponent
-} from '../../../../shared/layouts/unauthenticated-common-layout/unauthenticated-common-layout.component';
-import {FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
-import {InputPassword} from '../../../../shared/components/form/input-password/input-password';
-import {InputText} from '../../../../shared/components/form/input-text/input-text';
-import {PrimaryButton} from '../../../../shared/components/primary-button/primary-button';
-import {SecondaryButton} from '../../../../shared/components/secondary-button/secondary-button';
-import {AuthService} from '../../services/auth.service';
-import {Router} from '@angular/router';
-import {FormValidations} from '../../../../shared/validators/form-validations';
-import {ErrorMessageHelper} from '../../../../shared/validators/error-message.helper';
-import {SignUpUser} from '../../../../core/interfaces/signup-user.interface';
 import {HttpErrorResponse} from '@angular/common/http';
+import {FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
+import {Router} from '@angular/router';
+import {AuthService} from '@modules/auth/services/auth.service';
+import {InputPassword} from '@shared/components/form/input-password/input-password';
+import {InputText} from '@shared/components/form/input-text/input-text';
+import {PrimaryButton} from '@shared/components/primary-button/primary-button';
+import {SecondaryButton} from '@shared/components/secondary-button/secondary-button';
+import {UnauthenticatedCommonLayoutComponent} from '@shared/layouts/unauthenticated-common-layout/unauthenticated-common-layout.component';
+import {ErrorMessageHelper} from '@shared/validators/error-message.helper';
+import {FormValidations} from '@shared/validators/form-validations';
 import Swal from 'sweetalert2';
 
 @Component({

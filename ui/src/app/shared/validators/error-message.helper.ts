@@ -1,4 +1,4 @@
-import { AbstractControl, ValidationErrors } from '@angular/forms';
+import { AbstractControl } from '@angular/forms';
 
 export class ErrorMessageHelper {
   static getErrorMessages(control: AbstractControl | null, fieldName: string): string[] {

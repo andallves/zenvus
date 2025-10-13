@@ -4,8 +4,6 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import {NgOptimizedImage} from '@angular/common';
-import {RouterOutlet} from '@angular/router';
-
 
 @Component({
   standalone: true,

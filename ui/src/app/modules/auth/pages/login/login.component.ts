@@ -4,7 +4,6 @@ import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {AuthService} from '@modules/auth/services/auth.service';
 import {ErrorMessageHelper} from '@shared/validators/error-message.helper';
-import {FormValidations} from '@shared/validators/form-validations';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -53,7 +52,7 @@ export class LoginComponent {
       const formValue= this.loginForm.value;
 
       formData.append('Email', formValue.Email || '');
-      formData.append('Password', formValue.Password || '');;
+      formData.append('Password', formValue.Password || '');
 
       this.submitted = true;
       this.login(formData);

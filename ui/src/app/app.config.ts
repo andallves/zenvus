@@ -1,5 +1,4 @@
-import {ApplicationConfig, importProvidersFrom, provideBrowserGlobalErrorListeners, provideZoneChangeDetection} from '@angular/core';
-import {provideAnimationsAsync} from '@angular/platform-browser/animations/async';
+import {ApplicationConfig, provideZoneChangeDetection} from '@angular/core';
 import { provideRouter } from '@angular/router';
 import {authInterceptor} from '@core/interceptors/auth.interceptor';
 

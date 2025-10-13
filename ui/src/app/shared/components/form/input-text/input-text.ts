@@ -1,7 +1,7 @@
-import {Component, forwardRef, input, Input, signal} from '@angular/core';
+import {Component, forwardRef, input, signal} from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
-import {PhoneFormatDirective} from '../../../directives/phone-format.directive';
 import {NgClass} from '@angular/common';
+import {PhoneFormatDirective} from '@shared/directives/phone-format.directive';
 
 // @ts-ignore
 @Component({
