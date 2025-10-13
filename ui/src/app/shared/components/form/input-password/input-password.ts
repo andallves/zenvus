@@ -1,46 +1,46 @@
-import {Component, forwardRef, input, Input, signal} from '@angular/core';
+import {Component, forwardRef, input, signal} from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
-import {PhoneFormatDirective} from '../../../directives/phone-format.directive';
 import {NgClass} from '@angular/common';
+
+export type InputType = 'text' | 'password';
 
 // @ts-ignore
 @Component({
-  selector: 'zen-input-text',
-  templateUrl: './input-text.html',
-  styleUrls: ['./input-text.scss'],
+  selector: 'zen-input-password',
+  templateUrl: './input-password.html',
+  styleUrls: ['./input-password.scss'],
   host: {
     class: 'fieldset',
     role: 'fieldset',
   },
   imports: [
-    PhoneFormatDirective,
     NgClass
   ],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => InputText),
+      useExisting: forwardRef(() => InputPassword),
       multi: true,
     }
   ]
 })
-export class InputText implements ControlValueAccessor {
+export class InputPassword implements ControlValueAccessor {
   label = input.required<string>();
   placeholder = input('');
   ariaLabel = input('')
   readonly required = input(false);
   errorMessages = input<string[] | null>(null);
   role = input.required<string>();
-  isPhone = input(false);
   isValid = input<boolean | undefined>(undefined);
   isInvalid = input<boolean | undefined>(undefined);
   touched = false;
 
-  private static idCounter = 0;
-  readonly inputId = `input-${InputText.idCounter++}`;
+  private static idCounter = 1000;
+  readonly inputId = `input-${InputPassword.idCounter++}`;
   readonly errorId = `${this.inputId}-error`;
 
   value: string = '';
+  isPasswordVisible = false;
   isDisabled = signal(false);
 
   private onChange: (value: string) => void = () => {};
@@ -77,6 +77,10 @@ export class InputText implements ControlValueAccessor {
       return true;
     }
     return false;
+  }
+
+  togglePasswordVisibility() {
+    this.isPasswordVisible = !this.isPasswordVisible;
   }
 
   get borderClass() {

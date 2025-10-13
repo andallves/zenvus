@@ -38,7 +38,7 @@ builder
 
 var app = builder.Build();
 
-app.UseCors();
+app.UseCors("default");
 
 app.UseForwardedHeaders(new ForwardedHeadersOptions
 {

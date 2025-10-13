@@ -9,13 +9,10 @@ using Zenvus.Infra.Extensionsss;
 namespace Zenvus.Infra.Database;
 
 [ExcludeFromCodeCoverage]
-public abstract class BaseDbContext : DbContext, IDbContextHealthCheck
+public abstract class BaseDbContext(DbContextOptions options) : DbContext(options), IDbContextHealthCheck
 {
     protected string Schema { get; set; } = string.Empty;
     protected Assembly Assembly { get; set; } = null!;
-
-    protected BaseDbContext(DbContextOptions options) : base(options)
-    { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

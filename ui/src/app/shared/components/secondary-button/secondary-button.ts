@@ -1,7 +1,7 @@
 import {Component, input, output} from '@angular/core';
 
 @Component({
-  selector: 'zen-primary-button',
+  selector: 'zen-secondary-button',
   imports: [],
   template:  `
     <button
@@ -13,9 +13,9 @@ import {Component, input, output} from '@angular/core';
       {{ btnText() }}
     </button>
   `,
-  styleUrl: './primary-button.scss',
+  styleUrl: './secondary-button.scss'
 })
-export class PrimaryButton {
+export class SecondaryButton {
   readonly btnText = input.required<string>({ alias: 'textButton' });
   readonly type = input<'button' | 'submit' | 'reset'>('button');
   readonly disabled = input<boolean>(false);

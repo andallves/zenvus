@@ -21,12 +21,14 @@ public class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
             .Matches(@"^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ ]+$")
             .MaximumLength(150);
 
-        RuleFor(x => x.BirthDate)
-            .NotNull()
-            .NotEmpty()
-            .LessThan(DateOnly.FromDateTime(DateTime.Now.AddYears(-1)))
-            .WithMessage("Data de nascimento muito recente, impossível existir usuário com essa informação.");
-
+        When(x => x.BirthDate != null, () =>
+        {
+            RuleFor(x => x.BirthDate)
+                .NotNull()
+                .NotEmpty()
+                .LessThan(DateOnly.FromDateTime(DateTime.Now.AddYears(-1)))
+                .WithMessage("Data de nascimento muito recente, impossível existir usuário com essa informação.");
+        });
 
         RuleFor(x => x.Email)
             .NotNull()
@@ -39,7 +41,7 @@ public class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
         RuleFor(x => x.Telephone)
             .NotNull()
             .NotEmpty()
-            .MaximumLength(12);
+            .MaximumLength(15);
         
         RuleFor(x => x.Password)
             .NotEmpty().WithMessage("A senha é obrigatória.")

@@ -1,17 +1,16 @@
 import { Routes } from '@angular/router';
-import {
-  UnauthenticatedCommonLayout
-} from './core/layout/template/unauthenticated-common-layout/unauthenticated-common-layout';
-import {SignUp} from './pages/sign-up/sign-up';
+import {SignUpComponent} from './pages/sign-up/sign-up.component';
+import {AuthLayout} from './shared/layouts/auth-layout/auth-layout';
 
 export const routes: Routes = [
   {
     path: '',
-    component: UnauthenticatedCommonLayout,
+    component: AuthLayout,
     children: [
       {
         path: '',
-        component: SignUp
+        component: SignUpComponent,
+        title: 'Sign Up - Zenvus'
       },
     ]
   }
