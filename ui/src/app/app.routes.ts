@@ -1,17 +1,15 @@
 import { Routes } from '@angular/router';
-import {SignUpComponent} from './pages/sign-up/sign-up.component';
-import {AuthLayout} from './shared/layouts/auth-layout/auth-layout';
+import {AuthLayoutComponent} from '@shared/layouts/auth-layout/auth-layout.component';
 
-export const routes: Routes = [
+const publicRoutes: Routes = [
   {
-    path: '',
-    component: AuthLayout,
-    children: [
-      {
-        path: '',
-        component: SignUpComponent,
-        title: 'Sign Up - Zenvus'
-      },
-    ]
-  }
+    path: 'auth',
+    component: AuthLayoutComponent,
+    loadChildren: () =>
+      import('./modules/auth/auth.module').then((m) => m.AuthModule),
+  },
 ];
+export const routes: Routes = [
+  ...publicRoutes,
+];
+

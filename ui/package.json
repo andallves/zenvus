@@ -6,7 +6,9 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "test:ci": "ng test --watch --code-coverage --source-map=false --browsers=Chrome_without_security",
+    "test-coverage": "ng test --no-watch --code-coverage --source-map --browsers ChromeHeadless"
   },
   "prettier": {
     "printWidth": 100,
@@ -29,9 +31,12 @@
     "@angular/platform-browser": "^20.2.0",
     "@angular/router": "^20.2.0",
     "bootstrap-icons": "^1.13.1",
+    "codelyzer": "^6.0.2",
+    "karma-junit-reporter": "^2.0.1",
     "rxjs": "~7.8.0",
     "sweetalert2": "^11.23.0",
     "tslib": "^2.3.0",
+    "tslint": "^5.20.1",
     "zone.js": "~0.15.0"
   },
   "devDependencies": {

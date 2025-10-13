@@ -1,22 +1,22 @@
 import {Component, signal} from '@angular/core';
 import {
   UnauthenticatedCommonLayoutComponent
-} from '../../shared/layouts/unauthenticated-common-layout/unauthenticated-common-layout.component';
+} from '../../../../shared/layouts/unauthenticated-common-layout/unauthenticated-common-layout.component';
 import {FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
-import {InputPassword} from '../../shared/components/form/input-password/input-password';
-import {InputText} from '../../shared/components/form/input-text/input-text';
-import {PrimaryButton} from '../../shared/components/primary-button/primary-button';
-import {SecondaryButton} from '../../shared/components/secondary-button/secondary-button';
-import {SignUpService} from '../../core/services/signup.service';
+import {InputPassword} from '../../../../shared/components/form/input-password/input-password';
+import {InputText} from '../../../../shared/components/form/input-text/input-text';
+import {PrimaryButton} from '../../../../shared/components/primary-button/primary-button';
+import {SecondaryButton} from '../../../../shared/components/secondary-button/secondary-button';
+import {AuthService} from '../../services/auth.service';
 import {Router} from '@angular/router';
-import {FormValidations} from '../../shared/validators/form-validations';
-import {ErrorMessageHelper} from '../../shared/validators/error-message.helper';
-import {SignUpUser} from '../../core/interfaces/signup-user.interface';
+import {FormValidations} from '../../../../shared/validators/form-validations';
+import {ErrorMessageHelper} from '../../../../shared/validators/error-message.helper';
+import {SignUpUser} from '../../../../core/interfaces/signup-user.interface';
 import {HttpErrorResponse} from '@angular/common/http';
 import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'zen-sign-up',
+  selector: 'zen-register',
   standalone: true,
   imports: [
     UnauthenticatedCommonLayoutComponent,
@@ -27,10 +27,10 @@ import Swal from 'sweetalert2';
     ReactiveFormsModule,
     SecondaryButton
   ],
-  templateUrl: './sign-up.component.html',
-  styleUrl: './sign-up.component.scss'
+  templateUrl: './register.component.html',
+  styleUrl: './register.component.scss'
 })
-export class SignUpComponent {
+export class RegisterComponent {
   protected signUpForm: FormGroup;
   public isLoading = signal<boolean>(false);
 
@@ -38,7 +38,7 @@ export class SignUpComponent {
 
   constructor(
     private readonly fb: FormBuilder,
-    private readonly signUpService: SignUpService,
+    private readonly signUpService: AuthService,
     private readonly router: Router
   ) {
     this.signUpForm = this.fb!.group(

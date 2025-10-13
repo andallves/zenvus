@@ -1,15 +1,15 @@
-import {inject, Injectable} from '@angular/core';
-import {environment} from '../../../environments/environment.development';
 import {HttpClient} from '@angular/common/http';
+import {inject, Injectable} from '@angular/core';
+import {SignUpUser} from '@core/interfaces/signup-user.interface';
+import {environment} from '@env/environment.development';
 import {Observable} from 'rxjs';
-import {SignUpUser} from '../interfaces/signup-user.interface';
 
 @Injectable({
   providedIn: 'root'
 })
-export class SignUpService {
+export class AuthService {
   private readonly apiUrl = environment.apiUrl;
-  private httpClient = inject(HttpClient);
+  private readonly httpClient = inject(HttpClient);
 
   register(userData: FormData): Observable<SignUpUser> {
     return this.httpClient.post<SignUpUser>(
