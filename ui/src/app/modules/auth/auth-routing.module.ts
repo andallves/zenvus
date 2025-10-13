@@ -7,16 +7,16 @@ const routes: Routes = [
   {
     path: 'cadastro',
     component: RegisterComponent,
+    title: 'Cadastro',
     data: {
-      title: 'Cadastro',
       description: 'Página de cadastro de novos usuários'
     }
   },
   {
     path: 'login',
     component: LoginComponent,
+    title: 'Login',
     data: {
-      title: 'Login',
       description: 'Página de login de usuários'
     }
   },
