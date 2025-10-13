@@ -30,6 +30,7 @@
     "@angular/forms": "^20.2.0",
     "@angular/platform-browser": "^20.2.0",
     "@angular/router": "^20.2.0",
+    "@auth0/angular-jwt": "^5.2.0",
     "bootstrap-icons": "^1.13.1",
     "codelyzer": "^6.0.2",
     "karma-junit-reporter": "^2.0.1",

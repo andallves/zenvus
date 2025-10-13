@@ -98,7 +98,9 @@ export class RegisterComponent {
     }
   }
 
-  navigateToLogin(): void {}
+  navigateToLogin(){
+    this.router.navigateByUrl('auth/login')
+  }
 
   private register(userData: FormData) {
     this.signUpService.register(userData).subscribe({
