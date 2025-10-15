@@ -1,4 +1,4 @@
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {inject, Injectable} from '@angular/core';
 import {SignUpUser} from '@core/interfaces/signup-user.interface';
 import {environment} from '@env/environment.development';
@@ -13,9 +13,13 @@ export class AuthService {
   private readonly httpClient = inject(HttpClient);
 
   register(userData: FormData): Observable<SignUpUser> {
+    console.log('Esta chegando no service de autenticação')
     return this.httpClient.post<SignUpUser>(
-      `${this.apiUrl}/user`,
-      userData
+      `${this.apiUrl}/v1/user`,
+      userData,
+      {
+        headers: new HttpHeaders().set('skip', 'true')
+      }
     );
   }
 

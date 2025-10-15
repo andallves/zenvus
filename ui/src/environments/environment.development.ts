@@ -1,4 +1,22 @@
+interface EnvConfig {
+  env?: string;
+  production?: boolean;
+  backendBaseUrl?: string;
+  noticiasApiUrl?: string;
+}
+
+declare global {
+  interface Window {
+    env: EnvConfig;
+  }
+}
+
 export const environment = {
-  production: false,
-  apiUrl: 'http://localhost:5223/v1',
+  env: window?.env?.env ?? 'local',
+  production: window?.env?.production || false,
+  apiUrl: 'https://localhost:7174',
+  noticiasApiUrl:
+    window?.env?.noticiasApiUrl ??
+    'https://api.zenvus.com.br/v1',
+
 };

@@ -30,14 +30,25 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "glob": "**/*",
+                "input": "src/shared/assets",
+                "output": "/shared/assets"
               }
             ],
             "styles": [
               "node_modules/bootstrap-icons/font/bootstrap-icons.css",
+              "./node_modules/ngx-toastr/toastr.css",
               "src/styles.scss"
             ],
+            "scripts": [
+              "node_modules/bootstrap/dist/js/bootstrap.js"
+            ]
             "stylePreprocessorOptions": {
-              "includePaths": ["src/styles"]
+              "includePaths": [
+                "src/styles"
+              ]
             }
           },
           "configurations": {
@@ -46,12 +57,18 @@
                 {
                   "type": "initial",
                   "maximumWarning": "500kB",
-                  "maximumError": "1MB"
+                  "maximumError": "1mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "4kB",
-                  "maximumError": "8kB"
+                  "maximumWarning": "60kB",
+                  "maximumError": "2mb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.production.ts"
                 }
               ],
               "outputHashing": "all"
@@ -59,10 +76,17 @@
             "development": {
               "optimization": false,
               "extractLicenses": false,
-              "sourceMap": true
+              "sourceMap": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.development.ts"
+                }
+              ]
             }
           },
           "defaultConfiguration": "production"
+
         },
         "serve": {
           "builder": "@angular/build:dev-server",
@@ -80,7 +104,7 @@
           "builder": "@angular/build:extract-i18n"
         },
         "test": {
-          "builder": "@angular/build:karma",
+          "builder": "@angular-devkit/build-angular:karma",
           "options": {
             "polyfills": [
               "zone.js",
@@ -96,6 +120,15 @@
             ],
             "styles": [
               "src/styles.scss"
+            ],
+            "scripts": [],
+            "karmaConfig": "karma.conf.js",
+            "codeCoverageExclude": [
+              "karma.conf.ts",
+              "src/main.ts",
+              "src/instrumentation.ts",
+              "src/**/*.spec.ts",
+              "src/environments/*.*"
             ]
           }
         }

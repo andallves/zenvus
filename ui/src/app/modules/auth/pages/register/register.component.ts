@@ -7,24 +7,16 @@ import {InputPassword} from '@shared/components/form/input-password/input-passwo
 import {InputText} from '@shared/components/form/input-text/input-text';
 import {PrimaryButton} from '@shared/components/primary-button/primary-button';
 import {SecondaryButton} from '@shared/components/secondary-button/secondary-button';
+import {ModalAlertService} from '@shared/components/swall/modal-alert/service/modal-alert.service';
 import {UnauthenticatedCommonLayoutComponent} from '@shared/layouts/unauthenticated-common-layout/unauthenticated-common-layout.component';
 import {ErrorMessageHelper} from '@shared/validators/error-message.helper';
 import {FormValidations} from '@shared/validators/form-validations';
-import Swal from 'sweetalert2';
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'zen-register',
-  standalone: true,
-  imports: [
-    UnauthenticatedCommonLayoutComponent,
-    FormsModule,
-    InputPassword,
-    InputText,
-    PrimaryButton,
-    ReactiveFormsModule,
-    SecondaryButton
-  ],
   templateUrl: './register.component.html',
+  standalone: false,
   styleUrl: './register.component.scss'
 })
 export class RegisterComponent {
@@ -36,7 +28,9 @@ export class RegisterComponent {
   constructor(
     private readonly fb: FormBuilder,
     private readonly signUpService: AuthService,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly modalAlertService: ModalAlertService,
+    private readonly toastrService: ToastrService,
   ) {
     this.signUpForm = this.fb!.group(
       {
@@ -74,6 +68,7 @@ export class RegisterComponent {
 
   registerUser(): void {
     this.isLoading.set(true);
+    console.log("passando aqui")
     const isValidForm = this.signUpForm.valid;
     if (isValidForm) {
       const formData = new FormData();
@@ -89,6 +84,7 @@ export class RegisterComponent {
       this.submitted = true;
       this.register(formData);
       console.log('Usuário cadastrado:', formData);
+      console.log('Usuário cadastrado:', formValue);
     } else {
       this.signUpForm.markAllAsTouched();
       this.isLoading.set(false);
@@ -96,33 +92,29 @@ export class RegisterComponent {
   }
 
   navigateToLogin(){
-    this.router.navigateByUrl('auth/login')
+    this.router.navigate(['auth/login']).then();
   }
 
   private register(userData: FormData) {
     this.signUpService.register(userData).subscribe({
       next: registerResponse => {
         console.log(registerResponse);
-        this.router.navigateByUrl('/login').then();
+        this.navigateToLogin();
+        this.toastrService.success('Usuário adicionado com sucesso!', 'Sucesso');
         this.signUpForm.reset();
       },
       error: error => {
         this.isLoading.set(false);
-        this.showErrorMessage(error);
+        console.log(error);
+        const errorMessage = error.error?.errors?.join('<br>') || error.message;
+        console.log(errorMessage);
+        this.modalAlertService.open({
+          icon: 'error',
+          title: 'Erro',
+          message: `Erro ao enviar dados para a API: <br> ${errorMessage}`,
+          confirmButtonText: 'Ok',
+        });
       },
-    });
-  }
-
-  private showErrorMessage(errorResponse: HttpErrorResponse) {
-    const message = errorResponse.error['erros'];
-    Swal.fire({
-      icon: 'error',
-      title: 'Oops!',
-      text: message,
-      confirmButtonText: 'Ok',
-      allowEnterKey: true,
-      closeButtonAriaLabel: 'Close button',
-      confirmButtonColor: '#27C498',
     });
   }
 

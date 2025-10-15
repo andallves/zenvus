@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {AuthRoutingModule} from '@modules/auth/auth-routing.module';
 import { LoginComponent } from '@modules/auth/pages/login/login.component';
+import {RegisterComponent} from '@modules/auth/pages/register/register.component';
+import {AuthService} from '@modules/auth/services/auth.service';
 import {InputPassword} from '@shared/components/form/input-password/input-password';
 import {InputText} from '@shared/components/form/input-text/input-text';
 import {PrimaryButton} from '@shared/components/primary-button/primary-button';
@@ -11,6 +13,7 @@ import {UnauthenticatedCommonLayoutComponent} from '@shared/layouts/unauthentica
 
 @NgModule({
   declarations: [
+    RegisterComponent,
     LoginComponent
   ],
   imports: [
@@ -23,7 +26,11 @@ import {UnauthenticatedCommonLayoutComponent} from '@shared/layouts/unauthentica
     ReactiveFormsModule,
     SecondaryButton,
     UnauthenticatedCommonLayoutComponent
-  ]
+  ],
+  exports: [
+    RegisterComponent,
+    LoginComponent
+  ],
 })
 export class AuthModule { }
 
