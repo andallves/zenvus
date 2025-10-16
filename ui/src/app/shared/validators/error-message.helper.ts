@@ -21,25 +21,25 @@ export class ErrorMessageHelper {
       const error = control.errors[errorKey];
       switch (errorKey) {
         case 'required':
-          errors.push(`O campo '${fieldName}' é obrigatório.`);
+          errors.push(`O campo <strong>'${fieldName}'</strong> é obrigatório.`);
           break;
         case 'minlength':
-          errors.push(`${fieldName} deve ter no mínimo ${error.requiredLength} caracteres.`);
+          errors.push(`<strong>'${fieldName}'</strong> deve ter no mínimo ${error.requiredLength} caracteres.`);
           break;
         case 'maxlength':
-          errors.push(`${fieldName} deve ter no máximo ${error.requiredLength} caracteres.`);
+          errors.push(`<strong>'${fieldName}'</strong> deve ter no máximo ${error.requiredLength} caracteres.`);
           break;
         case 'email':
           errors.push(`Informe um email válido.`);
           break;
         case 'pattern':
-          errors.push(`${fieldName} está em um formato inválido.`);
+          errors.push(`<strong>'${fieldName}'</strong> está em um formato inválido.`);
           break;
         case 'equalTo':
           errors.push(`As senhas não coincidem.`);
           break;
         default:
-          errors.push(`${fieldName} inválido.`);
+          errors.push(`<strong>'${fieldName}'</strong> inválido.`);
       }
     }
     return errors;

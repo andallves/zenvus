@@ -10,7 +10,7 @@ export type InputType = 'text' | 'password';
   templateUrl: './input-password.html',
   styleUrls: ['./input-password.scss'],
   host: {
-    class: 'fieldset',
+    class: 'fieldset-input',
     role: 'fieldset',
   },
   imports: [

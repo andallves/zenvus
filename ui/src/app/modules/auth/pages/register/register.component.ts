@@ -49,7 +49,7 @@ export class RegisterComponent {
         ]),
         confirmPassword: new FormControl('', [
           Validators.required,
-          FormValidations.equalTo('Password')
+          FormValidations.equalTo('password')
         ]),
       }
     );

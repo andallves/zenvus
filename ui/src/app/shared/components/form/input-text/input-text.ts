@@ -9,12 +9,13 @@ import {PhoneFormatDirective} from '@shared/directives/phone-format.directive';
   templateUrl: './input-text.html',
   styleUrls: ['./input-text.scss'],
   host: {
-    class: 'fieldset',
+    class: 'fieldset-input',
     role: 'fieldset',
+    '[ngClass]': 'borderClass'
   },
   imports: [
     PhoneFormatDirective,
-    NgClass
+    NgClass,
   ],
   providers: [
     {
