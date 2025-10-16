@@ -15,7 +15,7 @@ form {
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 0.6rem;
+    gap: 1rem;
     margin: 1.4rem 0;
   }
 
@@ -30,12 +30,12 @@ form {
       &--last {
         flex: 1;
         height: 1px;
-        background-color: $textLightGrayColor;
+        background-color: $backgroundColor;
       }
 
       &--text {
         color: $textLightGrayColor;
-        font-size: 14px;
+        font-size: 12px;
         margin: 0 12px;
         white-space: nowrap;
       }
