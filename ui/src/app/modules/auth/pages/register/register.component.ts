@@ -1,14 +1,8 @@
 import {Component, signal} from '@angular/core';
-import {HttpErrorResponse} from '@angular/common/http';
-import {FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {AuthService} from '@modules/auth/services/auth.service';
-import {InputPassword} from '@shared/components/form/input-password/input-password';
-import {InputText} from '@shared/components/form/input-text/input-text';
-import {PrimaryButton} from '@shared/components/primary-button/primary-button';
-import {SecondaryButton} from '@shared/components/secondary-button/secondary-button';
 import {ModalAlertService} from '@shared/components/swall/modal-alert/service/modal-alert.service';
-import {UnauthenticatedCommonLayoutComponent} from '@shared/layouts/unauthenticated-common-layout/unauthenticated-common-layout.component';
 import {ErrorMessageHelper} from '@shared/validators/error-message.helper';
 import {FormValidations} from '@shared/validators/form-validations';
 import {ToastrService} from 'ngx-toastr';
@@ -34,26 +28,26 @@ export class RegisterComponent {
   ) {
     this.signUpForm = this.fb!.group(
       {
-        Name: new FormControl('', [
+        name: new FormControl('', [
           Validators.required,
           Validators.minLength(3),
           Validators.maxLength(60)
         ]),
-        Email: new FormControl('', [
+        email: new FormControl('', [
           Validators.required,
           Validators.email
         ]),
-        Phone: new FormControl('', [
+        phone: new FormControl('', [
           Validators.required,
           Validators.pattern(/^\(\d{2}\) \d{5}-\d{4}$/)
         ]),
-        Password: new FormControl('', [
+        password: new FormControl('', [
           Validators.required,
           Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).+$/),
           Validators.minLength(8),
           Validators.maxLength(30)
         ]),
-        ConfirmPassword: new FormControl('', [
+        confirmPassword: new FormControl('', [
           Validators.required,
           FormValidations.equalTo('Password')
         ]),
@@ -66,7 +60,8 @@ export class RegisterComponent {
     return ErrorMessageHelper.getErrorMessages(control, controlName);
   }
 
-  registerUser(): void {
+  registerUser(event: Event): void {
+    event.preventDefault();
     this.isLoading.set(true);
     console.log("passando aqui")
     const isValidForm = this.signUpForm.valid;
@@ -74,11 +69,11 @@ export class RegisterComponent {
       const formData = new FormData();
       const formValue= this.signUpForm.value;
 
-      formData.append('Name', formValue.Name || '');
-      formData.append('Email', formValue.Email || '');
-      formData.append('Telephone', formValue.Phone || '');
-      formData.append('Password', formValue.Password || '');
-      formData.append('ConfirmPassword', formValue.ConfirmPassword || '');
+      formData.append('Name', formValue.name || '');
+      formData.append('Email', formValue.email || '');
+      formData.append('Telephone', formValue.phone || '');
+      formData.append('Password', formValue.password || '');
+      formData.append('ConfirmPassword', formValue.confirmPassword || '');
 
 
       this.submitted = true;

@@ -1,15 +1,15 @@
 <zen-unauthenticated-common-layout>
-  <form [formGroup]="signUpForm" (ngSubmit)="registerUser()">
+  <form [formGroup]="signUpForm" (ngSubmit)="registerUser($event)">
     <zen-input-text
       [ariaLabel]="'Campo para inserir o nome'"
       [label]="'Nome'"
       [placeholder]="'Insira seu nome'"
       [required]="true"
-      [errorMessages]="getErrorMessages('Name')"
-      [isValid]="isValid('Name')"
-      [isInvalid]="isInvalid('Name')"
+      [errorMessages]="getErrorMessages('name')"
+      [isValid]="isValid('name')"
+      [isInvalid]="isInvalid('name')"
       type="text"
-      formControlName="Name"
+      formControlName="name"
       role="textbox"
     ></zen-input-text>
 
@@ -18,10 +18,10 @@
       [label]="'Email'"
       [placeholder]="'Insira seu email'"
       [required]="true"
-      [errorMessages]="getErrorMessages('Email')"
-      [isValid]="isValid('Email')"
-      [isInvalid]="isInvalid('Email')"
-      formControlName="Email"
+      [errorMessages]="getErrorMessages('email')"
+      [isValid]="isValid('email')"
+      [isInvalid]="isInvalid('email')"
+      formControlName="email"
       role="textbox"
       type="email"
     ></zen-input-text>
@@ -31,11 +31,11 @@
       [label]="'Telefone'"
       [placeholder]="'(85) 9 9999-9999'"
       [required]="true"
-      [errorMessages]="getErrorMessages('Phone')"
-      formControlName="Phone"
+      [errorMessages]="getErrorMessages('phone')"
+      formControlName="phone"
       [isPhone]="true"
-      [isValid]="isValid('Phone')"
-      [isInvalid]="isInvalid('Phone')"
+      [isValid]="isValid('phone')"
+      [isInvalid]="isInvalid('phone')"
       role="textbox"
       type="text"
     ></zen-input-text>
@@ -45,10 +45,10 @@
       [label]="'Senha'"
       [placeholder]="'********'"
       [required]="true"
-      [errorMessages]="getErrorMessages('Password')"
-      [isValid]="isValid('Password')"
-      [isInvalid]="isInvalid('Password')"
-      formControlName="Password"
+      [errorMessages]="getErrorMessages('password')"
+      [isValid]="isValid('password')"
+      [isInvalid]="isInvalid('password')"
+      formControlName="password"
       role="textbox"
     ></zen-input-password>
 
@@ -57,10 +57,10 @@
       [label]="'Confirme sua senha'"
       [placeholder]="'********'"
       [required]="true"
-      [errorMessages]="getErrorMessages('ConfirmPassword')"
-      [isValid]="isValid('ConfirmPassword')"
-      [isInvalid]="isInvalid('ConfirmPassword')"
-      formControlName="ConfirmPassword"
+      [errorMessages]="getErrorMessages('confirmPassword')"
+      [isValid]="isValid('confirmPassword')"
+      [isInvalid]="isInvalid('confirmPassword')"
+      formControlName="confirmPassword"
       role="textbox"
     ></zen-input-password>
 

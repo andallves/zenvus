@@ -1,8 +1,19 @@
 import { AbstractControl } from '@angular/forms';
 
 export class ErrorMessageHelper {
-  static getErrorMessages(control: AbstractControl | null, fieldName: string): string[] {
+  private static readonly defaultLabels: Record<string, string> = {
+    name: 'Nome',
+    email: 'Email',
+    phone: 'Telefone',
+    password: 'Senha',
+    confirmPassword: 'Confirmar senha'
+  };
+
+  static getErrorMessages(control: AbstractControl | null, fieldKey: string, labels?: Record<string, string>): string[] {
     if (!control || !control.errors || !control.touched) return [];
+
+    const mergedLabels = { ...ErrorMessageHelper.defaultLabels, ...(labels || {}) };
+    const fieldName = mergedLabels[fieldKey] ?? fieldKey;
 
     const errors: string[] = [];
 
@@ -10,7 +21,7 @@ export class ErrorMessageHelper {
       const error = control.errors[errorKey];
       switch (errorKey) {
         case 'required':
-          errors.push(`${fieldName} é obrigatório.`);
+          errors.push(`O campo '${fieldName}' é obrigatório.`);
           break;
         case 'minlength':
           errors.push(`${fieldName} deve ter no mínimo ${error.requiredLength} caracteres.`);
