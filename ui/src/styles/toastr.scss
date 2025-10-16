@@ -1,10 +1,11 @@
+@use 'variables' as *;
+
 .ngx-toastr {
   position: relative;
   padding: 10px 20px;
   margin-bottom: 10px;
-  border-radius: 4px;
-  background-color: #f5f5f5;
-  color: #333333;
+  background-color: $textSecondaryColor;
+  color: $textPrimaryColor;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
   font-family: 'Helvetica', sans-serif;
   font-size: 14px;
@@ -15,30 +16,29 @@
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  //border-radius: 60px;
-
+  border-radius: 60px;
 }
 
 .toast-success {
-  background-color: #048130;
-  color: white;
+  background-color: $successColor;
+  color: $textSecondaryColor;
   z-index: 1000;
 }
 
 .toast-error {
-  background-color: #BD362F;
-  color: white;
+  background-color: $dangerColor;
+  color: $textSecondaryColor;
   z-index: 1000;
 }
 
 .toast-info {
-  background-color: #2F96B4;
-  color: white;
+  background-color: $positiveColor;
+  color: $textSecondaryColor;
 }
 
 .toast-warning {
-  background-color: #F89406;
-  color: white;
+  background-color: $warningColor;
+  color: $textSecondaryColor;
 }
 
 /* Título */
@@ -52,7 +52,7 @@
   position: absolute;
   top: 10px;
   right: 10px;
-  color: white;
+  color: $textSecondaryColor;
   background: transparent;
   border: none;
   font-size: 18px;
