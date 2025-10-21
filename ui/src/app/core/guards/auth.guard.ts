@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, Router, UrlTree } from '@angular/router';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { AuthService } from '@modules/auth/services/auth.service';
 
 @Injectable({
   providedIn: 'root',
@@ -9,7 +8,6 @@ import { AuthService } from '@modules/auth/services/auth.service';
 export class AuthGuard implements CanActivate {
   constructor(
     private readonly router: Router,
-    private readonly authService: AuthService,
     private readonly helper: JwtHelperService,
   ) { }
 
