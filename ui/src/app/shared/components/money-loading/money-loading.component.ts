@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -8,16 +8,23 @@ import { CommonModule } from '@angular/common';
   templateUrl: './money-loading.component.html',
   styleUrls: ['./money-loading.component.scss']
 })
-export class MoneyLoadingComponent implements OnInit {
+export class MoneyLoadingComponent implements OnInit, OnDestroy {
   coins: { id: number; left: number; delay: number; duration: number }[] = [];
   bagBump = false;
+  private coinLoopInterval!: number;
 
   ngOnInit() {
     this.startCoinLoop();
   }
 
+  ngOnDestroy() {
+    if (this.coinLoopInterval) {
+      clearInterval(this.coinLoopInterval);
+    }
+  }
+
   startCoinLoop() {
-    setInterval(() => {
+    this.coinLoopInterval = setInterval(() => {
       const count = Math.floor(Math.random() * 2) + 1;
 
       for (let i = 0; i < count; i++) {

@@ -26,14 +26,14 @@
 
   .money-bag {
     width: 70px;
-    height: 70px;
+    height: 76px;
     z-index: 2;
     transition: transform 0.25s ease-in-out;
     transform-origin: center bottom;
 
     @media only screen and (min-width: 768px){
       width: 100px;
-      height: 100px;
+      height: 112px;
     }
 
     &.bump {

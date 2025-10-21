@@ -1,5 +1,6 @@
+@use "variables" as *;
+
 :host {
-  display: block;
   position: fixed;
   top: 0;
   left: 0;
@@ -52,19 +53,19 @@
 }
 
 .success-icon {
-  color: #28a745;
+  color: $successColor;
 }
 
 .error-icon {
-  color: #dc3545;
+  color: $dangerColor;
 }
 
 .warning-icon {
-  color: #ffc107;
+  color: $warningColor;
 }
 
 .info-icon {
-  color: #17a2b8;
+  color: $positiveColor;
 }
 
 .modal-body {
@@ -85,24 +86,25 @@
   flex: 1;
   max-width: 150px;
   height: 46px;
+  font-size: 14px;
 }
 
 .confirm-button {
-  background: #28a745;
+  background: $successColor;
   color: white;
 }
 
 .confirm-button:hover {
-  background: #218838;
+  background: darken($successColor, 5%);
 }
 
 .cancel-button {
-  background: #dc3545;
+  background: $dangerColor;
   color: white;
 }
 
 .cancel-button:hover {
-  background: #c82333;
+  background: darken($dangerColor, 5%);
 }
 
 @keyframes fadeIn {

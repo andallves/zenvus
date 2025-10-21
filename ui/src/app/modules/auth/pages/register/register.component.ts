@@ -94,7 +94,7 @@ export class RegisterComponent {
       next: registerResponse => {
         console.log(registerResponse);
         this.navigateToLogin();
-        this.toastrService.success('Usuário adicionado com sucesso!', 'Sucesso');
+        this.toastrService.success('Usuário cadastrado com sucesso!', 'Sucesso');
         this.signUpForm.reset();
       },
       error: error => {
@@ -104,8 +104,8 @@ export class RegisterComponent {
         console.log(errorMessage);
         this.modalAlertService.open({
           icon: 'error',
-          title: 'Erro',
-          message: `Erro ao enviar dados para a API: <br> ${errorMessage}`,
+          title: 'Ops!',
+          message: `${errorMessage}`,
           confirmButtonText: 'Ok',
         });
       },
