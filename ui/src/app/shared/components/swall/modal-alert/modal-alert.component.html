@@ -2,10 +2,15 @@
   <div class="modal-container">
     <div class="modal-header">
       <div class="icon-container">
-        <i *ngIf="icon === 'success'" class="bi bi-check-circle-fill success-icon"></i>
-        <i *ngIf="icon === 'error'" class="bi bi-x-circle-fill error-icon"></i>
-        <i *ngIf="icon === 'warning'" class="bi bi-exclamation-triangle-fill warning-icon"></i>
-        <i *ngIf="icon === 'info'" class="bi bi-info-circle-fill info-icon"></i>
+        @if (icon === 'success') {
+          <i class="bi bi-check-circle-fill success-icon"></i>
+        } @else if (icon === 'error') {
+          <i class="bi bi-x-circle-fill error-icon"></i>
+        } @else if (icon === 'warning') {
+          <i class="bi bi-exclamation-triangle-fill warning-icon"></i>
+        } @else if (icon === 'info') {
+          <i class="bi bi-info-circle-fill info-icon"></i>
+      }
       </div>
       <h2>{{ title }}</h2>
     </div>
@@ -14,7 +19,9 @@
     </div>
     <div class="modal-footer">
       <button class="confirm-button" (click)="onConfirm()">{{ confirmButtonText }}</button>
-      <button *ngIf="showCancelButton" class="cancel-button" (click)="onCancel()">{{ cancelButtonText }}</button>
+      @if (showCancelButton) {
+        <button class="cancel-button" (click)="onCancel()">{{ cancelButtonText }}</button>
+      }
     </div>
   </div>
 </div>

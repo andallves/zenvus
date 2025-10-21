@@ -62,7 +62,6 @@ export class RegisterComponent {
   registerUser(event: Event): void {
     event.preventDefault();
     this.isLoading.set(true);
-    console.log("passando aqui")
     const isValidForm = this.signUpForm.valid;
     if (isValidForm) {
       const formData = new FormData();
@@ -74,18 +73,15 @@ export class RegisterComponent {
       formData.append('Password', formValue.password || '');
       formData.append('ConfirmPassword', formValue.confirmPassword || '');
 
-
       this.submitted = true;
       this.register(formData);
-      console.log('Usuário cadastrado:', formData);
-      console.log('Usuário cadastrado:', formValue);
     } else {
       this.signUpForm.markAllAsTouched();
       this.isLoading.set(false);
     }
   }
 
-  navigateToLogin(){
+  protected navigateToLogin(){
     this.router.navigate(['auth/login']).then();
   }
 
