@@ -72,7 +72,8 @@
       <zen-primary-button
         type="submit"
         [textButton]="'Cadastrar'"
-        [disabled]="isLoading()"
+        [disabled]="signUpForm.invalid || isLoading()"
+        [isLoading]="isLoading()"
       ></zen-primary-button>
 
       <div class="divider">

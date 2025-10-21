@@ -3,16 +3,7 @@ import {Component, input, output} from '@angular/core';
 @Component({
   selector: 'zen-primary-button',
   imports: [],
-  template:  `
-    <button
-      class="primary-btn"
-      [type]="type()"
-      [disabled]="disabled()"
-      (click)="onClick()"
-    >
-      {{ btnText() }}
-    </button>
-  `,
+  templateUrl:  './primary-button.html',
   styleUrl: './primary-button.scss',
 })
 export class PrimaryButton {
@@ -20,6 +11,7 @@ export class PrimaryButton {
   readonly type = input<'button' | 'submit' | 'reset'>('button');
   readonly disabled = input<boolean>(false);
   readonly onButtonClicked = output<void>();
+  readonly isLoading = input<boolean>(false);
 
   onClick() {
     this.onButtonClicked.emit();

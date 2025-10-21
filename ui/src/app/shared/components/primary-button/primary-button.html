@@ -1,1 +1,15 @@
-
+<button
+  class="primary-btn"
+  [type]="type()"
+  [disabled]="disabled()"
+  (click)="onClick()"
+>
+  @if (isLoading()) {
+    <div role="status" aria-live="polite" class="loading">
+      <span class="spinner spinner--small" aria-hidden="true"></span>
+      <span class="sr-only">Carregando…</span>
+    </div>
+  } @else {
+    {{ btnText() }}
+  }
+</button>

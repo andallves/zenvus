@@ -16,7 +16,6 @@ import {ToastrService} from 'ngx-toastr';
 export class RegisterComponent {
   protected signUpForm: FormGroup;
   public isLoading = signal<boolean>(false);
-
   submitted = false;
 
   constructor(

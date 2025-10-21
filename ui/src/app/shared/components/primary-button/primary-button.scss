@@ -21,4 +21,9 @@ button.primary-btn {
   letter-spacing: 0.6px;
   box-shadow: 0 0 .1rem .1rem rgba(255, 255, 255, 0.1) inset;
   cursor: pointer;
+
+  &[disabled] {
+    background-color: darken($primaryColor, 15%);
+    cursor: not-allowed;
+  }
 }
