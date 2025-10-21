@@ -1,5 +1,9 @@
 @use "../../../../../styles/variables" as *;
 
+:host {
+  position: relative;
+}
+
 form {
   position: relative;
   width: 90%;

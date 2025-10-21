@@ -3,7 +3,7 @@ import {inject, Injectable} from '@angular/core';
 import {SignUpUser} from '@core/interfaces/signup-user.interface';
 import {environment} from '@env/environment.development';
 import Token from '@modules/auth/models/token.model';
-import {Observable} from 'rxjs';
+import {Observable, take} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +20,7 @@ export class AuthService {
       {
         headers: new HttpHeaders().set('skip', 'true')
       }
-    );
+    ).pipe(take(1));
   }
 
   login(credenciais: { identificacao: string, senha: string }): Observable<Token> {

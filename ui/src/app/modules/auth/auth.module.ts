@@ -6,6 +6,7 @@ import { LoginComponent } from '@modules/auth/pages/login/login.component';
 import {RegisterComponent} from '@modules/auth/pages/register/register.component';
 import {InputPassword} from '@shared/components/form/input-password/input-password';
 import {InputText} from '@shared/components/form/input-text/input-text';
+import {MoneyLoadingComponent} from '@shared/components/money-loading/money-loading.component';
 import {PrimaryButton} from '@shared/components/primary-button/primary-button';
 import {SecondaryButton} from '@shared/components/secondary-button/secondary-button';
 import {UnauthenticatedCommonLayoutComponent} from '@shared/layouts/unauthenticated-common-layout/unauthenticated-common-layout.component';
@@ -15,17 +16,18 @@ import {UnauthenticatedCommonLayoutComponent} from '@shared/layouts/unauthentica
     RegisterComponent,
     LoginComponent
   ],
-  imports: [
-    CommonModule,
-    AuthRoutingModule,
-    FormsModule,
-    InputPassword,
-    InputText,
-    PrimaryButton,
-    ReactiveFormsModule,
-    SecondaryButton,
-    UnauthenticatedCommonLayoutComponent
-  ],
+    imports: [
+        CommonModule,
+        AuthRoutingModule,
+        FormsModule,
+        InputPassword,
+        InputText,
+        PrimaryButton,
+        ReactiveFormsModule,
+        SecondaryButton,
+        UnauthenticatedCommonLayoutComponent,
+        MoneyLoadingComponent
+    ],
   exports: [
     RegisterComponent,
     LoginComponent
