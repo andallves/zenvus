@@ -10,9 +10,9 @@ export class ErrorMessageHelper {
   };
 
   static getErrorMessages(control: AbstractControl | null, fieldKey: string, labels?: Record<string, string>): string[] {
-    if (!control || !control.errors || !control.touched) return [];
+    if (!control?.errors || !control.touched) return [];
 
-    const mergedLabels = { ...ErrorMessageHelper.defaultLabels, ...(labels || {}) };
+    const mergedLabels = { ...ErrorMessageHelper.defaultLabels, ...(labels) };
     const fieldName = mergedLabels[fieldKey] ?? fieldKey;
 
     const errors: string[] = [];

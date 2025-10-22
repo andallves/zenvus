@@ -1,47 +1,43 @@
 import {Component, forwardRef, input, signal} from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
 import {NgClass} from '@angular/common';
-import {PhoneFormatDirective} from '@shared/directives/phone-format.directive';
 
-// @ts-ignore
 @Component({
-  selector: 'zen-input-text',
-  templateUrl: './input-text.html',
-  styleUrls: ['./input-text.scss'],
+  selector: 'zen-input-password',
+  templateUrl: './input-password.component.html',
+  styleUrls: ['./input-password.component.scss'],
   host: {
     class: 'fieldset-input',
     role: 'fieldset',
-    '[ngClass]': 'borderClass'
   },
   imports: [
-    PhoneFormatDirective,
-    NgClass,
+    NgClass
   ],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => InputText),
+      useExisting: forwardRef(() => InputPasswordComponent),
       multi: true,
     }
   ]
 })
-export class InputText implements ControlValueAccessor {
+export class InputPasswordComponent implements ControlValueAccessor {
   label = input.required<string>();
   placeholder = input('');
   ariaLabel = input('')
   readonly required = input(false);
   errorMessages = input<string[] | null>(null);
   role = input.required<string>();
-  isPhone = input(false);
   isValid = input<boolean | undefined>(undefined);
   isInvalid = input<boolean | undefined>(undefined);
   touched = false;
 
-  private static idCounter = 0;
-  readonly inputId = `input-${InputText.idCounter++}`;
+  private static idCounter = 1000;
+  readonly inputId = `input-${InputPasswordComponent.idCounter++}`;
   readonly errorId = `${this.inputId}-error`;
 
   value: string = '';
+  isPasswordVisible = false;
   isDisabled = signal(false);
 
   private onChange: (value: string) => void = () => {};
@@ -78,6 +74,10 @@ export class InputText implements ControlValueAccessor {
       return true;
     }
     return false;
+  }
+
+  togglePasswordVisibility() {
+    this.isPasswordVisible = !this.isPasswordVisible;
   }
 
   get borderClass() {

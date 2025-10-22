@@ -12,8 +12,11 @@ export class FormValidations {
   }
 
   static isInvalid(formControl: AbstractControl | null, nameValidator: string) {
-    if (formControl?.errors !== null) {
-      return formControl?.errors[nameValidator] && formControl?.touched;
-    }
+    if (formControl?.errors == null) return undefined;
+
+    const error = formControl.errors[nameValidator];
+    if (!error) return undefined;
+
+    return formControl.touched ? error : false;
   }
 }

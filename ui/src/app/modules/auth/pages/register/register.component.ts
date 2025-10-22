@@ -3,14 +3,13 @@ import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {AuthService} from '@modules/auth/services/auth.service';
 import {ModalAlertService} from '@shared/components/swall/modal-alert/service/modal-alert.service';
-import {ErrorMessageHelper} from '@shared/validators/error-message.helper';
-import {FormValidations} from '@shared/validators/form-validations';
+import {ErrorMessageHelper} from '@shared/validators/error-message-helper/error-message.helper';
+import {FormValidations} from '@shared/validators/form-validations/form-validations';
 import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'zen-register',
   templateUrl: './register.component.html',
-  standalone: false,
   styleUrl: './register.component.scss'
 })
 export class RegisterComponent {
@@ -25,7 +24,7 @@ export class RegisterComponent {
     private readonly modalAlertService: ModalAlertService,
     private readonly toastrService: ToastrService,
   ) {
-    this.signUpForm = this.fb!.group(
+    this.signUpForm = this.fb.group(
       {
         name: new FormControl('', [
           Validators.required,
@@ -42,7 +41,7 @@ export class RegisterComponent {
         ]),
         password: new FormControl('', [
           Validators.required,
-          Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).+$/),
+          Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).+$/),
           Validators.minLength(8),
           Validators.maxLength(30)
         ]),

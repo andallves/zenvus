@@ -1,46 +1,47 @@
 import {Component, forwardRef, input, signal} from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
 import {NgClass} from '@angular/common';
-
-export type InputType = 'text' | 'password';
+import {PhoneFormatDirective} from '@shared/directives/phone-format.directive';
 
 // @ts-ignore
 @Component({
-  selector: 'zen-input-password',
-  templateUrl: './input-password.html',
-  styleUrls: ['./input-password.scss'],
+  selector: 'zen-input-text',
+  templateUrl: './input-text.component.html',
+  styleUrls: ['./input-text.component.scss'],
   host: {
     class: 'fieldset-input',
     role: 'fieldset',
+    '[ngClass]': 'borderClass'
   },
   imports: [
-    NgClass
+    PhoneFormatDirective,
+    NgClass,
   ],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => InputPassword),
+      useExisting: forwardRef(() => InputTextComponent),
       multi: true,
     }
   ]
 })
-export class InputPassword implements ControlValueAccessor {
+export class InputTextComponent implements ControlValueAccessor {
   label = input.required<string>();
   placeholder = input('');
   ariaLabel = input('')
   readonly required = input(false);
   errorMessages = input<string[] | null>(null);
   role = input.required<string>();
+  isPhone = input(false);
   isValid = input<boolean | undefined>(undefined);
   isInvalid = input<boolean | undefined>(undefined);
   touched = false;
 
-  private static idCounter = 1000;
-  readonly inputId = `input-${InputPassword.idCounter++}`;
+  private static idCounter = 0;
+  readonly inputId = `input-${InputTextComponent.idCounter++}`;
   readonly errorId = `${this.inputId}-error`;
 
   value: string = '';
-  isPasswordVisible = false;
   isDisabled = signal(false);
 
   private onChange: (value: string) => void = () => {};
@@ -77,10 +78,6 @@ export class InputPassword implements ControlValueAccessor {
       return true;
     }
     return false;
-  }
-
-  togglePasswordVisibility() {
-    this.isPasswordVisible = !this.isPasswordVisible;
   }
 
   get borderClass() {

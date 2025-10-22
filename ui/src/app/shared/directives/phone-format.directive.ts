@@ -18,7 +18,7 @@ export class PhoneFormatDirective {
     if (!this.enabled) return; // só aplica se estiver habilitado
 
     const input = this.el.nativeElement as HTMLInputElement;
-    let value = input.value.replace(/\D/g, '');
+    let value = input.value.replaceAll(/\D/g, '');
 
     if (value.length > 0) {
       value = this.formatPhoneNumber(value);

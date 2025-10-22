@@ -3,17 +3,16 @@ import {Component, signal} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {AuthService} from '@modules/auth/services/auth.service';
-import {ErrorMessageHelper} from '@shared/validators/error-message.helper';
+import {ErrorMessageHelper} from '@shared/validators/error-message-helper/error-message.helper';
 import Swal from 'sweetalert2';
 
 @Component({
   selector: 'zen-login',
-  standalone: false,
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
 export class LoginComponent {
-  protected loginForm: FormGroup;
+  public loginForm: FormGroup;
   public isLoading = signal<boolean>(false);
 
   submitted = false;
@@ -23,7 +22,7 @@ export class LoginComponent {
     private readonly signUpService: AuthService,
     private readonly router: Router
   ) {
-    this.loginForm = this.fb!.group(
+    this.loginForm = this.fb.group(
       {
         Email: new FormControl('', [
           Validators.required,
@@ -31,7 +30,7 @@ export class LoginComponent {
         ]),
         Password: new FormControl('', [
           Validators.required,
-          Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).+$/),
+          Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).+$/),
           Validators.minLength(8),
           Validators.maxLength(30)
         ]),
@@ -94,11 +93,11 @@ export class LoginComponent {
     });
   }
 
-  protected isValid(nameField: string) {
+  isValid(nameField: string) {
     return this.loginForm.get(nameField)?.valid;
   }
 
-  protected isInvalid(nameField: string) {
+  isInvalid(nameField: string) {
     return this.loginForm.get(nameField)?.invalid;
   }
 }
