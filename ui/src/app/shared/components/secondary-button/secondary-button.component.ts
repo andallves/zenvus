@@ -13,15 +13,15 @@ import {Component, input, output} from '@angular/core';
       {{ btnText() }}
     </button>
   `,
-  styleUrl: './secondary-button.scss'
+  styleUrl: './secondary-button.component.scss'
 })
-export class SecondaryButton {
-  readonly btnText = input.required<string>({ alias: 'textButton' });
+export class SecondaryButtonComponent {
+  readonly btnText = input.required<string>();
   readonly type = input<'button' | 'submit' | 'reset'>('button');
   readonly disabled = input<boolean>(false);
-  readonly onButtonClicked = output<void>();
+  readonly buttonClicked = output<void>();
 
   onClick() {
-    this.onButtonClicked.emit();
+    this.buttonClicked.emit();
   }
 }

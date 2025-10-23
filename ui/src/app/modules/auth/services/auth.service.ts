@@ -1,6 +1,6 @@
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {inject, Injectable} from '@angular/core';
-import {SignUpUser} from '@core/interfaces/signup-user.interface';
+import {RegisterUser} from '@core/interfaces/signup-user.interface';
 import {environment} from '@env/environment.development';
 import Token from '@modules/auth/models/token.model';
 import {Observable, take} from 'rxjs';
@@ -12,9 +12,9 @@ export class AuthService {
   private readonly apiUrl = environment.apiUrl;
   private readonly httpClient = inject(HttpClient);
 
-  register(userData: FormData): Observable<SignUpUser> {
+  register(userData: FormData): Observable<RegisterUser> {
     console.log('Esta chegando no service de autenticação')
-    return this.httpClient.post<SignUpUser>(
+    return this.httpClient.post<RegisterUser>(
       `${this.apiUrl}/v1/user`,
       userData,
       {

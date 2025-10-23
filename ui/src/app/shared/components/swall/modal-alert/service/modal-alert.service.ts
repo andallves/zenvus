@@ -1,7 +1,14 @@
-import { Injectable, ComponentRef, ApplicationRef, ComponentFactoryResolver, Injector } from '@angular/core';
+import {
+  Injectable,
+  ComponentRef,
+  ApplicationRef,
+  Injector,
+  EnvironmentInjector,
+  createComponent, InjectionToken, Inject
+} from '@angular/core';
 import { ModalAlertComponent } from '../modal-alert.component';
 
-interface ModalConfig {
+export interface ModalConfig {
   title: string;
   message: string;
   confirmButtonText?: string;
@@ -10,6 +17,12 @@ interface ModalConfig {
   icon?: 'success' | 'error' | 'warning' | 'info';
 }
 
+export type CreateComponentFn = typeof createComponent;
+export const CREATE_COMPONENT = new InjectionToken<CreateComponentFn>(
+  'CREATE_COMPONENT',
+  { providedIn: 'root', factory: () => createComponent },
+);
+
 @Injectable({
   providedIn: 'root'
 })
@@ -17,29 +30,33 @@ export class ModalAlertService {
   private componentRef!: ComponentRef<ModalAlertComponent>;
 
   constructor(
-    private appRef: ApplicationRef,
-    private componentFactoryResolver: ComponentFactoryResolver,
-    private injector: Injector
+    private readonly appRef: ApplicationRef,
+    private readonly injector: Injector,
+    private readonly environmentInjector: EnvironmentInjector,
+    @Inject(CREATE_COMPONENT) private readonly _createComponent: CreateComponentFn,
   ) {}
 
   open(config: ModalConfig): Promise<void> {
     return new Promise((resolve, reject) => {
-      const componentFactory = this.componentFactoryResolver.resolveComponentFactory(ModalAlertComponent);
-      this.componentRef = componentFactory.create(this.injector);
+      this.componentRef = this._createComponent(ModalAlertComponent, {
+        environmentInjector: this.environmentInjector,
+        elementInjector: this.injector,
+      });
 
-      this.componentRef.instance.title = config.title;
-      this.componentRef.instance.message = config.message;
-      this.componentRef.instance.confirmButtonText = config.confirmButtonText || 'OK';
-      this.componentRef.instance.cancelButtonText = config.cancelButtonText || 'Cancel';
-      this.componentRef.instance.showCancelButton = config.showCancelButton || false;
-      this.componentRef.instance.icon = config.icon || 'info';
+      const instance = this.componentRef.instance;
+      instance.title = config.title;
+      instance.message = config.message;
+      instance.confirmButtonText = config.confirmButtonText || 'OK';
+      instance.cancelButtonText = config.cancelButtonText || 'Cancel';
+      instance.showCancelButton = config.showCancelButton || false;
+      instance.icon = config.icon || 'info';
 
-      this.componentRef.instance.confirm.subscribe(() => {
+      instance.confirm.subscribe(() => {
         this.close();
         resolve();
       });
 
-      this.componentRef.instance.cancel.subscribe(() => {
+      instance.cancel.subscribe(() => {
         this.close();
         reject();
       });

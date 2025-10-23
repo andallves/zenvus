@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import {InputPasswordComponent} from '@shared/components/form/input-password/input-password.component';
 import {InputTextComponent} from '@shared/components/form/input-text/input-text.component';
 import {PrimaryButtonComponent} from '@shared/components/primary-button/primary-button.component';
-import {SecondaryButton} from '@shared/components/secondary-button/secondary-button';
+import {SecondaryButtonComponent} from '@shared/components/secondary-button/secondary-button.component';
 import { of, throwError } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import Swal from 'sweetalert2';
@@ -30,7 +30,7 @@ describe(LoginComponent.name, () => {
 
     await TestBed.configureTestingModule({
       declarations: [LoginComponent],
-      imports: [ReactiveFormsModule, CommonModule, UnauthenticatedCommonLayoutComponent, InputTextComponent, InputPasswordComponent, PrimaryButtonComponent, SecondaryButton],
+      imports: [ReactiveFormsModule, CommonModule, UnauthenticatedCommonLayoutComponent, InputTextComponent, InputPasswordComponent, PrimaryButtonComponent, SecondaryButtonComponent],
       providers: [
         FormBuilder,
         { provide: Router, useValue: routerSpy },

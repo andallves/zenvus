@@ -11,7 +11,7 @@ export class TemplatePageTitleStrategy extends TitleStrategy {
 
   override updateTitle(snapshot: RouterStateSnapshot): void {
     const title = this.buildTitle(snapshot);
-    if (title !== undefined) {
+    if (title) {
       this.title.setTitle(`${title} - Zenvus`);
     } else {
       this.title.setTitle('Zenvus');

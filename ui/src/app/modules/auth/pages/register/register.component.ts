@@ -1,6 +1,7 @@
 import {Component, signal} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
+import {RegisterUserForm} from '@core/interfaces/signup-user.interface';
 import {AuthService} from '@modules/auth/services/auth.service';
 import {ModalAlertService} from '@shared/components/swall/modal-alert/service/modal-alert.service';
 import {ErrorMessageHelper} from '@shared/validators/error-message-helper/error-message.helper';
@@ -9,22 +10,23 @@ import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'zen-register',
+  standalone: false,
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss'
 })
 export class RegisterComponent {
-  protected signUpForm: FormGroup;
+  protected signUpForm: FormGroup<RegisterUserForm>;
   public isLoading = signal<boolean>(false);
   submitted = false;
 
   constructor(
     private readonly fb: FormBuilder,
-    private readonly signUpService: AuthService,
+    private readonly authService: AuthService,
     private readonly router: Router,
     private readonly modalAlertService: ModalAlertService,
     private readonly toastrService: ToastrService,
   ) {
-    this.signUpForm = this.fb.group(
+    this.signUpForm = this.fb.group<RegisterUserForm>(
       {
         name: new FormControl('', [
           Validators.required,
@@ -64,7 +66,7 @@ export class RegisterComponent {
     const isValidForm = this.signUpForm.valid;
     if (isValidForm) {
       const formData = new FormData();
-      const formValue= this.signUpForm.value;
+      const formValue = this.signUpForm.value;
 
       formData.append('Name', formValue.name || '');
       formData.append('Email', formValue.email || '');
@@ -81,11 +83,11 @@ export class RegisterComponent {
   }
 
   protected navigateToLogin(){
-    this.router.navigate(['auth/login']).then();
+    this.router.navigate(['auth/login']);
   }
 
   private register(userData: FormData) {
-    this.signUpService.register(userData).subscribe({
+    this.authService.register(userData).subscribe({
       next: registerResponse => {
         console.log(registerResponse);
         this.navigateToLogin();
