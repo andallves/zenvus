@@ -14,8 +14,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .IsRequired();
         
         builder
-            .Property(x => x.BirthDate)
-            .IsRequired();
+            .Property(x => x.BirthDate);
         
         builder
             .Property(x => x.Email)

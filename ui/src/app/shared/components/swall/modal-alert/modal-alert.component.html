@@ -1,0 +1,27 @@
+<div class="modal-overlay">
+  <div class="modal-container">
+    <div class="modal-header">
+      <div class="icon-container">
+        @if (icon === 'success') {
+          <i class="bi bi-check-circle-fill success-icon"></i>
+        } @else if (icon === 'error') {
+          <i class="bi bi-x-circle-fill error-icon"></i>
+        } @else if (icon === 'warning') {
+          <i class="bi bi-exclamation-triangle-fill warning-icon"></i>
+        } @else if (icon === 'info') {
+          <i class="bi bi-info-circle-fill info-icon"></i>
+      }
+      </div>
+      <h2>{{ title }}</h2>
+    </div>
+    <div class="modal-body">
+      <p [innerHTML]="message"></p>
+    </div>
+    <div class="modal-footer">
+      <button class="confirm-button" (click)="onConfirm()">{{ confirmButtonText }}</button>
+      @if (showCancelButton) {
+        <button class="cancel-button" (click)="onCancel()">{{ cancelButtonText }}</button>
+      }
+    </div>
+  </div>
+</div>

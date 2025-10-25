@@ -1,0 +1,43 @@
+@use "variables" as *;
+
+$spinner-size: 48px;
+$spinner-border: 5px;
+$spinner-color: $warningColor; // amarelo
+
+.spinner {
+  display: inline-block;
+  width: $spinner-size;
+  height: $spinner-size;
+  border-radius: 50%;
+  border: $spinner-border solid rgba(0, 0, 0, 0.1);
+  border-top-color: $spinner-color;
+  box-sizing: border-box;
+  animation: spinner-spin 0.9s linear infinite;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+.spinner--small {
+  width: calc($spinner-size * 0.4);
+  height: calc($spinner-size * 0.4);
+  border-width: calc($spinner-border * 0.5);
+}
+
+.spinner--large {
+  width: calc($spinner-size * 1.5);
+  height: calc($spinner-size * 1.5);
+  border-width: calc($spinner-border * 1.2);
+}
+
+@keyframes spinner-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Centro opcional para overlays */
+.spinner-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}

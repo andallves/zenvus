@@ -7,6 +7,7 @@ namespace Zenvus.Infra.Database;
 public class ZenvusDbContext : BaseDbContext
 {
     public DbSet<User> Users { get; set; }
+    public DbSet<LoginAttempts> LoginAttempts { get; set; }
 
     public ZenvusDbContext(DbContextOptions<ZenvusDbContext> options) : base(options)
     {

@@ -1,6 +1,6 @@
 using System.ComponentModel;
 using Microsoft.AspNetCore.Http;
-using Zenvus.Application.DTO.Users;
+using Zenvus.Application.DTO.User;
 
 namespace Zenvus.Application.Commands.User;
 

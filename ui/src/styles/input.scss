@@ -1,0 +1,83 @@
+@use 'variables' as *;
+
+.fieldset-input {
+  outline: none;
+  border: none;
+  width: 100%;
+  position: relative;
+  transition: all 0.500ms ease;
+
+  .input-label {
+    font-size: 14px;
+    color: $textGrayColor;
+    margin-bottom: 12px;
+    margin-left: 4px;
+    transition: all 0.500ms ease;
+
+    &.input-valid {
+      color: $successColor;
+    }
+
+    &.input-invalid {
+      color: $dangerColor;
+    }
+  }
+
+  input {
+    width: 100%;
+    border-radius: 8px;
+    padding: 10px;
+    display: flex;
+    align-items: center; /* centraliza na vertical */
+    justify-content: center; /* centraliza na horizontal */
+
+    font-size: 14px;
+    color: $textPrimaryColor;
+    border: 1px solid $textGrayColor;
+    transition: all 0.500ms ease;
+    font-family: Arial, Helvetica, sans-serif;
+
+    &::placeholder {
+      color: $textLightGrayColor;
+      font-size: 13px;
+    }
+
+    &:focus {
+      border-color: $positiveColor;
+      box-shadow: 0 0 4px 1px $positiveColor;
+      outline: none;
+    }
+
+    &.input-valid {
+      border-color: $successColor;
+    }
+
+    &.input-invalid {
+      border-color: $dangerColor;
+    }
+  }
+
+  .error-messages {
+    display: flex;
+    flex-direction: column;
+    margin-top: 4px;
+    list-style: none;
+    transition: all 0.500ms ease;
+
+    .error-message {
+      display: flex;
+      gap: 4px;
+      font-size: 10px;
+      font-weight: 600;
+      margin-left: 4px;
+
+      &.input-valid {
+        color: $successColor;
+      }
+
+      &.input-invalid {
+        color: $dangerColor;
+      }
+    }
+  }
+}

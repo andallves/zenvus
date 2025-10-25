@@ -1,0 +1,21 @@
+<div class="loading-container">
+  <img
+    src="images/money-bag.png"
+    alt="Zenvus logo"
+    class="money-bag"
+    [class.bump]="bagBump"
+  />
+
+  <div class="coins">
+    @for  (coin of coins; track $index) {
+      <div
+        class="coin"
+        [ngStyle]="{
+          left: coin.left + '%',
+          animationDelay: coin.delay + 'ms'
+        }"
+      ></div>
+    }
+  </div>
+  <span class="sr-only">Carregando…</span>
+</div>

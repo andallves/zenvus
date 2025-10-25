@@ -1,0 +1,34 @@
+<label
+  [attr.for]="inputId"
+  class="input-label"
+  [ngClass]="borderClass"
+>{{ label() }}</label>
+<input
+  type="text"
+  [id]="inputId"
+  [attr.aria-label]="ariaLabel() || label()"
+  [attr.aria-required]="required()"
+  [attr.aria-describedby]="errorMessages() ? errorId : null"
+  [attr.role]="role()"
+  [placeholder]="placeholder()"
+  [disabled]="isDisabled()"
+  [value]="value"
+  (input)="onInput($event)"
+  (blur)="markAsTouched()"
+  [pPhoneFormat]="isPhone()"
+  [ngClass]="borderClass"
+/>
+
+@if (errorMessages()?.length) {
+  <ul class="error-messages">
+    @for (msg of errorMessages(); track $index) {
+      <li
+        class="error-message"
+        [ngClass]="borderClass"
+      >
+        <i class="bi bi-x-circle-fill"></i>
+        <p [innerHTML]="msg"></p>
+      </li>
+    }
+  </ul>
+}
