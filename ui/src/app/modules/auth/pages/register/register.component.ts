@@ -3,6 +3,7 @@ import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {RegisterUserForm} from '@core/interfaces/signup-user.interface';
 import {AuthService} from '@modules/auth/services/auth.service';
+import {ModalConfig, ModalIconType} from '@shared/components/swall/modal-alert/domain-types/modal-types.interface';
 import {ModalAlertService} from '@shared/components/swall/modal-alert/service/modal-alert.service';
 import {ErrorMessageHelper} from '@shared/validators/error-message-helper/error-message.helper';
 import {FormValidations} from '@shared/validators/form-validations/form-validations';
@@ -96,15 +97,13 @@ export class RegisterComponent {
       },
       error: error => {
         this.isLoading.set(false);
-        console.log(error);
         const errorMessage = error.error?.errors?.join('<br>') || error.message;
-        console.log(errorMessage);
         this.modalAlertService.open({
-          icon: 'error',
+          icon: ModalIconType.Error,
           title: 'Ops!',
           message: `${errorMessage}`,
           confirmButtonText: 'Ok',
-        });
+        } as ModalConfig);
       },
     });
   }

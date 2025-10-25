@@ -28,7 +28,7 @@
     <div class="btn-actions">
       <zen-primary-button
         type="submit"
-        [textButton]="'Login'"
+        [btnText]="'Login'"
         [disabled]="isLoading()"
       ></zen-primary-button>
 
@@ -40,9 +40,9 @@
 
       <zen-secondary-button
         type="button"
-        [textButton]="'Cadastrar-se'"
+        [btnText]="'Cadastrar-se'"
         [disabled]="false"
-        (onButtonClicked)="navigateToHome()"
+        (buttonClicked)="navigateToHome()"
       ></zen-secondary-button>
     </div>
   </form>

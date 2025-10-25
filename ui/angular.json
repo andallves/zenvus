@@ -44,7 +44,7 @@
             ],
             "scripts": [
               "node_modules/bootstrap/dist/js/bootstrap.js"
-            ]
+            ],
             "stylePreprocessorOptions": {
               "includePaths": [
                 "src/styles"
@@ -122,6 +122,11 @@
               "src/styles.scss"
             ],
             "scripts": [],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "src/styles"
+              ]
+            },
             "karmaConfig": "karma.conf.js",
             "codeCoverageExclude": [
               "karma.conf.ts",

@@ -8,6 +8,7 @@ import Swal from 'sweetalert2';
 
 @Component({
   selector: 'zen-login',
+  standalone: false,
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })

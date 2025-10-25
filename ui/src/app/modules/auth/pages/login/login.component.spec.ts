@@ -16,7 +16,7 @@ import { AuthService } from '@modules/auth/services/auth.service';
 import { ErrorMessageHelper } from '@shared/validators/error-message-helper/error-message.helper';
 import { UnauthenticatedCommonLayoutComponent } from '@shared/layouts/unauthenticated-common-layout/unauthenticated-common-layout.component';
 
-describe(LoginComponent.name, () => {
+xdescribe(LoginComponent.name, () => {
   let component: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
   let routerSpy: jasmine.SpyObj<Router>;

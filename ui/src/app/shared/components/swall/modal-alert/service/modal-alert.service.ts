@@ -1,21 +1,15 @@
 import {
-  Injectable,
-  ComponentRef,
   ApplicationRef,
-  Injector,
+  ComponentRef,
+  createComponent,
   EnvironmentInjector,
-  createComponent, InjectionToken, Inject
+  Inject,
+  Injectable,
+  InjectionToken,
+  Injector, NgZone
 } from '@angular/core';
-import { ModalAlertComponent } from '../modal-alert.component';
-
-export interface ModalConfig {
-  title: string;
-  message: string;
-  confirmButtonText?: string;
-  cancelButtonText?: string;
-  showCancelButton?: boolean;
-  icon?: 'success' | 'error' | 'warning' | 'info';
-}
+import {ModalConfig, ModalIconType} from '@shared/components/swall/modal-alert/domain-types/modal-types.interface';
+import {ModalAlertComponent} from '../modal-alert.component';
 
 export type CreateComponentFn = typeof createComponent;
 export const CREATE_COMPONENT = new InjectionToken<CreateComponentFn>(
@@ -33,11 +27,12 @@ export class ModalAlertService {
     private readonly appRef: ApplicationRef,
     private readonly injector: Injector,
     private readonly environmentInjector: EnvironmentInjector,
+    private readonly ngZone: NgZone,
     @Inject(CREATE_COMPONENT) private readonly _createComponent: CreateComponentFn,
   ) {}
 
   open(config: ModalConfig): Promise<void> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       this.componentRef = this._createComponent(ModalAlertComponent, {
         environmentInjector: this.environmentInjector,
         elementInjector: this.injector,
@@ -49,26 +44,47 @@ export class ModalAlertService {
       instance.confirmButtonText = config.confirmButtonText || 'OK';
       instance.cancelButtonText = config.cancelButtonText || 'Cancel';
       instance.showCancelButton = config.showCancelButton || false;
-      instance.icon = config.icon || 'info';
+      instance.icon = config.icon || ModalIconType.Info;
 
-      instance.confirm.subscribe(() => {
-        this.close();
-        resolve();
+      this.ngZone.runOutsideAngular(() => {
+        if (instance.confirm) {
+          instance.confirm.subscribe(() => {
+            this.close();
+            resolve();
+          });
+        }
+        if (instance.cancelBtn) {
+          instance.cancelBtn.subscribe(() => {
+            this.close();
+            resolve();
+          });
+        }
       });
 
-      instance.cancel.subscribe(() => {
-        this.close();
-        reject();
-      });
-
-      this.appRef.attachView(this.componentRef.hostView);
-      const domElem = (this.componentRef.hostView as any).rootNodes[0] as HTMLElement;
-      document.body.appendChild(domElem);
+      if (typeof document !== 'undefined' && document?.body) {
+        this.appRef.attachView(this.componentRef.hostView);
+        const domElem = (this.componentRef.hostView as any).rootNodes[0] as HTMLElement;
+        document.body?.appendChild(domElem);
+      }
     });
   }
 
   close() {
-    this.appRef.detachView(this.componentRef.hostView);
+    if (!this.componentRef) return;
+
+    const view = this.componentRef.hostView;
+    const domElem = (view as any).rootNodes?.[0] as HTMLElement;
+
+    // ✅ Remove do DOM de forma segura
+    if (domElem?.parentNode) {
+      domElem.remove();
+    }
+
+    // ✅ Só tenta detach se o body ainda existe
+    if (typeof document !== 'undefined' && document?.body) {
+      this.appRef.detachView(view);
+    }
+
     this.componentRef.destroy();
   }
 }
