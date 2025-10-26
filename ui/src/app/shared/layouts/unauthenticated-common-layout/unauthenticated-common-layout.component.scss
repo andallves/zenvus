@@ -12,8 +12,8 @@
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 2rem;
     background-color: white;
     box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.2);
     z-index: 1;
@@ -55,39 +55,27 @@
       margin: 0 auto;
       width: 100%;
       max-width: 500px;
+      height: 100%;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
 
-      .btn-actions {
-        width: 90%;
+      form {
+        width: 80%;
+        height: 100%;
         display: flex;
         flex-direction: column;
-        gap: 1rem;
-        padding: 10px 30px;
-      }
-
-      .divider {
-        width: 100%;
-        display: flex;
         align-items: center;
-        text-align: center;
+        justify-content: space-around;
+        gap: 2rem;
 
-        &__divider-item {
-          &--first,
-          &--last {
-            flex: 1;
-            height: 1px;
-            background-color: $backgroundColor;
-          }
-
-          &--text {
-            color: $textLightGrayColor;
-            font-size: 12px;
-            margin: 0 12px;
-            white-space: nowrap;
-          }
+        .btn-actions {
+          width: 90%;
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+          padding: 10px 0;
         }
       }
     }

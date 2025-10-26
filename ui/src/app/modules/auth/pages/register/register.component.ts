@@ -1,4 +1,4 @@
-import {Component, signal} from '@angular/core';
+import {Component, computed, signal} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {RegisterUserForm} from '@modules/auth/interfaces/register-user.interface';
@@ -20,12 +20,13 @@ import {ToastrService} from 'ngx-toastr';
   styleUrl: './register.component.scss'
 })
 export class RegisterComponent {
-  protected signUpForm: FormGroup<RegisterUserForm>;
+  protected registerForm: FormGroup<RegisterUserForm>;
   public isLoading = signal<boolean>(false);
   submitted = false;
 
   readonly primaryBtn: PrimaryButton;
   readonly secondaryBtn: SecondaryButton;
+  protected isDisabledButton = computed(() => this.registerForm.invalid || this.isLoading() || !this.submitted)
 
   constructor(
     private readonly fb: FormBuilder,
@@ -34,7 +35,7 @@ export class RegisterComponent {
     private readonly modalAlertService: ModalAlertService,
     private readonly toastrService: ToastrService,
   ) {
-    this.signUpForm = this.fb.group<RegisterUserForm>(
+    this.registerForm = this.fb.group<RegisterUserForm>(
       {
         name: new FormControl('', [
           Validators.required,
@@ -64,7 +65,7 @@ export class RegisterComponent {
 
     this.primaryBtn = {
       btnText: 'Cadastrar',
-      disabled: this.signUpForm.invalid || this.isLoading()
+      disabled: this.isDisabledButton()
     }
 
     this.secondaryBtn = {
@@ -75,17 +76,17 @@ export class RegisterComponent {
   }
 
   getErrorMessages(controlName: string): string[] {
-    const control = this.signUpForm.get(controlName);
+    const control = this.registerForm.get(controlName);
     return ErrorMessageHelper.getErrorMessages(control, controlName);
   }
 
   registerUser(event: Event): void {
     event.preventDefault();
     this.isLoading.set(true);
-    const isValidForm = this.signUpForm.valid;
+    const isValidForm = this.registerForm.valid;
     if (isValidForm) {
       const formData = new FormData();
-      const formValue = this.signUpForm.value;
+      const formValue = this.registerForm.value;
 
       formData.append('Name', formValue.name || '');
       formData.append('Email', formValue.email || '');
@@ -96,7 +97,7 @@ export class RegisterComponent {
       this.submitted = true;
       this.register(formData);
     } else {
-      this.signUpForm.markAllAsTouched();
+      this.registerForm.markAllAsTouched();
       this.isLoading.set(false);
     }
   }
@@ -110,7 +111,7 @@ export class RegisterComponent {
       next: () => {
         this.navigateToLogin();
         this.toastrService.success('Usuário cadastrado com sucesso!', 'Sucesso');
-        this.signUpForm.reset();
+        this.registerForm.reset();
       },
       error: error => {
         this.isLoading.set(false);
@@ -126,10 +127,10 @@ export class RegisterComponent {
   }
 
   protected isValid(nameField: string) {
-    return this.signUpForm.get(nameField)?.valid;
+    return this.registerForm.get(nameField)?.valid;
   }
 
   protected isInvalid(nameField: string) {
-    return this.signUpForm.get(nameField)?.invalid;
+    return this.registerForm.get(nameField)?.invalid;
   }
 }

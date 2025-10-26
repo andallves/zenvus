@@ -1,9 +1,11 @@
 <zen-unauthenticated-common-layout
+  [formGroup]="loginForm"
   [isLoading]="isLoading()"
   [primaryBtn]="primaryBtn"
   [secondaryBtn]="secondaryBtn"
+  (submitBtn)="loginSubmit()"
 >
-  <form [formGroup]="loginForm" (ngSubmit)="loginSubmit()">
+  <div class="form-content" form-content>
     <zen-input-text
       [ariaLabel]="'Campo para inserir o email'"
       [label]="'Email'"
@@ -36,6 +38,6 @@
       </div>
       <a routerLink="/auth/recuperar-senha" class="esqueci-senha">Esqueceu sua senha?</a>
     </div>
-  </form>
+  </div>
 </zen-unauthenticated-common-layout>
 

@@ -1,9 +1,11 @@
 <zen-unauthenticated-common-layout
+  [formGroup]="registerForm"
   [isLoading]="isLoading()"
   [primaryBtn]="primaryBtn"
   [secondaryBtn]="secondaryBtn"
+  (submitBtn)="registerUser($event)"
 >
-  <form [formGroup]="signUpForm" (ngSubmit)="registerUser($event)">
+  <div class="form-content" form-content>
     <zen-input-text
       [ariaLabel]="'Campo para inserir o nome'"
       [label]="'Nome'"
@@ -67,6 +69,6 @@
       formControlName="confirmPassword"
       role="textbox"
     ></zen-input-password>
-  </form>
+  </div>
 </zen-unauthenticated-common-layout>
 
