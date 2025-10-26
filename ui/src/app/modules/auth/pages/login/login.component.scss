@@ -10,6 +10,21 @@ form {
   padding: 30px;
   margin-top: 3.5rem;
 
+  .extras {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+
+    .connected {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.3rem;
+
+    }
+  }
+
   .btn-actions {
     width: 100%;
     display: flex;

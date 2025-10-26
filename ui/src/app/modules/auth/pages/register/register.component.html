@@ -1,8 +1,8 @@
-@if (isLoading()) {
-  <zen-money-loading></zen-money-loading>
-}
-
-<zen-unauthenticated-common-layout>
+<zen-unauthenticated-common-layout
+  [isLoading]="isLoading()"
+  [primaryBtn]="primaryBtn"
+  [secondaryBtn]="secondaryBtn"
+>
   <form [formGroup]="signUpForm" (ngSubmit)="registerUser($event)">
     <zen-input-text
       [ariaLabel]="'Campo para inserir o nome'"
@@ -67,28 +67,6 @@
       formControlName="confirmPassword"
       role="textbox"
     ></zen-input-password>
-
-    <div class="btn-actions">
-      <zen-primary-button
-        type="submit"
-        [btnText]="'Cadastrar'"
-        [disabled]="signUpForm.invalid || isLoading()"
-        [isLoading]="isLoading()"
-      ></zen-primary-button>
-
-      <div class="divider">
-        <div class="divider__divider-item--first"></div>
-        <div class="divider__divider-item--text">OU</div>
-        <div class="divider__divider-item--last"></div>
-      </div>
-
-      <zen-secondary-button
-        type="button"
-        [btnText]="'Login'"
-        [disabled]="false"
-        (buttonClicked)="navigateToLogin()"
-      ></zen-secondary-button>
-    </div>
   </form>
 </zen-unauthenticated-common-layout>
 

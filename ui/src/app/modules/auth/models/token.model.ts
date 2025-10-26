@@ -1,6 +1,6 @@
 export default class Token {
   token: string | null = null;
-  expiracao: Date | null = null;
+  expiration: Date | null = null;
   refreshToken: string | null = null;
-  expiracaoRefreshToken: Date | null = null;
+  expirationRefreshToken: Date | null = null;
 }

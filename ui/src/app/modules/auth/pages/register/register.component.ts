@@ -1,10 +1,14 @@
 import {Component, signal} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
-import {RegisterUserForm} from '@core/interfaces/signup-user.interface';
+import {RegisterUserForm} from '@modules/auth/interfaces/register-user.interface';
 import {AuthService} from '@modules/auth/services/auth.service';
 import {ModalConfig, ModalIconType} from '@shared/components/swall/modal-alert/domain-types/modal-types.interface';
 import {ModalAlertService} from '@shared/components/swall/modal-alert/service/modal-alert.service';
+import {
+  PrimaryButton,
+  SecondaryButton
+} from '@shared/layouts/unauthenticated-common-layout/unauthenticated-common-layout.component';
 import {ErrorMessageHelper} from '@shared/validators/error-message-helper/error-message.helper';
 import {FormValidations} from '@shared/validators/form-validations/form-validations';
 import {ToastrService} from 'ngx-toastr';
@@ -19,6 +23,9 @@ export class RegisterComponent {
   protected signUpForm: FormGroup<RegisterUserForm>;
   public isLoading = signal<boolean>(false);
   submitted = false;
+
+  readonly primaryBtn: PrimaryButton;
+  readonly secondaryBtn: SecondaryButton;
 
   constructor(
     private readonly fb: FormBuilder,
@@ -54,6 +61,17 @@ export class RegisterComponent {
         ]),
       }
     );
+
+    this.primaryBtn = {
+      btnText: 'Cadastrar',
+      disabled: this.signUpForm.invalid || this.isLoading()
+    }
+
+    this.secondaryBtn = {
+      btnText: 'Login',
+      disabled: false,
+      buttonClickedFn: () => this.navigateToLogin()
+    }
   }
 
   getErrorMessages(controlName: string): string[] {
@@ -89,8 +107,7 @@ export class RegisterComponent {
 
   private register(userData: FormData) {
     this.authService.register(userData).subscribe({
-      next: registerResponse => {
-        console.log(registerResponse);
+      next: () => {
         this.navigateToLogin();
         this.toastrService.success('Usuário cadastrado com sucesso!', 'Sucesso');
         this.signUpForm.reset();

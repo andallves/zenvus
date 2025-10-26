@@ -1,6 +1,7 @@
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {inject, Injectable} from '@angular/core';
-import {RegisterUser} from '@core/interfaces/signup-user.interface';
+import {Authenticate} from '@modules/auth/interfaces/authenticate.interface';
+import {RegisterUser} from '@modules/auth/interfaces/register-user.interface';
 import {environment} from '@env/environment.development';
 import Token from '@modules/auth/models/token.model';
 import {Observable, take} from 'rxjs';
@@ -23,10 +24,10 @@ export class AuthService {
     ).pipe(take(1));
   }
 
-  login(credenciais: { identificacao: string, senha: string }): Observable<Token> {
+  login(credentials: Authenticate): Observable<Token> {
     return this.httpClient.post<Token>(
       `${environment.apiUrl}/v1/auth/login`,
-      credenciais,
+      credentials,
       { headers: { skip: 'true' }}
     );
   }
@@ -63,16 +64,16 @@ export class AuthService {
 
   setTokenInStorage(token: Token): void {
     sessionStorage.setItem('accessToken', token.token ?? '');
-    sessionStorage.setItem('expiracao', token.expiracao?.toString() ?? '');
+    sessionStorage.setItem('expiration', token.expiration?.toString() ?? '');
     localStorage.setItem('refreshToken', token.refreshToken ?? '');
-    localStorage.setItem('expiracaoRefreshToken', token.expiracaoRefreshToken?.toString() ?? '');
+    localStorage.setItem('expirationRefreshToken', token.expirationRefreshToken?.toString() ?? '');
   }
 
   clearTokenFromStorage(): void {
     sessionStorage.removeItem('accessToken');
-    sessionStorage.removeItem('expiracao');
+    sessionStorage.removeItem('expiration');
     localStorage.removeItem('refreshToken');
-    localStorage.removeItem('expiracaoRefreshToken');
+    localStorage.removeItem('expirationRefreshToken');
   }
 
 }

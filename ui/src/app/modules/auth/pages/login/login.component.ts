@@ -1,10 +1,12 @@
-import {HttpErrorResponse} from '@angular/common/http';
 import {Component, signal} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
+import {Authenticate, AuthenticateForm} from '@modules/auth/interfaces/authenticate.interface';
 import {AuthService} from '@modules/auth/services/auth.service';
+import {ModalConfig, ModalIconType} from '@shared/components/swall/modal-alert/domain-types/modal-types.interface';
+import {ModalAlertService} from '@shared/components/swall/modal-alert/service/modal-alert.service';
+import {PrimaryButton, SecondaryButton} from '@shared/layouts/unauthenticated-common-layout/unauthenticated-common-layout.component';
 import {ErrorMessageHelper} from '@shared/validators/error-message-helper/error-message.helper';
-import Swal from 'sweetalert2';
 
 @Component({
   selector: 'zen-login',
@@ -15,28 +17,40 @@ import Swal from 'sweetalert2';
 export class LoginComponent {
   public loginForm: FormGroup;
   public isLoading = signal<boolean>(false);
+  public connected = false;
+  public returnUrl = '/'
 
   submitted = false;
+
+  readonly primaryBtn: PrimaryButton;
+  readonly secondaryBtn: SecondaryButton;
 
   constructor(
     private readonly fb: FormBuilder,
     private readonly signUpService: AuthService,
+    private readonly modalAlertService: ModalAlertService,
     private readonly router: Router
   ) {
-    this.loginForm = this.fb.group(
+    this.loginForm = this.fb.group<AuthenticateForm>(
       {
-        Email: new FormControl('', [
-          Validators.required,
-          Validators.email
-        ]),
-        Password: new FormControl('', [
-          Validators.required,
-          Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).+$/),
-          Validators.minLength(8),
-          Validators.maxLength(30)
-        ]),
+        email: new FormControl('', Validators.required),
+        password: new FormControl('', Validators.required),
       }
     );
+
+    this.returnUrl =
+      this.router.parseUrl(this.router.url).queryParams['returnUrl'] || '/';
+
+    this.primaryBtn = {
+      btnText: 'Entrar',
+      disabled: this.loginForm.invalid || this.isLoading()
+    }
+
+    this.secondaryBtn = {
+      btnText: 'Cadastrar-se',
+      disabled: false,
+      buttonClickedFn: () => this.navigateToHome()
+    }
   }
 
   getErrorMessages(controlName: string): string[] {
@@ -44,53 +58,54 @@ export class LoginComponent {
     return ErrorMessageHelper.getErrorMessages(control, controlName);
   }
 
-  registerUser(): void {
+  loginSubmit(): void {
     this.isLoading.set(true);
     const isValidForm = this.loginForm.valid;
     if (isValidForm) {
-      const formData = new FormData();
-      const formValue= this.loginForm.value;
-
-      formData.append('Email', formValue.Email || '');
-      formData.append('Password', formValue.Password || '');
-
-      this.submitted = true;
-      this.login(formData);
-      console.log('Usuário cadastrado:', formData);
+      const credentials: Authenticate = this.loginForm.value;
+      this.authenticate(credentials);
     } else {
       this.loginForm.markAllAsTouched();
       this.isLoading.set(false);
     }
   }
 
+  keepConnected() {
+    this.connected = !this.connected;
+  }
+
   navigateToHome(): void {
     this.router.navigateByUrl('auth/cadastro').then();
   }
 
-  private login(userData: FormData) {
-    this.signUpService.register(userData).subscribe({
-      next: registerResponse => {
-        console.log(registerResponse);
-        this.router.navigateByUrl('/home').then();
-        this.loginForm.reset();
+  private authenticate(credentials: Authenticate) {
+    this.signUpService.login(credentials).subscribe({
+      next: response => {
+        sessionStorage.setItem('accessToken', response.token ?? '');
+        sessionStorage.setItem('expiration', response.expiration?.toString() ?? '');
+        if (this.connected) {
+          localStorage.setItem('refreshToken', response.refreshToken ?? '');
+          localStorage.setItem(
+            'expirationRefreshToken',
+            response.expirationRefreshToken?.toString() ?? ''
+          );
+        }
+        this.isLoading.set(false);
+        this.router.navigateByUrl(this.returnUrl).then();
+
       },
       error: error => {
         this.isLoading.set(false);
-        this.showErrorMessage(error);
+        const errorMessage = error.error?.errors?.join('<br>') || error.message;
+        this.modalAlertService.open({
+          icon: ModalIconType.Error,
+          title: 'Oops!',
+          message: errorMessage,
+          confirmButtonText: 'Ok',
+          showCancelButton: true,
+          cancelButtonText: 'Cancelar',
+        } as ModalConfig);
       },
-    });
-  }
-
-  private showErrorMessage(errorResponse: HttpErrorResponse) {
-    const message = errorResponse.error['erros'];
-    Swal.fire({
-      icon: 'error',
-      title: 'Oops!',
-      text: message,
-      confirmButtonText: 'Ok',
-      allowEnterKey: true,
-      closeButtonAriaLabel: 'Close button',
-      confirmButtonColor: '#27C498',
     });
   }
 

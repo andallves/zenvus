@@ -3,7 +3,7 @@ import { AuthService } from './auth.service';
 import {HttpClientTestingModule, HttpTestingController, provideHttpClientTesting} from '@angular/common/http/testing';
 import { environment } from '@env/environment.development';
 import Token from '@modules/auth/models/token.model';
-import { RegisterUser } from '@core/interfaces/signup-user.interface';
+import { RegisterUser } from '@modules/auth/interfaces/register-user.interface';
 
 describe(AuthService.name, () => {
   let service: AuthService;
