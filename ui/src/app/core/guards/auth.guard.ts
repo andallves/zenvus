@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, Router, UrlTree } from '@angular/router';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import {ACCESS_TOKEN, REFRESH_TOKEN} from '@core/services/auth-token/auth-token.service';
 
 @Injectable({
   providedIn: 'root',
@@ -12,7 +13,7 @@ export class AuthGuard implements CanActivate {
   ) { }
 
   canActivate(): boolean | UrlTree {
-    const refreshToken = localStorage.getItem('refreshToken');
+    const refreshToken = localStorage.getItem(REFRESH_TOKEN);
     if (!refreshToken || this.helper.isTokenExpired(refreshToken)) {
       return this.checkAccessToken();
     }
@@ -32,15 +33,18 @@ export class AuthGuard implements CanActivate {
   }
 
   private checkAccessToken(): boolean | UrlTree {
-    const token = sessionStorage.getItem('accessToken');
-    if (!token || this.helper.isTokenExpired(token)) {
-      return this.router.createUrlTree(['auth/login'], {
-        queryParams: { returnUrl: this.router.url },
-      });
-    }
+    const token = sessionStorage.getItem(ACCESS_TOKEN);
+    console.log('acessando o token', token)
+    // if (!token || this.helper.isTokenExpired(token)) {
+    //   return this.router.createUrlTree(['auth/login'], {
+    //     queryParams: { returnUrl: this.router.url },
+    //   });
+    // }
+    if (!token) return false
 
     try {
       const decodedToken = this.helper.decodeToken(token);
+      console.log('decoded Token: ', decodedToken)
       if (!decodedToken) {
         return this.router.createUrlTree(['auth/login'], {
           queryParams: { returnUrl: this.router.url },

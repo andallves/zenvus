@@ -11,7 +11,7 @@ import {SecondaryButtonComponent} from '@shared/components/secondary-button/seco
 
 export interface PrimaryButton {
   btnText: string;
-  disabled: boolean;
+  disabled?: boolean;
 }
 
 export interface SecondaryButton {

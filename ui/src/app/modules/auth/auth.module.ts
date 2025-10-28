@@ -12,7 +12,7 @@ import {SecondaryButtonComponent} from '@shared/components/secondary-button/seco
 import {UnauthenticatedCommonLayoutComponent} from '@shared/layouts/unauthenticated-common-layout/unauthenticated-common-layout.component';
 
 @NgModule({
-  declarations: [RegisterComponent, LoginComponent],
+  declarations: [],
   imports: [
       CommonModule,
       AuthRoutingModule,
@@ -25,10 +25,7 @@ import {UnauthenticatedCommonLayoutComponent} from '@shared/layouts/unauthentica
       UnauthenticatedCommonLayoutComponent,
       MoneyLoadingComponent
   ],
-  exports: [
-    RegisterComponent,
-    LoginComponent
-  ],
+  exports: [],
 })
 export class AuthModule { }
 

@@ -2,12 +2,14 @@ import {Component, computed, signal} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {RegisterUserForm} from '@modules/auth/interfaces/register-user.interface';
-import {AuthService} from '@modules/auth/services/auth.service';
+import {RegisterService} from '@modules/auth/services/register.service';
+import {InputPasswordComponent} from '@shared/components/form/input-password/input-password.component';
+import {InputTextComponent} from '@shared/components/form/input-text/input-text.component';
 import {ModalConfig, ModalIconType} from '@shared/components/swall/modal-alert/domain-types/modal-types.interface';
 import {ModalAlertService} from '@shared/components/swall/modal-alert/service/modal-alert.service';
 import {
   PrimaryButton,
-  SecondaryButton
+  SecondaryButton, UnauthenticatedCommonLayoutComponent
 } from '@shared/layouts/unauthenticated-common-layout/unauthenticated-common-layout.component';
 import {ErrorMessageHelper} from '@shared/validators/error-message-helper/error-message.helper';
 import {FormValidations} from '@shared/validators/form-validations/form-validations';
@@ -15,8 +17,12 @@ import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'zen-register',
-  standalone: false,
   templateUrl: './register.component.html',
+  imports: [
+    UnauthenticatedCommonLayoutComponent,
+    InputTextComponent,
+    InputPasswordComponent
+  ],
   styleUrl: './register.component.scss'
 })
 export class RegisterComponent {
@@ -30,7 +36,7 @@ export class RegisterComponent {
 
   constructor(
     private readonly fb: FormBuilder,
-    private readonly authService: AuthService,
+    private readonly registerService: RegisterService,
     private readonly router: Router,
     private readonly modalAlertService: ModalAlertService,
     private readonly toastrService: ToastrService,
@@ -107,7 +113,7 @@ export class RegisterComponent {
   }
 
   private register(userData: FormData) {
-    this.authService.register(userData).subscribe({
+    this.registerService.registerUser(userData).subscribe({
       next: () => {
         this.navigateToLogin();
         this.toastrService.success('Usuário cadastrado com sucesso!', 'Sucesso');

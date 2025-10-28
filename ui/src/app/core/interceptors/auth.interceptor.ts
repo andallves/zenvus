@@ -1,6 +1,8 @@
 import {HttpErrorResponse, HttpInterceptorFn} from '@angular/common/http';
 import {inject} from '@angular/core';
 import {Router} from '@angular/router';
+import {getSession} from '@core/adapters/cache.adapter';
+import {ACCESS_TOKEN, AuthTokenService} from '@core/services/auth-token/auth-token.service';
 import {EMPTY, tap} from 'rxjs';
 import {AuthService} from '@modules/auth/services/auth.service';
 
@@ -10,12 +12,12 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   }
 
   const router = inject(Router);
-  const authService = inject(AuthService);
-  const token = sessionStorage.getItem('accessToken');
+  const authTokenService = inject(AuthTokenService);
+  const token = getSession({ key: ACCESS_TOKEN })
 
   // se não houver token garante que não haverá mais nenhum dado de token e redireciona para login
   if (!token) {
-    authService.clearTokenFromStorage();
+    authTokenService.clearTokenFromStorage();
     router
       .navigate(['auth/login'], {
         queryParams: { returnUrl: router.url },
@@ -38,7 +40,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
             return;
           }
 
-          authService.clearTokenFromStorage();
+          authTokenService.clearTokenFromStorage();
 
           // Send notification or pop to user to inform about te redirect
           router

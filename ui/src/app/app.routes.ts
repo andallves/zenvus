@@ -4,6 +4,7 @@ import {JWT_OPTIONS, JwtHelperService} from '@auth0/angular-jwt';
 import {AuthGuard} from '@core/guards/auth.guard';
 import {TemplatePageTitleStrategy} from '@core/strategies/template-page-title.strategy ';
 import {AuthLayoutComponent} from '@shared/layouts/auth-layout/auth-layout.component';
+import {DefaultLayoutComponent} from '@shared/layouts/default-layout/default-layout.component';
 
 const publicRoutes: Routes = [
   {
@@ -15,7 +16,16 @@ const publicRoutes: Routes = [
 ];
 
 const protectedRoutes: Routes = [
-
+  {
+    path: '',
+    component: DefaultLayoutComponent,
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./modules/initial-page/pages/home-dashboard/home-dashboard.component').then(m => m.HomeDashboardComponent),
+      }
+    ]
+  }
 ];
 
 export const providers = [
