@@ -1,4 +1,4 @@
-import {GetStorage, RemoveStorage, SetStorage} from '@shared/domain-types/cache.type';
+import { GetStorage, RemoveStorage, SetStorage } from '@shared/domain-types/cache.type';
 
 export const get: GetStorage = ({ key }) => {
   const value = localStorage.getItem(key);
@@ -9,9 +9,8 @@ export const get: GetStorage = ({ key }) => {
   return null;
 };
 
-export const setLocalStorage: SetStorage = ({ key, value }) => {
-  const data = typeof value === 'string' ? value : JSON.stringify(value);
-  localStorage.setItem(key, JSON.stringify(data));
+export const setLocalStorage: SetStorage<string> = ({ key, value }) => {
+  localStorage.setItem(key, value);
 };
 
 export const removeLocalStorage: RemoveStorage = ({ key }) => {
@@ -36,9 +35,8 @@ export const getSession: GetStorage = ({ key }) => {
   return null;
 };
 
-export const setSession: SetStorage = ({ key, value }) => {
-  const data = typeof value === 'string' ? value : JSON.stringify(value);
-  sessionStorage.setItem(key, JSON.stringify(data));
+export const setSession: SetStorage<string> = ({ key, value }) => {
+  sessionStorage.setItem(key, value);
 };
 
 export const removeSession: RemoveStorage = ({ key }) => {

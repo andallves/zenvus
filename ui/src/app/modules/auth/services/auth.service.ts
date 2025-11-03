@@ -15,7 +15,7 @@ export class AuthService {
 
   constructor(private readonly authTokenService: AuthTokenService) {}
 
-  authenticate(credentials: Authenticate, keepConnected: boolean = false): Observable<Token> {
+  authenticate(credentials: Authenticate, keepConnected = false): Observable<Token> {
     return this.httpClient
       .post<Token>(
         `${this.apiUrl}/v1/auth/login`,

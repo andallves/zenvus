@@ -1,90 +1,108 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import {IUserToken} from '@shared/interfaces/auth.interface';
+import { inject, Injectable } from '@angular/core';
+import { AuthTokenService } from '@core/services/auth-token/auth-token.service';
+import Token from '@modules/auth/models/token.model';
+import { IUserToken } from '@shared/interfaces/auth.interface';
 import { BehaviorSubject } from 'rxjs';
-import { Router } from '@angular/router';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthorizationService {
-  private readonly usuarioTokenSubject = new BehaviorSubject<IUserToken | null>(null);
-  public readonly usuarioToken$ = this.usuarioTokenSubject.asObservable();
+  private readonly userTokenSubject = new BehaviorSubject<IUserToken | null>(null);
+  public readonly userToken$ = this.userTokenSubject.asObservable();
 
-  constructor(
-    private readonly http: HttpClient,
-    private readonly router: Router
-  ) {
-    this.carregarDadosDoToken();
+  private readonly authTokenService = inject(AuthTokenService);
+
+  constructor() {
+    this.loadTokenData();
   }
 
   /**
    * Carrega os dados do usuário do token JWT
    */
-  private carregarDadosDoToken(): void {
+  private loadTokenData(): void {
     try {
       // Verificar primeiro no sessionStorage (accessToken) e depois no localStorage (access_token)
-      let token = sessionStorage.getItem('accessToken') || localStorage.getItem('access_token');
+      const token = sessionStorage.getItem('accessToken') || localStorage.getItem('access_token');
 
       console.log('🔍 Procurando token...');
-      console.log('  sessionStorage.accessToken:', sessionStorage.getItem('accessToken') ? 'PRESENTE' : 'AUSENTE');
-      console.log('  localStorage.access_token:', localStorage.getItem('access_token') ? 'PRESENTE' : 'AUSENTE');
+      console.log(
+        '  sessionStorage.accessToken:',
+        sessionStorage.getItem('accessToken') ? 'PRESENTE' : 'AUSENTE'
+      );
+      console.log(
+        '  localStorage.access_token:',
+        localStorage.getItem('access_token') ? 'PRESENTE' : 'AUSENTE'
+      );
       console.log('  Token encontrado:', token ? 'SIM' : 'NÃO');
 
       if (token) {
         const decodedToken = this.decodeJWT(token);
         console.log('🎫 Token decodificado com sucesso:', decodedToken);
-        this.usuarioTokenSubject.next(decodedToken);
+        this.userTokenSubject.next(decodedToken);
       } else {
         console.log('❌ Nenhum token encontrado');
-        this.usuarioTokenSubject.next(null);
+        this.userTokenSubject.next(null);
       }
     } catch (error) {
       console.error('❌ Erro ao carregar dados do token:', error);
-      this.usuarioTokenSubject.next(null);
+      this.userTokenSubject.next(null);
     }
   }
 
   /**
    * Decodifica o token JWT
    */
-  private decodeJWT(token: string)  {
+  private decodeJWT(token: string): IUserToken {
     const payload = token.split('.')[1];
     const decodedPayload = atob(payload);
-    return JSON.parse(decodedPayload);
+    return JSON.parse(decodedPayload) as IUserToken;
   }
 
   /**
    * Atualiza os dados do usuário quando o token é renovado
    */
-  public atualizarToken(): void {
-    this.carregarDadosDoToken();
+  public updateToken(): void {
+    this.loadTokenData();
   }
 
   /**
    * Limpa os dados de autorização (logout)
    */
-  public limparAutorizacao(): void {
-    this.usuarioTokenSubject.next(null);
+  private cleanAuthorization(): void {
+    this.userTokenSubject.next(null);
   }
 
   /**
    * Obtém o usuário atual
    */
-  public obterUsuario()  {
-    return this.usuarioTokenSubject.value;
+  public getUser() {
+    return this.userTokenSubject.value;
   }
 
   /**
    * Verifica se o token está válido (não expirado)
    */
-  public tokenValido(): boolean {
-    const usuario = this.usuarioTokenSubject.value;
-    if (!usuario) {
+  public isValidToken(): boolean {
+    const user = this.userTokenSubject.value;
+    if (!user) {
       return false;
     }
 
-    const agora = Date.now() / 1000;
-    return usuario.exp > agora;
+    const now = Date.now() / 1000;
+    return user.exp > now;
+  }
+
+  public saveToken(token: Token, keepConnected: boolean): void {
+    this.authTokenService.setTokenInStorage(token, keepConnected);
+  }
+
+  public logout(): void {
+    this.authTokenService.clearTokenFromStorage();
+    this.cleanAuthorization();
+  }
+
+  public isLoggedIn(): boolean {
+    return this.authTokenService.hasAuthToken();
   }
 }

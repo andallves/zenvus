@@ -36,7 +36,7 @@ export class InputPasswordComponent implements ControlValueAccessor {
   readonly inputId = `input-${InputPasswordComponent.idCounter++}`;
   readonly errorId = `${this.inputId}-error`;
 
-  value: string = '';
+  value = '';
   isPasswordVisible = false;
   isDisabled = signal(false);
 

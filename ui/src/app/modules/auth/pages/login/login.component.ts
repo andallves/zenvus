@@ -1,22 +1,19 @@
-import {CommonModule} from '@angular/common';
-import {Component, signal} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, FormsModule, NgControl, ReactiveFormsModule, Validators} from '@angular/forms';
-import {Router} from '@angular/router';
-import {AuthRoutingModule} from '@modules/auth/auth-routing.module';
-import {Authenticate, AuthenticateForm} from '@modules/auth/interfaces/authenticate.interface';
-import {AuthService} from '@modules/auth/services/auth.service';
-import {InputPasswordComponent} from '@shared/components/form/input-password/input-password.component';
-import {InputTextComponent} from '@shared/components/form/input-text/input-text.component';
-import {PrimaryButtonComponent} from '@shared/components/primary-button/primary-button.component';
-import {SecondaryButtonComponent} from '@shared/components/secondary-button/secondary-button.component';
-import {ModalConfig, ModalIconType} from '@shared/components/swall/modal-alert/domain-types/modal-types.interface';
-import {ModalAlertService} from '@shared/components/swall/modal-alert/service/modal-alert.service';
+import { CommonModule } from '@angular/common';
+import { Component, inject, signal } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators, } from '@angular/forms';
+import { Router } from '@angular/router';
+import { Authenticate, AuthenticateForm } from '@modules/auth/interfaces/authenticate.interface';
+import { AuthService } from '@modules/auth/services/auth.service';
+import { InputPasswordComponent } from '@shared/components/form/input-password/input-password.component';
+import { InputTextComponent } from '@shared/components/form/input-text/input-text.component';
+import { ModalConfig, ModalIconType, } from '@shared/components/swall/modal-alert/domain-types/modal-types.interface';
+import { ModalAlertService } from '@shared/components/swall/modal-alert/service/modal-alert.service';
 import {
   PrimaryButton,
   SecondaryButton,
-  UnauthenticatedCommonLayoutComponent
+  UnauthenticatedCommonLayoutComponent,
 } from '@shared/layouts/unauthenticated-common-layout/unauthenticated-common-layout.component';
-import {ErrorMessageHelper} from '@shared/validators/error-message-helper/error-message.helper';
+import { ErrorMessageHelper } from '@shared/validators/error-message-helper/error-message.helper';
 
 @Component({
   selector: 'zen-login',
@@ -29,49 +26,47 @@ import {ErrorMessageHelper} from '@shared/validators/error-message-helper/error-
     ReactiveFormsModule,
     UnauthenticatedCommonLayoutComponent,
   ],
-  styleUrl: './login.component.scss'
+  styleUrl: './login.component.scss',
 })
 export class LoginComponent {
-  public loginForm: FormGroup;
+  public loginForm: FormGroup<AuthenticateForm>;
   public isLoading = signal<boolean>(false);
   public connected = false;
-  public returnUrl = '/'
+  public returnUrl = '/';
 
   submitted = false;
 
   readonly primaryBtn: PrimaryButton;
   readonly secondaryBtn: SecondaryButton;
 
-  constructor(
-    private readonly fb: FormBuilder,
-    private readonly authService: AuthService,
-    private readonly modalAlertService: ModalAlertService,
-    private readonly router: Router
-  ) {
-    this.loginForm = this.fb.group<AuthenticateForm>(
-      {
-        email: new FormControl('', Validators.required),
-        password: new FormControl('', Validators.required),
-      }
-    );
+  private readonly fb = inject(FormBuilder);
+  private readonly authService = inject(AuthService);
+  private readonly modalAlertService = inject(ModalAlertService);
+  private readonly router = inject(Router);
+
+  constructor() {
+    this.loginForm = this.fb.group<AuthenticateForm>({
+      email: new FormControl('', Validators.required),
+      password: new FormControl('', Validators.required),
+    });
 
     const queryParams = this.router.parseUrl(this.router.url).queryParams;
     this.returnUrl = queryParams?.['returnUrl'] ?? '/';
 
-// Evita loop: se o returnUrl for o próprio login, redireciona para a home
+    // Evita loop: se o returnUrl for o próprio login, redireciona para a home
     if (this.returnUrl.includes('/auth/login')) {
       this.returnUrl = '/';
     }
 
     this.primaryBtn = {
       btnText: 'Entrar',
-    }
+    };
 
     this.secondaryBtn = {
       btnText: 'Cadastrar-se',
       disabled: false,
-      buttonClickedFn: () => this.navigateToHome()
-    }
+      buttonClickedFn: () => this.navigateToHome(),
+    };
   }
 
   getErrorMessages(controlName: string): string[] {
@@ -83,12 +78,16 @@ export class LoginComponent {
     this.isLoading.set(true);
     const isValidForm = this.loginForm.valid;
     if (isValidForm) {
-      const credentials: Authenticate = this.loginForm.value;
-      this.authenticate(credentials);
-    } else {
-      this.loginForm.markAllAsTouched();
-      this.isLoading.set(false);
+      const { email, password } = this.loginForm.value;
+
+      if (email && password) {
+        this.authenticate({ email, password });
+        return;
+      }
     }
+
+    this.loginForm.markAllAsTouched();
+    this.isLoading.set(false);
   }
 
   keepConnected() {
@@ -100,23 +99,23 @@ export class LoginComponent {
   }
 
   private authenticate(credentials: Authenticate) {
-
     this.authService.authenticate(credentials).subscribe({
       next: () => {
-        this.router.navigateByUrl('/')
-          .then(() => this.isLoading.set(false));
+        this.router.navigateByUrl('/').then(() => this.isLoading.set(false));
       },
       error: error => {
         this.isLoading.set(false);
-        const errorMessage = error.error?.errors?.join('<br>') || error.message;
-        this.modalAlertService.open({
-          icon: ModalIconType.Error,
-          title: 'Oops!',
-          message: errorMessage ?? 'Tivemos um erro de conexão, tente novamente mais tarde!',
-          confirmButtonText: 'Ok',
-          showCancelButton: true,
-          cancelButtonText: 'Cancelar',
-        } as ModalConfig);
+        const errorMessage: string = error.error?.errors?.join('<br>') || error.error.message;
+        this.modalAlertService
+          .open({
+            icon: ModalIconType.Error,
+            title: 'Oops!',
+            message: errorMessage ?? 'Tivemos um erro de conexão, tente novamente mais tarde!',
+            confirmButtonText: 'Ok',
+            showCancelButton: true,
+            cancelButtonText: 'Cancelar',
+          } as ModalConfig)
+          .then();
       },
     });
   }

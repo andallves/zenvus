@@ -1,5 +1,5 @@
-import {Component, computed, signal} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {Component, computed, inject, signal} from '@angular/core';
+import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {RegisterUserForm} from '@modules/auth/interfaces/register-user.interface';
 import {RegisterService} from '@modules/auth/services/register.service';
@@ -21,9 +21,10 @@ import {ToastrService} from 'ngx-toastr';
   imports: [
     UnauthenticatedCommonLayoutComponent,
     InputTextComponent,
-    InputPasswordComponent
+    InputPasswordComponent,
+    ReactiveFormsModule,
   ],
-  styleUrl: './register.component.scss'
+  styleUrl: './register.component.scss',
 })
 export class RegisterComponent {
   protected registerForm: FormGroup<RegisterUserForm>;
@@ -32,53 +33,52 @@ export class RegisterComponent {
 
   readonly primaryBtn: PrimaryButton;
   readonly secondaryBtn: SecondaryButton;
-  protected isDisabledButton = computed(() => this.registerForm.invalid || this.isLoading() || !this.submitted)
+  protected isDisabledButton = computed(
+    () => this.registerForm.invalid || this.isLoading() || !this.submitted
+  );
 
-  constructor(
-    private readonly fb: FormBuilder,
-    private readonly registerService: RegisterService,
-    private readonly router: Router,
-    private readonly modalAlertService: ModalAlertService,
-    private readonly toastrService: ToastrService,
-  ) {
-    this.registerForm = this.fb.group<RegisterUserForm>(
-      {
-        name: new FormControl('', [
-          Validators.required,
-          Validators.minLength(3),
-          Validators.maxLength(60)
-        ]),
-        email: new FormControl('', [
-          Validators.required,
-          Validators.email
-        ]),
-        phone: new FormControl('', [
-          Validators.required,
-          Validators.pattern(/^\(\d{2}\) \d{5}-\d{4}$/)
-        ]),
-        password: new FormControl('', [
-          Validators.required,
-          Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).+$/),
-          Validators.minLength(8),
-          Validators.maxLength(30)
-        ]),
-        confirmPassword: new FormControl('', [
-          Validators.required,
-          FormValidations.equalTo('password')
-        ]),
-      }
-    );
+  private readonly fb = inject(FormBuilder);
+  private readonly registerService = inject(RegisterService);
+  private readonly router = inject(Router);
+  private readonly modalAlertService = inject(ModalAlertService);
+  private readonly toastrService = inject(ToastrService);
+
+  constructor() {
+    this.registerForm = this.fb.group<RegisterUserForm>({
+      name: new FormControl('', [
+        Validators.required,
+        Validators.minLength(3),
+        Validators.maxLength(60),
+      ]),
+      email: new FormControl('', [Validators.required, Validators.email]),
+      phone: new FormControl('', [
+        Validators.required,
+        Validators.pattern(/^\(\d{2}\) \d{5}-\d{4}$/),
+      ]),
+      password: new FormControl('', [
+        Validators.required,
+        Validators.pattern(
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).+$/
+        ),
+        Validators.minLength(8),
+        Validators.maxLength(30),
+      ]),
+      confirmPassword: new FormControl('', [
+        Validators.required,
+        FormValidations.equalTo('password'),
+      ]),
+    });
 
     this.primaryBtn = {
       btnText: 'Cadastrar',
-      disabled: this.isDisabledButton()
-    }
+      disabled: this.isDisabledButton(),
+    };
 
     this.secondaryBtn = {
       btnText: 'Login',
       disabled: false,
-      buttonClickedFn: () => this.navigateToLogin()
-    }
+      buttonClickedFn: () => this.navigateToLogin(),
+    };
   }
 
   getErrorMessages(controlName: string): string[] {
@@ -86,7 +86,7 @@ export class RegisterComponent {
     return ErrorMessageHelper.getErrorMessages(control, controlName);
   }
 
-  registerUser(event: Event): void {
+  registerSubmit(event: Event): void {
     event.preventDefault();
     this.isLoading.set(true);
     const isValidForm = this.registerForm.valid;
@@ -108,8 +108,8 @@ export class RegisterComponent {
     }
   }
 
-  protected navigateToLogin(){
-    this.router.navigate(['auth/login']);
+  protected navigateToLogin() {
+    this.router.navigate(['auth/login']).then();
   }
 
   private register(userData: FormData) {
@@ -122,12 +122,14 @@ export class RegisterComponent {
       error: error => {
         this.isLoading.set(false);
         const errorMessage = error.error?.errors?.join('<br>') || error.message;
-        this.modalAlertService.open({
-          icon: ModalIconType.Error,
-          title: 'Ops!',
-          message: `${errorMessage}`,
-          confirmButtonText: 'Ok',
-        } as ModalConfig);
+        this.modalAlertService
+          .open({
+            icon: ModalIconType.Error,
+            title: 'Ops!',
+            message: `${errorMessage}`,
+            confirmButtonText: 'Ok',
+          } as ModalConfig)
+          .then();
       },
     });
   }

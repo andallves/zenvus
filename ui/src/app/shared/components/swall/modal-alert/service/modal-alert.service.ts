@@ -6,19 +6,23 @@ import {
   Inject,
   Injectable,
   InjectionToken,
-  Injector, NgZone
+  Injector,
+  NgZone,
 } from '@angular/core';
-import {ModalConfig, ModalIconType} from '@shared/components/swall/modal-alert/domain-types/modal-types.interface';
-import {ModalAlertComponent} from '../modal-alert.component';
+import {
+  ModalConfig,
+  ModalIconType,
+} from '@shared/components/swall/modal-alert/domain-types/modal-types.interface';
+import { ModalAlertComponent } from '../modal-alert.component';
 
 export type CreateComponentFn = typeof createComponent;
-export const CREATE_COMPONENT = new InjectionToken<CreateComponentFn>(
-  'CREATE_COMPONENT',
-  { providedIn: 'root', factory: () => createComponent },
-);
+export const CREATE_COMPONENT = new InjectionToken<CreateComponentFn>('CREATE_COMPONENT', {
+  providedIn: 'root',
+  factory: () => createComponent,
+});
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ModalAlertService {
   private componentRef!: ComponentRef<ModalAlertComponent>;
@@ -28,11 +32,11 @@ export class ModalAlertService {
     private readonly injector: Injector,
     private readonly environmentInjector: EnvironmentInjector,
     private readonly ngZone: NgZone,
-    @Inject(CREATE_COMPONENT) private readonly _createComponent: CreateComponentFn,
+    @Inject(CREATE_COMPONENT) private readonly _createComponent: CreateComponentFn
   ) {}
 
   open(config: ModalConfig): Promise<void> {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       this.componentRef = this._createComponent(ModalAlertComponent, {
         environmentInjector: this.environmentInjector,
         elementInjector: this.injector,

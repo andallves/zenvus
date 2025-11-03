@@ -1,16 +1,16 @@
-type GetStorageInput = {
+interface GetStorageInput {
   key: string;
-};
-export type GetStorage = <T = any>(input: GetStorageInput) => T;
+}
+export type GetStorage = <T>(input: GetStorageInput) => T;
 
-type SetStorageInput = {
+interface SetStorageInput<T> {
   key: string;
-  value: any;
-};
-export type SetStorage = (input: SetStorageInput) => void;
+  value: T;
+}
+export type SetStorage<T> = (input: SetStorageInput<T>) => void;
 
-type RemoveStorageInput = {
+interface RemoveStorageInput {
   key: string;
-};
+}
 
 export type RemoveStorage = (input: RemoveStorageInput) => void;

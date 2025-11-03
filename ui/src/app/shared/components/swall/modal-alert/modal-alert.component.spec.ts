@@ -1,7 +1,7 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ModalAlertComponent } from './modal-alert.component';
 import { CommonModule } from '@angular/common';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { ModalAlertComponent } from './modal-alert.component';
 
 describe('ModalAlertComponent', () => {
   let component: ModalAlertComponent;
@@ -31,7 +31,9 @@ describe('ModalAlertComponent', () => {
   it('should display the correct confirm button text', () => {
     component.confirmButtonText = 'Confirm';
     fixture.detectChanges();
-    const confirmButtonElement = fixture.debugElement.query(By.css('.confirm-button')).nativeElement;
+    const confirmButtonElement = fixture.debugElement.query(
+      By.css('.confirm-button')
+    ).nativeElement;
     expect(confirmButtonElement.textContent).toContain('Confirm');
   });
 
@@ -45,7 +47,9 @@ describe('ModalAlertComponent', () => {
 
   it('should emit confirm event when confirm button is clicked', () => {
     spyOn(component.confirm, 'emit');
-    const confirmButtonElement = fixture.debugElement.query(By.css('.confirm-button')).nativeElement;
+    const confirmButtonElement = fixture.debugElement.query(
+      By.css('.confirm-button')
+    ).nativeElement;
     confirmButtonElement.click();
     expect(component.confirm.emit).toHaveBeenCalled();
   });
@@ -53,10 +57,10 @@ describe('ModalAlertComponent', () => {
   it('should emit cancel event when cancel button is clicked', () => {
     component.showCancelButton = true;
     fixture.detectChanges();
-    spyOn(component.cancel, 'emit');
+    spyOn(component.cancelBtn, 'emit');
     const cancelButtonElement = fixture.debugElement.query(By.css('.cancel-button')).nativeElement;
     cancelButtonElement.click();
-    expect(component.cancel.emit).toHaveBeenCalled();
+    expect(component.cancelBtn.emit).toHaveBeenCalled();
   });
 
   it('should not display cancel button if showCancelButton is false', () => {
