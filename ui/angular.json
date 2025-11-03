@@ -86,7 +86,6 @@
             }
           },
           "defaultConfiguration": "production"
-
         },
         "serve": {
           "builder": "@angular/build:dev-server",
@@ -136,11 +135,23 @@
               "src/environments/*.*"
             ]
           }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "src/**/*.ts",
+              "src/**/*.html"
+            ]
+          }
         }
       }
     }
   },
   "cli": {
-    "analytics": false
+    "analytics": false,
+    "schematicCollections": [
+      "angular-eslint"
+    ]
   }
 }
