@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators, } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { Authenticate, AuthenticateForm } from '@modules/auth/interfaces/authenticate.interface';
 import { AuthService } from '@modules/auth/services/auth.service';
 import { InputPasswordComponent } from '@shared/components/form/input-password/input-password.component';
@@ -25,6 +25,7 @@ import { ErrorMessageHelper } from '@shared/validators/error-message-helper/erro
     InputTextComponent,
     ReactiveFormsModule,
     UnauthenticatedCommonLayoutComponent,
+    RouterLink,
   ],
   styleUrl: './login.component.scss',
 })

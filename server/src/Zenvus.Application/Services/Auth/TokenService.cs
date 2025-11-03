@@ -24,12 +24,12 @@ public class TokenService(
         {
             Issuer = _authSettings.Issuer,
             Subject = ObterClaimsIdentity(userDto),
-            NotBefore = DateTime.Now,
-            Expires = DateTime.Now.AddMinutes(_authSettings.DurationTokenInMinutos),
+            NotBefore = DateTime.UtcNow,
+            Expires = DateTime.UtcNow.AddMinutes(_authSettings.DurationTokenInMinutes),
             SigningCredentials = await jwtService.GetCurrentSigningCredentials(),
             TokenType = "at+jwt"
         });
-        
+
         return (tokenHandler.WriteToken(securityToken), securityToken.ValidTo);
     }
 
@@ -51,8 +51,8 @@ public class TokenService(
             Issuer = _authSettings.Issuer,
             SigningCredentials = await jwtService.GetCurrentSigningCredentials(),
             Subject = new ClaimsIdentity(claims),
-            NotBefore = DateTime.Now,
-            Expires = DateTime.Now.AddMinutes(_authSettings.DurationRefreshTokenInMinutes),
+            NotBefore = DateTime.UtcNow,
+            Expires = DateTime.UtcNow.AddMinutes(_authSettings.DurationRefreshTokenInMinutes),
             TokenType = "rt+jwt"
         });
         
