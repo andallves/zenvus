@@ -15,6 +15,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const token = getSession({ key: ACCESS_TOKEN });
 
   // se não houver token garante que não haverá mais nenhum dado de token e redireciona para login
+  console.log(token);
   if (!token) {
     authTokenService.clearTokenFromStorage();
     router

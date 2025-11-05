@@ -10,10 +10,15 @@ import {Observable, tap} from 'rxjs';
   providedIn: 'root'
 })
 export class AuthService {
+  private readonly authTokenService = inject(AuthTokenService);
+
   private readonly apiUrl = environment.apiUrl;
   private readonly httpClient = inject(HttpClient);
 
-  constructor(private readonly authTokenService: AuthTokenService) {}
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {}
 
   authenticate(credentials: Authenticate, keepConnected = false): Observable<Token> {
     return this.httpClient

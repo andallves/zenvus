@@ -30,15 +30,18 @@ export class AuthGuard implements CanActivate {
 
   private checkAccessToken(): boolean | UrlTree {
     const token = sessionStorage.getItem(ACCESS_TOKEN);
+
     if (!token || this.helper.isTokenExpired(token)) {
       return this.router.createUrlTree(['auth/login'], {
         queryParams: { returnUrl: this.router.url },
       });
     }
+
     if (!token) return false;
 
     try {
       const decodedToken = this.helper.decodeToken(token);
+      console.log(decodedToken);
       if (!decodedToken) {
         return this.router.createUrlTree(['auth/login'], {
           queryParams: { returnUrl: this.router.url },

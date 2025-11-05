@@ -1,14 +1,4 @@
-import {
-  ApplicationRef,
-  ComponentRef,
-  createComponent,
-  EnvironmentInjector,
-  Inject,
-  Injectable,
-  InjectionToken,
-  Injector,
-  NgZone,
-} from '@angular/core';
+import { ApplicationRef, ComponentRef, createComponent, EnvironmentInjector, Injectable, InjectionToken, Injector, NgZone, inject } from '@angular/core';
 import {
   ModalConfig,
   ModalIconType,
@@ -25,15 +15,18 @@ export const CREATE_COMPONENT = new InjectionToken<CreateComponentFn>('CREATE_CO
   providedIn: 'root',
 })
 export class ModalAlertService {
+  private readonly appRef = inject(ApplicationRef);
+  private readonly injector = inject(Injector);
+  private readonly environmentInjector = inject(EnvironmentInjector);
+  private readonly ngZone = inject(NgZone);
+  private readonly _createComponent = inject<CreateComponentFn>(CREATE_COMPONENT);
+
   private componentRef!: ComponentRef<ModalAlertComponent>;
 
-  constructor(
-    private readonly appRef: ApplicationRef,
-    private readonly injector: Injector,
-    private readonly environmentInjector: EnvironmentInjector,
-    private readonly ngZone: NgZone,
-    @Inject(CREATE_COMPONENT) private readonly _createComponent: CreateComponentFn
-  ) {}
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {}
 
   open(config: ModalConfig): Promise<void> {
     return new Promise(resolve => {

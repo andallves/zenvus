@@ -1,9 +1,12 @@
 /* You can add global styles to this file, and also import other style files */
+@use "styles/default";
 @use "styles/variables" as *;
 @use "styles/toastr";
 @use "styles/input";
 @use "styles/spinner";
 @use "styles/divider";
+
+@import "../node_modules/quill/dist/quill.snow.css";
 
 * {
   margin: 0;

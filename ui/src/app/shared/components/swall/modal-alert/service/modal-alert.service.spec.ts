@@ -1,6 +1,16 @@
-import { ApplicationRef, ComponentRef, EnvironmentInjector, EventEmitter, Injector, NgZone, } from '@angular/core';
+import {
+  ApplicationRef,
+  ComponentRef,
+  EnvironmentInjector,
+  EventEmitter,
+  Injector,
+  NgZone,
+} from '@angular/core';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { ModalConfig, ModalIconType, } from '@shared/components/swall/modal-alert/domain-types/modal-types.interface';
+import {
+  ModalConfig,
+  ModalIconType,
+} from '@shared/components/swall/modal-alert/domain-types/modal-types.interface';
 import { ModalAlertComponent } from '../modal-alert.component';
 import { CREATE_COMPONENT, ModalAlertService } from './modal-alert.service';
 
