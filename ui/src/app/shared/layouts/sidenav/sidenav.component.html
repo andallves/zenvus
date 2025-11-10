@@ -20,7 +20,7 @@
     ></div>
 
     <ul class="list-unstyled ps-0">
-      @for (item of navData; track item.label) {
+      @for (item of navData; track $index) {
         <zen-sidenav-menu-item
           [label]="item.label"
           [path]="item.path"
@@ -74,23 +74,22 @@
           @if (isDropdownOpen) {
             <div class="menuNavbar" [ngClass]="animationClass">
               <div class="drop">
-                <!--                <div class="photo">-->
-                <!--                  <div class="photocircle">-->
-                <!--                    @if (imageUrl) {-->
-                <!--                      <img [src]="imageUrl" alt="Foto do Usuário"/>-->
-                <!--                    }-->
-                <!--                  </div>-->
-                <!--                  <input-->
-                <!--                    type="file"-->
-                <!--                    #fileInput-->
-                <!--                    (change)="onFileSelected($event)"-->
-                <!--                    style="display: none"-->
-                <!--                  />-->
-                <!--                  <div class="context">-->
-                <!--                    <span class="title">{{ this.name }}</span>-->
-                <!--                    <span class="description">{{ this.categoria }}</span>-->
-                <!--                  </div>-->
-                <!--                </div>-->
+                <div class="photo">
+                  <div class="photocircle">
+                    @if (imageUrl) {
+                      <img [src]="imageUrl" alt="Foto do Usuário"/>
+                    }
+                  </div>
+                  <input
+                    type="file"
+                    #fileInput
+                    style="display: none"
+                  />
+                  <div class="context">
+                    <span class="title">{{ this.name }}</span>
+                    <span class="description">{{ 'categoria' }}</span>
+                  </div>
+                </div>
                 <div class="itens">
                   <div class="confs">
                     <a href="conta/usuario"><i class="bi bi-person"></i>Conta</a>

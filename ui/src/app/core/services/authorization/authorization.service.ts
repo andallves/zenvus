@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { AuthTokenService } from '@core/services/auth-token/auth-token.service';
+import { ACCESS_TOKEN, AuthTokenService } from '@core/services/auth-token/auth-token.service';
 import Token from '@modules/auth/models/token.model';
 import { IUserToken } from '@shared/interfaces/auth.interface';
 import { BehaviorSubject } from 'rxjs';
@@ -103,6 +103,7 @@ export class AuthorizationService {
   }
 
   public isLoggedIn(): boolean {
-    return this.authTokenService.hasAuthToken();
+    const token = this.authTokenService.getAuthToken(ACCESS_TOKEN);
+    return !!token && this.authTokenService.hasAuthTokenValid(token);
   }
 }

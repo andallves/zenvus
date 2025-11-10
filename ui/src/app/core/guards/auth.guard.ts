@@ -1,58 +1,24 @@
-import { inject, Injectable } from '@angular/core';
-import { CanActivate, Router, UrlTree } from '@angular/router';
+import { inject } from '@angular/core';
+import { CanActivateFn, UrlTree } from '@angular/router';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { ACCESS_TOKEN, REFRESH_TOKEN } from '@core/services/auth-token/auth-token.service';
+import { AuthTokenService, REFRESH_TOKEN } from '@core/services/auth-token/auth-token.service';
 
-@Injectable({
-  providedIn: 'root',
-})
-export class AuthGuard implements CanActivate {
-  private readonly router = inject(Router);
-  private readonly helper = inject(JwtHelperService);
+export const authGuard: CanActivateFn = (): boolean | UrlTree | Promise<boolean | UrlTree> => {
+  const helper = inject(JwtHelperService);
+  const authTokenService = inject(AuthTokenService);
 
-  canActivate(): boolean | UrlTree {
-    const refreshToken = localStorage.getItem(REFRESH_TOKEN);
-    if (!refreshToken || this.helper.isTokenExpired(refreshToken)) {
-      return this.checkAccessToken();
-    }
+  const refreshToken = authTokenService.getAuthToken(REFRESH_TOKEN);
 
-    try {
-      const refreshDecoded = this.helper.decodeToken(refreshToken);
-      if (!refreshDecoded) {
-        return this.checkAccessToken();
-      }
-    } catch {
-      return this.checkAccessToken();
-    }
-
-    return true;
+  if (!refreshToken || authTokenService.hasAuthTokenValid(refreshToken)) {
+    return authTokenService.checkAccessToken();
   }
-
-  private checkAccessToken(): boolean | UrlTree {
-    const token = sessionStorage.getItem(ACCESS_TOKEN);
-
-    if (!token || this.helper.isTokenExpired(token)) {
-      return this.router.createUrlTree(['auth/login'], {
-        queryParams: { returnUrl: this.router.url },
-      });
+  try {
+    const refreshDecoded = helper.decodeToken(refreshToken);
+    if (!refreshDecoded) {
+      return authTokenService.checkAccessToken();
     }
-
-    if (!token) return false;
-
-    try {
-      const decodedToken = this.helper.decodeToken(token);
-      console.log(decodedToken);
-      if (!decodedToken) {
-        return this.router.createUrlTree(['auth/login'], {
-          queryParams: { returnUrl: this.router.url },
-        });
-      }
-    } catch {
-      return this.router.createUrlTree(['auth/login'], {
-        queryParams: { returnUrl: this.router.url },
-      });
-    }
-
-    return true;
+  } catch {
+    return authTokenService.checkAccessToken();
   }
-}
+  return true;
+};

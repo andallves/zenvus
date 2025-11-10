@@ -32,7 +32,7 @@
 .sidenav {
   position: fixed;
   height: 100vh;
-  background-color: $backgroundColor;
+  background-color: #fff;
   width: 300px;
   overflow-x: hidden;
   overflow-y: auto;
@@ -51,7 +51,7 @@
   }
 
   &::-webkit-scrollbar-thumb {
-    background-color: lighten(gray, 10%);
+    background-color: color.adjust(gray, $lightness: 10%);
     border-radius: 10px;
   }
 
@@ -60,14 +60,13 @@
   }
 
   &::-webkit-scrollbar-thumb:hover {
-    background-color: lighten(gray, 12%);
+    background-color: color.adjust(gray, $lightness: 12%);
   }
 
   .list-unstyled {
     display: flex;
     flex-direction: column;
-    padding-top: 5px;
-    gap: 15px;
+    gap: 10px;
   }
 
   .button-bar {

@@ -5,7 +5,6 @@ import { ActivatedRoute, NavigationEnd, Router, RouterModule, RouterOutlet } fro
 import { AuthorizationService } from '@core/services/authorization/authorization.service';
 import { SidebarService } from '@core/services/sidebar/sidebar.service';
 import { environment } from '@env/environment';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { filter } from 'rxjs/operators';
 import { MenuItemComponent } from './menu-item/menu-item.component';
 import { navbarData, SidenavMenu } from './nav-data';
@@ -41,13 +40,12 @@ interface SideNavToggle {
   ],
 })
 export class SidenavComponent implements OnInit {
-  private readonly themeService = inject(ThemeService);
-  private readonly sidebarService = inject(SidebarService);
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
 
+  private readonly themeService = inject(ThemeService);
+  private readonly sidebarService = inject(SidebarService);
   private readonly authorizationService = inject(AuthorizationService);
-  private readonly modalService = inject(BsModalService);
 
   @Output() toggleSideNav = new EventEmitter<SideNavToggle>();
   collapsed = true;
@@ -60,8 +58,6 @@ export class SidenavComponent implements OnInit {
   name? = '';
   headerTitle!: string;
   headerDescription!: string;
-  photoUrl = '';
-  bsModalRef?: BsModalRef;
 
   public get currentEnv() {
     return environment;
@@ -96,25 +92,19 @@ export class SidenavComponent implements OnInit {
 
   ngOnInit(): void {
     let itemInicioNavData = {} as SidenavMenu;
-    const sortingNavData = navbarData
-      .filter((item: SidenavMenu) => {
-        if (item.label != 'Início') {
-          return true;
-        }
-        itemInicioNavData = item;
-        return false;
-      })
-      .sort((a: SidenavMenu, b: SidenavMenu) => {
-        if (a.label > b.label) return 1;
-        if (a.label < b.label) return -1;
-        return 0;
-      });
+    const sortingNavData = navbarData.filter((item: SidenavMenu) => {
+      if (item.label != 'Início') {
+        return true;
+      }
+      itemInicioNavData = item;
+      return false;
+    });
     sortingNavData.unshift(itemInicioNavData);
     this.navData = sortingNavData;
 
     this.authorizationService.userToken$.subscribe({
       next: response => {
-        this.name = response?.nameid;
+        this.name = response?.unique_name;
         this.updateHeader();
       },
       error: error => {
@@ -129,16 +119,19 @@ export class SidenavComponent implements OnInit {
   }
 
   updateHeader() {
-    const child = this.activatedRoute.firstChild;
-    if (child?.snapshot.data['title'] && child?.snapshot.data['description']) {
-      this.headerTitle = child.snapshot.data['title'];
-      this.headerDescription = child.snapshot.data['description'];
+    const snapshot = this.activatedRoute.firstChild?.snapshot;
+    console.log(snapshot);
+    if (snapshot?.['title'] && snapshot.data?.['description']) {
+      this.headerTitle = snapshot?.['title'];
+      this.headerDescription = snapshot.data['description'];
+      console.log('tem title', this.headerTitle);
+      console.log(this.headerDescription);
     } else {
       this.headerTitle = this.saudacaoComBaseNaHora();
-      this.headerDescription = this.name ? '' : 'Bem-vindo ao Zenite!';
+      this.headerDescription = this.name ? '' : 'Bem-vindo ao Zenvus!';
     }
-
-    this.isInitialPage = this.router.url === '/';
+    console.log('é inicial page: ', this.router.url.split('?')[0] === '/');
+    this.isInitialPage = this.router.url.split('?')[0] === '/';
   }
 
   saudacaoComBaseNaHora(): string {

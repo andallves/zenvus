@@ -1,7 +1,6 @@
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { getSession } from '@core/adapters/cache.adapter';
 import { ACCESS_TOKEN, AuthTokenService } from '@core/services/auth-token/auth-token.service';
 import { EMPTY, tap } from 'rxjs';
 
@@ -12,10 +11,10 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   const router = inject(Router);
   const authTokenService = inject(AuthTokenService);
-  const token = getSession({ key: ACCESS_TOKEN });
+
+  const token = authTokenService.getAuthToken(ACCESS_TOKEN);
 
   // se não houver token garante que não haverá mais nenhum dado de token e redireciona para login
-  console.log(token);
   if (!token) {
     authTokenService.clearTokenFromStorage();
     router

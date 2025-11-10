@@ -1,50 +1,48 @@
-<li class="mt-3 menu-item">
-  @if (menuItems == null) {
-
-  <a
-    [routerLink]="path"
-    class="btn item d-inline-flex align-items-center rounded border-0 collapsed"
-    data-bs-toggle="collapse"
-    data-bs-target="#dashbo-collapse"
-    aria-expanded="false"
-    routerLinkActive="item--active"
-    [routerLinkActiveOptions]="{ exact: true }"
-  >
-    <i [className]="classIcon"></i>
-    {{ label }}
-  </a>
-
-  }@else {
-  <button
-    class="btn item d-inline-flex align-items-center rounded border-0 collapsed w-100"
-    data-bs-toggle="collapse"
-    [attr.data-bs-target]="'#' + path"
-    aria-expanded="false"
-  >
-    <div class="d-flex justify-content-between align-items-center w-100">
-      <div class="d-flex align-items-center gap-2">
-        <i [className]="classIcon"></i>
-        {{ label }}
+<li class="menu-item">
+  @if (menuItems === null) {
+    <a
+      [routerLink]="path"
+      class="btn item d-inline-flex align-items-center rounded border-0 collapsed"
+      data-bs-toggle="collapse"
+      data-bs-target="#dashbo-collapse"
+      aria-expanded="false"
+      routerLinkActive="item--active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      <i [className]="classIcon"></i>
+      {{ label }}
+    </a>
+  } @else {
+    <button
+      class="btn item d-inline-flex align-items-center rounded border-0 collapsed w-100"
+      data-bs-toggle="collapse"
+      [attr.data-bs-target]="'#' + path"
+      aria-expanded="false"
+    >
+      <div class="d-flex justify-content-between align-items-center w-100">
+        <div class="d-flex align-items-center gap-2">
+          <i [className]="classIcon"></i>
+          {{ label }}
+        </div>
+        <i class="bi bi-chevron-down icon-color"></i>
       </div>
-      <i class="bi bi-chevron-down icon-color"></i>
-    </div>
-  </button>
+    </button>
 
-  <div class="collapse" [id]="path">
-    <ul class="item--toggle-nav list-unstyled fw-normal pb-1 small">
-      @for(item of menuItems; track item.label){
-      <li>
-        <a
-          [routerLink]="item.exactPath"
-          routerLinkActive="link-item--active"
-          [routerLinkActiveOptions]="{ exact: true }"
-          class="link-item d-inline-flex text-decoration-none"
-        >
-          {{ item.label }}
-        </a>
-      </li>
-      }
-    </ul>
-  </div>
+    <div class="collapse" [id]="path">
+      <ul class="item--toggle-nav list-unstyled fw-normal pb-1 small">
+        @for (item of menuItems; track $index) {
+          <li>
+            <a
+              [routerLink]="item.exactPath"
+              routerLinkActive="link-item--active"
+              [routerLinkActiveOptions]="{ exact: true }"
+              class="link-item d-inline-flex text-decoration-none"
+            >
+              {{ item.label }}
+            </a>
+          </li>
+        }
+      </ul>
+    </div>
   }
 </li>

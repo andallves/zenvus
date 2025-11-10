@@ -1,17 +1,17 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 
 @Component({
   selector: 'zen-money-loading',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './money-loading.component.html',
-  styleUrls: ['./money-loading.component.scss']
+  styleUrls: ['./money-loading.component.scss'],
 })
 export class MoneyLoadingComponent implements OnInit, OnDestroy {
   coins: { id: number; left: number; delay: number; duration: number }[] = [];
   bagBump = false;
-  private coinLoopInterval!: number;
+  private coinLoopInterval!: NodeJS.Timeout;
 
   ngOnInit() {
     this.startCoinLoop();
@@ -39,9 +39,12 @@ export class MoneyLoadingComponent implements OnInit, OnDestroy {
         setTimeout(() => this.triggerBagBump(), delay + duration - 100);
 
         // remove a moeda após a animação
-        setTimeout(() => {
-          this.coins = this.coins.filter(c => c.id !== id);
-        }, delay + duration + 100);
+        setTimeout(
+          () => {
+            this.coins = this.coins.filter(c => c.id !== id);
+          },
+          delay + duration + 100
+        );
       }
     }, 1000);
   }
