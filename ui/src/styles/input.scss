@@ -8,43 +8,58 @@
   transition: all 0.500ms ease;
 
   .input-label {
-    font-size: 14px;
     color: $textGrayColor;
-    margin-bottom: 12px;
+    font: {
+      size: 14px;
+      style: normal;
+      weight: 400;
+    }
+    line-height: normal;
+
+    margin-bottom: 0.2rem;
     margin-left: 4px;
     transition: all 0.500ms ease;
-
-    &.input-valid {
-      color: $successColor;
-    }
-
-    &.input-invalid {
-      color: $dangerColor;
-    }
   }
 
   input {
-    width: 100%;
-    border-radius: 8px;
-    padding: 10px;
     display: flex;
-    align-items: center; /* centraliza na vertical */
-    justify-content: center; /* centraliza na horizontal */
+    width: 100%;
+    padding: 9px 16px;
+    align-items: center;
+    gap: 8px;
+    align-self: stretch;
 
-    font-size: 14px;
-    color: $textPrimaryColor;
-    border: 1px solid $textGrayColor;
+    border-radius: 6px;
+    border: 1px solid $borderColor;
+    background: #FFF;
+
+    font: {
+      size: 14px;
+      style: normal;
+      weight: 400;
+    }
+
     transition: all 0.500ms ease;
-    font-family: Arial, Helvetica, sans-serif;
 
     &::placeholder {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex: 1 0 0;
       color: $textLightGrayColor;
-      font-size: 13px;
+
+      font: {
+        size: 16px;
+        style: normal;
+        weight: 400;
+      }
+
+      line-height: 150%;
     }
 
     &:focus {
-      border-color: $positiveColor;
-      box-shadow: 0 0 4px 1px $positiveColor;
+      border: 1px solid $positiveColor;
+      box-shadow: 0 0 0 3px rgba(102, 16, 242, 0.15);
       outline: none;
     }
 
@@ -52,8 +67,9 @@
       border-color: $successColor;
     }
 
-    &.input-invalid {
-      border-color: $dangerColor;
+    &.input-invalid:not(:focus) {
+      border: 1px solid $dangerColor;
+      box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.20);
     }
   }
 
@@ -61,6 +77,7 @@
     display: flex;
     flex-direction: column;
     margin-top: 4px;
+    gap: 0.3rem;
     list-style: none;
     transition: all 0.500ms ease;
 

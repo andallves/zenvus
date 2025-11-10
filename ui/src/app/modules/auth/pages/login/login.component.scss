@@ -8,7 +8,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.6rem;
+  gap: 2rem;
 
 
   .extras {
@@ -18,11 +18,56 @@
     font-size: 12px;
 
     .connected {
-      display: flex;
-      align-items: center;
+      display: inline-flex;
       justify-content: center;
+      align-items: center;
       gap: 0.3rem;
 
+      input {
+        display: flex;
+        padding: 8px;
+        align-items: flex-start;
+        gap: 8px;
+        width: 16px;
+        height: 16px;
+        border: 1px solid $borderColor;
+
+        &:checked {
+          accent-color: $primaryColor;
+        }
+
+        &:disabled {
+          accent-color: $textGrayColor;
+        }
+      }
+
+      label {
+        color: #535353;
+        font: {
+          family: $primaryFont, sans-serif;
+          size: 16px;
+          style: normal;
+          weight: 400;
+        }
+        line-height: 24px;
+      }
+    }
+
+    .forget-password {
+      color: #535353;
+      font: {
+        family: $primaryFont, sans-serif;
+        size: 16px;
+        style: normal;
+        weight: 400;
+      }
+      line-height: 24px;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+        color: $primaryColor;
+      }
     }
   }
 }
