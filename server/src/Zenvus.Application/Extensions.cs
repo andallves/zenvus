@@ -3,20 +3,24 @@ using System.Reflection;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ScottBrady91.AspNetCore.Identity;
 using SixLabors.Fonts;
 using Zenvus.Application.Commands;
 using Zenvus.Application.Services.Auth;
+using Zenvus.Core.Settings;
 using Zenvus.Infra;
 using IdentityUser = Zenvus.Domain.Entities.IdentityUser;
 
 namespace Zenvus.Application;
 
 public static class Extensions
-{
- public static IServiceCollection AddApplicationLayer(this IServiceCollection services)
+{ 
+    public static IServiceCollection AddApplicationLayer(this IServiceCollection services, IConfiguration configuration)
     {
+        services.Configure<AuthSettings>(configuration.GetSection(AuthSettings.SectionName));
+        
         ValidatorOptions.Global.LanguageManager.Culture = new CultureInfo("pt-BR");
         
         services

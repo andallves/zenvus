@@ -1,3 +1,7 @@
+@if (isLoading()) {
+  <zen-money-loading></zen-money-loading>
+}
+
 <section class="page-section">
   <aside class="container-content">
     <header class="container-content__header">
@@ -5,7 +9,31 @@
       <p>Dê o primeiro passo rumo ao controle total da sua vida financeira. Simples, seguro e do seu jeito.</p>
     </header>
     <div class="container-content__form-wrapper">
-      <ng-content></ng-content>
+      <form [formGroup]="formGroup()" (ngSubmit)="onSubmit($event)">
+        <ng-content select="[form-content]"></ng-content>
+
+        <div class="btn-actions">
+          <zen-primary-button
+            type="submit"
+            [btnText]="primaryBtn().btnText"
+            [disabled]="formGroup().invalid || isLoading()"
+            [isLoading]="isLoading()"
+          ></zen-primary-button>
+
+          <div class="divider">
+            <div class="divider__divider-item--first"></div>
+            <div class="divider__divider-item--text">OU</div>
+            <div class="divider__divider-item--last"></div>
+          </div>
+
+          <zen-secondary-button
+            [type]="'button'"
+            [btnText]="secondaryBtn().btnText"
+            [disabled]="secondaryBtn().disabled"
+            (buttonClicked)="secondaryBtn().buttonClickedFn()"
+          ></zen-secondary-button>
+        </div>
+      </form>
     </div>
   </aside>
   <div class="container-image">

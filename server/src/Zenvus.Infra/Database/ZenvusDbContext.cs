@@ -8,6 +8,7 @@ public class ZenvusDbContext : BaseDbContext
 {
     public DbSet<User> Users { get; set; }
     public DbSet<LoginAttempts> LoginAttempts { get; set; }
+    public DbSet<Category> Categories { get; set; }
 
     public ZenvusDbContext(DbContextOptions<ZenvusDbContext> options) : base(options)
     {

@@ -1,0 +1,99 @@
+@use 'variables' as *;
+
+.dropdown-toggle {
+  outline: 0;
+}
+
+.item {
+  display: flex;
+  gap: 10px;
+  padding: 10px 15px;
+  font-weight: 500;
+  color: $textGrayColor;
+  background-color: transparent;
+  transition: all 0.2s ease-in-out;
+
+  &--active {
+    width: 100%;
+    color: $primaryColor !important;
+    font-weight: 600;
+    background-color: #FEF2F2;
+    border-right: 3px solid $primaryColor !important;
+  }
+
+  &:hover:not(.item--active) {
+    color: var(--primary-text);
+    font-weight: 600;
+    transition: color, font-weight 0.2s ease-in-out;
+  }
+
+}
+
+.item--toggle::before {
+  width: 1.25em;
+  line-height: 0;
+  content: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgba%280,0,0,.5%29' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 14l6-6-6-6'/%3e%3c/svg%3e");
+  position: absolute;
+  left: 14.5em;
+  transform: rotate(90deg);
+  transition: transform .35s ease;
+  transform-origin: .5em 50%;
+}
+
+[data-bs-theme="dark"] .item--toggle::before {
+  content: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgba%28255,255,255,.5%29' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 14l6-6-6-6'/%3e%3c/svg%3e");
+}
+
+.item--toggle[aria-expanded="true"] {
+  color: var(--primary-text);
+  font-weight: 600;
+
+  i {
+    color: rgba(var(--bs-emphasis-color-rgb), .85);
+  }
+
+}
+
+.item--toggle[aria-expanded="true"]::before {
+  transform: rotate(-90deg);
+}
+
+.item--toggle-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  &--active {
+    color: var(--primary) !important;
+    font-weight: 700;
+  }
+
+}
+
+.item--toggle-nav a.link-item {
+  color: var(--secundary-text) !important;
+  padding: .1875rem .5rem;
+  margin-top: .125rem;
+  margin-left: 1.25rem;
+  transition: color, font-weight 0.4s ease-in-out !important;
+
+  &--active {
+    color: var(--primary) !important;
+    font-weight: 700;
+  }
+
+}
+
+.item--toggle-nav a:hover:not(.link-item--active),
+.item--toggle-nav a:focus:not(.link-item--active) {
+  color: var(--primary) !important;
+  font-weight: 600 !important;
+}
+
+.scrollarea {
+  overflow-y: auto;
+}
+
+.icon-color {
+  color: var(--chevron-color);
+}

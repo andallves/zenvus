@@ -24,8 +24,9 @@ public static class Extension
 
     public static IServiceCollection AddApiLayer(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment)
     {
-        services.AddApplicationLayer();
         services.Configure<ApplicationSettings>(configuration.GetSection(ApplicationSettings.SectionName));
+        
+        services.AddApplicationLayer(configuration);
         
         services.AddMySql(configuration);
         

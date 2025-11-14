@@ -1,17 +1,15 @@
-import {Directive, ElementRef, HostListener, Input} from '@angular/core';
-import {NgControl} from '@angular/forms';
+import { Directive, ElementRef, HostListener, inject, Input } from '@angular/core';
+import { NgControl } from '@angular/forms';
 
 @Directive({
-  selector: '[pPhoneFormat]',
+  selector: '[zenPhoneFormat]',
   standalone: true,
 })
 export class PhoneFormatDirective {
-  @Input('pPhoneFormat') enabled: boolean = true;
+  @Input('zenPhoneFormat') enabled = true;
 
-  constructor(
-    private readonly control: NgControl,
-    private readonly el: ElementRef
-  ) {}
+  private readonly control = inject(NgControl);
+  private readonly el = inject(ElementRef);
 
   @HostListener('input', ['$event'])
   onInput() {

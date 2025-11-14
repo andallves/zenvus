@@ -15,9 +15,9 @@ public class UserController(IMediator mediator) : BaseController(mediator)
     [HttpPost]
     [MapToApiVersion("1.0")]
     [SwaggerOperation(Summary = "Cadastra um novo usuário", Tags = ["Usuário"])]
-    [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(UserDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async ValueTask<IActionResult> Create([FromForm] CreateUserCommand userCommand, CancellationToken cancellationToken)
     {
         return await SendCommandAsync(userCommand, cancellationToken);

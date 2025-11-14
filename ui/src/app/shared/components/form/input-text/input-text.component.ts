@@ -1,9 +1,8 @@
-import {Component, forwardRef, input, signal} from '@angular/core';
-import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
-import {NgClass} from '@angular/common';
-import {PhoneFormatDirective} from '@shared/directives/phone-format.directive';
+import { NgClass } from '@angular/common';
+import { Component, forwardRef, input, signal } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { PhoneFormatDirective } from '@shared/directives/phone-format.directive';
 
-// @ts-ignore
 @Component({
   selector: 'zen-input-text',
   templateUrl: './input-text.component.html',
@@ -11,24 +10,21 @@ import {PhoneFormatDirective} from '@shared/directives/phone-format.directive';
   host: {
     class: 'fieldset-input',
     role: 'fieldset',
-    '[ngClass]': 'borderClass'
+    '[ngClass]': 'borderClass',
   },
-  imports: [
-    PhoneFormatDirective,
-    NgClass,
-  ],
+  imports: [NgClass, PhoneFormatDirective],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => InputTextComponent),
       multi: true,
-    }
-  ]
+    },
+  ],
 })
 export class InputTextComponent implements ControlValueAccessor {
   label = input.required<string>();
   placeholder = input('');
-  ariaLabel = input('')
+  ariaLabel = input('');
   readonly required = input(false);
   errorMessages = input<string[] | null>(null);
   role = input.required<string>();
@@ -41,11 +37,15 @@ export class InputTextComponent implements ControlValueAccessor {
   readonly inputId = `input-${InputTextComponent.idCounter++}`;
   readonly errorId = `${this.inputId}-error`;
 
-  value: string = '';
+  value = '';
   isDisabled = signal(false);
 
-  private onChange: (value: string) => void = () => {};
-  private onTouched: () => void = () => {}
+  private onChange: (value: string) => void = () => {
+    /* empty */
+  };
+  private onTouched: () => void = () => {
+    /* empty */
+  };
 
   writeValue(value: string): void {
     this.value = value || '';

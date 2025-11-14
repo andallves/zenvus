@@ -1,42 +1,83 @@
-import {HttpErrorResponse} from '@angular/common/http';
-import {Component, signal} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {Router} from '@angular/router';
-import {AuthService} from '@modules/auth/services/auth.service';
-import {ErrorMessageHelper} from '@shared/validators/error-message-helper/error-message.helper';
-import Swal from 'sweetalert2';
+import { CommonModule } from '@angular/common';
+import { Component, inject, signal } from '@angular/core';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
+import { Authenticate, AuthenticateForm } from '@modules/auth/interfaces/authenticate.interface';
+import { AuthService } from '@modules/auth/services/auth.service';
+import { InputPasswordComponent } from '@shared/components/form/input-password/input-password.component';
+import { InputTextComponent } from '@shared/components/form/input-text/input-text.component';
+import {
+  ModalConfig,
+  ModalIconType,
+} from '@shared/components/swall/modal-alert/domain-types/modal-types.interface';
+import { ModalAlertService } from '@shared/components/swall/modal-alert/service/modal-alert.service';
+import {
+  PrimaryButton,
+  SecondaryButton,
+  UnauthenticatedCommonLayoutComponent,
+} from '@shared/layouts/unauthenticated-common-layout/unauthenticated-common-layout.component';
+import { ErrorMessageHelper } from '@shared/validators/error-message-helper/error-message.helper';
 
 @Component({
   selector: 'zen-login',
-  standalone: false,
   templateUrl: './login.component.html',
-  styleUrl: './login.component.scss'
+  imports: [
+    CommonModule,
+    FormsModule,
+    InputPasswordComponent,
+    InputTextComponent,
+    ReactiveFormsModule,
+    UnauthenticatedCommonLayoutComponent,
+    RouterLink,
+  ],
+  styleUrl: './login.component.scss',
 })
 export class LoginComponent {
-  public loginForm: FormGroup;
+  public loginForm: FormGroup<AuthenticateForm>;
   public isLoading = signal<boolean>(false);
+  public connected = false;
+  public returnUrl = '/';
 
   submitted = false;
 
-  constructor(
-    private readonly fb: FormBuilder,
-    private readonly signUpService: AuthService,
-    private readonly router: Router
-  ) {
-    this.loginForm = this.fb.group(
-      {
-        Email: new FormControl('', [
-          Validators.required,
-          Validators.email
-        ]),
-        Password: new FormControl('', [
-          Validators.required,
-          Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).+$/),
-          Validators.minLength(8),
-          Validators.maxLength(30)
-        ]),
-      }
-    );
+  readonly primaryBtn: PrimaryButton;
+  readonly secondaryBtn: SecondaryButton;
+
+  private readonly fb = inject(FormBuilder);
+  private readonly authService = inject(AuthService);
+  private readonly modalAlertService = inject(ModalAlertService);
+  private readonly router = inject(Router);
+
+  constructor() {
+    this.loginForm = this.fb.group<AuthenticateForm>({
+      email: new FormControl('', Validators.required),
+      password: new FormControl('', Validators.required),
+    });
+
+    const queryParams = this.router.parseUrl(this.router.url).queryParams;
+    this.returnUrl = queryParams?.['returnUrl'] ?? '/';
+
+    // Evita loop: se o returnUrl for o próprio login, redireciona para a home
+    if (this.returnUrl.includes('/auth/login')) {
+      this.returnUrl = '/';
+    }
+
+    this.primaryBtn = {
+      btnText: 'Entrar',
+    };
+
+    this.secondaryBtn = {
+      btnText: 'Cadastrar-se',
+      disabled: false,
+      buttonClickedFn: () => this.navigateToHome(),
+    };
   }
 
   getErrorMessages(controlName: string): string[] {
@@ -44,53 +85,49 @@ export class LoginComponent {
     return ErrorMessageHelper.getErrorMessages(control, controlName);
   }
 
-  registerUser(): void {
+  loginSubmit(): void {
     this.isLoading.set(true);
     const isValidForm = this.loginForm.valid;
     if (isValidForm) {
-      const formData = new FormData();
-      const formValue= this.loginForm.value;
+      const { email, password } = this.loginForm.value;
 
-      formData.append('Email', formValue.Email || '');
-      formData.append('Password', formValue.Password || '');
-
-      this.submitted = true;
-      this.login(formData);
-      console.log('Usuário cadastrado:', formData);
-    } else {
-      this.loginForm.markAllAsTouched();
-      this.isLoading.set(false);
+      if (email && password) {
+        this.authenticate({ email, password });
+        return;
+      }
     }
+
+    this.loginForm.markAllAsTouched();
+    this.isLoading.set(false);
+  }
+
+  keepConnected() {
+    this.connected = !this.connected;
   }
 
   navigateToHome(): void {
     this.router.navigateByUrl('auth/cadastro').then();
   }
 
-  private login(userData: FormData) {
-    this.signUpService.register(userData).subscribe({
-      next: registerResponse => {
-        console.log(registerResponse);
-        this.router.navigateByUrl('/home').then();
-        this.loginForm.reset();
+  private authenticate(credentials: Authenticate) {
+    this.authService.authenticate(credentials).subscribe({
+      next: () => {
+        this.router.navigateByUrl('/').then(() => this.isLoading.set(false));
       },
       error: error => {
         this.isLoading.set(false);
-        this.showErrorMessage(error);
+        const errorMessage: string = error.error?.errors?.join('<br>') || error.error.message;
+        this.modalAlertService
+          .open({
+            icon: ModalIconType.Error,
+            title: 'Oops!',
+            message: errorMessage ?? 'Tivemos um erro de conexão, tente novamente mais tarde!',
+            confirmButtonText: 'Ok',
+            showCancelButton: true,
+            cancelButtonText: 'Cancelar',
+          } as ModalConfig)
+          .then();
       },
-    });
-  }
-
-  private showErrorMessage(errorResponse: HttpErrorResponse) {
-    const message = errorResponse.error['erros'];
-    Swal.fire({
-      icon: 'error',
-      title: 'Oops!',
-      text: message,
-      confirmButtonText: 'Ok',
-      allowEnterKey: true,
-      closeButtonAriaLabel: 'Close button',
-      confirmButtonColor: '#27C498',
     });
   }
 

@@ -38,6 +38,7 @@
               }
             ],
             "styles": [
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "node_modules/bootstrap-icons/font/bootstrap-icons.css",
               "./node_modules/ngx-toastr/toastr.css",
               "src/styles.scss"
@@ -86,7 +87,6 @@
             }
           },
           "defaultConfiguration": "production"
-
         },
         "serve": {
           "builder": "@angular/build:dev-server",
@@ -136,11 +136,23 @@
               "src/environments/*.*"
             ]
           }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "src/**/*.ts",
+              "src/**/*.html"
+            ]
+          }
         }
       }
     }
   },
   "cli": {
-    "analytics": false
+    "analytics": false,
+    "schematicCollections": [
+      "angular-eslint"
+    ]
   }
 }

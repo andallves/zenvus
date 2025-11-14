@@ -1,15 +1,23 @@
-import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import {
   ApplicationRef,
   ComponentRef,
   EnvironmentInjector,
   EventEmitter,
   Injector,
-  NgZone
+  NgZone,
 } from '@angular/core';
-import { ModalAlertService, CREATE_COMPONENT } from './modal-alert.service';
+import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import {
+  ModalConfig,
+  ModalIconType,
+} from '@shared/components/swall/modal-alert/domain-types/modal-types.interface';
 import { ModalAlertComponent } from '../modal-alert.component';
-import { ModalConfig, ModalIconType } from '@shared/components/swall/modal-alert/domain-types/modal-types.interface';
+import { CREATE_COMPONENT, ModalAlertService } from './modal-alert.service';
+
+// Tipo helper para o método runOutsideAngular do NgZone (evita TS2304)
+interface RunOutside {
+  runOutsideAngular: <T>(fn: (...args: unknown[]) => T) => T;
+}
 
 // Mock mais compatível do ModalAlertComponent
 class MockModalAlertComponent implements Partial<ModalAlertComponent> {
@@ -23,6 +31,8 @@ class MockModalAlertComponent implements Partial<ModalAlertComponent> {
   // Usar Subjects para simular os Observables
   confirm = new EventEmitter<void>();
   cancel = new EventEmitter<void>();
+  // Serviço espera `cancelBtn` — criar alias
+  cancelBtn = this.cancel;
 
   // Spies para verificar chamadas
   confirmSubscribeSpy = jasmine.createSpy('confirm.subscribe');
@@ -30,12 +40,14 @@ class MockModalAlertComponent implements Partial<ModalAlertComponent> {
 
   constructor() {
     // Configurar os spies nos subjects
-    this.confirm.subscribe = this.confirmSubscribeSpy;
-    this.cancel.subscribe = this.cancelSubscribeSpy;
+    // Substituímos o método subscribe por um spy para que os testes possam interceptar
+    (this.confirm as unknown as { subscribe: unknown }).subscribe = this.confirmSubscribeSpy;
+    // ensure cancelBtn.subscribe is also the spy
+    (this.cancelBtn as unknown as { subscribe: unknown }).subscribe = this.cancelSubscribeSpy;
   }
 }
 
-xdescribe('ModalAlertService', () => {
+describe('ModalAlertService', () => {
   let service: ModalAlertService;
   let mockAppRef: jasmine.SpyObj<ApplicationRef>;
   let mockInjector: jasmine.SpyObj<Injector>;
@@ -54,8 +66,8 @@ xdescribe('ModalAlertService', () => {
     mockComponentRef = jasmine.createSpyObj('ComponentRef', ['destroy'], {
       instance: new MockModalAlertComponent(),
       hostView: {
-        rootNodes: [document.createElement('div')]
-      }
+        rootNodes: [document.createElement('div')],
+      },
     });
 
     // Mock da função createComponent
@@ -69,21 +81,22 @@ xdescribe('ModalAlertService', () => {
         { provide: Injector, useValue: mockInjector },
         { provide: EnvironmentInjector, useValue: mockEnvironmentInjector },
 
-        { provide: CREATE_COMPONENT, useValue: mockCreateComponent }
-      ]
+        { provide: CREATE_COMPONENT, useValue: mockCreateComponent },
+      ],
     });
 
     service = TestBed.inject(ModalAlertService);
-    mockNgZone  = TestBed.inject(NgZone);
+    mockNgZone = TestBed.inject(NgZone);
 
-    // Mock do document.body para testes
-    document.body = document.createElement('body');
+    // Mock do document.body para testes (atribuição direta para evitar variável redundante)
+    (document as unknown as { body: HTMLElement }).body = document.createElement('body');
   });
 
   afterEach(() => {
     // Limpar após cada teste
-    if (document.body) {
-      document.body.innerHTML = '';
+    const doc = document as unknown as { body: HTMLElement | null };
+    if (doc.body) {
+      doc.body.innerHTML = '';
     }
   });
 
@@ -108,12 +121,15 @@ xdescribe('ModalAlertService', () => {
       confirmButtonText: 'Confirm',
       cancelButtonText: 'Cancel',
       showCancelButton: true,
-      icon: ModalIconType.Warning
+      icon: ModalIconType.Warning,
     };
 
     beforeEach(() => {
       // Configurar o mock do runOutsideAngular para executar a função passada
-      spyOn(mockNgZone, 'runOutsideAngular').and.callFake((fn: Function) => fn());
+      // usar uma interface tipada para evitar `any` e compatibilizar a assinatura
+      spyOn(mockNgZone as unknown as RunOutside, 'runOutsideAngular').and.callFake(
+        <T>(fn: (...args: unknown[]) => T) => fn()
+      );
     });
 
     it('deve criar o componente modal com configurações corretas', fakeAsync(() => {
@@ -124,7 +140,7 @@ xdescribe('ModalAlertService', () => {
       // Assert
       expect(mockCreateComponent).toHaveBeenCalledWith(ModalAlertComponent, {
         environmentInjector: mockEnvironmentInjector,
-        elementInjector: mockInjector
+        elementInjector: mockInjector,
       });
 
       const instance = mockComponentRef.instance as unknown as MockModalAlertComponent;
@@ -162,8 +178,9 @@ xdescribe('ModalAlertService', () => {
 
       // Assert
       const instance = mockComponentRef.instance as unknown as MockModalAlertComponent;
-      expect(instance.confirm.subscribe).toHaveBeenCalled();
-      expect(instance.cancel.subscribe).toHaveBeenCalled();
+      // verificamos se o spy de subscribe foi chamado
+      expect(instance.confirmSubscribeSpy).toHaveBeenCalled();
+      expect(instance.cancelSubscribeSpy).toHaveBeenCalled();
     }));
 
     it('deve anexar o componente ao DOM', fakeAsync(() => {
@@ -173,13 +190,16 @@ xdescribe('ModalAlertService', () => {
 
       // Assert
       expect(mockAppRef.attachView).toHaveBeenCalledWith(mockComponentRef.hostView);
-      expect(document.body.contains((mockComponentRef.hostView as any).rootNodes[0])).toBeTrue();
+
+      const rootNodesHolder = mockComponentRef.hostView as unknown as { rootNodes: Node[] };
+      expect(document.body.contains(rootNodesHolder.rootNodes[0])).toBeTrue();
     }));
 
     it('deve lidar com ambiente sem document.body', fakeAsync(() => {
       // Arrange
-      const originalBody = document.body;
-      document.body = null as any;
+      const originalBody = (document as unknown as { body: HTMLElement }).body;
+      const doc = document as unknown as { body: HTMLElement | null };
+      doc.body = null;
 
       // Act
       service.open(mockConfig);
@@ -189,13 +209,16 @@ xdescribe('ModalAlertService', () => {
       expect(mockAppRef.attachView).not.toHaveBeenCalled();
 
       // Restaurar
-      document.body = originalBody;
+      (document as unknown as { body: HTMLElement }).body = originalBody!;
     }));
 
     it('deve resolver a promise quando confirm é acionado', fakeAsync(async () => {
       // Arrange
-      let confirmCallback: Function;
-      ((mockComponentRef.instance as any).confirm.subscribe as jasmine.Spy).and.callFake((cb: Function) => {
+      let confirmCallback: (() => void) | undefined;
+      const instance = mockComponentRef.instance as unknown as MockModalAlertComponent;
+
+      // Interceptar o subscribe (spy) e capturar o callback
+      (instance.confirmSubscribeSpy as jasmine.Spy).and.callFake((cb: () => void) => {
         confirmCallback = cb;
       });
 
@@ -213,8 +236,11 @@ xdescribe('ModalAlertService', () => {
 
     it('deve resolver a promise quando cancel é acionado', fakeAsync(async () => {
       // Arrange
-      let cancelCallback: Function;
-      ((mockComponentRef.instance as any).cancel.subscribe as jasmine.Spy).and.callFake((cb: Function) => {
+      let cancelCallback: (() => void) | undefined;
+      const instance = mockComponentRef.instance as unknown as MockModalAlertComponent;
+
+      // Interceptar o subscribe (spy) e capturar o callback
+      (instance.cancelSubscribeSpy as jasmine.Spy).and.callFake((cb: () => void) => {
         cancelCallback = cb;
       });
 
@@ -246,9 +272,14 @@ xdescribe('ModalAlertService', () => {
       const div = document.createElement('div');
       document.body.appendChild(div);
 
-      (mockComponentRef.hostView as any).rootNodes[0] = div;
+      // atribuir o root node para o hostView do mock
+      const hostViewHolder = mockComponentRef.hostView as unknown as { rootNodes: Node[] };
+      hostViewHolder.rootNodes[0] = div;
 
-      (service as any).componentRef = mockComponentRef;
+      // atribuir componentRef interno do serviço de forma tipada
+      (
+        service as unknown as { componentRef?: jasmine.SpyObj<ComponentRef<ModalAlertComponent>> }
+      ).componentRef = mockComponentRef;
     });
 
     it('deve fechar o modal corretamente quando componentRef existe', () => {
@@ -262,7 +293,8 @@ xdescribe('ModalAlertService', () => {
 
     it('deve remover o elemento do DOM quando existe', () => {
       // Arrange
-      const domElem = (mockComponentRef.hostView as any).rootNodes[0] as HTMLElement;
+      const domElem = (mockComponentRef.hostView as unknown as { rootNodes: Node[] })
+        .rootNodes[0] as HTMLElement;
       document.body.appendChild(domElem);
 
       // Act
@@ -274,7 +306,7 @@ xdescribe('ModalAlertService', () => {
 
     it('não deve fazer nada quando componentRef não existe', () => {
       // Arrange
-      (service as any).componentRef = undefined;
+      (service as unknown as { componentRef?: undefined }).componentRef = undefined;
 
       // Act
       service.close();
@@ -286,8 +318,9 @@ xdescribe('ModalAlertService', () => {
 
     it('deve lidar com ambiente sem document.body no close', () => {
       // Arrange
-      const originalBody = document.body;
-      document.body = null as any;
+      const originalBody = (document as unknown as { body: HTMLElement }).body;
+      const doc = document as unknown as { body: HTMLElement | null };
+      doc.body = null;
 
       // Act
       service.close();
@@ -297,13 +330,14 @@ xdescribe('ModalAlertService', () => {
       expect(mockAppRef.detachView).not.toHaveBeenCalled();
 
       // Restaurar
-      document.body = originalBody;
+      (document as unknown as { body: HTMLElement }).body = originalBody!;
     });
 
     it('deve lidar com elemento DOM sem parentNode', () => {
       // Arrange
       const domElem = document.createElement('div');
-      (mockComponentRef.hostView as any).rootNodes = [domElem];
+      const hostViewHolder = mockComponentRef.hostView as unknown as { rootNodes: Node[] };
+      hostViewHolder.rootNodes = [domElem];
 
       // Act
       service.close();
@@ -318,12 +352,12 @@ xdescribe('ModalAlertService', () => {
       // Arrange
       const firstConfig: Partial<ModalConfig> = {
         title: 'First Modal',
-        message: 'First Message'
+        message: 'First Message',
       };
 
       const secondConfig: Partial<ModalConfig> = {
         title: 'Second Modal',
-        message: 'Second Message'
+        message: 'Second Message',
       };
 
       spyOn(service, 'close').and.callThrough();

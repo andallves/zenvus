@@ -1,0 +1,24 @@
+@use "variables" as *;
+
+.divider {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  text-align: center;
+
+  &__divider-item {
+    &--first,
+    &--last {
+      flex: 1;
+      height: 1px;
+      background-color: $backgroundColor;
+    }
+
+    &--text {
+      color: $textLightGrayColor;
+      font-size: 12px;
+      margin: 0 12px;
+      white-space: nowrap;
+    }
+  }
+}

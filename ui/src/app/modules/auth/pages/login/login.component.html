@@ -1,14 +1,20 @@
-<zen-unauthenticated-common-layout>
-  <form [formGroup]="loginForm" (ngSubmit)="registerUser()">
+<zen-unauthenticated-common-layout
+  [formGroup]="loginForm"
+  [isLoading]="isLoading()"
+  [primaryBtn]="primaryBtn"
+  [secondaryBtn]="secondaryBtn"
+  (submitBtn)="loginSubmit()"
+>
+  <div class="form-content" form-content>
     <zen-input-text
       [ariaLabel]="'Campo para inserir o email'"
       [label]="'Email'"
       [placeholder]="'Insira seu email'"
       [required]="true"
-      [errorMessages]="getErrorMessages('Email')"
-      [isValid]="isValid('Email')"
-      [isInvalid]="isInvalid('Email')"
-      formControlName="Email"
+      [errorMessages]="getErrorMessages('email')"
+      [isValid]="isValid('email')"
+      [isInvalid]="isInvalid('email')"
+      formControlName="email"
       role="textbox"
       type="email"
     ></zen-input-text>
@@ -18,33 +24,20 @@
       [label]="'Senha'"
       [placeholder]="'********'"
       [required]="true"
-      [errorMessages]="getErrorMessages('Password')"
-      [isValid]="isValid('Password')"
-      [isInvalid]="isInvalid('Password')"
-      formControlName="Password"
+      [errorMessages]="getErrorMessages('password')"
+      [isValid]="isValid('password')"
+      [isInvalid]="isInvalid('password')"
+      formControlName="password"
       role="textbox"
     ></zen-input-password>
 
-    <div class="btn-actions">
-      <zen-primary-button
-        type="submit"
-        [btnText]="'Login'"
-        [disabled]="isLoading()"
-      ></zen-primary-button>
-
-      <div class="divider">
-        <div class="divider__divider-item--first"></div>
-        <div class="divider__divider-item--text">OU</div>
-        <div class="divider__divider-item--last"></div>
+    <div class="extras">
+      <div class="connected">
+        <input type="checkbox" id="connected" (click)="keepConnected()" (keydown)="keepConnected()"/>
+        <label for="connected">Manter Conectado</label>
       </div>
-
-      <zen-secondary-button
-        type="button"
-        [btnText]="'Cadastrar-se'"
-        [disabled]="false"
-        (buttonClicked)="navigateToHome()"
-      ></zen-secondary-button>
+      <a routerLink="/auth/recuperar-senha" class="forget-password">Esqueceu sua senha?</a>
     </div>
-  </form>
+  </div>
 </zen-unauthenticated-common-layout>
 

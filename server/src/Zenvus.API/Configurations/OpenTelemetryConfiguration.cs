@@ -37,7 +37,7 @@ public static class OpenTelemetryConfiguration
                     .AddEnvironmentVariableDetector()
                     .AddAttributes(new List<KeyValuePair<string, object>>
                     {
-                        new("org", "NDS"),
+                        new("org", "ZENVUS"),
                         new("deployment.environment", environment.EnvironmentName)
                     });
             })

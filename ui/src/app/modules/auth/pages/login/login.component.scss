@@ -1,44 +1,73 @@
 @use 'variables' as *;
 
-form {
+.form-content {
+  position: relative;
   width: 90%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 30px;
-  margin-top: 3.5rem;
+  justify-content: center;
+  gap: 2rem;
 
-  .btn-actions {
+
+  .extras {
     width: 100%;
     display: flex;
-    flex-direction: column;
-    gap: 0.8rem;
-    margin-top: 2rem;
-  }
+    justify-content: space-between;
+    font-size: 12px;
 
-  .divider {
-    width: 100%;
-    display: flex;
-    align-items: center; // centraliza verticalmente
-    text-align: center;
+    .connected {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.3rem;
 
-    &__divider-item {
-      &--first,
-      &--last {
-        flex: 1;
-        height: 1px;
-        background-color: $textGrayColor;
+      input {
+        display: flex;
+        padding: 8px;
+        align-items: flex-start;
+        gap: 8px;
+        width: 16px;
+        height: 16px;
+        border: 1px solid $borderColor;
+
+        &:checked {
+          accent-color: $primaryColor;
+        }
+
+        &:disabled {
+          accent-color: $textGrayColor;
+        }
       }
 
-      &--text {
-        color: $textGrayColor;
-        font-size: 14px;
-        margin: 0 12px;
-        white-space: nowrap;
+      label {
+        color: #535353;
+        font: {
+          family: $primaryFont, sans-serif;
+          size: 16px;
+          style: normal;
+          weight: 400;
+        }
+        line-height: 24px;
+      }
+    }
+
+    .forget-password {
+      color: #535353;
+      font: {
+        family: $primaryFont, sans-serif;
+        size: 16px;
+        style: normal;
+        weight: 400;
+      }
+      line-height: 24px;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+        color: $primaryColor;
       }
     }
   }
-
 }

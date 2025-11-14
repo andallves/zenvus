@@ -1,5 +1,7 @@
 import {Component, input, output} from '@angular/core';
 
+export type ButtonType = 'button' | 'submit' | 'reset';
+
 @Component({
   selector: 'zen-primary-button',
   imports: [],
@@ -8,7 +10,7 @@ import {Component, input, output} from '@angular/core';
 })
 export class PrimaryButtonComponent {
   readonly btnText = input.required<string>();
-  readonly type = input<'button' | 'submit' | 'reset'>('button');
+  readonly type = input<ButtonType>('button');
   readonly disabled = input<boolean>(false);
   readonly buttonClicked = output<void>();
   readonly isLoading = input<boolean>(false);
