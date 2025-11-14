@@ -1,6 +1,6 @@
 namespace Zenvus.Domain.Entities;
 
-public class Entity: ITracking
+public class Entity : ITracking
 {
     public int Id { get; set; }
     public DateTime CreatedAt { get; set; }
