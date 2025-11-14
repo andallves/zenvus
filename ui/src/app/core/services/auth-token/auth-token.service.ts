@@ -20,6 +20,14 @@ export class AuthTokenService {
   private readonly helper = inject(JwtHelperService);
   private readonly router = inject(Router);
 
+  getAccessToken(): string | null {
+    return sessionStorage.getItem(ACCESS_TOKEN);
+  }
+
+  getRefreshToken(): string | null {
+    return localStorage.getItem(REFRESH_TOKEN);
+  }
+
   refreshToken(refreshToken: string): Observable<Token> {
     return this.httpClient.post<Token>(
       `${this.apiUrl}/v1/auth/refresh-token`,
@@ -51,35 +59,28 @@ export class AuthTokenService {
     return !this.helper.isTokenExpired(token);
   }
 
-  getAuthToken(key: string): string | null {
-    return sessionStorage.getItem(key);
+  isAccessTokenValid(): boolean | UrlTree {
+    const token = this.getAccessToken();
+    return !!token && !this.helper.isTokenExpired(token);
   }
 
-  checkAccessToken(): boolean | UrlTree {
-    const token = this.getAuthToken(ACCESS_TOKEN);
+  isRefreshTokenValid(): boolean {
+    const token = this.getRefreshToken();
+    return !!token && !this.helper.isTokenExpired(token);
+  }
 
-    if (!token || this.helper.isTokenExpired(token)) {
-      return this.router.createUrlTree(['auth/login'], {
+  redirectToLogin(): UrlTree {
+    return this.router.createUrlTree(['auth/login'], {
+      queryParams: { returnUrl: this.router.url },
+    });
+  }
+
+  handleUnauthorized(): void {
+    this.clearTokenFromStorage();
+    this.router
+      .navigate(['auth/login'], {
         queryParams: { returnUrl: this.router.url },
-      });
-    }
-
-    if (!token) return false;
-
-    try {
-      const decodedToken = this.helper.decodeToken(token);
-      console.log(decodedToken);
-      if (!decodedToken) {
-        return this.router.createUrlTree(['auth/login'], {
-          queryParams: { returnUrl: this.router.url },
-        });
-      }
-    } catch {
-      return this.router.createUrlTree(['auth/login'], {
-        queryParams: { returnUrl: this.router.url },
-      });
-    }
-
-    return true;
+      })
+      .then();
   }
 }

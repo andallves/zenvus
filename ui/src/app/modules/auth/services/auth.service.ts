@@ -1,5 +1,6 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpContext } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
+import { SKIP_AUTH } from '@core/guards/http-context-tokens';
 import { AuthTokenService } from '@core/services/auth-token/auth-token.service';
 import { environment } from '@env/environment.development';
 import { Authenticate } from '@modules/auth/interfaces/authenticate.interface';
@@ -17,7 +18,9 @@ export class AuthService {
 
   authenticate(credentials: Authenticate, keepConnected = false): Observable<Token> {
     return this.httpClient
-      .post<Token>(`${this.apiUrl}/v1/auth/login`, credentials, { headers: { skip: 'true' } })
+      .post<Token>(`${this.apiUrl}/v1/auth/login`, credentials, {
+        context: new HttpContext().set(SKIP_AUTH, true),
+      })
       .pipe(
         tap(response => {
           this.authTokenService.setTokenInStorage(response, keepConnected);

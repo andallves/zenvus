@@ -2,7 +2,7 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection } from '@angular/core';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
-import { authInterceptor } from '@core/interceptors/auth.interceptor';
+import { authInterceptor } from '@core/interceptors/auth-token/auth.interceptor';
 import { refreshTokenInterceptor } from '@core/interceptors/refresh-token/refresh-token.interceptor';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';

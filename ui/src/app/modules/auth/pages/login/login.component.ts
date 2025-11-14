@@ -1,12 +1,22 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators, } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { Authenticate, AuthenticateForm } from '@modules/auth/interfaces/authenticate.interface';
 import { AuthService } from '@modules/auth/services/auth.service';
 import { InputPasswordComponent } from '@shared/components/form/input-password/input-password.component';
 import { InputTextComponent } from '@shared/components/form/input-text/input-text.component';
-import { ModalConfig, ModalIconType, } from '@shared/components/swall/modal-alert/domain-types/modal-types.interface';
+import {
+  ModalConfig,
+  ModalIconType,
+} from '@shared/components/swall/modal-alert/domain-types/modal-types.interface';
 import { ModalAlertService } from '@shared/components/swall/modal-alert/service/modal-alert.service';
 import {
   PrimaryButton,

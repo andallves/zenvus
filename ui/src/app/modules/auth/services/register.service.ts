@@ -1,5 +1,6 @@
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import { HttpClient, HttpContext, HttpHeaders } from '@angular/common/http';
 import {inject, Injectable} from '@angular/core';
+import { SKIP_AUTH } from '@core/guards/http-context-tokens';
 import {environment} from '@env/environment.development';
 import {RegisterUser} from '@modules/auth/interfaces/register-user.interface';
 import {Observable, take} from 'rxjs';
@@ -17,7 +18,7 @@ export class RegisterService {
       `${this.apiUrl}/v1/user`,
       userData,
       {
-        headers: new HttpHeaders().set('skip', 'true')
+        context: new HttpContext().set(SKIP_AUTH, true),
       }
     ).pipe(take(1));
   }

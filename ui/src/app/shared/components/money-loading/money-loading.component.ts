@@ -1,15 +1,22 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
+
+export interface Coin {
+  id: number;
+  left: number;
+  delay: number;
+  duration: number;
+}
 
 @Component({
   selector: 'zen-money-loading',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, NgOptimizedImage],
   templateUrl: './money-loading.component.html',
   styleUrls: ['./money-loading.component.scss'],
 })
 export class MoneyLoadingComponent implements OnInit, OnDestroy {
-  coins: { id: number; left: number; delay: number; duration: number }[] = [];
+  coins: Coin[] = [];
   bagBump = false;
   private coinLoopInterval!: NodeJS.Timeout;
 
@@ -36,7 +43,7 @@ export class MoneyLoadingComponent implements OnInit, OnDestroy {
         this.coins.push({ id, left, delay, duration });
 
         // sincroniza o bump exatamente no final da queda
-        setTimeout(() => this.triggerBagBump(), delay + duration - 100);
+        setTimeout(() => this.triggerBagBump(), delay + duration - 200);
 
         // remove a moeda após a animação
         setTimeout(
