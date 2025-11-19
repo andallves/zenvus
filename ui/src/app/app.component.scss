@@ -1,0 +1,7 @@
+@use 'variables' as *;
+
+main {
+  background-color: $backgroundPrimaryColor;
+  width: 20%;
+  height: 100dvh;
+}

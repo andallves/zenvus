@@ -3,6 +3,7 @@
     <a
       [routerLink]="path"
       class="btn item d-inline-flex align-items-center rounded border-0 collapsed"
+      [ngClass]="{ 'sidenav-collapsed': !isActiveBar }"
       data-bs-toggle="collapse"
       data-bs-target="#dashbo-collapse"
       aria-expanded="false"
@@ -10,7 +11,9 @@
       [routerLinkActiveOptions]="{ exact: true }"
     >
       <i [className]="classIcon"></i>
-      {{ label }}
+      @if (isActiveBar) {
+        {{ label }}
+      }
     </a>
   } @else {
     <button

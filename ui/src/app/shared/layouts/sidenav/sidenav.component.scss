@@ -18,11 +18,11 @@
 }
 
 .sidenav-placeholder {
-  width: 0;
+  width: 30px;
 
   flex-shrink: 0;
   height: 100%;
-  transition: width var(--transition-time) ease;
+  transition: width 300ms ease;
 
   &.isActive {
     width: 300px;
@@ -33,17 +33,18 @@
   position: fixed;
   height: 100vh;
   background-color: #fff;
-  width: 300px;
+  width: 100px;
+  padding: 24px 16px;
   overflow-x: hidden;
   overflow-y: auto;
   z-index: 1;
-  transform: translateX(-100%);
-  transition: transform var(--transition-time) ease;
+  transition: width 300ms ease;
   left: 0;
   top: 0;
 
   &.isActive {
-    transform: translateX(0);
+    width: 300px;
+    padding: 24px;
   }
 
   &::-webkit-scrollbar {
@@ -67,6 +68,86 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+    margin: 26px 0;
+
+    &.collapsed {
+      align-items: center;
+    }
+  }
+
+  .wrapper-btn-logout {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    box-shadow: 0 -8px 30px 1px rgba(0, 0, 0, 0.2);
+    padding: 10px 20px;
+
+    .btn-logout {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 0;
+
+      background: transparent;
+      border: none;
+
+      .logout-info {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 10px;
+        width: 100%;
+        color: $textSecondaryColor;
+        font-weight: 500;
+        transition: 0.3s;
+
+        .sidenav-collapsed {
+          display: none;
+        }
+      }
+
+      i {
+        font-size: 30px;
+
+        &.wallet {
+          font-size: 20px;
+          background: color.adjust($successColor, $lightness: 50%);
+          border-radius: 5rem;
+          padding: 6px 10px;
+          color: $successColor;
+        }
+
+        &.logout {
+          color: $textSecondaryColor;
+          transition: 1s;
+
+          &:hover {
+            color: black;
+            transform: rotate(-45deg);
+          }
+        }
+      }
+
+      .status {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: -10px;
+
+        h4 {
+          font-size: 18px;
+          font-weight: 600;
+          color: $textPrimaryColor;
+          margin: 0;
+        }
+
+        span {
+          font-size: 14px;
+        }
+      }
+    }
   }
 
   .button-bar {

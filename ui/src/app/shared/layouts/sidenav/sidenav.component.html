@@ -1,7 +1,7 @@
 <div class="main-layout" [ngClass]="{ backdrop: isActiveBar }">
   <div class="sidenav-placeholder {{ isActiveBar ? 'isActive' : '' }}"></div>
   <div
-    class="shadow sidenav flex-shrink-0 p-4 {{ isActiveBar ? 'isActive' : '' }}"
+    class="shadow sidenav flex-shrink-0 {{ isActiveBar ? 'isActive' : '' }}"
   >
     <a
       href="/"
@@ -16,12 +16,15 @@
     </a>
     <div
       class="box-button position-absolute"
-      style="top: 15px !important; right: 15px !important"
+      style="top: 15px !important; right: 15px !important; color: red; !important"
     ></div>
 
-    <ul class="list-unstyled ps-0">
+    <ul class="list-unstyled ps-0"
+        [ngClass]="{ 'collapsed': !isActiveBar }"
+    >
       @for (item of navData; track $index) {
         <zen-sidenav-menu-item
+          [isActiveBar]="isActiveBar"
           [label]="item.label"
           [path]="item.path"
           [classIcon]="item.classIcon"
@@ -29,6 +32,28 @@
         />
       }
     </ul>
+
+    <div
+      class="wrapper-btn-logout"
+    >
+      <button
+        class="btn-logout"
+        (click)="logout()"
+      >
+        @if (isActiveBar) {
+          <div
+            class="logout-info"
+          >
+            <i class="bi bi-wallet wallet"></i>
+            <div class="status">
+              <h4>Saúde Financeira</h4>
+              <span>Excelente</span>
+            </div>
+          </div>
+        }
+        <i class="bi bi-escape logout" title="Sair"></i>
+      </button>
+    </div>
   </div>
   <main>
     <header>
