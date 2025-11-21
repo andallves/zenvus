@@ -1,7 +1,7 @@
-import {NgClass} from '@angular/common';
-import {Component, Input} from '@angular/core';
-import {RouterLink, RouterLinkActive} from '@angular/router';
-import {SidenavMenuItems} from '../nav-data';
+import { NgClass } from '@angular/common';
+import { Component, Input } from '@angular/core';
+import { RouterLink, RouterLinkActive } from '@angular/router';
+import { SidenavMenuItems } from '@shared/layouts/default-layout/components/sidenav/nav-data';
 
 @Component({
   selector: 'zen-sidenav-menu-item',

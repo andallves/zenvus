@@ -1,14 +1,15 @@
 import { animate, keyframes, style, transition, trigger } from '@angular/animations';
-import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, HostListener, inject, OnInit, Output } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, Router, RouterModule, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router, RouterModule } from '@angular/router';
 import { AuthorizationService } from '@core/services/authorization/authorization.service';
 import { SidebarService } from '@core/services/sidebar/sidebar.service';
 import { environment } from '@env/environment';
+import { MenuItemComponent } from '@shared/layouts/default-layout/components/menu-item/menu-item.component';
+import { SidenavHeaderComponent } from '@shared/layouts/default-layout/components/sidenav-header/sidenav-header.component';
 import { filter } from 'rxjs/operators';
-import { MenuItemComponent } from './menu-item/menu-item.component';
+import { ThemeService } from '../../theme.service';
 import { navbarData, SidenavMenu } from './nav-data';
-import { ThemeService } from './theme.service';
 
 interface SideNavToggle {
   screenWidth: number;
@@ -18,7 +19,7 @@ interface SideNavToggle {
 @Component({
   selector: 'zen-sidenav',
   standalone: true,
-  imports: [RouterOutlet, CommonModule, NgOptimizedImage, MenuItemComponent, RouterModule],
+  imports: [CommonModule, MenuItemComponent, RouterModule, SidenavHeaderComponent],
   templateUrl: './sidenav.component.html',
   styleUrl: './sidenav.component.scss',
   animations: [
@@ -59,21 +60,6 @@ export class SidenavComponent implements OnInit {
   headerTitle!: string;
   headerDescription!: string;
 
-  public get currentEnv() {
-    return environment;
-  }
-  get isActiveBar(): boolean {
-    return this.sidebarService.isActive;
-  }
-
-  openSideBar(): void {
-    this.sidebarService.onActiveSide();
-  }
-
-  closeSideBar(): void {
-    this.sidebarService.onInactiveSide();
-  }
-
   @HostListener('window:resize', ['$event'])
   onResize(): void {
     this.screenWidth = window.innerWidth;
@@ -84,10 +70,6 @@ export class SidenavComponent implements OnInit {
         screenWidth: this.screenWidth,
       });
     }
-  }
-
-  public get isDarkMode(): boolean {
-    return this.themeService.isDarkMode();
   }
 
   ngOnInit(): void {
@@ -149,22 +131,6 @@ export class SidenavComponent implements OnInit {
     this.themeService.toggleTheme();
   }
 
-  toggleCollapse(): void {
-    this.collapsed = !this.collapsed;
-    this.toggleSideNav.emit({
-      collapsed: this.collapsed,
-      screenWidth: this.screenWidth,
-    });
-  }
-
-  closeSidenav(): void {
-    this.collapsed = false;
-    this.toggleSideNav.emit({
-      collapsed: this.collapsed,
-      screenWidth: this.screenWidth,
-    });
-  }
-
   dropdownMenu(): void {
     if (this.isDropdownOpen) {
       this.animationClass = 'closing';
@@ -193,5 +159,32 @@ export class SidenavComponent implements OnInit {
   logout(): void {
     this.authorizationService.logout();
     this.router.navigate(['/auth/login']).then();
+  }
+
+  public get currentEnv() {
+    return environment;
+  }
+  get isActiveBar(): boolean {
+    return this.sidebarService.isActive;
+  }
+
+  closeSideBar(): void {
+    this.sidebarService.onInactiveSide();
+  }
+
+  toggleCollapse(): void {
+    this.collapsed = !this.collapsed;
+    this.toggleSideNav.emit({
+      collapsed: this.collapsed,
+      screenWidth: this.screenWidth,
+    });
+  }
+
+  closeSidenav(): void {
+    this.collapsed = false;
+    this.toggleSideNav.emit({
+      collapsed: this.collapsed,
+      screenWidth: this.screenWidth,
+    });
   }
 }

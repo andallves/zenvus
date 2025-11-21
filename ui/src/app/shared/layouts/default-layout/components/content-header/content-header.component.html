@@ -1,0 +1,82 @@
+<header class="content-header">
+  <div class="content-wrapper">
+    <div class="page-title">
+      @if (isInitialPage) {
+        <h6 class="none">
+          {{ headerTitle }}
+          <div class="neg">{{ headerDescription }}</div>
+        </h6>
+      }
+      @if (headerTitle && headerDescription && !isInitialPage) {
+        <div class="text none">
+          <h2>{{ headerTitle }}</h2>
+          <span>{{ headerDescription }}</span>
+        </div>
+      }
+    </div>
+
+    <div class="w-100 justify-content-between d-flex">
+      <div class="box-button">
+        <button
+          class="button-bar"
+          (click)="isActiveBar() ? closeSideBar() : openSideBar()"
+        >
+          <i class="bi bi-list"></i>
+        </button>
+      </div>
+
+      <div class="icons d-flex">
+        <a class="icone-notification" routerLink="/notificacoes/pendentes">
+          <i class="bi bi-bell-fill icon"></i>
+        </a>
+        <button (click)="dropdownMenu()" class="profile">
+          <div class="image">
+            @if (imageUrl) {
+              <img [src]="imageUrl" alt="Foto do Usuário"/>
+            }
+          </div>
+        </button>
+      </div>
+
+      @if (isDropdownOpen) {
+        <div class="menuNavbar" [ngClass]="animationClass">
+          <div class="drop">
+            <div class="photo">
+              <div class="photo-circle">
+                @if (imageUrl) {
+                  <img [src]="imageUrl" alt="Foto do Usuário"/>
+                }
+              </div>
+
+              <div class="context">
+                <span class="title">{{ this.name }}</span>
+                <span class="description">{{ 'categoria' }}</span>
+              </div>
+            </div>
+            <div class="itens">
+              <div class="configs">
+                <a href="conta/usuario"><i class="bi bi-person"></i>Conta</a>
+              </div>
+              <div class="configs">
+                <a href=""><i class="bi bi-gear teste"></i>Configurações</a>
+              </div>
+              <div class="configs">
+                <a href="">
+                  <i class="bi bi-box-arrow-in-left"></i>
+                  Sair
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="dark-mode">
+            <span><i class="bi bi-moon"></i>Mudar tema</span>
+            <label class="switch">
+              <input type="checkbox" (click)="toggleDarkMode($event)" (keydown)="toggleDarkMode($event)"/>
+              <span class="slider round"></span>
+            </label>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</header>
