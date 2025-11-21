@@ -15,18 +15,18 @@
       }
     </div>
 
-    <div class="w-100 justify-content-between d-flex">
+    <div class="navbar">
       <div class="box-button">
         <button
-          class="button-bar"
-          (click)="isActiveBar() ? closeSideBar() : openSideBar()"
+          class="button-sidebar"
+          (click)="isActiveSidebar ? closeSideBar() : openSideBar()"
         >
           <i class="bi bi-list"></i>
         </button>
       </div>
 
-      <div class="icons d-flex">
-        <a class="icone-notification" routerLink="/notificacoes/pendentes">
+      <div class="icons">
+        <a class="icon-notification" routerLink="/notificacoes/pendentes">
           <i class="bi bi-bell-fill icon"></i>
         </a>
         <button (click)="dropdownMenu()" class="profile">
@@ -58,7 +58,7 @@
                 <a href="conta/usuario"><i class="bi bi-person"></i>Conta</a>
               </div>
               <div class="configs">
-                <a href=""><i class="bi bi-gear teste"></i>Configurações</a>
+                <a href=""><i class="bi bi-gear"></i>Configurações</a>
               </div>
               <div class="configs">
                 <a href="">

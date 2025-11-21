@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common';
-import { Component, HostListener, inject, input, OnInit } from '@angular/core';
+import { Component, HostListener, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink } from '@angular/router';
 import { AuthorizationService } from '@core/services/authorization/authorization.service';
 import { SidebarService } from '@core/services/sidebar/sidebar.service';
@@ -14,7 +14,6 @@ import { filter } from 'rxjs/operators';
   styleUrl: './content-header.component.scss',
 })
 export class ContentHeaderComponent implements OnInit {
-  isActiveBar = input<boolean>(true);
   isDropdownOpen = false;
   imageUrl?: string | ArrayBuffer | null = null;
   animationClass = '';
@@ -45,12 +44,18 @@ export class ContentHeaderComponent implements OnInit {
       .subscribe(() => this.updateHeader());
   }
 
+  get isActiveSidebar(): boolean {
+    return this.sidebarService.isActive;
+  }
+
   openSideBar(): void {
     this.sidebarService.onActiveSide();
+    console.log(this.isActiveSidebar);
   }
 
   closeSideBar(): void {
     this.sidebarService.onInactiveSide();
+    console.log(this.isActiveSidebar);
   }
 
   updateHeader() {

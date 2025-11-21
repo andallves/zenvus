@@ -17,18 +17,6 @@
   }
 }
 
-.sidenav-placeholder {
-  width: 30px;
-
-  flex-shrink: 0;
-  height: 100%;
-  transition: width 300ms ease;
-
-  &.isActive {
-    width: 300px;
-  }
-}
-
 
 .dropdown-toggle {
   outline: 0;
@@ -172,41 +160,9 @@ main {
     display: none;
   }
 
-  .sidenav {
-    transform: translateX(-100%);
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100vh;
-
-    &.isActive {
-      transform: translateX(0);
-    }
-  }
 
   main {
     width: 100%;
-
-    header {
-      display: flex;
-      padding: 25px 20px 0 80px;
-
-      .button-bar {
-        display: flex;
-      }
-
-      .profile .info {
-        display: none;
-      }
-    }
   }
 
-  .box-button {
-    display: flex !important;
-  }
-
-
-  .drop .context .isMobile {
-    display: inline !important;
-  }
 }

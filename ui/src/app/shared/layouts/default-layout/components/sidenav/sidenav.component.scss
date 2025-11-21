@@ -1,6 +1,18 @@
 @use '../../../../../../styles/variables' as *;
 @use "sass:color";
 
+.sidenav-placeholder {
+  width: 80px;
+
+  flex-shrink: 0;
+  height: 100%;
+  transition: width 300ms ease;
+
+  &.isActive {
+    width: 300px;
+  }
+}
+
 .sidenav {
   position: fixed;
   height: 100vh;
