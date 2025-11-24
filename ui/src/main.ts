@@ -5,7 +5,6 @@ import { TemplatePageTitleStrategy } from '@core/strategies/template-page-title.
 import { AppComponent } from './app/app.component';
 import { appConfig } from './app/app.config';
 import { providers } from './app/app.routes';
-import './app/shared/open-telemetry/instrumentation';
 
 bootstrapApplication(AppComponent, {
   ...appConfig,

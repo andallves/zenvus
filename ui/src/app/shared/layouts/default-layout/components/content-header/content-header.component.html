@@ -1,45 +1,49 @@
-<header class="content-header">
-  <div class="content-wrapper">
-    <div class="page-title">
+<header class="navbar-header">
+  <div class="navbar-wrapper">
+    <div class="navbar-title">
       @if (isInitialPage) {
-        <h6 class="none">
+        <h6 class="navbar-title__title">
           {{ headerTitle }}
-          <div class="neg">{{ headerDescription }}</div>
+          <div class="navbar-title__title--description">{{ headerDescription }}</div>
         </h6>
       }
       @if (headerTitle && headerDescription && !isInitialPage) {
-        <div class="text none">
-          <h2>{{ headerTitle }}</h2>
-          <span>{{ headerDescription }}</span>
+        <div class="navbar-title__box">
+          <h2 class="navbar-title__box--title">{{ headerTitle }}</h2>
+          <span class="navbar-title__box--description">{{ headerDescription }}</span>
         </div>
       }
     </div>
 
-    <div class="navbar">
-      <div class="box-button">
+    <div class="navbar-actions">
+      <div class="navbar-actions__box-button">
         <button
-          class="button-sidebar"
+          class="navbar-actions__box-button--sidebar-btn"
           (click)="isActiveSidebar ? closeSideBar() : openSideBar()"
         >
           <i class="bi bi-list"></i>
         </button>
       </div>
 
-      <div class="icons">
-        <a class="icon-notification" routerLink="/notificacoes/pendentes">
+      <div class="navbar-actions__icons">
+        <a
+          class="navbar-actions__icons--icon-notification"
+          routerLink="/notificacoes/pendentes"
+          title="Não há notificação"
+        >
           <i class="bi bi-bell-fill icon"></i>
         </a>
-        <button (click)="dropdownMenu()" class="profile">
-          <div class="image">
+        <button class="navbar-actions__icons--profile" (click)="dropdownMenu($event)">
+          <div class="profile-image-container">
             @if (imageUrl) {
-              <img [src]="imageUrl" alt="Foto do Usuário"/>
+              <img class="profile-image-container__image" [src]="imageUrl" alt="Foto do Usuário"/>
             }
           </div>
         </button>
       </div>
 
       @if (isDropdownOpen) {
-        <div class="menuNavbar" [ngClass]="animationClass">
+        <div class="navbar-actions__menuNavbar" [ngClass]="animationClass">
           <div class="drop">
             <div class="photo">
               <div class="photo-circle">
@@ -71,7 +75,8 @@
           <div class="dark-mode">
             <span><i class="bi bi-moon"></i>Mudar tema</span>
             <label class="switch">
-              <input type="checkbox" (click)="toggleDarkMode($event)" (keydown)="toggleDarkMode($event)"/>
+              <input type="checkbox" [checked]="isDarkMode" [value]="isDarkMode" (click)="toggleDarkMode($event)"
+                     (keydown)="toggleDarkMode($event)"/>
               <span class="slider round"></span>
             </label>
           </div>

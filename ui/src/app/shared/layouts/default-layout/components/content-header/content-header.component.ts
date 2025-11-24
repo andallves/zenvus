@@ -1,10 +1,10 @@
-import { NgClass } from '@angular/common';
-import { Component, HostListener, inject, OnInit } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, Router, RouterLink } from '@angular/router';
-import { AuthorizationService } from '@core/services/authorization/authorization.service';
-import { SidebarService } from '@core/services/sidebar/sidebar.service';
-import { ThemeService } from '@shared/layouts/default-layout/theme.service';
-import { filter } from 'rxjs/operators';
+import {NgClass} from '@angular/common';
+import {Component, HostListener, inject, OnInit} from '@angular/core';
+import {ActivatedRoute, NavigationEnd, Router, RouterLink} from '@angular/router';
+import {AuthorizationService} from '@core/services/authorization/authorization.service';
+import {SidebarService} from '@core/services/sidebar/sidebar.service';
+import {ThemeService} from '@shared/layouts/default-layout/theme.service';
+import {filter} from 'rxjs/operators';
 
 @Component({
   selector: 'zen-content-header',
@@ -48,6 +48,10 @@ export class ContentHeaderComponent implements OnInit {
     return this.sidebarService.isActive;
   }
 
+  get isDarkMode(): boolean {
+    return this.themeService.isDarkMode();
+  }
+
   openSideBar(): void {
     this.sidebarService.onActiveSide();
     console.log(this.isActiveSidebar);
@@ -85,7 +89,9 @@ export class ContentHeaderComponent implements OnInit {
     }
   }
 
-  dropdownMenu(): void {
+  dropdownMenu(event: Event): void {
+    if (event) event.stopPropagation();
+
     if (this.isDropdownOpen) {
       this.animationClass = 'closing';
       setTimeout(() => {
@@ -109,9 +115,11 @@ export class ContentHeaderComponent implements OnInit {
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {
     const target = event.target as HTMLElement;
-    const clickedInside = target.closest('.profile') || target.closest('.menuNavbar');
+    const clickedInside =
+      target.closest('navbar-actions__icons--profile') ||
+      target.closest('navbar-actions__menuNavbar');
     if (!clickedInside && this.isDropdownOpen) {
-      this.dropdownMenu();
+      this.dropdownMenu(event);
     }
   }
 }
