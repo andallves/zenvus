@@ -24,7 +24,7 @@ export const navbarData: SidenavMenu[] = [
   {
     label: 'Despesas',
     classIcon: 'bi bi-arrow-down-left-circle',
-    path: '/transacoes',
+    path: '/despesas',
   },
   {
     label: 'Categorias',
