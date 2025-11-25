@@ -1,12 +1,18 @@
 @use '../../../../../../styles/variables' as *;
 @use "sass:color";
 
+$success-color: #188150;
+
 .sidenav-placeholder {
-  width: 80px;
+  width: 0;
 
   flex-shrink: 0;
   height: 100%;
   transition: width 300ms ease;
+
+  @media screen and (min-width: 768px) {
+    width: 80px;
+  }
 
   &.isActive {
     width: 300px;
@@ -16,15 +22,20 @@
 .sidenav {
   position: fixed;
   height: 100vh;
-  background-color: #fff;
-  width: 80px;
-  padding: 24px 16px;
+  background-color: var(--background-secondary-color);
+  width: 0;
+
   overflow-x: hidden;
   overflow-y: auto;
   z-index: 1;
   transition: width 300ms ease;
   left: 0;
   top: 0;
+
+  @media screen and (min-width: 768px) {
+    width: 80px;
+    padding: 24px 10px;
+  }
 
   &.isActive {
     width: 300px;
@@ -55,17 +66,26 @@
     margin: 26px 0;
 
     &.collapsed {
-      align-items: center;
+      display: none;
+
+      @media screen and (min-width: 768px) {
+        display: flex;
+      }
     }
   }
 
   .wrapper-btn-logout {
+    display: none;
     position: absolute;
     bottom: 0;
     right: 0;
     width: 100%;
     box-shadow: 0 -2px 10px 1px rgba(0, 0, 0, 0.2);
     padding: 10px 20px;
+
+    @media screen and (min-width: 768px) {
+      display: flex;
+    }
 
     .btn-logout {
       width: 100%;
@@ -83,7 +103,7 @@
         justify-content: flex-start;
         gap: 10px;
         width: 100%;
-        color: $textSecondaryColor;
+        color: var(--text-secondary-color);
         font-weight: 500;
         transition: 0.3s;
         animation: display 3ms 3ms ease-in-out;
@@ -98,18 +118,18 @@
 
         &.wallet {
           font-size: 20px;
-          background: color.adjust($successColor, $lightness: 50%);
+          background: color.adjust($success-color, $lightness: 50%);
           border-radius: 5rem;
           padding: 6px 10px;
-          color: $successColor;
+          color: var(--success-color);
         }
 
         &.logout {
-          color: $textSecondaryColor;
-          transition: 1s;
+          color: var(--text-secondary-color);
+          transition: transform 0.5s, color 0.3s;
 
           &:hover {
-            color: black;
+            color: var(--text-primary-color);
             transform: rotate(-45deg);
           }
         }
@@ -124,7 +144,7 @@
         h4 {
           font-size: 18px;
           font-weight: 600;
-          color: $textPrimaryColor;
+          color: var(--text-primary-color);
           margin: 0;
         }
 

@@ -2,7 +2,7 @@
 
 $spinner-size: 48px;
 $spinner-border: 5px;
-$spinner-color: $warningColor; // amarelo
+$spinner-color: var(--warning-color); // amarelo
 
 .spinner {
   display: inline-block;
@@ -30,8 +30,12 @@ $spinner-color: $warningColor; // amarelo
 }
 
 @keyframes spinner-spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Centro opcional para overlays */

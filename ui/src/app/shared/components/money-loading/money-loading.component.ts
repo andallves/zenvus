@@ -18,7 +18,7 @@ export interface Coin {
 export class MoneyLoadingComponent implements OnInit, OnDestroy {
   coins: Coin[] = [];
   bagBump = false;
-  private coinLoopInterval!: NodeJS.Timeout;
+  private coinLoopInterval!: any;
 
   ngOnInit() {
     this.startCoinLoop();

@@ -28,17 +28,17 @@
   position: relative;
   padding: 0.25rem 0.5rem;
   font-weight: 500;
-  color: $textSecondaryColor;
+  color: var(--text-secondary-color);
   background-color: transparent;
 
   i {
-    color: $textSecondaryColor;
+    color: var(--text-secondary-color);
   }
 
   &.active {
     span,
     i {
-      color: $primaryColor;
+      color: var(--primary-color);
     }
   }
 }
@@ -88,7 +88,7 @@
 main {
   width: 100%;
   min-height: 100vh;
-  background-color: var(--background-primary);
+  background-color: var(--background-primary-color);
   transition: width var(--transition-time) ease;
 
 

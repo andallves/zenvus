@@ -1,10 +1,10 @@
-import {NgClass} from '@angular/common';
-import {Component, HostListener, inject, OnInit} from '@angular/core';
-import {ActivatedRoute, NavigationEnd, Router, RouterLink} from '@angular/router';
-import {AuthorizationService} from '@core/services/authorization/authorization.service';
-import {SidebarService} from '@core/services/sidebar/sidebar.service';
-import {ThemeService} from '@shared/layouts/default-layout/theme.service';
-import {filter} from 'rxjs/operators';
+import { NgClass } from '@angular/common';
+import { Component, HostListener, inject, OnInit } from '@angular/core';
+import { ActivatedRoute, NavigationEnd, Router, RouterLink } from '@angular/router';
+import { AuthorizationService } from '@core/services/authorization/authorization.service';
+import { SidebarService } from '@core/services/sidebar/sidebar.service';
+import { ThemeService } from '@shared/layouts/default-layout/theme.service';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'zen-content-header',

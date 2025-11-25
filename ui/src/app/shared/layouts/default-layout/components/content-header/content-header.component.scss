@@ -17,7 +17,7 @@
     .navbar-title {
       &__title {
         margin: 0;
-        font-family: $primaryFont;
+        font-family: var(--primary-font), sans-serif;
         font-size: 1.25rem;
         font-weight: 600;
         line-height: 27.24px;
@@ -55,7 +55,7 @@
         &--description {
           font-size: 16px;
           font-weight: 400;
-          color: $textSecondaryColor;
+          color: var(--text-secondary-color);
           opacity: 0.9;
           margin-bottom: 0;
         }
@@ -90,6 +90,11 @@
           &:hover {
             filter: brightness(0.9);
           }
+
+          i {
+            color: var(--text-primary-color);
+            fill: var(--text-primary-color);
+          }
         }
       }
 
@@ -105,7 +110,7 @@
             display: block;
             height: 40px;
             font-size: 2.25rem; // o tamanho do ícone é a fonte
-            color: $primaryColor;
+            color: var(--primary-color);
 
             &::before {
               vertical-align: 0.0em; // garante que ele fica alinhado ao perfil
@@ -129,12 +134,12 @@
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background-color: $primaryColor;
+            background-color: var(--primary-color);
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            border: 1px solid $successColor;
+            border: 1px solid var(--success-color);
 
             &__image {
               width: 100%;
@@ -148,7 +153,7 @@
       &__menuNavbar {
         position: absolute;
         inset: 60px 10px auto auto;
-        background-color: $backgroundSecondaryColor;
+        background-color: var(--background-secondary-color);
         width: 17.75rem;
         height: 15.625rem;
         border: 1px solid #ececec;
@@ -180,14 +185,14 @@
             .photo-circle {
               width: 40px;
               height: 40px;
-              background-color: $primaryColor;
+              background-color: var(--primary-color);
               border-radius: 50%;
               display: flex;
               align-items: center;
               justify-content: center;
               cursor: pointer;
               overflow: hidden;
-              border: 1px solid $successColor;
+              border: 1px solid var(--success-color);
 
               img {
                 width: 100%;
@@ -203,7 +208,7 @@
 
               span {
                 display: flex;
-                font-family: $primaryFont;
+                font-family: var(--primary-font), sans-serif;
                 font-weight: 600;
                 text-align: left;
 
@@ -229,7 +234,7 @@
             display: flex;
             flex-direction: column;
             width: 100%;
-            border-bottom: 1px solid #ececec;
+            border-bottom: 1px solid var(--border-color);
 
             .configs {
               width: 100%;
@@ -336,11 +341,11 @@
           }
 
           input:checked + .slider {
-            background-color: #2196f3;
+            background-color: var(--secondary-color);
           }
 
           input:focus + .slider {
-            box-shadow: 0 0 1px $positiveColor;
+            box-shadow: 0 0 1px var(--positive-color);
           }
 
           input:checked + .slider:before {

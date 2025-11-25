@@ -1,6 +1,6 @@
 @use 'variables' as *;
 
 main {
-  background-color: $backgroundPrimaryColor;
+  background-color: var(--background-secondary-color);
   height: 100dvh;
 }

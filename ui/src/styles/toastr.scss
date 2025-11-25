@@ -4,8 +4,8 @@
   position: relative;
   padding: 10px 20px;
   margin-bottom: 10px;
-  background-color: $textSecondaryColor;
-  color: $textPrimaryColor;
+  background-color: var(--text-secondary-color);
+  color: var(--text-primary-color);
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
   font-family: 'Helvetica', sans-serif;
   font-size: 14px;
@@ -20,25 +20,25 @@
 }
 
 .toast-success {
-  background-color: $successColor;
-  color: $textSecondaryColor;
+  background-color: var(--success-color);
+  color: var(--text-secondary-color);
   z-index: 1000;
 }
 
 .toast-error {
-  background-color: $dangerColor;
-  color: $textSecondaryColor;
+  background-color: var(--danger-color);
+  color: var(--text-secondary-color);
   z-index: 1000;
 }
 
 .toast-info {
-  background-color: $positiveColor;
-  color: $textSecondaryColor;
+  background-color: var(--positive-color);
+  color: var(--text-secondary-color);
 }
 
 .toast-warning {
-  background-color: $warningColor;
-  color: $textSecondaryColor;
+  background-color: var(--warning-color);
+  color: var(--text-secondary-color);
 }
 
 /* Título */
@@ -52,7 +52,7 @@
   position: absolute;
   top: 10px;
   right: 10px;
-  color: $textSecondaryColor;
+  color: var(--text-secondary-color);
   background: transparent;
   border: none;
   font-size: 18px;

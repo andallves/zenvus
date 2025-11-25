@@ -1,32 +1,41 @@
 // Colors
-$primaryColor: #B90504;
-$secondaryColor: #970100;
+:root {
+  --primary-color: #B90504;
+  --secondary-color: #970100;
 
-$textPrimaryColor: #3A3A3A;
-$textSecondaryColor: #909090;
+  --text-primary-color: #3A3A3A;
+  --text-secondary-color: #909090;
 
-$textGrayColor: #909090;
-$textLightGrayColor: #97a9b0;
+  --text-gray-color: #909090;
+  --text-light-gray-color: #97a9b0;
 
-$backgroundPrimaryColor: #f9fcfa;
-$backgroundSecondaryColor: #ffffff;
-$backgroundColor: #c9c9c9;
+  --background-primary-color: #f9fcfa;
+  --background-secondary-color: #ffffff;
+  --background-color: #c9c9c9;
 
-$positiveColor: #0d6dfb;
-$successColor: #188150;
-$warningColor: #F89406;
-$dangerColor: #d73443;
-$borderColor: #DEE2E6;
+  --chevron-color: rgba(255, 255, 255, 0.7);
+  --positive-color: #0d6dfb;
+  --success-color: #188150;
+  --warning-color: #F89406;
+  --danger-color: #d73443;
+  --border-color: #DEE2E6;
+  --active-background-color: rgb(255, 233, 233);
 
-body.dark-theme {
-  $chevronColor: rgba(255, 255, 255, 0.7);
-  $textPrimaryColor: #f1f1f1;
-  $textSecondaryColor: #bdbdbd;
-  $backgroundPrimaryColor: #1e1e1e;
-  $backgroundSecondaryColor: #2a2a2a;
+  --primary-font: 'Open Sans';
+  --brand-font: 'Monoton';
 }
 
+body.dark-theme {
+  --chevron-color: rgba(255, 255, 255, 0.7);
+  --primary-color: #970100;
+  --secondary-color: #B90504;
+  --text-primary-color: #f1f1f1;
+  --text-secondary-color: #bdbdbd;
+  --background-primary-color: #1e1e1e;
+  --background-secondary-color: #2a2a2a;
+  --border-color: rgba(255, 255, 255, 0.08);
+  --active-background-color: rgb(119, 59, 59);
+}
 
-// Fonts
-$primaryFont: 'Open Sans';
 $brandFont: 'Monoton';
+
