@@ -12,7 +12,15 @@
   color: var(--text-gray-color);
   background-color: transparent;
   transition: all 0.2s ease-in-out;
-  font-size: 18px !important;
+  font-size: 12px !important;
+
+  @media (min-width: 768px) {
+    font-size: 14px !important;
+  }
+
+  @media (min-width: 968px) {
+    font-size: 1vw !important;
+  }
 
   &--active {
     width: 100%;

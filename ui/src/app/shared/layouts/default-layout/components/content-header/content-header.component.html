@@ -26,20 +26,22 @@
       </div>
 
       <div class="navbar-actions__icons">
-        <a
-          class="navbar-actions__icons--icon-notification"
-          routerLink="/notificacoes/pendentes"
-          title="Não há notificação"
-        >
-          <i class="bi bi-bell-fill icon"></i>
-        </a>
-        <button class="navbar-actions__icons--profile" (click)="dropdownMenu($event)">
-          <div class="profile-image-container">
-            @if (imageUrl) {
-              <img class="profile-image-container__image" [src]="imageUrl" alt="Foto do Usuário"/>
-            }
-          </div>
-        </button>
+        @if (!isActiveSidebar) {
+          <a
+            class="navbar-actions__icons--icon-notification"
+            routerLink="/notificacoes/pendentes"
+            title="Não há notificação"
+          >
+            <i class="bi bi-bell-fill icon"></i>
+          </a>
+          <button class="navbar-actions__icons--profile" (click)="dropdownMenu($event)">
+            <div class="profile-image-container">
+              @if (imageUrl) {
+                <img class="profile-image-container__image" [src]="imageUrl" alt="Foto do Usuário"/>
+              }
+            </div>
+          </button>
+        }
       </div>
 
       @if (isDropdownOpen) {

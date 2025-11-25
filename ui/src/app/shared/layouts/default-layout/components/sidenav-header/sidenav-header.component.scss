@@ -1,12 +1,20 @@
 .logo {
-  display: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  text-decoration: none;
+
+  &.collapsed {
+    display: none;
+
+    @media screen and (min-width: 768px) {
+      display: flex;
+    }
+  }
 
   @media screen and (min-width: 768px) {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    padding-bottom: 20px;
-    margin-bottom: 20px;
-    text-decoration: none;
   }
 }

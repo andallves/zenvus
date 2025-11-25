@@ -1,6 +1,7 @@
 <a
   href="/public"
   class="logo link-body-emphasis"
+  [ngClass]="{ 'collapsed': !isActiveSidebar }"
 >
   <img
     ngSrc="./images/money-bag.png"
