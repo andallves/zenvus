@@ -17,9 +17,27 @@ const protectedChildren: Routes = [
       ),
   },
   {
-    path: 'transacoes',
-    title: 'Transações',
-    data: { description: 'Página de visualização de históricos e gerenciamento das transações' },
+    path: 'receitas',
+    title: 'Receitas',
+    data: { description: 'Página de gerenciamento e visualização das receitas.' },
+    loadComponent: () =>
+      import('./modules/initial-page/pages/home-dashboard/home-dashboard.component').then(
+        m => m.HomeDashboardComponent
+      ),
+  },
+  {
+    path: 'despesas',
+    title: 'Despesas',
+    data: { description: 'Página de gerenciamento e visualização das despesas.' },
+    loadComponent: () =>
+      import('./modules/initial-page/pages/home-dashboard/home-dashboard.component').then(
+        m => m.HomeDashboardComponent
+      ),
+  },
+  {
+    path: 'categorias',
+    title: 'Categorias',
+    data: { description: 'Página de gerenciamento e visualização das despesas.' },
     loadComponent: () =>
       import('./modules/initial-page/pages/home-dashboard/home-dashboard.component').then(
         m => m.HomeDashboardComponent
@@ -28,25 +46,16 @@ const protectedChildren: Routes = [
   {
     path: 'orcamentos',
     title: 'Orçamentos',
-    data: { description: 'Página de orçamentos' },
+    data: { description: 'Página de gerenciamento de orçamentos' },
     loadComponent: () =>
       import('./modules/initial-page/pages/home-dashboard/home-dashboard.component').then(
         m => m.HomeDashboardComponent
       ),
   },
   {
-    path: 'metas',
-    title: 'Metas',
-    data: { description: 'Página de metas financeiras' },
-    loadComponent: () =>
-      import('./modules/initial-page/pages/home-dashboard/home-dashboard.component').then(
-        m => m.HomeDashboardComponent
-      ),
-  },
-  {
-    path: 'analises',
-    title: 'Análises',
-    data: { description: 'Página de análises financeiras' },
+    path: 'relatorios',
+    title: 'Relatórios',
+    data: { description: 'Página de relatórios financeiras' },
     loadComponent: () =>
       import('./modules/initial-page/pages/home-dashboard/home-dashboard.component').then(
         m => m.HomeDashboardComponent

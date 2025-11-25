@@ -8,7 +8,7 @@
   transition: all 0.500ms ease;
 
   .input-label {
-    color: $textGrayColor;
+    color: var(--text-gray-color);
     font: {
       size: 14px;
       style: normal;
@@ -30,7 +30,7 @@
     align-self: stretch;
 
     border-radius: 6px;
-    border: 1px solid $borderColor;
+    border: 1px solid var(--border-color);
     background: #FFF;
 
     font: {
@@ -46,7 +46,7 @@
       align-items: center;
       gap: 4px;
       flex: 1 0 0;
-      color: $textLightGrayColor;
+      color: var(--text-light-gray-color);
 
       font: {
         size: 16px;
@@ -58,17 +58,17 @@
     }
 
     &:focus {
-      border: 1px solid $positiveColor;
+      border: 1px solid var(--positive-color);
       box-shadow: 0 0 0 3px rgba(102, 16, 242, 0.15);
       outline: none;
     }
 
     &.input-valid {
-      border-color: $successColor;
+      border-color: var(--success-color);
     }
 
     &.input-invalid:not(:focus) {
-      border: 1px solid $dangerColor;
+      border: 1px solid var(--danger-color);
       box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.20);
     }
   }
@@ -89,11 +89,11 @@
       margin-left: 4px;
 
       &.input-valid {
-        color: $successColor;
+        color: var(--success-color);
       }
 
       &.input-invalid {
-        color: $dangerColor;
+        color: var(--danger-color);
       }
     }
   }

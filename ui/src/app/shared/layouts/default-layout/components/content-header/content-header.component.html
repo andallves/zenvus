@@ -1,0 +1,87 @@
+<header class="navbar-header">
+  <div class="navbar-wrapper">
+    <div class="navbar-title">
+      @if (isInitialPage) {
+        <h6 class="navbar-title__title">
+          {{ headerTitle }}
+          <div class="navbar-title__title--description">{{ headerDescription }}</div>
+        </h6>
+      }
+      @if (headerTitle && headerDescription && !isInitialPage) {
+        <div class="navbar-title__box">
+          <h2 class="navbar-title__box--title">{{ headerTitle }}</h2>
+          <span class="navbar-title__box--description">{{ headerDescription }}</span>
+        </div>
+      }
+    </div>
+
+    <div class="navbar-actions">
+      <div class="navbar-actions__box-button">
+        <button
+          class="navbar-actions__box-button--sidebar-btn"
+          (click)="isActiveSidebar ? closeSideBar() : openSideBar()"
+        >
+          <i class="bi bi-list"></i>
+        </button>
+      </div>
+
+      <div class="navbar-actions__icons">
+        <a
+          class="navbar-actions__icons--icon-notification"
+          routerLink="/notificacoes/pendentes"
+          title="Não há notificação"
+        >
+          <i class="bi bi-bell-fill icon"></i>
+        </a>
+        <button class="navbar-actions__icons--profile" (click)="dropdownMenu($event)">
+          <div class="profile-image-container">
+            @if (imageUrl) {
+              <img class="profile-image-container__image" [src]="imageUrl" alt="Foto do Usuário"/>
+            }
+          </div>
+        </button>
+      </div>
+
+      @if (isDropdownOpen) {
+        <div class="navbar-actions__menuNavbar" [ngClass]="animationClass">
+          <div class="drop">
+            <div class="photo">
+              <div class="photo-circle">
+                @if (imageUrl) {
+                  <img [src]="imageUrl" alt="Foto do Usuário"/>
+                }
+              </div>
+
+              <div class="context">
+                <span class="title">{{ name }}</span>
+                <span class="description">{{ 'categoria' }}</span>
+              </div>
+            </div>
+            <div class="itens">
+              <div class="configs">
+                <a href="conta/usuario"><i class="bi bi-person"></i>Conta</a>
+              </div>
+              <div class="configs">
+                <a href=""><i class="bi bi-gear"></i>Configurações</a>
+              </div>
+              <div class="configs">
+                <a href="">
+                  <i class="bi bi-box-arrow-in-left"></i>
+                  Sair
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="dark-mode">
+            <span><i class="bi bi-moon"></i>Mudar tema</span>
+            <label class="switch">
+              <input type="checkbox" [checked]="isDarkMode" [value]="isDarkMode" (click)="toggleDarkMode($event)"
+                     (keydown)="toggleDarkMode($event)"/>
+              <span class="slider round"></span>
+            </label>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</header>

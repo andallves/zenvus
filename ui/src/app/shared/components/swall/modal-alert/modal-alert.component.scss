@@ -1,6 +1,9 @@
 @use 'variables' as *;
 @use "sass:color";
 
+$success-color: #188150;
+$danger-color: #d73443;
+
 :host {
   position: fixed;
   top: 0;
@@ -28,7 +31,7 @@
 }
 
 .modal-container {
-  background: white;
+  background: var(--background-secondary-color);
   padding: 20px;
   border-radius: 10px;
   width: 400px;
@@ -54,19 +57,19 @@
 }
 
 .success-icon {
-  color: $successColor;
+  color: var(--success-color);
 }
 
 .error-icon {
-  color: $dangerColor;
+  color: var(--danger-color);
 }
 
 .warning-icon {
-  color: $warningColor;
+  color: var(--warning-color);
 }
 
 .info-icon {
-  color: $positiveColor;
+  color: var(--positive-color);
 }
 
 .modal-body {
@@ -91,21 +94,21 @@
 }
 
 .confirm-button {
-  background: $successColor;
+  background: var(--success-color);
   color: white;
 }
 
 .confirm-button:hover {
-  background: color.adjust($successColor, $lightness: -5%);
+  background: color.adjust($success-color, $lightness: -5%);
 }
 
 .cancel-button {
-  background: $dangerColor;
+  background: var(--darger-color);
   color: white;
 }
 
 .cancel-button:hover {
-  background: color.adjust($dangerColor, $lightness: -5%);
+  background: color.adjust($danger-color, $lightness: -5%);
 }
 
 @keyframes fadeIn {

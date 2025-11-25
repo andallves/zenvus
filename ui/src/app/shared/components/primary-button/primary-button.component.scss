@@ -1,6 +1,8 @@
 @use 'variables' as *;
 @use "sass:color";
 
+$primaryColor: #B90504;
+
 :host {
   display: block;
   width: 100%;
@@ -12,7 +14,7 @@ button.primary-btn {
   width: 100%;
   padding: 10px;
 
-  background-color: $primaryColor;
+  background-color: var(--primary-color);
   outline: none;
   border: none;
   border-radius: 5px;

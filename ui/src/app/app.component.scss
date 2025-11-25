@@ -1,0 +1,6 @@
+@use 'variables' as *;
+
+main {
+  background-color: var(--background-secondary-color);
+  height: 100dvh;
+}

@@ -17,9 +17,19 @@ export const navbarData: SidenavMenu[] = [
     classIcon: 'bi bi-highlights',
   },
   {
-    label: 'Transações',
-    classIcon: 'bi bi-arrow-left-right',
-    path: '/transacoes',
+    label: 'Receitas',
+    classIcon: 'bi bi-arrow-up-right-circle',
+    path: '/receitas',
+  },
+  {
+    label: 'Despesas',
+    classIcon: 'bi bi-arrow-down-left-circle',
+    path: '/despesas',
+  },
+  {
+    label: 'Categorias',
+    classIcon: 'bi bi-tag',
+    path: '/categorias',
   },
   {
     label: 'Orçamentos',
@@ -27,13 +37,8 @@ export const navbarData: SidenavMenu[] = [
     path: '/orcamentos',
   },
   {
-    label: 'Metas',
-    classIcon: 'bi bi-piggy-bank',
-    path: '/metas',
-  },
-  {
-    label: 'Análises',
-    classIcon: 'bi bi-graph-up',
-    path: '/analises',
+    label: 'Relatórios',
+    classIcon: 'bi bi-pie-chart',
+    path: '/relatorios',
   },
 ];

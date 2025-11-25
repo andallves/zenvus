@@ -1,0 +1,43 @@
+<div class="sidenav-placeholder {{ isActiveBar ? 'isActive' : '' }}"></div>
+
+<div
+  class="shadow sidenav flex-shrink-0 {{ isActiveBar ? 'isActive' : '' }}"
+>
+  <zen-sidenav-header></zen-sidenav-header>
+
+  <ul class="list-unstyled ps-0"
+      [ngClass]="{ 'collapsed': !isActiveBar }"
+  >
+    @for (item of navData; track $index) {
+      <zen-sidenav-menu-item
+        [isActiveBar]="isActiveBar"
+        [label]="item.label"
+        [path]="item.path"
+        [classIcon]="item.classIcon"
+        [menuItems]="item.items ? item.items : null"
+      />
+    }
+  </ul>
+
+  <div
+    class="wrapper-btn-logout"
+  >
+    <button
+      class="btn-logout"
+      (click)="logout()"
+    >
+      @if (isActiveBar) {
+        <div
+          class="logout-info"
+        >
+          <i class="bi bi-wallet wallet"></i>
+          <div class="status">
+            <h4>Saúde Financeira</h4>
+            <span>Excelente</span>
+          </div>
+        </div>
+      }
+      <i class="bi bi-escape logout" title="Sair"></i>
+    </button>
+  </div>
+</div>

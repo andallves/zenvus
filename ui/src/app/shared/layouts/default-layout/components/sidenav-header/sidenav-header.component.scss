@@ -1,0 +1,12 @@
+.logo {
+  display: none;
+
+  @media screen and (min-width: 768px) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    text-decoration: none;
+  }
+}

@@ -1,1 +1,18 @@
-<zen-sidenav></zen-sidenav>
+<div class="main-layout" [ngClass]="{ 'backdrop': isActiveBar }">
+  <zen-sidenav></zen-sidenav>
+
+  <main>
+    <zen-content-header></zen-content-header>
+    <section>
+      <router-outlet></router-outlet>
+    </section>
+  </main>
+
+  <div
+    role="presentation"
+    class="backdrop"
+    [ngClass]="{ backdropActive: isActiveBar }"
+    (click)="closeSideBar()"
+    (keydown)="closeSideBar()"
+  ></div>
+</div>

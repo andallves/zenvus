@@ -1,4 +1,4 @@
-@use 'variables' as *;
+@use '../../../../../../styles/variables' as *;
 
 .dropdown-toggle {
   outline: 0;
@@ -7,22 +7,23 @@
 .item {
   display: flex;
   gap: 10px;
-  padding: 10px 15px;
+  padding: 20px;
   font-weight: 500;
-  color: $textGrayColor;
+  color: var(--text-gray-color);
   background-color: transparent;
   transition: all 0.2s ease-in-out;
+  font-size: 18px !important;
 
   &--active {
     width: 100%;
-    color: $primaryColor !important;
+    color: var(--text-primary-color) !important;
     font-weight: 600;
-    background-color: #FEF2F2;
-    border-right: 3px solid $primaryColor !important;
+    background-color: var(--active-background-color);
+    border-right: 3px solid var(--primary-color) !important;
   }
 
   &:hover:not(.item--active) {
-    color: var(--primary-text);
+    color: var(--text-primary-color);
     font-weight: 600;
     transition: color, font-weight 0.2s ease-in-out;
   }
@@ -64,21 +65,21 @@
   gap: 8px;
 
   &--active {
-    color: var(--primary) !important;
+    color: var(--primary-color) !important;
     font-weight: 700;
   }
 
 }
 
 .item--toggle-nav a.link-item {
-  color: var(--secundary-text) !important;
+  color: var(--text-secondary-color) !important;
   padding: .1875rem .5rem;
   margin-top: .125rem;
   margin-left: 1.25rem;
   transition: color, font-weight 0.4s ease-in-out !important;
 
   &--active {
-    color: var(--primary) !important;
+    color: var(--primary-color) !important;
     font-weight: 700;
   }
 
@@ -86,7 +87,7 @@
 
 .item--toggle-nav a:hover:not(.link-item--active),
 .item--toggle-nav a:focus:not(.link-item--active) {
-  color: var(--primary) !important;
+  color: var(--primary-color) !important;
   font-weight: 600 !important;
 }
 

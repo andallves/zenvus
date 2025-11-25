@@ -11,11 +11,11 @@
     &--last {
       flex: 1;
       height: 1px;
-      background-color: $backgroundColor;
+      background-color: var(--background-secondary-color);
     }
 
     &--text {
-      color: $textLightGrayColor;
+      color: var(--text-light-gray-color);
       font-size: 12px;
       margin: 0 12px;
       white-space: nowrap;
