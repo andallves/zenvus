@@ -18,7 +18,7 @@ public class CategoryController(IMediator mediator) : BaseController(mediator)
     [SwaggerOperation(Summary = "Obtem  categorias existentes", Tags = ["Categoria"])]
     [ProducesResponseType(typeof(PagedResult<CategoryDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async ValueTask<IActionResult> Obter([FromQuery] GetCategoriesQuery query, CancellationToken cancellationToken)
+    public async ValueTask<IActionResult> Get([FromQuery] GetCategoriesQuery query, CancellationToken cancellationToken)
     {
         return await SendQueryAsync(query, cancellationToken);
     }
@@ -30,7 +30,6 @@ public class CategoryController(IMediator mediator) : BaseController(mediator)
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    
     public async ValueTask<IActionResult> Create([FromBody] CreateCategoryCommand categoryCommand, CancellationToken cancellationToken)
     {
         return await SendCommandAsync(categoryCommand, cancellationToken);

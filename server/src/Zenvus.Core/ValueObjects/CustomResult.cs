@@ -6,16 +6,18 @@ public class CustomResult<T>
     public bool IsSuccess { get; set; }
     
     public  string Message { get; set; } = string.Empty;
+    public int? Status { get; set; }
     public List<string> Errors { get; set; } = [];
     public IsResultErrorType? ErrorType { get; set; }
     
-    public static CustomResult<T> SuccessResult(T? result = default(T), string message = "")
+    public static CustomResult<T> SuccessResult(T? result = default(T), string message = "", int status = 200)
     {
         return new CustomResult<T>
         {
             Result = result,
             IsSuccess = true,
-            Message = message
+            Message = message,
+            Status = status
         };
     }
     

@@ -25,6 +25,6 @@ public class CreateCategoryCommandHandler(IMapper mapper, IRepository<ZenvusDbCo
         
         var dto = mapper.Map<CategoryDto>(category);
         return CustomResult<CategoryDto>
-            .SuccessResult(dto, "Categoria cadastrada com sucesso!");
+            .SuccessResult(dto, "Categoria cadastrada com sucesso!", 201);
     }
 }
