@@ -1,8 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
-using Zenvus.Application.Commands.Category;
-using Zenvus.Application.Commands.User;
+using Zenvus.Application.Commands.Categories;
 using Zenvus.Application.DTO.Category;
 using Zenvus.Application.Queries.Categories;
 using Zenvus.Core.ValueObjects;
@@ -41,8 +40,24 @@ public class CategoryController(IMediator mediator) : BaseController(mediator)
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async ValueTask<IActionResult> Create([FromBody] CreateCategoryCommand categoryCommand, CancellationToken cancellationToken)
+    public async ValueTask<IActionResult> Create([FromBody] CreateCategoryCommand command, CancellationToken cancellationToken)
     {
-        return await SendCommandAsync(categoryCommand, cancellationToken);
+        return await SendCommandAsync(command, cancellationToken);
+    }
+    
+    [HttpPut("{id:int}")]
+    [MapToApiVersion("1.0")]
+    [SwaggerOperation(Summary = "Atualiza uma categoria existente", Tags = ["Categoria"])]
+    [ProducesResponseType(typeof(CategoryDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async ValueTask<IActionResult> Update([FromRoute] int id, [FromForm] UpdateCategoryCommand command, CancellationToken cancellationToken)
+    {
+        if (id != command.Id)
+        {
+            return BadRequest();
+        }
+        return await SendCommandAsync(command, cancellationToken);
     }
 }                         
