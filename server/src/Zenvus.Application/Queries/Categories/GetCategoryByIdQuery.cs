@@ -1,6 +1,8 @@
-namespace Zenvus.Application.Queries.Category;
+using Zenvus.Application.DTO.Category;
 
-public class GetCategoryByIdQuery
+namespace Zenvus.Application.Queries.Categories;
+
+public class GetCategoryByIdQuery : BaseQuery<CategoryDto>
 {
-    
+    public int Id { get; set; }
 }
