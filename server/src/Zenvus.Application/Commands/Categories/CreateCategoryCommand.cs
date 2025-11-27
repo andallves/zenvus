@@ -1,6 +1,6 @@
 using Zenvus.Application.DTO.Category;
 
-namespace Zenvus.Application.Commands.Category;
+namespace Zenvus.Application.Commands.Categories;
 
 public class CreateCategoryCommand : BaseCommand<CategoryDto>
 {

@@ -15,7 +15,7 @@ public class AuthController(IMediator mediator, IAuthenticatedUser authenticated
 {
     [MapToApiVersion("1.0")]
     [HttpPost("login")]
-    [SwaggerOperation(Summary = "Login do usuário", Tags = ["Autenticação - Auth"])]
+    [SwaggerOperation(Summary = "Login do usuário", Tags = ["Auth"])]
     [ProducesResponseType(typeof(TokenDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Login([FromBody] AuthenticateCommand command, CancellationToken cancellationToken = default)

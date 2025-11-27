@@ -1,9 +1,10 @@
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using Zenvus.Domain.Entities;
 using Zenvus.Infra.Abstractions;
 using Zenvus.Infra.Database;
 
-namespace Zenvus.Application.Commands.Category;
+namespace Zenvus.Application.Commands.Categories;
 
 public class CreateCategoryCommandValidator : AbstractValidator<CreateCategoryCommand>
 {
@@ -41,7 +42,7 @@ public class CreateCategoryCommandValidator : AbstractValidator<CreateCategoryCo
     
     private async Task NameUsed(string name, ValidationContext<CreateCategoryCommand> context, CancellationToken cancellationToken)
     {
-        var emUso = await _repository.DbSet<Domain.Entities.Category>()
+        var emUso = await _repository.DbSet<Category>()
             .AnyAsync(c => c.Name.ToLower() == name.ToLower(), cancellationToken);
 
         if (emUso)
