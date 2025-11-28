@@ -26,6 +26,12 @@
         <PackageReference Include="NetDevPack.Security.Jwt.Core" Version="8.2.2" />
         <PackageReference Include="pix-payload-generator.net" Version="1.0.21" />
         <PackageReference Include="ScottBrady91.AspNetCore.Identity.Argon2PasswordHasher" Version="1.4.0" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.4" />
+        <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="9.0.1" />
+        <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="9.0.4" />
+        <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="9.0.4" />
+        <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="9.0.4" />
+        <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="9.0.4" />
     </ItemGroup>
 
     <ItemGroup>

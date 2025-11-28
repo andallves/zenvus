@@ -20,9 +20,6 @@ public class UpdateCategoryCommandValidator : AbstractValidator<UpdateCategoryCo
             .WithMessage("O Id é um campo obrigatório.");
         
         RuleFor(c => c.Name)
-            .NotNull()
-            .NotEmpty() 
-            .WithMessage("O nome da categoria é obrigatório.")
             .CustomAsync(NameUsed)
             .MinimumLength(3)
             .WithMessage("O nome da categoria deve ter no mínimo 3 caracteres.")
@@ -30,9 +27,6 @@ public class UpdateCategoryCommandValidator : AbstractValidator<UpdateCategoryCo
             .WithMessage("O nome da categoria deve ter no máximo 15 caracteres.");
         
         RuleFor(c => c.Color)
-            .NotNull()
-            .NotEmpty()
-            .WithMessage("A cor da categoria é obrigatória.")
             .Must(BeAValidHexColor)
             .WithMessage("A cor da categoria deve ser um código hexadecimal válido.");
     }

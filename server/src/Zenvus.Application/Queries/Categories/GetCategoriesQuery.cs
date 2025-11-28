@@ -1,3 +1,4 @@
+using Zenvus.API.Configurations.Swagger;
 using Zenvus.Application.DTO.Category;
 using Zenvus.Core.ValueObjects;
 
@@ -7,6 +8,11 @@ public class GetCategoriesQuery : BasePagedQuery<Domain.Entities.Category, Categ
 {
     public string? Name { get; set; }
     public string? Color { get; set; }
+    
+    [SwaggerParameterExample("Id", "Id")]
+    [SwaggerParameterExample("Name", "Name")]
+    [SwaggerParameterExample("Color", "Color")]
+    public new string OrderBy { get; set; } = "Id";
 
     public override void ApplyFilter(ref IQueryable<Domain.Entities.Category> query)
     {
@@ -19,7 +25,6 @@ public class GetCategoriesQuery : BasePagedQuery<Domain.Entities.Category, Categ
         {
             query = query.Where(u => u.Color.Contains(Color));
         }
-        
     }
 
     public override void ApplyOrdering(ref IQueryable<Domain.Entities.Category> query)
