@@ -1,5 +1,5 @@
 using AutoMapper;
-using Zenvus.Application.Commands.Category;
+using Zenvus.Application.Commands.Categories;
 using Zenvus.Application.DTO.Category;
 using Zenvus.Core.ValueObjects;
 using Zenvus.Domain.Entities;
@@ -16,5 +16,6 @@ public class CategoryProfile : Profile
           .ReverseMap();
       
       CreateMap<CreateCategoryCommand, Category>();
+      CreateMap<UpdateCategoryCommand, Category>();
   }
 }

@@ -14,21 +14,21 @@ namespace Zenvus.API.Controllers;
 [Authorize]
 [ApiController]
 [ExcludeFromCodeCoverage]
-public abstract class BaseController : ControllerBase
+public abstract class BaseController(IMediator mediator) : ControllerBase
 {
-    protected readonly IMediator Mediator;
-    protected BaseController(IMediator mediator)
-    {
-        Mediator = mediator;
-    }
+    private readonly IMediator _mediator = mediator;
 
     protected async Task<IActionResult> SendCommandAsync<T>(BaseCommand<T> request,
         CancellationToken cancellationToken = default)
     {
-        var result = await Mediator.Send(request, cancellationToken);
-        return result.IsSuccess
-            ? Ok(result.Result)
-            : ErroResponse(result);
+        var result = await _mediator.Send(request, cancellationToken);
+
+        if (result.IsSuccess)
+        {
+            return result.Status == 201 ? Created() : Ok(result.Result);
+        }
+        
+        return ErroResponse(result);
     }
 
     protected IActionResult ErroResponse<T>(CustomResult<T> result)
@@ -47,7 +47,7 @@ public abstract class BaseController : ControllerBase
     
     protected async Task<IActionResult> SendQueryAsync<T>(BaseQuery<T> request, CancellationToken cancellationToken = default)
     {
-        var result = await Mediator.Send(request, cancellationToken);
+        var result = await _mediator.Send(request, cancellationToken);
         
         return result.IsSuccess
             ? Ok(result.Result)
@@ -56,7 +56,7 @@ public abstract class BaseController : ControllerBase
     
     protected async Task<IActionResult> SendQueryAsync<T, TY>(BasePagedQuery<T, TY> request, CancellationToken cancellationToken = default)
     {
-        var result = await Mediator.Send(request, cancellationToken);
+        var result = await _mediator.Send(request, cancellationToken);
         return Ok(result);
     }
 }

@@ -4,8 +4,9 @@ using Zenvus.Application.DTO.Category;
 using Zenvus.Core.ValueObjects;
 using Zenvus.Infra.Abstractions;
 using Zenvus.Infra.Database;
+using Zenvus.Domain.Entities;
 
-namespace Zenvus.Application.Commands.Category;
+namespace Zenvus.Application.Commands.Categories;
 
 public class CreateCategoryCommandHandler(IMapper mapper, IRepository<ZenvusDbContext> repository)
     : IRequestHandler<CreateCategoryCommand, CustomResult<CategoryDto>>
@@ -13,9 +14,9 @@ public class CreateCategoryCommandHandler(IMapper mapper, IRepository<ZenvusDbCo
     public async Task<CustomResult<CategoryDto>> Handle(CreateCategoryCommand categoryCommand,
         CancellationToken cancellationToken)
     {
-        var category = mapper.Map<Domain.Entities.Category>(categoryCommand);
+        var category = mapper.Map<Category>(categoryCommand);
         
-        repository.DbSet<Domain.Entities.Category>().Add(category);
+        repository.DbSet<Category>().Add(category);
         
         if (await repository.SaveChangesAsync(cancellationToken) <= 0)
         {
@@ -25,6 +26,6 @@ public class CreateCategoryCommandHandler(IMapper mapper, IRepository<ZenvusDbCo
         
         var dto = mapper.Map<CategoryDto>(category);
         return CustomResult<CategoryDto>
-            .SuccessResult(dto, "Categoria cadastrada com sucesso!");
+            .SuccessResult(dto, "Categoria cadastrada com sucesso!", 201);
     }
 }
