@@ -37,8 +37,8 @@
 
   <zen-table
     id="table-cursos"
-    [columns]="cursoColumn"
-    [data]="cursosData"
+    [columns]="categoryColumn"
+    [data]="categoriesData"
     (edit)="openEditModal($event)"
     (delete)="openDeleteModal($event)"
     (pageChange)="onPageChange($event)"
@@ -51,9 +51,9 @@
 </ng-template>
 
 <ng-template #formEditTemplate>
-  <zen-edit-category-form id="form-edit-curso" [dataCurso]="dataCurso" (changeData)="changeData()"/>
+  <zen-edit-category-form id="form-edit-curso" [dataCurso]="dataCategory" (changeData)="changeData()"/>
 </ng-template>
 
 <ng-template #deleteTemplate>
-  <zen-delete-template id="template-delete-curso" [dataCurso]="dataCurso" (changeData)="changeData()"/>
+  <zen-delete-template id="template-delete-curso" [dataCurso]="dataCategory" (changeData)="changeData()"/>
 </ng-template>

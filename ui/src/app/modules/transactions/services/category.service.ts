@@ -1,6 +1,8 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '@env/environment';
+import { ICategory } from '@shared/domain-types/category.type';
+import { ApiResponse } from '@shared/interfaces/api-response.interface';
 import { map, Observable } from 'rxjs';
 
 @Injectable({
@@ -10,8 +12,12 @@ export class CategoryService {
   private readonly apiUrl = environment.apiUrl;
   private readonly httpClient = inject(HttpClient);
 
-  getCategories(page: number, itensPorPagina: number, filtros: any = {}): Observable<any> {
-    let params = new HttpParams().set('Pagina', page).set('ItensPorPagina', itensPorPagina);
+  getCategories(
+    page: number,
+    itensPorPagina: number,
+    filtros: any = {}
+  ): Observable<ApiResponse<ICategory>> {
+    let params = new HttpParams().set('Page', page).set('ItemsPerPage', itensPorPagina);
 
     Object.keys(filtros).forEach(key => {
       if (filtros[key]) {
@@ -19,15 +25,14 @@ export class CategoryService {
       }
     });
 
-    return this.httpClient.get<any>(`${this.apiUrl}/v1/category`, { params }).pipe(
-      map((res: any) => {
-        res.resultado = res.resultado.map((item: any) => ({
-          ...item,
-        }));
-        console.log(res);
-        return res;
-      })
-    );
+    return this.httpClient
+      .get<ApiResponse<ICategory>>(`${this.apiUrl}/v1/category`, { params })
+      .pipe(
+        map(res => {
+          console.log('response:  ' + res);
+          return res;
+        })
+      );
   }
 
   addCategory(data: any): Observable<any> {

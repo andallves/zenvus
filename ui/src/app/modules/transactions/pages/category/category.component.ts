@@ -33,7 +33,7 @@ import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
   ],
 })
 export class CategoryComponent implements OnInit {
-  dataCurso: any = [];
+  dataCategory: any = [];
   filterForm!: FormGroup;
   isLoadingFilter = false;
   isLoadingClearFilter = false;
@@ -55,11 +55,11 @@ export class CategoryComponent implements OnInit {
   imgCursos = './header.svg';
 
   ngOnInit(): void {
-    this.loaderCursos();
+    this.loaderCategories();
   }
 
-  cursosData: ICategory[] = [];
-  cursoColumn: string[] = ['nome', 'cor'];
+  categoriesData: ICategory[] = [];
+  categoryColumn: string[] = ['nome', 'cor'];
   optionsInput: { value: number; label: string }[] = [
     { label: 'Graduacao', value: 1 },
     { label: 'Técnico', value: 2 },
@@ -75,62 +75,59 @@ export class CategoryComponent implements OnInit {
 
   initializeForm() {
     this.filterForm = this.fb.group({
-      nome: ['', []],
-      tipo: ['', []],
-      data: ['', []],
-      dataHorario: ['', []],
+      name: ['', []],
+      color: ['', []],
     });
   }
 
   changeData() {
-    this.loaderCursos();
+    this.loaderCategories();
   }
 
   onSearch() {
-    this.loaderCursos();
+    this.loaderCategories();
     this.isLoadingFilter = true;
   }
 
-  loaderCursos() {
-    console.log('Carregando cursos para a página:', this.page);
+  loaderCategories() {
+    console.log('Carregando categorias para a página:', this.page);
     const payload: any = this.filterForm.value;
 
-    // this.categoryService.getCategories(this.page, this.itensPorPagina, payload).subscribe({
-    //   next: response => {
-    //     this.totalItens = response.totalDeResultados;
-    //     this.cursosData = response.resultado
-    //
-    //       .filter((category: ICategory) => !category.disabled)
-    //
-    //       .map(
-    //         (curso: ICategory) => (
-    //           console.log('Curso:', curso),
-    //           {
-    //             ...curso,
-    //           }
-    //         )
-    //       );
-    //     this.activeBadges = [];
-    //     this.isLoadingFilter = false;
-    //     this.isLoadingClearFilter = false;
-    //   },
-    //   error: error => {
-    //     console.error('Erro ao carregar cursos:', error);
-    //     this.isLoadingFilter = false;
-    //     this.isLoadingClearFilter = false;
-    //   },
-    // });
+    this.categoryService.getCategories(this.page, this.itensPorPagina, payload).subscribe({
+      next: response => {
+        this.totalItens = response.totalResults;
+        this.categoriesData = response.result
+          .filter((category: ICategory) => !category.disabled)
+
+          .map(
+            (category: ICategory) => (
+              console.log('Categoria:', category),
+              {
+                ...category,
+              }
+            )
+          );
+        this.activeBadges = [];
+        this.isLoadingFilter = false;
+        this.isLoadingClearFilter = false;
+      },
+      error: error => {
+        console.error('Erro ao carregar cursos:', error);
+        this.isLoadingFilter = false;
+        this.isLoadingClearFilter = false;
+      },
+    });
   }
 
   clearParam(param: string) {
     this.filterForm.get(param)?.setValue('');
-    this.loaderCursos();
+    this.loaderCategories();
   }
 
   onClearFilter() {
     this.page = 1;
     this.filterForm.reset();
-    this.loaderCursos();
+    this.loaderCategories();
   }
 
   openAddModal() {
@@ -147,7 +144,7 @@ export class CategoryComponent implements OnInit {
   }
 
   openEditModal(event: any) {
-    this.dataCurso = event;
+    this.dataCategory = event;
     const initialState: ModalOptions = {
       initialState: {
         iconTemplate: 'bi bi-pencil-fill',
@@ -161,7 +158,7 @@ export class CategoryComponent implements OnInit {
   }
 
   openDeleteModal(event: any) {
-    this.dataCurso = event;
+    this.dataCategory = event;
     const initialState: ModalOptions = {
       initialState: {
         iconTemplate: 'bi bi-trash-fill',
@@ -177,6 +174,6 @@ export class CategoryComponent implements OnInit {
   onPageChange(event: any) {
     console.log('Mudança de página:', event);
     this.page = event;
-    this.loaderCursos();
+    this.loaderCategories();
   }
 }
