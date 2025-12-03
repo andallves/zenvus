@@ -1,10 +1,13 @@
 import { Component, inject, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { AddCategoryFormComponent } from '@modules/transactions/pages/category/components/add-category-form/add-category-form.component';
 import { DeleteTemplateComponent } from '@modules/transactions/pages/category/components/delete-template/delete-template.component';
+import { EditCategoryFormComponent } from '@modules/transactions/pages/category/components/edit-category-form/edit-category-form.component';
 import { CategoryService } from '@modules/transactions/services/category.service';
 import { FilterComponent } from '@shared/components/filter/filter.component';
 import { HeaderTableComponent } from '@shared/components/header-table/header-table.component';
+import { InputDefaultComponent } from '@shared/components/inputs/input-default/input-default.component';
+import { SelectInputComponent } from '@shared/components/inputs/select-input/select-input.component';
 import { ModalComponent } from '@shared/components/modal/modal.component';
 import { PageContainerComponent } from '@shared/components/page-container/page-container.component';
 import { TableComponent } from '@shared/components/table/table.component';
@@ -23,6 +26,10 @@ import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
     TableComponent,
     AddCategoryFormComponent,
     DeleteTemplateComponent,
+    InputDefaultComponent,
+    SelectInputComponent,
+    EditCategoryFormComponent,
+    ReactiveFormsModule,
   ],
 })
 export class CategoryComponent implements OnInit {
@@ -88,31 +95,31 @@ export class CategoryComponent implements OnInit {
     console.log('Carregando cursos para a página:', this.page);
     const payload: any = this.filterForm.value;
 
-    this.categoryService.getCategories(this.page, this.itensPorPagina, payload).subscribe({
-      next: response => {
-        this.totalItens = response.totalDeResultados;
-        this.cursosData = response.resultado
-
-          .filter((category: ICategory) => !category.disabled)
-
-          .map(
-            (curso: ICategory) => (
-              console.log('Curso:', curso),
-              {
-                ...curso,
-              }
-            )
-          );
-        this.activeBadges = [];
-        this.isLoadingFilter = false;
-        this.isLoadingClearFilter = false;
-      },
-      error: error => {
-        console.error('Erro ao carregar cursos:', error);
-        this.isLoadingFilter = false;
-        this.isLoadingClearFilter = false;
-      },
-    });
+    // this.categoryService.getCategories(this.page, this.itensPorPagina, payload).subscribe({
+    //   next: response => {
+    //     this.totalItens = response.totalDeResultados;
+    //     this.cursosData = response.resultado
+    //
+    //       .filter((category: ICategory) => !category.disabled)
+    //
+    //       .map(
+    //         (curso: ICategory) => (
+    //           console.log('Curso:', curso),
+    //           {
+    //             ...curso,
+    //           }
+    //         )
+    //       );
+    //     this.activeBadges = [];
+    //     this.isLoadingFilter = false;
+    //     this.isLoadingClearFilter = false;
+    //   },
+    //   error: error => {
+    //     console.error('Erro ao carregar cursos:', error);
+    //     this.isLoadingFilter = false;
+    //     this.isLoadingClearFilter = false;
+    //   },
+    // });
   }
 
   clearParam(param: string) {

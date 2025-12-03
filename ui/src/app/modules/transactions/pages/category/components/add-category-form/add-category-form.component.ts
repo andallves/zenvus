@@ -32,7 +32,7 @@ import { ToastrService } from 'ngx-toastr';
   styleUrl: './add-category-form.component.scss',
 })
 export class AddCategoryFormComponent {
-  addCursoForm!: FormGroup;
+  addCategoryForm!: FormGroup;
   isLoading = false;
   @Output() changeData = new EventEmitter<void>();
 
@@ -57,8 +57,8 @@ export class AddCategoryFormComponent {
   ];
 
   initializeForm() {
-    this.addCursoForm = this.fb.group({
-      nome: [
+    this.addCategoryForm = this.fb.group({
+      name: [
         '',
         [
           Validators.required,
@@ -67,7 +67,7 @@ export class AddCategoryFormComponent {
           Validators.pattern('.*[a-zA-ZÀ-ÿ].*'),
         ],
       ],
-      tipo: ['', [Validators.required]],
+      color: ['', [Validators.required]],
     });
   }
 
@@ -76,11 +76,11 @@ export class AddCategoryFormComponent {
   }
 
   hasMaxLengthAndRequiredError(input: string): boolean {
-    return this.validatorsService.hasMaxLengthAndRequiredError(this.addCursoForm, input);
+    return this.validatorsService.hasMaxLengthAndRequiredError(this.addCategoryForm, input);
   }
 
   getMaxLengthAndRequiredErrorMsg(input: string): string {
-    const control = this.addCursoForm.get(input);
+    const control = this.addCategoryForm.get(input);
 
     if (control?.hasError('required')) {
       return 'Este campo é obrigatório.';
@@ -99,11 +99,11 @@ export class AddCategoryFormComponent {
 
   addCategory() {
     this.isLoading = true;
-    if (this.addCursoForm.valid) {
-      const tipo: string = this.addCursoForm.get('tipo')?.value;
+    if (this.addCategoryForm.valid) {
+      const tipo: string = this.addCategoryForm.get('tipo')?.value;
 
-      const payload: any = {
-        ...this.addCursoForm.value,
+      const payload = {
+        ...this.addCategoryForm.value,
         tipo: Number(tipo),
       };
 
@@ -113,7 +113,7 @@ export class AddCategoryFormComponent {
           this.isLoading = false;
           this.changeData.emit();
 
-          this.toastr.success('Curso cadastrado com sucesso!', 'Sucesso!');
+          this.toastr.success('Categoria cadastrada com sucesso!', 'Sucesso!');
         },
         error: errors => {
           const { erros } = errors.error;

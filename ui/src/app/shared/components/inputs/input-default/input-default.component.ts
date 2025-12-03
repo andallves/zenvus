@@ -1,5 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, EventEmitter, forwardRef, HostListener, inject, Input, Output, signal, } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  forwardRef,
+  HostListener,
+  inject,
+  Input,
+  Output,
+  signal,
+} from '@angular/core';
 import { FormsModule, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { IdGeneratorService } from '../utils/id-generator.service';
@@ -22,7 +32,7 @@ import { IdGeneratorService } from '../utils/id-generator.service';
 export class InputDefaultComponent {
   #geradorIdUnico = inject(IdGeneratorService);
 
-  @Input() inputId: string = 'input-id-default';
+  @Input() inputId = 'input-id-default';
 
   public labelSignal = signal('');
   @Input() set label(nomeLabel: string) {
@@ -30,18 +40,18 @@ export class InputDefaultComponent {
     this.inputId = this.#geradorIdUnico.gerarId(nomeLabel);
   }
 
-  @Input() type: string = '';
-  @Input() hasError: boolean = false;
-  @Input() placeholder: string = '';
-  @Input() errorMsg: string = '';
-  @Input() isDisable: boolean = false;
-  @Input() readonly: boolean = false;
-  @Input() variant: string = '';
-  @Input() mask: string = '';
-  @Input() showX: boolean = false;
-  @Input() showMandatory: boolean = false;
-  @Input() icon: boolean = false;
-  @Input() fixedSize: boolean = false;
+  @Input() type = '';
+  @Input() hasError = false;
+  @Input() placeholder = '';
+  @Input() errorMsg = '';
+  @Input() isDisable = false;
+  @Input() readonly = false;
+  @Input() variant = '';
+  @Input() mask = '';
+  @Input() showX = false;
+  @Input() showMandatory = false;
+  @Input() icon = false;
+  @Input() fixedSize = false;
   @Output() valueChange: any = new EventEmitter<number>();
 
   value: any;

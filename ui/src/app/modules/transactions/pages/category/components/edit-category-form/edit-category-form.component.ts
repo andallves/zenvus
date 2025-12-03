@@ -1,21 +1,15 @@
-import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
-import { CategoryService } from '@modules/transactions/services/category.service';
-import { ButtonComponent } from '@shared/components/button/button.component';
-import { InputDefaultComponent } from '@shared/components/inputs/input-default/input-default.component';
-import { SelectInputComponent } from '@shared/components/inputs/select-input/select-input.component';
-import { ModalIconType } from '@shared/components/swall/modal-alert/domain-types/modal-types.interface';
-import { ModalAlertService } from '@shared/components/swall/modal-alert/service/modal-alert.service';
-import { InputValidationService } from '@shared/validators/input-validator/input-validator.service';
-import { BsModalService } from 'ngx-bootstrap/modal';
-import { ToastrService } from 'ngx-toastr';
+import {CommonModule} from '@angular/common';
+import {Component, EventEmitter, inject, Input, OnInit, Output} from '@angular/core';
+import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators,} from '@angular/forms';
+import {CategoryService} from '@modules/transactions/services/category.service';
+import {ButtonComponent} from '@shared/components/button/button.component';
+import {InputDefaultComponent} from '@shared/components/inputs/input-default/input-default.component';
+import {SelectInputComponent} from '@shared/components/inputs/select-input/select-input.component';
+import {ModalIconType} from '@shared/components/swall/modal-alert/domain-types/modal-types.interface';
+import {ModalAlertService} from '@shared/components/swall/modal-alert/service/modal-alert.service';
+import {InputValidationService} from '@shared/validators/input-validator/input-validator.service';
+import {BsModalService} from 'ngx-bootstrap/modal';
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'zen-edit-category-form',
@@ -109,12 +103,12 @@ export class EditCategoryFormComponent implements OnInit {
     return '';
   }
 
-  editCurso() {
+  editCategory() {
     this.isLoading = true;
     if (this.editCursoForm.valid) {
       const tipo: string = this.editCursoForm.get('tipo')?.value;
 
-      const payload: any = {
+      const payload = {
         ...this.editCursoForm.value,
         tipo: Number(tipo),
       };
