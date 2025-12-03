@@ -1,0 +1,61 @@
+<div class="filter" id="{{ filterId || 'default-filter' }}" [ngClass]="{ 'align-right': alignRight }">
+  <!-- Toggle Mobile -->
+  <button
+    *ngIf="enableMobileToggle && isMobile"
+    type="button"
+    class="mobile-filter-toggle"
+    (click)="toggleMobileFilter()"
+    [attr.aria-expanded]="showMobileFilter"
+    aria-label="Toggle filtros mobile"
+  >
+    <span>Filtros</span>
+    <i class="bi" [ngClass]="showMobileFilter ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
+  </button>
+
+  <div
+    class="inputs-container"
+    [ngClass]="{
+      'mobile-hidden': enableMobileToggle && isMobile && !showMobileFilter,
+      'mobile-visible': enableMobileToggle && isMobile && showMobileFilter
+    }"
+  >
+    <div class="filter-content">
+      <ng-content></ng-content>
+    </div>
+
+    <div class="actions-container">
+      @if (showSearchFilter) {
+        <button
+          id="{{ filterId || 'default-filter' }}-search-button"
+          class="search-button"
+          (click)="onFilterAction()"
+          [disabled]="disabled"
+        >
+          <i class="bi bi-search" *ngIf="!isLoadingFilter"></i>
+          <zen-spinner *ngIf="isLoadingFilter"></zen-spinner>
+        </button>
+      }
+      @if (showClearadd) {
+        <button
+          id="{{ filterId || 'default-filter' }}-add-button"
+          class="add-button"
+          (click)="onAddAction()"
+          [disabled]="disabledAdd || isLoadingAdd"
+          [attr.aria-label]="'Adicionar novo item'"
+        >
+          <img src="add.svg" alt="Adicionar" class="add-icon" *ngIf="!isLoadingAdd">
+          <zen-spinner *ngIf="isLoadingAdd"></zen-spinner>
+        </button>
+      }
+      <button
+        *ngIf="showClearFilter"
+        id="{{ filterId || 'default-filter' }}-clear-button"
+        class="clear-button clearbutton"
+        (click)="onFilterClearedAction()"
+      >
+        Limpar filtros
+        <zen-spinner *ngIf="isLoadingClearFilter"></zen-spinner>
+      </button>
+    </div>
+  </div>
+</div>

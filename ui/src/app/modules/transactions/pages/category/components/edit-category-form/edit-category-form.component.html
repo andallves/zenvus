@@ -1,0 +1,41 @@
+<form id="form-edit-curso" action="javascript:void(0)" [formGroup]="editCursoForm">
+  <zen-input
+    id="input-nome"
+    label="Nome:"
+    placeholder="Digite o nome"
+    [hasError]="hasMaxLengthAndRequiredError('nome')"
+    [errorMsg]="getMaxLengthAndRequiredErrorMsg('nome')"
+    formControlName="nome"
+    maxlength="50"
+  />
+
+  <zen-select-input
+    id="select-tipo"
+    [options]="optionsInput"
+    label="Tipo:"
+    formControlName="tipo"
+    [dropdownId]="'select-tipo-edit'"
+  />
+
+  <div class="footer-modal">
+    <zen-button
+      id="button-fechar"
+      variant="danger"
+      width="100px"
+      (click)="onCloseModal()"
+      [buttonId]="'button-fechar'"
+    >
+      Fechar
+    </zen-button>
+    <zen-button
+      id="button-salvar"
+      width="100px"
+      [disabled]="!editCursoForm.valid"
+      [isLoading]="isLoading"
+      (click)="editCategory()"
+      [buttonId]="'button-salvar'"
+    >
+      Salvar
+    </zen-button>
+  </div>
+</form>

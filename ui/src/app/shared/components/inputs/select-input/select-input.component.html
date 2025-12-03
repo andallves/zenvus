@@ -1,0 +1,59 @@
+<div class="box-input" [class.fixedSize]="fixedSize">
+  <label [for]="dropdownId" class="label-select">
+    {{ labelSignal() }}
+    <span *ngIf="showMandatory" class="mandatory">*</span>
+  </label>
+  <div class="input-wrapper">
+    <div
+      class="dropdown"
+      [ngClass]="{ 'is-invalid': hasError, 'is-focused': isFocused }"
+    >
+      <button
+        class="btn btn-secondary dropdown-toggle form-control"
+        [class.show-x]="showX && value"
+        type="button"
+        id="{{ dropdownId }}"
+        [disabled]="isDisable"
+        (click)="toggleDropdown()"
+        (blur)="onBlur()"
+        (focus)="onFocus()"
+        (keydown)="onKeydown($event)"
+        aria-haspopup="listbox"
+        [attr.aria-expanded]="isOpen"
+        [attr.aria-controls]="dropdownId + '-menu'"
+      >
+        <span id="{{ dropdownId }}-selected-label" class="text-truncate">
+          {{ getSelectedLabel() }}
+        </span>
+      </button>
+      <div
+        class="dropdown-menu "
+        [class.show]="isOpen"
+        role="listbox"
+        [id]="dropdownId + '-menu'"
+      >
+        <a
+          id="{{ dropdownId }}-option-{{ i }}"
+          class="dropdown-item"
+          *ngFor="let option of options; let i = index"
+          (click)="selectOption(option, $event)"
+          [ngClass]="{ active: i === focusedOptionIndex }"
+          role="option"
+          [attr.aria-selected]="i === focusedOptionIndex"
+        >
+          {{ option.label }}
+        </a>
+      </div>
+    </div>
+    <span
+      *ngIf="showX && value"
+      id="{{ dropdownId }}-clear"
+      class="clear-input"
+      (click)="clearSelection($event)"
+      >&#x2715;</span
+    >
+  </div>
+  <div *ngIf="hasError" id="{{ dropdownId }}-error" class="invalid-feedback">
+    {{ errorMsg }}
+  </div>
+</div>

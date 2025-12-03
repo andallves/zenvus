@@ -1,0 +1,17 @@
+
+.spinner {
+  width: 1.25rem;
+  height: 1.25rem;
+  border: .25rem solid rgba(0, 0, 0, 0.103);
+  border-top: .25rem solid;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

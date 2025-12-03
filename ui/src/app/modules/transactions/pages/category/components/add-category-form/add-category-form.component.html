@@ -1,0 +1,50 @@
+<form id="form-add-curso" action="javascript:void(0)" [formGroup]="addCursoForm" aria-labelledby="form-add-curso-title">
+  <h2 id="form-add-curso-title" class="visually-hidden">Adicionar Curso</h2>
+
+  <zen-input
+    id="input-nome"
+    label="Digite o nome"
+    placeholder="Nome:"
+    [hasError]="hasMaxLengthAndRequiredError('nome')"
+    [errorMsg]="getMaxLengthAndRequiredErrorMsg('nome')"
+    formControlName="nome"
+    aria-label="Nome do curso"
+    aria-describedby="input-nome-error"
+    maxlength="50"
+    [inputId]="'input-nome-add'"
+  />
+
+  <zen-select-input
+    id="select-tipo"
+    [options]="optionsInput"
+    label="Tipo:"
+    formControlName="tipo"
+    aria-label="Tipo de curso"
+    aria-describedby="select-tipo-error"
+    [dropdownId]="'select-tipo-add'"
+  />
+
+  <div class="footer-modal">
+    <zen-button
+      id="button-fechar"
+      variant="danger"
+      width="100px"
+      (click)="onCloseModal()"
+      aria-label="Fechar o formulário"
+      [buttonId]="'button-fechar'"
+    >
+      Fechar
+    </zen-button>
+    <zen-button
+      id="button-salvar"
+      width="100px"
+      [disabled]="!addCursoForm.valid"
+      [isLoading]="isLoading"
+      (click)="addCategory()"
+      aria-label="Salvar o curso"
+      [buttonId]="'button-salvar'"
+    >
+      Salvar
+    </zen-button>
+  </div>
+</form>

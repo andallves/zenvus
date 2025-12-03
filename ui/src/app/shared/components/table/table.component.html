@@ -1,0 +1,305 @@
+<!-- Versão Desktop - Tabela -->
+<div class="table-container d-none d-md-block">
+  <table class="table table-bordered table-hover">
+    <thead>
+      <tr>
+        <th *ngFor="let column of columns">
+          {{ columnLabels[column] || column | titlecase }}
+        </th>
+        <th *ngIf="showActions" class="actions-header">Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of data">
+        <td *ngFor="let column of columns">
+          <ng-container *ngIf="column === 'título'; else checkCor">
+            <div class="titulo-wrapper">
+              <span *ngIf="item['ativo']" class="badge badge-class badge-ativo">
+                Ativo
+              </span>
+              <span class="titulo-texto">{{ item["título"] }}</span>
+            </div>
+          </ng-container>
+
+          <ng-template #checkCor>
+            <ng-container *ngIf="column === 'cor'; else usarTemplate">
+              <span [style]="{ color: item['cor'] }">{{ item["cor"] }}</span>
+            </ng-container>
+          </ng-template>
+
+          <ng-template #usarTemplate>
+            <ng-container *ngIf="columnTemplates[column]; else padrao">
+              <ng-container
+                *ngTemplateOutlet="
+                  columnTemplates[column];
+                  context: { value: item[column], item: item }
+                "
+              ></ng-container>
+            </ng-container>
+          </ng-template>
+
+          <ng-template #padrao>
+            <span
+              *ngIf="
+                notTruncateText(column, item) | foto as foto;
+                else elseTemplate
+              "
+              [innerHTML]="foto"
+            ></span>
+            <ng-template #elseTemplate>
+              {{ notTruncateText(column, item) }}
+            </ng-template>
+          </ng-template>
+        </td>
+        <td
+          *ngIf="actionTemplate; else defaultActions"
+          class="actions-container"
+        >
+          <ng-container
+            *ngTemplateOutlet="actionTemplate; context: { $implicit: item }"
+          ></ng-container>
+        </td>
+        <ng-template #defaultActions>
+          <td *ngIf="showActions" class="actions-container">
+            <div class="d-flex justify-content-center flex-row">
+              <button
+                id="btn-edit"
+                data-testid="btn-edit"
+                aria-label="Botão de editar"
+                *ngIf="showEdit && shouldShowEdit(item)"
+                class="btn btn-warning"
+                (click)="onEdit(item)"
+              >
+                <i class="bi bi-pencil-fill" aria-hidden="true"></i>
+              </button>
+
+              <button
+                id="btn-delete"
+                data-testid="btn-delete"
+                aria-label="Botão de deletar"
+                *ngIf="showDelete && shouldShowDelete(item)"
+                class="btn btn-danger"
+                (click)="onDelete(item)"
+              >
+                <i class="bi bi-trash-fill" aria-hidden="true"></i>
+              </button>
+              <button
+                (click)="onKey(item)"
+                *ngIf="showKey"
+                class="btn btn-warning key"
+              >
+                <img [src]="chave" alt="Chave" />
+              </button>
+
+              <button
+                (click)="onView(item)"
+                *ngIf="showView || !shouldShowView(item)"
+                class="btn btn-info"
+                [ngClass]="{ desativado: !getDesativadoProperty(item) }"
+                [disabled]="!getDesativadoProperty(item)"
+              >
+                <i class="bi bi-eye-fill"></i>
+              </button>
+
+              <button
+                id="btn-print"
+                data-testid="btn-print"
+                aria-label="Botão de imprimir"
+                *ngIf="showPrinter && shouldShowPrinter(item)"
+                class="btn btn-secondary"
+                (click)="onPrint(item)"
+                title="Imprimir"
+              >
+                <i class="bi bi-printer-fill" aria-hidden="true"></i>
+              </button>
+            </div>
+          </td>
+        </ng-template>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div class="cards-container d-block d-md-none">
+  <div class="card-item mb-3" *ngFor="let item of data; let i = index">
+    <div class="card custom-card">
+      <div class="card-header custom-header">
+        <ng-container *ngIf="item['título']">
+          <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center">
+              <span *ngIf="item['ativo']" class="badge me-2 badge-active">
+                Ativo
+              </span>
+              <h6 class="mb-0 header-title">Nome: {{ item["título"] }}</h6>
+            </div>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="!item['título'] && columns.length > 0">
+          <div class="d-flex align-items-center justify-content-between">
+            <h6 class="mb-0 header-title">Nome: {{ item[columns[0]] }}</h6>
+          </div>
+        </ng-container>
+
+        <div class="actions-menu" *ngIf="showActions">
+          <button
+            type="button"
+            class="three-dots-btn"
+            (click)="toggleDropdown(i)"
+            [attr.aria-expanded]="isDropdownOpen(i)"
+          >
+            <i class="bi bi-three-dots-vertical"></i>
+          </button>
+
+          <div class="custom-dropdown-menu" [class.show]="isDropdownOpen(i)">
+            <ng-container *ngIf="actionTemplate">
+              <div class="dropdown-item-wrapper">
+                <ng-container
+                  *ngTemplateOutlet="
+                    actionTemplate;
+                    context: { $implicit: item }
+                  "
+                ></ng-container>
+              </div>
+            </ng-container>
+
+            <ng-container *ngIf="!actionTemplate">
+              <button
+                *ngIf="showView || !shouldShowView(item)"
+                class="custom-dropdown-item"
+                (click)="onView(item); closeDropdown(i)"
+                [disabled]="!getDesativadoProperty(item)"
+              >
+                <i class="bi bi-eye-fill me-2"></i>
+                Visualizar
+              </button>
+
+              <button
+                *ngIf="showEdit && shouldShowEdit(item)"
+                class="custom-dropdown-item"
+                (click)="onEdit(item); closeDropdown(i)"
+              >
+                <i class="bi bi-pencil-fill me-2"></i>
+                Editar
+              </button>
+
+              <button
+                *ngIf="showKey"
+                class="custom-dropdown-item"
+                (click)="onKey(item); closeDropdown(i)"
+              >
+                <img
+                  [src]="chave"
+                  alt="Chave"
+                  class="me-2"
+                  style="width: 16px; height: 16px"
+                />
+                Chave
+              </button>
+
+              <div
+                *ngIf="showDelete && shouldShowDelete(item)"
+                class="dropdown-divider"
+              ></div>
+
+              <button
+                *ngIf="showDelete && shouldShowDelete(item)"
+                class="custom-dropdown-item text-danger"
+                (click)="onDelete(item); closeDropdown(i)"
+              >
+                <i class="bi bi-trash-fill me-2"></i>
+                Excluir
+              </button>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-body custom-body">
+        <div class="row">
+          <div
+            class="col-12"
+            *ngFor="let column of columns; let colIndex = index"
+          >
+            <div
+              class="field-item mb-2"
+              *ngIf="shouldShowFieldInCard(column, colIndex, item)"
+            >
+              <strong class="field-label"
+                >{{ columnLabels[column] || column | titlecase }}:</strong
+              >
+              <div class="field-value">
+                <ng-container *ngIf="column === 'cor'; else defaultFieldValue">
+                  <span [style]="{ color: item['cor'] }">{{
+                    item["cor"]
+                  }}</span>
+                </ng-container>
+                <ng-template #defaultFieldValue>
+                  <span
+                    *ngIf="
+                      notTruncateText(column, item) | foto as foto;
+                      else elseTemplateMobile
+                    "
+                    [innerHTML]="foto"
+                  ></span>
+                  <ng-template #elseTemplateMobile>
+                    {{ notTruncateText(column, item) }}
+                  </ng-template>
+                </ng-template>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+@if ( hasNoData) {
+<div class="no-data-message">
+  <p class="text-center">
+    {{ noDataMessage || "Sem dados registrados" }}
+  </p>
+</div>
+}
+
+<div class="pagination-container">
+  <pagination
+    [totalItems]="totalItens"
+    [(ngModel)]="currentPage"
+    [itemsPerPage]="itemsPerPage"
+    [boundaryLinks]="true"
+    [directionLinks]="true"
+    [maxSize]="5"
+    (pageChanged)="onPageChange($event.page)"
+    nextText="Próxima"
+    [customPreviousTemplate]="prevTemplate"
+    [customNextTemplate]="nextTemplate"
+    [customFirstTemplate]="firstTemplate"
+    [customLastTemplate]="lastTemplate"
+    [classList]="'d-flex justify-content-end pt-1'"
+    class="custom-pagination pagination justify-content-end pagination-green"
+  ></pagination>
+</div>
+
+<ng-template #prevTemplate>
+  <span class="d-flex align-items-center">
+    <i class="bi bi-chevron-left"></i>
+  </span>
+</ng-template>
+
+<ng-template #nextTemplate>
+  <span class="d-flex align-items-center">
+    <i class="bi bi-chevron-right"></i>
+  </span>
+</ng-template>
+
+<ng-template #firstTemplate>
+  <span class="d-flex align-items-center">
+    <i class="bi bi-chevron-double-left"></i>
+  </span>
+</ng-template>
+
+<ng-template #lastTemplate>
+  <span class="d-flex align-items-center">
+    <i class="bi bi-chevron-double-right"></i>
+  </span>
+</ng-template>

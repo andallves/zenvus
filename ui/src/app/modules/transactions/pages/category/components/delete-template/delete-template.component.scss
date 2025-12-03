@@ -1,0 +1,28 @@
+div {
+  width: 100%;
+  height: 100%;
+  position: relative;
+
+  .body-pop-up {
+    width: 100%;
+
+    p {
+      font-size: 0.9rem;
+
+      span {
+        font-weight: 600;
+
+        color: var(--primary);
+      }
+    }
+  }
+
+  .footer-modal {
+    width: 100%;
+    height: 60px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+}

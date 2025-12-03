@@ -1,0 +1,177 @@
+::ng-deep .filter {
+  width: 100%;
+  align-items: end;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.625rem;
+
+  .inputs-container {
+    width: 99.3%;
+    display: flex;
+    gap: 1.375rem;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    padding-bottom: .875rem;
+
+    form {
+      height: 100%;
+      gap: 1.375rem;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      flex-wrap: wrap;
+
+      .badges-container {
+        height: 100%;
+        display: flex;
+        gap: 0.3125rem;
+        flex-wrap: wrap;
+        margin-left: 0.625rem;
+      }
+    }
+
+    form > * {
+      width: 15rem;
+    }
+  }
+
+  .actions-container {
+    gap: 1.375rem;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 0.0625rem;
+
+    .search-button {
+      width: 2.5625rem;
+      height: 2.5625rem;
+      border-radius: 0.25rem;
+      border: none;
+      background-color: #2f9e41;
+      color: var(--white);
+      font-size: 12.8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.3s;
+
+      &:hover {
+        filter: brightness(0.9);
+      }
+    }
+
+    .clear-button {
+      width: 9.25rem;
+      height: 2.5625rem;
+      border-radius: 0.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 0.0625rem solid var(--primary);
+      background-color: var(--background-primary);
+      color: var(--primary);
+      font-size: 14.4px;
+      font-weight: 600;
+      transition: 0.3s;
+
+      &:hover {
+        filter: brightness(0.9);
+      }
+    }
+
+    @media (max-width: 62rem) {
+      width: 100%;
+      margin-top: 0.625rem;
+     
+    }
+  }
+
+  @media (max-width: 62rem) {
+    flex-direction: column;
+    .actions-container {
+      display: flex;
+      justify-content: flex-start;
+    }
+  }
+}
+
+// Estilo para alinhamento à direita
+::ng-deep .filter.align-right {
+  .inputs-container {
+    justify-content: flex-end;
+
+    form {
+      justify-content: flex-end;
+      margin-left: 0;
+      margin-right: 0.5625rem;
+
+      .badges-container {
+        margin-left: 0;
+        margin-right: 0.625rem;
+      }
+    }
+  }
+
+  @media (max-width: 62rem) {
+    .inputs-container {
+      justify-content: flex-start;
+    }
+  }
+}
+
+button {
+  color: var(--sucesso, #2f9e41);
+  font-feature-settings: "liga" off, "clig" off;
+  font-family: "Open Sans", sans-serif;
+  font-size: 0.875rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 1rem;
+  letter-spacing: 0.0781rem;
+  text-transform: capitalize;
+
+  &:disabled {
+    filter: brightness(0.71);
+    cursor: not-allowed;
+  }
+}
+
+.add-button {
+  width: 2.5625rem;
+  height: 2.5625rem;
+  border-radius: 0.25rem;
+  border: none;
+  background-color: #2f9e41;
+  color: var(--white);
+  font-size: 12.8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.3s;
+
+  .add-icon {
+    width: 16px;
+    height: 16px;
+    filter: brightness(0) invert(1); // Torna o ícone branco
+  }
+
+  &:hover {
+    filter: brightness(0.9);
+
+    .add-icon {
+      filter: brightness(0) invert(1) brightness(0.9);
+    }
+  }
+
+  &:disabled {
+    filter: brightness(0.71);
+    cursor: not-allowed;
+
+    .add-icon {
+      filter: brightness(0) invert(1) brightness(0.71);
+    }
+  }
+
+  @media (max-width: 62rem) {
+    order: 2; // Manter ordem dos botões no mobile
+  }
+}
