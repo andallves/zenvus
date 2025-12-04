@@ -46,6 +46,11 @@ export class TableComponent<T> {
   @Output() pageChange = new EventEmitter<number>();
   @Input() currentPage = 1;
   public chave = '/file-arrow-left-right.svg';
+
+  constructor() {
+    console.log(this.data);
+  }
+
   get totalPages(): number {
     return Math.ceil(
       this.totalItens > 0

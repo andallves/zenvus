@@ -1,4 +1,4 @@
-<form id="form-edit-curso" action="javascript:void(0)" [formGroup]="editCursoForm">
+<form id="form-edit-curso" action="javascript:void(0)" [formGroup]="editCategoryForm">
   <zen-input
     id="input-nome"
     label="Nome:"
@@ -30,7 +30,7 @@
     <zen-button
       id="button-salvar"
       width="100px"
-      [disabled]="!editCursoForm.valid"
+      [disabled]="!editCategoryForm.valid"
       [isLoading]="isLoading"
       (click)="editCategory()"
       [buttonId]="'button-salvar'"

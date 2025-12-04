@@ -51,9 +51,9 @@
 </ng-template>
 
 <ng-template #formEditTemplate>
-  <zen-edit-category-form id="form-edit-curso" [dataCurso]="dataCategory" (changeData)="changeData()"/>
+  <zen-edit-category-form id="form-edit-curso" [dataCategory]="dataCategory" (changeData)="changeData()"/>
 </ng-template>
 
 <ng-template #deleteTemplate>
-  <zen-delete-template id="template-delete-curso" [dataCurso]="dataCategory" (changeData)="changeData()"/>
+  <zen-delete-template id="template-delete-curso" [dataCategory]="dataCategory" (changeData)="changeData()"/>
 </ng-template>

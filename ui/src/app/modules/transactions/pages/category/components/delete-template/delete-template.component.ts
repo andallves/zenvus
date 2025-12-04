@@ -4,6 +4,7 @@ import { CategoryService } from '@modules/transactions/services/category.service
 import { ButtonComponent } from '@shared/components/button/button.component';
 import { ModalIconType } from '@shared/components/swall/modal-alert/domain-types/modal-types.interface';
 import { ModalAlertService } from '@shared/components/swall/modal-alert/service/modal-alert.service';
+import { ICategory } from '@shared/interfaces/category.interface';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
 
@@ -15,7 +16,7 @@ import { ToastrService } from 'ngx-toastr';
   styleUrl: './delete-template.component.scss',
 })
 export class DeleteTemplateComponent {
-  @Input() dataCurso: any = {};
+  @Input() dataCategory: ICategory = {} as ICategory;
   @Input() isLoading = false;
   @Output() changeData = new EventEmitter<void>();
 
@@ -39,12 +40,12 @@ export class DeleteTemplateComponent {
   deleteCategory() {
     this.isLoading = true;
 
-    this.categoryService.deleteCategory(this.dataCurso.id).subscribe({
+    this.categoryService.deleteCategory(this.dataCategory.id).subscribe({
       next: () => {
         this.modalService.hide();
         this.isLoading = false;
         this.changeData.emit();
-        this.toastr.success('Curso deletado com sucesso!', 'Sucesso!');
+        this.toastr.success('Categoria deletada com sucesso!', 'Sucesso!');
       },
       error: errors => {
         const erros = errors.error;

@@ -2,43 +2,43 @@
 <div class="table-container d-none d-md-block">
   <table class="table table-bordered table-hover">
     <thead>
-      <tr>
-        <th *ngFor="let column of columns">
-          {{ columnLabels[column] || column | titlecase }}
-        </th>
-        <th *ngIf="showActions" class="actions-header">Ações</th>
-      </tr>
+    <tr>
+      <th *ngFor="let column of columns">
+        {{ columnLabels[column] || column | titlecase }}
+      </th>
+      <th *ngIf="showActions" class="actions-header">Ações</th>
+    </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let item of data">
-        <td *ngFor="let column of columns">
-          <ng-container *ngIf="column === 'título'; else checkCor">
-            <div class="titulo-wrapper">
-              <span *ngIf="item['ativo']" class="badge badge-class badge-ativo">
+    <tr *ngFor="let item of data">
+      <td *ngFor="let column of columns">
+        <ng-container *ngIf="column === 'nome'; else checkCor">
+          <div class="titulo-wrapper">
+              <span *ngIf="!item['disabled']" class="badge badge-class badge-ativo">
                 Ativo
               </span>
-              <span class="titulo-texto">{{ item["título"] }}</span>
-            </div>
+            <span class="titulo-texto">{{ item["name"] }}</span>
+          </div>
+        </ng-container>
+
+        <ng-template #checkCor>
+          <ng-container *ngIf="column === 'cor'; else usarTemplate">
+            <span [style]="{ color: item['color'] }">{{ item["color"] }}</span>
           </ng-container>
+        </ng-template>
 
-          <ng-template #checkCor>
-            <ng-container *ngIf="column === 'cor'; else usarTemplate">
-              <span [style]="{ color: item['cor'] }">{{ item["cor"] }}</span>
-            </ng-container>
-          </ng-template>
-
-          <ng-template #usarTemplate>
-            <ng-container *ngIf="columnTemplates[column]; else padrao">
-              <ng-container
-                *ngTemplateOutlet="
+        <ng-template #usarTemplate>
+          <ng-container *ngIf="columnTemplates[column]; else padrao">
+            <ng-container
+              *ngTemplateOutlet="
                   columnTemplates[column];
                   context: { value: item[column], item: item }
                 "
-              ></ng-container>
-            </ng-container>
-          </ng-template>
+            ></ng-container>
+          </ng-container>
+        </ng-template>
 
-          <ng-template #padrao>
+        <ng-template #padrao>
             <span
               *ngIf="
                 notTruncateText(column, item) | foto as foto;
@@ -46,76 +46,76 @@
               "
               [innerHTML]="foto"
             ></span>
-            <ng-template #elseTemplate>
-              {{ notTruncateText(column, item) }}
-            </ng-template>
+          <ng-template #elseTemplate>
+            {{ notTruncateText(column, item) }}
           </ng-template>
-        </td>
-        <td
-          *ngIf="actionTemplate; else defaultActions"
-          class="actions-container"
-        >
-          <ng-container
-            *ngTemplateOutlet="actionTemplate; context: { $implicit: item }"
-          ></ng-container>
-        </td>
-        <ng-template #defaultActions>
-          <td *ngIf="showActions" class="actions-container">
-            <div class="d-flex justify-content-center flex-row">
-              <button
-                id="btn-edit"
-                data-testid="btn-edit"
-                aria-label="Botão de editar"
-                *ngIf="showEdit && shouldShowEdit(item)"
-                class="btn btn-warning"
-                (click)="onEdit(item)"
-              >
-                <i class="bi bi-pencil-fill" aria-hidden="true"></i>
-              </button>
-
-              <button
-                id="btn-delete"
-                data-testid="btn-delete"
-                aria-label="Botão de deletar"
-                *ngIf="showDelete && shouldShowDelete(item)"
-                class="btn btn-danger"
-                (click)="onDelete(item)"
-              >
-                <i class="bi bi-trash-fill" aria-hidden="true"></i>
-              </button>
-              <button
-                (click)="onKey(item)"
-                *ngIf="showKey"
-                class="btn btn-warning key"
-              >
-                <img [src]="chave" alt="Chave" />
-              </button>
-
-              <button
-                (click)="onView(item)"
-                *ngIf="showView || !shouldShowView(item)"
-                class="btn btn-info"
-                [ngClass]="{ desativado: !getDesativadoProperty(item) }"
-                [disabled]="!getDesativadoProperty(item)"
-              >
-                <i class="bi bi-eye-fill"></i>
-              </button>
-
-              <button
-                id="btn-print"
-                data-testid="btn-print"
-                aria-label="Botão de imprimir"
-                *ngIf="showPrinter && shouldShowPrinter(item)"
-                class="btn btn-secondary"
-                (click)="onPrint(item)"
-                title="Imprimir"
-              >
-                <i class="bi bi-printer-fill" aria-hidden="true"></i>
-              </button>
-            </div>
-          </td>
         </ng-template>
-      </tr>
+      </td>
+      <td
+        *ngIf="actionTemplate; else defaultActions"
+        class="actions-container"
+      >
+        <ng-container
+          *ngTemplateOutlet="actionTemplate; context: { $implicit: item }"
+        ></ng-container>
+      </td>
+      <ng-template #defaultActions>
+        <td *ngIf="showActions" class="actions-container">
+          <div class="d-flex justify-content-center flex-row">
+            <button
+              id="btn-edit"
+              data-testid="btn-edit"
+              aria-label="Botão de editar"
+              *ngIf="showEdit && shouldShowEdit(item)"
+              class="btn btn-warning"
+              (click)="onEdit(item)"
+            >
+              <i class="bi bi-pencil-fill" aria-hidden="true"></i>
+            </button>
+
+            <button
+              id="btn-delete"
+              data-testid="btn-delete"
+              aria-label="Botão de deletar"
+              *ngIf="showDelete && shouldShowDelete(item)"
+              class="btn btn-danger"
+              (click)="onDelete(item)"
+            >
+              <i class="bi bi-trash-fill" aria-hidden="true"></i>
+            </button>
+            <button
+              (click)="onKey(item)"
+              *ngIf="showKey"
+              class="btn btn-warning key"
+            >
+              <img [src]="chave" alt="Chave"/>
+            </button>
+
+            <button
+              (click)="onView(item)"
+              *ngIf="showView || !shouldShowView(item)"
+              class="btn btn-info"
+              [ngClass]="{ desativado: !getDesativadoProperty(item) }"
+              [disabled]="!getDesativadoProperty(item)"
+            >
+              <i class="bi bi-eye-fill"></i>
+            </button>
+
+            <button
+              id="btn-print"
+              data-testid="btn-print"
+              aria-label="Botão de imprimir"
+              *ngIf="showPrinter && shouldShowPrinter(item)"
+              class="btn btn-secondary"
+              (click)="onPrint(item)"
+              title="Imprimir"
+            >
+              <i class="bi bi-printer-fill" aria-hidden="true"></i>
+            </button>
+          </div>
+        </td>
+      </ng-template>
+    </tr>
     </tbody>
   </table>
 </div>
@@ -224,13 +224,13 @@
               *ngIf="shouldShowFieldInCard(column, colIndex, item)"
             >
               <strong class="field-label"
-                >{{ columnLabels[column] || column | titlecase }}:</strong
+              >{{ columnLabels[column] || column | titlecase }}:</strong
               >
               <div class="field-value">
                 <ng-container *ngIf="column === 'cor'; else defaultFieldValue">
                   <span [style]="{ color: item['cor'] }">{{
-                    item["cor"]
-                  }}</span>
+                      item["cor"]
+                    }}</span>
                 </ng-container>
                 <ng-template #defaultFieldValue>
                   <span
@@ -253,12 +253,12 @@
   </div>
 </div>
 
-@if ( hasNoData) {
-<div class="no-data-message">
-  <p class="text-center">
-    {{ noDataMessage || "Sem dados registrados" }}
-  </p>
-</div>
+@if (hasNoData) {
+  <div class="no-data-message">
+    <p class="text-center">
+      {{ noDataMessage || "Sem dados registrados" }}
+    </p>
+  </div>
 }
 
 <div class="pagination-container">

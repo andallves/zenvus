@@ -1,15 +1,22 @@
-import {CommonModule} from '@angular/common';
-import {Component, EventEmitter, inject, Input, OnInit, Output} from '@angular/core';
-import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators,} from '@angular/forms';
-import {CategoryService} from '@modules/transactions/services/category.service';
-import {ButtonComponent} from '@shared/components/button/button.component';
-import {InputDefaultComponent} from '@shared/components/inputs/input-default/input-default.component';
-import {SelectInputComponent} from '@shared/components/inputs/select-input/select-input.component';
-import {ModalIconType} from '@shared/components/swall/modal-alert/domain-types/modal-types.interface';
-import {ModalAlertService} from '@shared/components/swall/modal-alert/service/modal-alert.service';
-import {InputValidationService} from '@shared/validators/input-validator/input-validator.service';
-import {BsModalService} from 'ngx-bootstrap/modal';
-import {ToastrService} from 'ngx-toastr';
+import { CommonModule } from '@angular/common';
+import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { CategoryService } from '@modules/transactions/services/category.service';
+import { ButtonComponent } from '@shared/components/button/button.component';
+import { InputDefaultComponent } from '@shared/components/inputs/input-default/input-default.component';
+import { SelectInputComponent } from '@shared/components/inputs/select-input/select-input.component';
+import { ModalIconType } from '@shared/components/swall/modal-alert/domain-types/modal-types.interface';
+import { ModalAlertService } from '@shared/components/swall/modal-alert/service/modal-alert.service';
+import { ICategory } from '@shared/interfaces/category.interface';
+import { InputValidationService } from '@shared/validators/input-validator/input-validator.service';
+import { BsModalService } from 'ngx-bootstrap/modal';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'zen-edit-category-form',
@@ -27,9 +34,9 @@ import {ToastrService} from 'ngx-toastr';
   styleUrls: ['./edit-category-form.component.scss'],
 })
 export class EditCategoryFormComponent implements OnInit {
-  editCursoForm!: FormGroup;
+  editCategoryForm!: FormGroup;
   isLoading = false;
-  @Input() dataCurso: any = {};
+  @Input() dataCategory: ICategory = {} as ICategory;
   @Output() changeData = new EventEmitter<void>();
 
   private readonly fb = inject(FormBuilder);
@@ -43,7 +50,7 @@ export class EditCategoryFormComponent implements OnInit {
     this.initializeForm();
     this.loadForm();
 
-    console.log('teste', this.dataCurso);
+    console.log('teste', this.dataCategory);
   }
 
   optionsInput: { value: number; label: string }[] = [
@@ -56,8 +63,8 @@ export class EditCategoryFormComponent implements OnInit {
   ];
 
   initializeForm() {
-    this.editCursoForm = this.fb.group({
-      nome: [
+    this.editCategoryForm = this.fb.group({
+      name: [
         '',
         [
           Validators.required,
@@ -66,14 +73,16 @@ export class EditCategoryFormComponent implements OnInit {
           Validators.pattern('.*[a-zA-ZÀ-ÿ].*'),
         ],
       ],
-      tipo: ['', [Validators.required]],
+      color: ['', [Validators.required]],
     });
   }
 
   loadForm() {
-    const matchedOption = this.optionsInput.find(option => option.label === this.dataCurso.tipo);
-    this.editCursoForm.patchValue({
-      nome: this.dataCurso.nome,
+    const matchedOption = this.optionsInput.find(
+      option => option.label === this.dataCategory.color
+    );
+    this.editCategoryForm.patchValue({
+      nome: this.dataCategory.name,
       tipo: matchedOption ? matchedOption.value : null,
     });
   }
@@ -82,11 +91,11 @@ export class EditCategoryFormComponent implements OnInit {
     this.modalService.hide();
   }
   hasMaxLengthAndRequiredError(input: string): boolean {
-    return this.validatorsService.hasMaxLengthAndRequiredError(this.editCursoForm, input);
+    return this.validatorsService.hasMaxLengthAndRequiredError(this.editCategoryForm, input);
   }
 
   getMaxLengthAndRequiredErrorMsg(input: string): string {
-    const control = this.editCursoForm.get(input);
+    const control = this.editCategoryForm.get(input);
 
     if (control?.hasError('required')) {
       return 'Este campo é obrigatório.';
@@ -105,28 +114,28 @@ export class EditCategoryFormComponent implements OnInit {
 
   editCategory() {
     this.isLoading = true;
-    if (this.editCursoForm.valid) {
-      const tipo: string = this.editCursoForm.get('tipo')?.value;
+    if (this.editCategoryForm.valid) {
+      const tipo: string = this.editCategoryForm.get('tipo')?.value;
 
       const payload = {
-        ...this.editCursoForm.value,
+        ...this.editCategoryForm.value,
         tipo: Number(tipo),
       };
 
       const formData = new FormData();
-      formData.append('Id', this.dataCurso.id);
-      formData.append('Nome', this.editCursoForm.get('nome')?.value);
-      formData.append('Tipo', this.editCursoForm.get('tipo')?.value);
+      formData.append('Id', this.dataCategory.id);
+      formData.append('Name', this.editCategoryForm.get('nome')?.value);
+      formData.append('Tipo', this.editCategoryForm.get('tipo')?.value);
       console.log('FormData enviado:');
       formData.forEach((value, key) => {
         console.log(`${key}: ${value}`);
       });
-      this.categoryService.editCategory(formData, this.dataCurso.id).subscribe({
+      this.categoryService.editCategory(formData, this.dataCategory.id).subscribe({
         next: () => {
           this.modalService.hide();
           this.isLoading = false;
           this.changeData.emit();
-          this.toastr.success('Curso editado com sucesso!', 'Sucesso!');
+          this.toastr.success('Categoria editada com sucesso!', 'Sucesso!');
         },
         error: errors => {
           const { erros } = errors.error;

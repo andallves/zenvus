@@ -11,7 +11,7 @@ import { SelectInputComponent } from '@shared/components/inputs/select-input/sel
 import { ModalComponent } from '@shared/components/modal/modal.component';
 import { PageContainerComponent } from '@shared/components/page-container/page-container.component';
 import { TableComponent } from '@shared/components/table/table.component';
-import { ICategory } from '@shared/domain-types/category.type';
+import { ICategory } from '@shared/interfaces/category.interface';
 import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
 
 @Component({
