@@ -42,21 +42,21 @@ export class ButtonComponent {
   get backgroundColor(): string {
     switch (this.variant) {
       case 'primary':
-        return 'var(--primary)';
+        return 'var(--primary-color)';
       case 'danger':
-        return 'var(--danger)';
+        return 'var(--danger-color)';
       case 'info':
-        return 'var(--info)';
+        return 'var(--positive-color)';
       case 'warning':
-        return 'var(--warning)';
+        return 'var(--warning-color)';
       case 'white':
-        return 'var(--white)';
+        return 'var(--white-color)';
       case 'success':
-        return 'var(--success)';
+        return 'var(--success-color)';
       case 'custom':
         return 'transparent';
       default:
-        return 'var(--primary)';
+        return 'var(--primary-color)';
     }
   }
 

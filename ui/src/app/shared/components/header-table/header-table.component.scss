@@ -33,13 +33,13 @@ div {
     width: 37px;
     height: 37px;
     border-radius: 4px;
-    background-color: #2F9E41;
+    background-color: var(--primary-color);
     background-image: url(/adicionarUsuario.svg);
     background-repeat: no-repeat;
     background-position: center;
     background-size: 0.8rem;
     cursor: pointer;
-    border: none;x
+    border: none;
 
     &:hover {
       filter: brightness(0.9);
@@ -55,28 +55,28 @@ div {
 
 @media screen and (max-width: 992px) {
   div {
-   margin-bottom: 2px !important;
+    margin-bottom: 2px !important;
     justify-content: center;
 
-  .buttons-container {
-    margin-top: 10px;
-    transform: translateY(-0px);
-  }
+    .buttons-container {
+      margin-top: 10px;
+      transform: translateY(-0px);
+    }
 
     .desktop-title {
       display: none;
     }
 
     .mobile-title {
-   display: flex;
-        align-items: center;
-        width: 100%;
-        font-family: "Open Sans", sans-serif;
-        font-size: 16px;
-        font-style: normal;
-        font-weight: 600;
-        line-height: normal;
-        color: #3A3A3A;
+      display: flex;
+      align-items: center;
+      width: 100%;
+      font-family: "Open Sans", sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: normal;
+      color: #3A3A3A;
 
       span {
         font-family: inherit;
@@ -96,7 +96,7 @@ div {
         min-height: 16px;
         justify-self: end;
         width: 30px;
-        margin: 0 ;
+        margin: 0;
 
         ::ng-deep svg {
           width: 16px !important;
