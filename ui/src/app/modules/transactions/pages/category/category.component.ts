@@ -1,18 +1,23 @@
-import { Component, inject, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { AddCategoryFormComponent } from '@modules/transactions/pages/category/components/add-category-form/add-category-form.component';
-import { DeleteTemplateComponent } from '@modules/transactions/pages/category/components/delete-template/delete-template.component';
-import { EditCategoryFormComponent } from '@modules/transactions/pages/category/components/edit-category-form/edit-category-form.component';
-import { CategoryService } from '@modules/transactions/services/category.service';
-import { FilterComponent } from '@shared/components/filter/filter.component';
-import { HeaderTableComponent } from '@shared/components/header-table/header-table.component';
-import { InputDefaultComponent } from '@shared/components/inputs/input-default/input-default.component';
-import { SelectInputComponent } from '@shared/components/inputs/select-input/select-input.component';
-import { ModalComponent } from '@shared/components/modal/modal.component';
-import { PageContainerComponent } from '@shared/components/page-container/page-container.component';
-import { TableComponent } from '@shared/components/table/table.component';
-import { ICategory } from '@shared/interfaces/category.interface';
-import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
+import {Component, inject, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {FormBuilder, FormGroup, ReactiveFormsModule} from '@angular/forms';
+import {AddCategoryFormComponent} from '@modules/transactions/pages/category/components/add-category-form/add-category-form.component';
+import {DeleteTemplateComponent} from '@modules/transactions/pages/category/components/delete-template/delete-template.component';
+import {EditCategoryFormComponent} from '@modules/transactions/pages/category/components/edit-category-form/edit-category-form.component';
+import {CategoryService} from '@modules/transactions/services/category.service';
+import {FilterComponent} from '@shared/components/filter/filter.component';
+import {HeaderTableComponent} from '@shared/components/header-table/header-table.component';
+import {InputDefaultComponent} from '@shared/components/inputs/input-default/input-default.component';
+import {SelectInputComponent} from '@shared/components/inputs/select-input/select-input.component';
+import {ModalComponent} from '@shared/components/modal/modal.component';
+import {PageContainerComponent} from '@shared/components/page-container/page-container.component';
+import {TableComponent} from '@shared/components/table/table.component';
+import {ICategory} from '@shared/interfaces/category.interface';
+import {BsModalRef, BsModalService, ModalOptions} from 'ngx-bootstrap/modal';
+
+export interface IFilter {
+  name: string;
+  color: string;
+}
 
 @Component({
   selector: 'zen-category',
@@ -33,7 +38,7 @@ import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
   ],
 })
 export class CategoryComponent implements OnInit {
-  dataCategory: any = [];
+  dataCategory: ICategory = {} as ICategory;
   filterForm!: FormGroup;
   isLoadingFilter = false;
   isLoadingClearFilter = false;
@@ -42,7 +47,7 @@ export class CategoryComponent implements OnInit {
   page = 1;
   itensPorPagina = 10;
   totalItens = 0;
-  filtros: any = {};
+  filtros: IFilter = {} as IFilter;
 
   private readonly fb = inject(FormBuilder);
   private readonly modalService = inject(BsModalService);
@@ -69,9 +74,11 @@ export class CategoryComponent implements OnInit {
     { label: 'Doutorado', value: 6 },
   ];
 
-  @ViewChild('formAddTemplate', { static: true }) formAddTemplate!: TemplateRef<any>;
-  @ViewChild('formEditTemplate', { static: true }) formEditTemplate!: TemplateRef<any>;
-  @ViewChild('deleteTemplate', { static: true }) deleteTemplate!: TemplateRef<any>;
+  @ViewChild('formAddTemplate', { static: true })
+  formAddTemplate!: TemplateRef<HTMLTemplateElement>;
+  @ViewChild('formEditTemplate', { static: true })
+  formEditTemplate!: TemplateRef<HTMLTemplateElement>;
+  @ViewChild('deleteTemplate', { static: true }) deleteTemplate!: TemplateRef<HTMLTemplateElement>;
 
   initializeForm() {
     this.filterForm = this.fb.group({
@@ -91,22 +98,16 @@ export class CategoryComponent implements OnInit {
 
   loaderCategories() {
     console.log('Carregando categorias para a página:', this.page);
-    const payload: any = this.filterForm.value;
+    const payload = this.filterForm.value;
 
     this.categoryService.getCategories(this.page, this.itensPorPagina, payload).subscribe({
       next: response => {
         this.totalItens = response.totalResults;
         this.categoriesData = response.result
           .filter((category: ICategory) => !category.disabled)
-
-          .map(
-            (category: ICategory) => (
-              console.log('Categoria:', category),
-              {
-                ...category,
-              }
-            )
-          );
+          .map((category: ICategory) => ({
+            ...category,
+          }));
         this.activeBadges = [];
         this.isLoadingFilter = false;
         this.isLoadingClearFilter = false;
@@ -143,7 +144,7 @@ export class CategoryComponent implements OnInit {
     this.bsModalRef.content.closeBtnName = 'Close';
   }
 
-  openEditModal(event: any) {
+  openEditModal(event: ICategory) {
     this.dataCategory = event;
     const initialState: ModalOptions = {
       initialState: {
@@ -157,7 +158,7 @@ export class CategoryComponent implements OnInit {
     this.bsModalRef.content.closeBtnName = 'Close';
   }
 
-  openDeleteModal(event: any) {
+  openDeleteModal(event: ICategory) {
     this.dataCategory = event;
     const initialState: ModalOptions = {
       initialState: {
@@ -171,7 +172,7 @@ export class CategoryComponent implements OnInit {
     this.bsModalRef.content.closeBtnName = 'Close';
   }
 
-  onPageChange(event: any) {
+  onPageChange(event: number) {
     console.log('Mudança de página:', event);
     this.page = event;
     this.loaderCategories();
