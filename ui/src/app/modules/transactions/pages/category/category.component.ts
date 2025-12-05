@@ -1,18 +1,20 @@
-import {Component, inject, OnInit, TemplateRef, ViewChild} from '@angular/core';
-import {FormBuilder, FormGroup, ReactiveFormsModule} from '@angular/forms';
-import {AddCategoryFormComponent} from '@modules/transactions/pages/category/components/add-category-form/add-category-form.component';
-import {DeleteTemplateComponent} from '@modules/transactions/pages/category/components/delete-template/delete-template.component';
-import {EditCategoryFormComponent} from '@modules/transactions/pages/category/components/edit-category-form/edit-category-form.component';
-import {CategoryService} from '@modules/transactions/services/category.service';
-import {FilterComponent} from '@shared/components/filter/filter.component';
-import {HeaderTableComponent} from '@shared/components/header-table/header-table.component';
-import {InputDefaultComponent} from '@shared/components/inputs/input-default/input-default.component';
-import {SelectInputComponent} from '@shared/components/inputs/select-input/select-input.component';
-import {ModalComponent} from '@shared/components/modal/modal.component';
-import {PageContainerComponent} from '@shared/components/page-container/page-container.component';
-import {TableComponent} from '@shared/components/table/table.component';
-import {ICategory} from '@shared/interfaces/category.interface';
-import {BsModalRef, BsModalService, ModalOptions} from 'ngx-bootstrap/modal';
+import { Component, inject, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AddCategoryFormComponent } from '@modules/transactions/pages/category/components/add-category-form/add-category-form.component';
+import { DeleteTemplateComponent } from '@modules/transactions/pages/category/components/delete-template/delete-template.component';
+import { EditCategoryFormComponent } from '@modules/transactions/pages/category/components/edit-category-form/edit-category-form.component';
+import { CategoryService } from '@modules/transactions/services/category.service';
+import { FilterComponent } from '@shared/components/filter/filter.component';
+import { HeaderTableComponent } from '@shared/components/header-table/header-table.component';
+import { ColorPickerInputComponent } from '@shared/components/inputs/color-picker-input/color-picker-input.component';
+import { InputDefaultComponent } from '@shared/components/inputs/input-default/input-default.component';
+import { ModalComponent } from '@shared/components/modal/modal.component';
+import { PageContainerComponent } from '@shared/components/page-container/page-container.component';
+import { TableComponent } from '@shared/components/table/table.component';
+import { ICategory } from '@shared/interfaces/category.interface';
+import { LoadingService } from '@shared/layouts/default-layout/loading.service';
+import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
+import { NgxColorsModule, validColorValidator } from 'ngx-colors';
 
 export interface IFilter {
   name: string;
@@ -31,10 +33,11 @@ export interface IFilter {
     TableComponent,
     AddCategoryFormComponent,
     DeleteTemplateComponent,
-    InputDefaultComponent,
-    SelectInputComponent,
     EditCategoryFormComponent,
     ReactiveFormsModule,
+    NgxColorsModule,
+    ColorPickerInputComponent,
+    InputDefaultComponent,
   ],
 })
 export class CategoryComponent implements OnInit {
@@ -52,6 +55,7 @@ export class CategoryComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly modalService = inject(BsModalService);
   private readonly categoryService = inject(CategoryService);
+  private readonly loadingService = inject(LoadingService);
 
   constructor() {
     this.initializeForm();
@@ -75,15 +79,15 @@ export class CategoryComponent implements OnInit {
   ];
 
   @ViewChild('formAddTemplate', { static: true })
-  formAddTemplate!: TemplateRef<HTMLTemplateElement>;
+  formAddTemplate!: TemplateRef<HTMLElement>;
   @ViewChild('formEditTemplate', { static: true })
-  formEditTemplate!: TemplateRef<HTMLTemplateElement>;
-  @ViewChild('deleteTemplate', { static: true }) deleteTemplate!: TemplateRef<HTMLTemplateElement>;
+  formEditTemplate!: TemplateRef<HTMLElement>;
+  @ViewChild('deleteTemplate', { static: true }) deleteTemplate!: TemplateRef<HTMLElement>;
 
   initializeForm() {
     this.filterForm = this.fb.group({
       name: ['', []],
-      color: ['', []],
+      color: ['', [Validators.maxLength(7), Validators.minLength(4), validColorValidator()]],
     });
   }
 
@@ -99,6 +103,7 @@ export class CategoryComponent implements OnInit {
   loaderCategories() {
     console.log('Carregando categorias para a página:', this.page);
     const payload = this.filterForm.value;
+    this.loadingService.onActiveLoading();
 
     this.categoryService.getCategories(this.page, this.itensPorPagina, payload).subscribe({
       next: response => {
@@ -116,6 +121,9 @@ export class CategoryComponent implements OnInit {
         console.error('Erro ao carregar cursos:', error);
         this.isLoadingFilter = false;
         this.isLoadingClearFilter = false;
+      },
+      complete: () => {
+        this.loadingService.onInactiveLoading();
       },
     });
   }
@@ -135,7 +143,7 @@ export class CategoryComponent implements OnInit {
     const initialState: ModalOptions = {
       initialState: {
         iconTemplate: 'bi bi-plus',
-        title: 'Adicionar Curso',
+        title: 'Adicionar Categoria',
         formTemplate: this.formAddTemplate,
       },
       class: 'modal-dialog-centered',
@@ -149,7 +157,7 @@ export class CategoryComponent implements OnInit {
     const initialState: ModalOptions = {
       initialState: {
         iconTemplate: 'bi bi-pencil-fill',
-        title: 'Editar Curso',
+        title: 'Editar Categoria',
         formTemplate: this.formEditTemplate,
       },
       class: 'modal-dialog-centered',
@@ -163,7 +171,7 @@ export class CategoryComponent implements OnInit {
     const initialState: ModalOptions = {
       initialState: {
         iconTemplate: 'bi bi-trash-fill',
-        title: 'Deletar Curso',
+        title: 'Deletar Categoria',
         formTemplate: this.deleteTemplate,
       },
       class: 'modal-dialog-centered',

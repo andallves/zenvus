@@ -1,10 +1,10 @@
-intra-table {
+zen-table {
   .active > .page-link, .page-link.active {
-    background-color: var(--primary);
-    border-color: var(--primary);
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
 
     &:hover {
-      color: var(--white);
+      color: var(--white-color);
     }
   }
 
@@ -13,7 +13,7 @@ intra-table {
   }
 
   .page-link {
-    color: var(--primary);
+    color: var(--primary-color);
 
     &:hover {
       color: var(--link-hover);

@@ -4,3 +4,8 @@ export interface ICategory {
   color: string;
   disabled: boolean;
 }
+
+export interface ICategoryCreate {
+  name: string;
+  color: string;
+}

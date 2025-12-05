@@ -9,12 +9,13 @@ import {
 } from '@angular/forms';
 import { CategoryService } from '@modules/transactions/services/category.service';
 import { ButtonComponent } from '@shared/components/button/button.component';
+import { ColorPickerInputComponent } from '@shared/components/inputs/color-picker-input/color-picker-input.component';
 import { InputDefaultComponent } from '@shared/components/inputs/input-default/input-default.component';
-import { SelectInputComponent } from '@shared/components/inputs/select-input/select-input.component';
 import { ModalIconType } from '@shared/components/swall/modal-alert/domain-types/modal-types.interface';
 import { ModalAlertService } from '@shared/components/swall/modal-alert/service/modal-alert.service';
 import { InputValidationService } from '@shared/validators/input-validator/input-validator.service';
 import { BsModalService } from 'ngx-bootstrap/modal';
+import { validColorValidator } from 'ngx-colors';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -26,7 +27,7 @@ import { ToastrService } from 'ngx-toastr';
     ReactiveFormsModule,
     ButtonComponent,
     InputDefaultComponent,
-    SelectInputComponent,
+    ColorPickerInputComponent,
   ],
   templateUrl: './add-category-form.component.html',
   styleUrl: './add-category-form.component.scss',
@@ -47,15 +48,6 @@ export class AddCategoryFormComponent {
     this.initializeForm();
   }
 
-  optionsInput: { value: number; label: string }[] = [
-    { label: 'Graduacao', value: 1 },
-    { label: 'Técnico', value: 2 },
-    { label: 'Integrado', value: 3 },
-    { label: 'Extensao', value: 4 },
-    { label: 'Mestrado', value: 5 },
-    { label: 'Doutorado', value: 6 },
-  ];
-
   initializeForm() {
     this.addCategoryForm = this.fb.group({
       name: [
@@ -67,7 +59,15 @@ export class AddCategoryFormComponent {
           Validators.pattern('.*[a-zA-ZÀ-ÿ].*'),
         ],
       ],
-      color: ['', [Validators.required]],
+      color: [
+        '',
+        [
+          Validators.required,
+          Validators.maxLength(7),
+          Validators.minLength(4),
+          validColorValidator(),
+        ],
+      ],
     });
   }
 
@@ -87,7 +87,7 @@ export class AddCategoryFormComponent {
     }
 
     if (control?.hasError('maxlength')) {
-      return 'O nome não pode ter mais de 50 caracteres.';
+      return 'O nome não pode ter mais de 30 caracteres.';
     }
 
     if (control?.hasError('pattern')) {
@@ -99,12 +99,10 @@ export class AddCategoryFormComponent {
 
   addCategory() {
     this.isLoading = true;
-    if (this.addCategoryForm.valid) {
-      const tipo: string = this.addCategoryForm.get('tipo')?.value;
 
+    if (this.addCategoryForm.valid) {
       const payload = {
         ...this.addCategoryForm.value,
-        tipo: Number(tipo),
       };
 
       this.categoryService.addCategory(payload).subscribe({

@@ -2,8 +2,8 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '@env/environment';
 import { ApiResponse } from '@shared/interfaces/api-response.interface';
-import { ICategory } from '@shared/interfaces/category.interface';
-import { map, Observable } from 'rxjs';
+import { ICategory, ICategoryCreate } from '@shared/interfaces/category.interface';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -25,25 +25,18 @@ export class CategoryService {
       }
     });
 
-    return this.httpClient
-      .get<ApiResponse<ICategory>>(`${this.apiUrl}/v1/category`, { params })
-      .pipe(
-        map(res => {
-          console.log('response:  ' + res);
-          return res;
-        })
-      );
+    return this.httpClient.get<ApiResponse<ICategory>>(`${this.apiUrl}/v1/category`, { params });
   }
 
-  addCategory(data: any): Observable<any> {
-    return this.httpClient.post(`${environment.apiUrl}/v1/administracao/cursos`, data);
+  addCategory(data: ICategoryCreate): Observable<ICategory> {
+    return this.httpClient.post<ICategory>(`${this.apiUrl}/v1/category`, data);
   }
 
-  editCategory(data: any, id: number | string): Observable<any> {
-    return this.httpClient.put(`${environment.apiUrl}/v1/administracao/cursos/${id}`, data);
+  editCategory(data: ICategory, id: number | string): Observable<ICategory> {
+    return this.httpClient.put<ICategory>(`${this.apiUrl}/v1/category/${id}`, data);
   }
 
-  deleteCategory(id: number | string): Observable<any> {
-    return this.httpClient.delete(`${environment.apiUrl}/v1/administracao/cursos/${id}`);
+  deleteCategory(id: number | string): Observable<ICategory> {
+    return this.httpClient.delete<ICategory>(`${this.apiUrl}/v1/category/${id}`);
   }
 }

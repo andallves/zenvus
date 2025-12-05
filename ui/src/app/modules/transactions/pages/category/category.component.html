@@ -1,14 +1,14 @@
 <zen-page-container id="page-container-cursos">
   <zen-header-table
     title="Filtros"
-    [mobileTitle]="'Cursos'"
+    [mobileTitle]="'Categorias'"
     [mobileTitleIcon]="imgCursos"
     (onAdd)="openAddModal()"
-    [uniqueId]="'cursos'"
+    [uniqueId]="'categories'"
   />
 
   <zen-filter
-    [filterId]="'filter-cursos'"
+    [filterId]="'filter-categories'"
     [isLoadingFilter]="isLoadingFilter"
     [isLoadingClearFilter]="isLoadingClearFilter"
     (onFilter)="onSearch()"
@@ -24,19 +24,18 @@
 
         [inputId]="'input-nome'"
       />
-      <zen-select-input
-        id="select-color"
-        label="Cor:"
-        formControlName="color"
-        [options]="optionsInput"
 
-        [dropdownId]="'select-tipo'"
-      />
+      <zen-color-picker-input
+        id="input-color"
+        label="Cor:"
+        placeholder="#000000"
+        formControlName="color"
+        [inputId]="'input-color-picker'"/>
     </form>
   </zen-filter>
 
   <zen-table
-    id="table-cursos"
+    id="table-categories"
     [columns]="categoryColumn"
     [data]="categoriesData"
     (edit)="openEditModal($event)"
@@ -47,13 +46,13 @@
 </zen-page-container>
 
 <ng-template #formAddTemplate>
-  <zen-add-category-form id="form-add-curso" (changeData)="changeData()"/>
+  <zen-add-category-form id="form-add-category" (changeData)="changeData()"/>
 </ng-template>
 
 <ng-template #formEditTemplate>
-  <zen-edit-category-form id="form-edit-curso" [dataCategory]="dataCategory" (changeData)="changeData()"/>
+  <zen-edit-category-form id="form-edit-category" [dataCategory]="dataCategory" (changeData)="changeData()"/>
 </ng-template>
 
 <ng-template #deleteTemplate>
-  <zen-delete-template id="template-delete-curso" [dataCategory]="dataCategory" (changeData)="changeData()"/>
+  <zen-delete-template id="template-delete-category" [dataCategory]="dataCategory" (changeData)="changeData()"/>
 </ng-template>

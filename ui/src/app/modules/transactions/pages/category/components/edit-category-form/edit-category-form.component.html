@@ -1,21 +1,22 @@
-<form id="form-edit-curso" action="javascript:void(0)" [formGroup]="editCategoryForm">
+<form id="form-edit-category" action="javascript:void(0)" [formGroup]="editCategoryForm">
   <zen-input
-    id="input-nome"
+    id="input-name"
     label="Nome:"
     placeholder="Digite o nome"
-    [hasError]="hasMaxLengthAndRequiredError('nome')"
-    [errorMsg]="getMaxLengthAndRequiredErrorMsg('nome')"
-    formControlName="nome"
-    maxlength="50"
+    [hasError]="hasMaxLengthAndRequiredError('name')"
+    [errorMsg]="getMaxLengthAndRequiredErrorMsg('name')"
+    formControlName="name"
+    maxlength="20"
   />
 
-  <zen-select-input
-    id="select-tipo"
-    [options]="optionsInput"
-    label="Tipo:"
-    formControlName="tipo"
-    [dropdownId]="'select-tipo-edit'"
-  />
+  <zen-color-picker-input
+    id="input-color"
+    label="Cor:"
+    placeholder="#000000"
+    formControlName="color"
+    aria-label="Cor da categoria"
+    aria-describedby="input-color-error"
+    [inputId]="'input-color-picker'"/>
 
   <div class="footer-modal">
     <zen-button

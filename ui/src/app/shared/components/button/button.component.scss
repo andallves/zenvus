@@ -2,8 +2,8 @@ button {
   width: 100%;
   height: 2.5rem;
   border-radius: 0.4375rem;
-  background-color: var(--primary);
-  color: var(--white);
+  background-color: var(--primary-color);
+  color: var(--white-color);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -25,5 +25,5 @@ button {
 
 .success {
   background-color: black;
-  color: var(--white);
+  color: var(--white-color);
 }

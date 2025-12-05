@@ -9,8 +9,8 @@ import {
 } from '@angular/forms';
 import { CategoryService } from '@modules/transactions/services/category.service';
 import { ButtonComponent } from '@shared/components/button/button.component';
+import { ColorPickerInputComponent } from '@shared/components/inputs/color-picker-input/color-picker-input.component';
 import { InputDefaultComponent } from '@shared/components/inputs/input-default/input-default.component';
-import { SelectInputComponent } from '@shared/components/inputs/select-input/select-input.component';
 import { ModalIconType } from '@shared/components/swall/modal-alert/domain-types/modal-types.interface';
 import { ModalAlertService } from '@shared/components/swall/modal-alert/service/modal-alert.service';
 import { ICategory } from '@shared/interfaces/category.interface';
@@ -26,9 +26,9 @@ import { ToastrService } from 'ngx-toastr';
     FormsModule,
     ReactiveFormsModule,
     InputDefaultComponent,
-    SelectInputComponent,
     ButtonComponent,
     ButtonComponent,
+    ColorPickerInputComponent,
   ],
   templateUrl: './edit-category-form.component.html',
   styleUrls: ['./edit-category-form.component.scss'],
@@ -115,22 +115,8 @@ export class EditCategoryFormComponent implements OnInit {
   editCategory() {
     this.isLoading = true;
     if (this.editCategoryForm.valid) {
-      const tipo: string = this.editCategoryForm.get('tipo')?.value;
-
-      const payload = {
-        ...this.editCategoryForm.value,
-        tipo: Number(tipo),
-      };
-
-      const formData = new FormData();
-      formData.append('Id', this.dataCategory.id);
-      formData.append('Name', this.editCategoryForm.get('nome')?.value);
-      formData.append('Tipo', this.editCategoryForm.get('tipo')?.value);
-      console.log('FormData enviado:');
-      formData.forEach((value, key) => {
-        console.log(`${key}: ${value}`);
-      });
-      this.categoryService.editCategory(formData, this.dataCategory.id).subscribe({
+      const payload: ICategory = this.editCategoryForm.value;
+      this.categoryService.editCategory(payload, this.dataCategory.id).subscribe({
         next: () => {
           this.modalService.hide();
           this.isLoading = false;

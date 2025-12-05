@@ -1,29 +1,28 @@
-<form class="add-form" id="form-add-curso" action="javascript:void(0)" [formGroup]="addCategoryForm"
+<form class="add-form" id="form-add-category" action="javascript:void(0)" [formGroup]="addCategoryForm"
       aria-labelledby="form-add-curso-title">
   <h2 id="form-add-curso-title" class="visually-hidden">Adicionar Curso</h2>
 
   <zen-input
-    id="input-nome"
+    id="input-name"
     label="Digite o nome"
     placeholder="Nome:"
-    [hasError]="hasMaxLengthAndRequiredError('nome')"
-    [errorMsg]="getMaxLengthAndRequiredErrorMsg('nome')"
-    formControlName="nome"
-    aria-label="Nome do curso"
-    aria-describedby="input-nome-error"
+    [hasError]="hasMaxLengthAndRequiredError('name')"
+    [errorMsg]="getMaxLengthAndRequiredErrorMsg('name')"
+    formControlName="name"
+    aria-label="Nome da categoria"
+    aria-describedby="input-name-error"
     maxlength="50"
-    [inputId]="'input-nome-add'"
+    [inputId]="'input-name-add'"
   />
 
-  <zen-select-input
-    id="select-tipo"
-    [options]="optionsInput"
-    label="Tipo:"
-    formControlName="tipo"
-    aria-label="Tipo de curso"
-    aria-describedby="select-tipo-error"
-    [dropdownId]="'select-tipo-add'"
-  />
+  <zen-color-picker-input
+    id="input-color"
+    label="Cor:"
+    placeholder="#000000"
+    formControlName="color"
+    aria-label="Cor da categoria"
+    aria-describedby="input-color-error"
+    [inputId]="'input-color-picker'"/>
 
   <div class="footer-modal">
     <zen-button
@@ -42,7 +41,7 @@
       [disabled]="!addCategoryForm.valid"
       [isLoading]="isLoading"
       (click)="addCategory()"
-      aria-label="Salvar o curso"
+      aria-label="Salvar o categoria"
       [buttonId]="'button-salvar'"
     >
       Salvar
