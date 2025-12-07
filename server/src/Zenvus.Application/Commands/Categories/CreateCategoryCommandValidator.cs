@@ -53,7 +53,7 @@ public class CreateCategoryCommandValidator : AbstractValidator<CreateCategoryCo
 
         if (emUso)
         {
-            context.AddFailure($"O '{context.DisplayName}' informado já está em uso.");
+            context.AddFailure($"O 'Nome' informado já está em uso.");
         }
     }
 }
