@@ -113,18 +113,20 @@ export class AddCategoryFormComponent {
 
           this.toastr.success('Categoria cadastrada com sucesso!', 'Sucesso!');
         },
-        error: errors => {
-          const { erros } = errors.error;
-          this.isLoading = false;
-          this.modalAlertService.open({
-            icon: ModalIconType.Error,
-            title: 'Error',
-            message: erros,
-            confirmButtonText: 'Ok',
-            showCancelButton: false,
-            cancelButtonText: '',
-          });
+        error: error => {
+          const erros = error.error.errors?.join('<br>') || error.message;
+          this.modalAlertService
+            .open({
+              icon: ModalIconType.Error,
+              title: 'Error',
+              message: erros,
+              confirmButtonText: 'Ok',
+              showCancelButton: false,
+              cancelButtonText: '',
+            })
+            .then();
         },
+        complete: () => (this.isLoading = false),
       });
     }
   }

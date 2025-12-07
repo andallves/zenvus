@@ -47,18 +47,20 @@ export class DeleteTemplateComponent {
         this.changeData.emit();
         this.toastr.success('Categoria deletada com sucesso!', 'Sucesso!');
       },
-      error: errors => {
-        const erros = errors.error;
-        this.modalAlertService.open({
-          icon: ModalIconType.Error,
-          title: 'Error',
-          message: erros,
-          confirmButtonText: 'Ok',
-          showCancelButton: false,
-          cancelButtonText: '',
-        });
-        this.isLoading = false;
+      error: error => {
+        const erros = error.error.errors?.join('<br>') || error.message;
+        this.modalAlertService
+          .open({
+            icon: ModalIconType.Error,
+            title: 'Error',
+            message: erros,
+            confirmButtonText: 'Ok',
+            showCancelButton: false,
+            cancelButtonText: '',
+          })
+          .then();
       },
+      complete: () => (this.isLoading = false),
     });
   }
 }

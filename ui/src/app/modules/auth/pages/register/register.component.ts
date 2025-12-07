@@ -1,19 +1,29 @@
-import {Component, computed, inject, signal} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
-import {Router} from '@angular/router';
-import {RegisterUserForm} from '@modules/auth/interfaces/register-user.interface';
-import {RegisterService} from '@modules/auth/services/register.service';
-import {InputPasswordComponent} from '@shared/components/form/input-password/input-password.component';
-import {InputTextComponent} from '@shared/components/form/input-text/input-text.component';
-import {ModalConfig, ModalIconType} from '@shared/components/swall/modal-alert/domain-types/modal-types.interface';
-import {ModalAlertService} from '@shared/components/swall/modal-alert/service/modal-alert.service';
+import { Component, computed, inject, signal } from '@angular/core';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { Router } from '@angular/router';
+import { RegisterUserForm } from '@modules/auth/interfaces/register-user.interface';
+import { RegisterService } from '@modules/auth/services/register.service';
+import { InputPasswordComponent } from '@shared/components/form/input-password/input-password.component';
+import { InputTextComponent } from '@shared/components/form/input-text/input-text.component';
+import {
+  ModalConfig,
+  ModalIconType,
+} from '@shared/components/swall/modal-alert/domain-types/modal-types.interface';
+import { ModalAlertService } from '@shared/components/swall/modal-alert/service/modal-alert.service';
 import {
   PrimaryButton,
-  SecondaryButton, UnauthenticatedCommonLayoutComponent
+  SecondaryButton,
+  UnauthenticatedCommonLayoutComponent,
 } from '@shared/layouts/unauthenticated-common-layout/unauthenticated-common-layout.component';
-import {ErrorMessageHelper} from '@shared/validators/error-message-helper/error-message.helper';
-import {FormValidations} from '@shared/validators/form-validations/form-validations';
-import {ToastrService} from 'ngx-toastr';
+import { ErrorMessageHelper } from '@shared/validators/error-message-helper/error-message.helper';
+import { FormValidations } from '@shared/validators/form-validations/form-validations';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'zen-register',
@@ -131,6 +141,7 @@ export class RegisterComponent {
           } as ModalConfig)
           .then();
       },
+      complete: () => this.isLoading.set(false),
     });
   }
 

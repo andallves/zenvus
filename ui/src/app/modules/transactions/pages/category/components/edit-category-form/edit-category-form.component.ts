@@ -1,22 +1,16 @@
-import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
-import { CategoryService } from '@modules/transactions/services/category.service';
-import { ButtonComponent } from '@shared/components/button/button.component';
-import { ColorPickerInputComponent } from '@shared/components/inputs/color-picker-input/color-picker-input.component';
-import { InputDefaultComponent } from '@shared/components/inputs/input-default/input-default.component';
-import { ModalIconType } from '@shared/components/swall/modal-alert/domain-types/modal-types.interface';
-import { ModalAlertService } from '@shared/components/swall/modal-alert/service/modal-alert.service';
-import { ICategory } from '@shared/interfaces/category.interface';
-import { InputValidationService } from '@shared/validators/input-validator/input-validator.service';
-import { BsModalService } from 'ngx-bootstrap/modal';
-import { ToastrService } from 'ngx-toastr';
+import {CommonModule} from '@angular/common';
+import {Component, EventEmitter, inject, Input, OnInit, Output} from '@angular/core';
+import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators,} from '@angular/forms';
+import {CategoryService} from '@modules/transactions/services/category.service';
+import {ButtonComponent} from '@shared/components/button/button.component';
+import {ColorPickerInputComponent} from '@shared/components/inputs/color-picker-input/color-picker-input.component';
+import {InputDefaultComponent} from '@shared/components/inputs/input-default/input-default.component';
+import {ModalIconType} from '@shared/components/swall/modal-alert/domain-types/modal-types.interface';
+import {ModalAlertService} from '@shared/components/swall/modal-alert/service/modal-alert.service';
+import {ICategory} from '@shared/interfaces/category.interface';
+import {InputValidationService} from '@shared/validators/input-validator/input-validator.service';
+import {BsModalService} from 'ngx-bootstrap/modal';
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'zen-edit-category-form',
@@ -103,7 +97,13 @@ export class EditCategoryFormComponent implements OnInit {
   editCategory() {
     this.isLoading = true;
     if (this.editCategoryForm.valid) {
-      const payload: ICategory = this.editCategoryForm.value;
+      const payload: ICategory = {
+        id: this.dataCategory.id,
+        name: this.editCategoryForm.get('name')?.value || this.dataCategory.name,
+        color: this.editCategoryForm.get('color')?.value || this.dataCategory.color,
+        disabled: this.dataCategory.disabled,
+      };
+
       this.categoryService.editCategory(payload, this.dataCategory.id).subscribe({
         next: () => {
           this.modalService.hide();
@@ -111,18 +111,21 @@ export class EditCategoryFormComponent implements OnInit {
           this.changeData.emit();
           this.toastr.success('Categoria editada com sucesso!', 'Sucesso!');
         },
-        error: errors => {
-          const { erros } = errors.error;
+        error: error => {
+          const erros = error.error.errors?.join('<br>') || error.message;
           this.isLoading = false;
-          this.modalAlertService.open({
-            icon: ModalIconType.Error,
-            title: 'Error',
-            message: erros,
-            confirmButtonText: 'Ok',
-            showCancelButton: false,
-            cancelButtonText: '',
-          });
+          this.modalAlertService
+            .open({
+              icon: ModalIconType.Error,
+              title: 'Error',
+              message: erros,
+              confirmButtonText: 'Ok',
+              showCancelButton: false,
+              cancelButtonText: '',
+            })
+            .then();
         },
+        complete: () => (this.isLoading = false),
       });
     }
   }
