@@ -60,4 +60,26 @@ public class CategoryController(IMediator mediator) : BaseController(mediator)
         }
         return await SendCommandAsync(command, cancellationToken);
     }
+    
+    [HttpDelete("{id:int}")]
+    [MapToApiVersion("1.0")]
+    [SwaggerOperation(Summary = "Habilita uma categoria existente", Tags = ["Categoria"])]
+    [ProducesResponseType(typeof(CategoryDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async ValueTask<IActionResult> Disable([FromRoute] int id, CancellationToken cancellationToken)
+    {
+        return await SendCommandAsync(new DisableCategoryCommand { Id = id }, cancellationToken);
+    }
+    
+    [HttpPatch("{id:int}/enable")]
+    [MapToApiVersion("1.0")]
+    [SwaggerOperation(Summary = "Habilita uma categoria existente", Tags = ["Categoria"])]
+    [ProducesResponseType(typeof(CategoryDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async ValueTask<IActionResult> Enable([FromRoute] int id, CancellationToken cancellationToken)
+    {
+        return await SendCommandAsync(new EnableCategoryCommand { Id = id }, cancellationToken);
+    }
 }                         
