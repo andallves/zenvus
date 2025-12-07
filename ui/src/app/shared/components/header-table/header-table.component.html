@@ -1,49 +1,56 @@
 <div>
+  @if (showTitle) {
+    <span
+      id="{{ uniqueId }}-header-title"
+      class="desktop-title fw-semibold">
+      {{ title }}
+    </span>
+  }
 
-  <span
-    *ngIf="showTitle"
-    id="{{ uniqueId }}-header-title"
-    class="desktop-title fw-semibold"
-  >
-    {{ title }}
-  </span>
-
-  <div
-    *ngIf="showTitle && mobileTitle"
-    id="{{ uniqueId }}-mobile-header-title"
-    class="mobile-title fw-semibold"
-  >
-    <span>{{ mobileTitle }}</span>
-
-    <!-- Para URLs de imagem -->
-    <img
-      *ngIf="mobileTitleIcon && isIconUrl"
-      [src]="mobileTitleIcon"
-      class="mobile-title-icon-img"
-      alt="Ícone"
-    />
-
-    <!-- Para código SVG -->
+  @if (showTitle && mobileTitle) {
     <div
-      *ngIf="mobileTitleIcon && !isIconUrl"
-      class="mobile-title-icon"
-      [innerHTML]="sanitizedIcon"
-    ></div>
-  </div>
+      id="{{ uniqueId }}-mobile-header-title"
+      class="mobile-title fw-semibold"
+    >
+      <span>{{ mobileTitle }}</span>
 
-  <button
-    *ngIf="addButton"
-    id="{{ uniqueId }}-add-button"
-    (click)="onAddAction()"
-    title="{{ buttonTitle }}"
-  >
-  </button>
+      <!-- Para URLs de imagem -->
 
-  <button
-    *ngIf="configButton"
-    id="{{ uniqueId }}-config-button"
-    (click)="onConfigAction()"
-    title="Configurar"
-  >
-  </button>
+      @if (mobileTitleIcon && isIconUrl) {
+        <img
+          [src]="mobileTitleIcon"
+          class="mobile-title-icon-img"
+          alt="Ícone"
+        />
+      }
+
+      <!-- Para código SVG -->
+      @if (mobileTitleIcon && !isIconUrl) {
+        <div
+          class="mobile-title-icon"
+          [innerHTML]="sanitizedIcon"
+        ></div>
+      }
+    </div>
+  }
+
+
+  @if (addButton) {
+    <button
+      id="{{ uniqueId }}-add-button"
+      (click)="onAddAction()"
+      title="{{ buttonTitle }}"
+    >
+      <i class="bi bi-plus"></i>
+    </button>
+  }
+
+  @if (configButton) {
+    <button
+      id="{{ uniqueId }}-config-button"
+      (click)="onConfigAction()"
+      title="Configurar"
+    >
+    </button>
+  }
 </div>

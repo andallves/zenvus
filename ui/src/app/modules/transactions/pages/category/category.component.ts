@@ -69,14 +69,6 @@ export class CategoryComponent implements OnInit {
 
   categoriesData: ICategory[] = [];
   categoryColumn: string[] = ['nome', 'cor'];
-  optionsInput: { value: number; label: string }[] = [
-    { label: 'Graduacao', value: 1 },
-    { label: 'Técnico', value: 2 },
-    { label: 'Integrado', value: 3 },
-    { label: 'Extensao', value: 4 },
-    { label: 'Mestrado', value: 5 },
-    { label: 'Doutorado', value: 6 },
-  ];
 
   @ViewChild('formAddTemplate', { static: true })
   formAddTemplate!: TemplateRef<HTMLElement>;
@@ -118,7 +110,7 @@ export class CategoryComponent implements OnInit {
         this.isLoadingClearFilter = false;
       },
       error: error => {
-        console.error('Erro ao carregar cursos:', error);
+        console.error('Erro ao carregar categorias:', error);
         this.isLoadingFilter = false;
         this.isLoadingClearFilter = false;
       },

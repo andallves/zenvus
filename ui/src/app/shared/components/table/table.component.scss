@@ -139,7 +139,7 @@ body.dark-theme {
           }
 
           .btn-send {
-            background-color: var(--primary-color);
+            background-color: var(--success-color);
           }
 
           .btn-secondary {
@@ -200,32 +200,32 @@ body.dark-theme {
   .no-data-message {
     margin-top: 2rem;
   }
+}
 
-  pagination::ng-deep {
-    .pagination {
-      .page-item {
-        list-style: none;
+pagination::ng-deep {
+  .pagination {
+    .page-item {
+      list-style: none;
 
-        a {
-          text-decoration: none;
-          color: var(--primary-color);
-          padding: 0.3125rem 0.625rem;
-          border-radius: 0.1875rem;
-          transition: 0.3s ease;
+      a {
+        text-decoration: none;
+        color: var(--primary-color);
+        padding: 0.3125rem 0.625rem;
+        border-radius: 0.1875rem;
+        transition: 0.3s ease;
 
-          &:focus {
-            box-shadow: none;
-          }
+        &:focus {
+          box-shadow: none;
         }
+      }
 
-        &.active a {
-          border-color: var(--primary-color);
-          background-color: var(--primary-color);
-          color: var(--white-color);
+      &.active a {
+        border-color: var(--primary-color);
+        background-color: var(--primary-color);
+        color: var(--white-color);
 
-          &:hover {
-            filter: brightness(0.9);
-          }
+        &:hover {
+          filter: brightness(0.9);
         }
       }
     }

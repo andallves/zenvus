@@ -1,14 +1,14 @@
-main {
+.section-page-container {
   width: 100%;
-  padding: 18px;
+  padding: 20px;
   border-radius: 5px;
   background-color: var(--background-secondary-color);
-  box-shadow: 0px 0px 5px 2px #38383813;
+  box-shadow: 0 0 5px 2px #38383813;
   margin-bottom: 1rem;
 }
 
 @media (max-width: 768px) {
-  main {
+  .section-page-container {
     border-radius: 0;
     background-color: transparent;
     box-shadow: none;

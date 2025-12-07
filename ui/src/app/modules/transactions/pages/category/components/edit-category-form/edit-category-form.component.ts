@@ -36,7 +36,7 @@ import { ToastrService } from 'ngx-toastr';
 export class EditCategoryFormComponent implements OnInit {
   editCategoryForm!: FormGroup;
   isLoading = false;
-  @Input() dataCategory: ICategory = {} as ICategory;
+  @Input() dataCategory!: ICategory;
   @Output() changeData = new EventEmitter<void>();
 
   private readonly fb = inject(FormBuilder);
@@ -52,15 +52,6 @@ export class EditCategoryFormComponent implements OnInit {
 
     console.log('teste', this.dataCategory);
   }
-
-  optionsInput: { value: number; label: string }[] = [
-    { label: 'Graduacao', value: 1 },
-    { label: 'Técnico', value: 2 },
-    { label: 'Integrado', value: 3 },
-    { label: 'Extensao', value: 4 },
-    { label: 'Mestrado', value: 5 },
-    { label: 'Doutorado', value: 6 },
-  ];
 
   initializeForm() {
     this.editCategoryForm = this.fb.group({
@@ -78,12 +69,9 @@ export class EditCategoryFormComponent implements OnInit {
   }
 
   loadForm() {
-    const matchedOption = this.optionsInput.find(
-      option => option.label === this.dataCategory.color
-    );
     this.editCategoryForm.patchValue({
-      nome: this.dataCategory.name,
-      tipo: matchedOption ? matchedOption.value : null,
+      name: this.dataCategory.name,
+      color: this.dataCategory.color,
     });
   }
 

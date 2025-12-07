@@ -1,9 +1,9 @@
-<zen-page-container id="page-container-cursos">
+<zen-page-container id="page-container-categories">
   <zen-header-table
     title="Filtros"
     [mobileTitle]="'Categorias'"
     [mobileTitleIcon]="imgCursos"
-    (onAdd)="openAddModal()"
+    (add)="openAddModal()"
     [uniqueId]="'categories'"
   />
 
@@ -12,10 +12,9 @@
     [isLoadingFilter]="isLoadingFilter"
     [isLoadingClearFilter]="isLoadingClearFilter"
     (onFilter)="onSearch()"
-
     (onClearFilter)="onClearFilter()"
   >
-    <form id="form-filter-cursos" class="teste" action="javascript:void(0)" [formGroup]="filterForm">
+    <form id="form-filter-categorias" class="teste" action="javascript:void(0)" [formGroup]="filterForm">
       <zen-input
         id="input-name"
         label="Nome:"

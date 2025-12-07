@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 @Component({
@@ -18,10 +18,10 @@ export class HeaderTableComponent {
   @Input() configButton = false;
   @Input() showTitle = true;
   @Input() uniqueId = 'default';
-  @Output() onAdd = new EventEmitter<void>();
-  @Output() onConfig = new EventEmitter<void>();
+  @Output() add = new EventEmitter<void>();
+  @Output() config = new EventEmitter<void>();
 
-  constructor(private readonly sanitizer: DomSanitizer) {}
+  private readonly sanitizer = inject(DomSanitizer);
 
   get isIconUrl(): boolean {
     return !!(this.mobileTitleIcon && !this.mobileTitleIcon.includes('<svg'));
@@ -32,10 +32,10 @@ export class HeaderTableComponent {
   }
 
   onAddAction(): void {
-    this.onAdd.emit();
+    this.add.emit();
   }
 
   onConfigAction(): void {
-    this.onConfig.emit();
+    this.config.emit();
   }
 }

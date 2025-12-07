@@ -13,6 +13,8 @@ div {
 
   span {
     font-size: 17.6px;
+    color: var(--text-primary-color);
+    letter-spacing: 1.4px;
   }
 
 
@@ -26,10 +28,9 @@ div {
   }
 
   button {
-    transform: translate(20px, -78px);
-  }
-
-  button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 37px;
     height: 37px;
     border-radius: 4px;
@@ -40,6 +41,7 @@ div {
     background-size: 0.8rem;
     cursor: pointer;
     border: none;
+    transform: translate(20px, -78px);
 
     &:hover {
       filter: brightness(0.9);
@@ -49,6 +51,11 @@ div {
       font-size: 0.8rem;
       margin-left: 5px;
       font-weight: 600;
+    }
+
+    i {
+      font-size: 2rem;
+      color: var(--white-color);
     }
   }
 }
