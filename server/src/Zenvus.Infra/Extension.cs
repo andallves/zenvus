@@ -20,11 +20,12 @@ public static class Extension
         return services;
     }
     
-    public static IServiceCollection AddMySql<T>(this IServiceCollection services) where T : DbContext
+    public static IServiceCollection AddMySql<T>(this IServiceCollection services, IConfiguration configuration) where T : DbContext
     {
-        var configuration = services.BuildServiceProvider().GetRequiredService<IConfiguration>();
-
-        var connectionString = configuration.GetConnectionString("MYSQL")!;
+        // Use the configured ConnectionStrings:Default value (appsettings.json)
+        var connectionString = configuration.GetConnectionString("Default")!;
+        if (string.IsNullOrWhiteSpace(connectionString))
+            throw new InvalidOperationException("Connection string 'Default' is not configured.");
         var version = ServerVersion.AutoDetect(connectionString);
         services
             .AddDbContext<T>(
@@ -38,7 +39,7 @@ public static class Extension
                 .EnableSensitiveDataLogging()
                 .EnableDetailedErrors()
                 #if DEBUG
-                .EnableSensitiveDataLogging()
+                // Keep sensitive logging enabled in debug for easier troubleshooting
                 #endif
             );
 
@@ -47,9 +48,9 @@ public static class Extension
         return services;
     }
     
-    public static IServiceCollection AddInfraLayer(this IServiceCollection services)
+    public static IServiceCollection AddInfraLayer(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddMySql<ZenvusDbContext>();
+        services.AddMySql<ZenvusDbContext>(configuration);
         
         return services;
     }

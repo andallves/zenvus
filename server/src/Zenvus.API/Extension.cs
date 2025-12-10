@@ -26,9 +26,8 @@ public static class Extension
     {
         services.Configure<ApplicationSettings>(configuration.GetSection(ApplicationSettings.SectionName));
         
+        // Application layer will initialize infra (DbContext) via configuration
         services.AddApplicationLayer(configuration);
-        
-        services.AddMySql(configuration);
         
         services.AddResponseCompression(options =>
         {
