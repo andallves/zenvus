@@ -11,11 +11,10 @@ namespace Zenvus.Application.Queries.Categories;
 public class GetCategoriesQueryHandler(IRepository<ZenvusDbContext> repository)
     : IRequestHandler<GetCategoriesQuery, PagedResult<CategoryDto>>
 {
-    private readonly IRepository<ZenvusDbContext> _repository = repository;
 
     public async Task<PagedResult<CategoryDto>> Handle(GetCategoriesQuery request, CancellationToken cancellationToken)
     {
-        var paged = await _repository
+        var paged = await repository
             .GetQueryable<Domain.Entities.Category>()
             .ApplyFilter(request)
             .ApplyOrdering(request)
@@ -24,7 +23,8 @@ public class GetCategoriesQueryHandler(IRepository<ZenvusDbContext> repository)
                 Id = x.Id,
                 Name = x.Name,
                 Color = x.Color,
-                Disabled = x.Disabled
+                Disabled = x.Disabled,
+                Type = x.Type
             })
             .PagedAsync(request, cancellationToken);
         

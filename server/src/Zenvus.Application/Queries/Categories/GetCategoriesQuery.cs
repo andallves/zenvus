@@ -1,6 +1,7 @@
 using Zenvus.API.Configurations.Swagger;
 using Zenvus.Application.DTO.Category;
 using Zenvus.Core.ValueObjects;
+using Zenvus.Domain.Entities.Enums;
 
 namespace Zenvus.Application.Queries.Categories;
 
@@ -9,9 +10,17 @@ public class GetCategoriesQuery : BasePagedQuery<Domain.Entities.Category, Categ
     public string? Name { get; set; }
     public string? Color { get; set; }
     
+    [SwaggerParameterExample("Nulo", null)]
+    [SwaggerParameterExample("Income", "1")]
+    [SwaggerParameterExample("Expense", "2")]
+    public int? Type { get; set; }
+    public bool? Disabled { get; set; }
+    
     [SwaggerParameterExample("Id", "Id")]
     [SwaggerParameterExample("Name", "Name")]
     [SwaggerParameterExample("Color", "Color")]
+    [SwaggerParameterExample("Type", "Type")]
+    [SwaggerParameterExample("Disabled", "Disabled")]
     public new string OrderBy { get; set; } = "Id";
 
     public override void ApplyFilter(ref IQueryable<Domain.Entities.Category> query)
@@ -25,6 +34,16 @@ public class GetCategoriesQuery : BasePagedQuery<Domain.Entities.Category, Categ
         {
             query = query.Where(u => u.Color.Contains(Color));
         }
+        
+        if (Type is not null)
+        {
+            query = query.Where(u => (int)u.Type == Type);
+        }
+
+        if (Disabled is not null)
+        {
+            query = query.Where(u => u.Disabled == Disabled);
+        }
     }
 
     public override void ApplyOrdering(ref IQueryable<Domain.Entities.Category> query)
@@ -35,6 +54,8 @@ public class GetCategoriesQuery : BasePagedQuery<Domain.Entities.Category, Categ
             {
                 "name" => query.OrderBy(x => x.Name),
                 "color" => query.OrderBy(x => x.Color),
+                "type" => query.OrderBy(x => x.Type),
+                "disabled" => query.OrderBy(x => x.Disabled),
                 _ => query.OrderBy(x => x.Name)
             };
             return;
@@ -44,6 +65,8 @@ public class GetCategoriesQuery : BasePagedQuery<Domain.Entities.Category, Categ
         {
             "name" => query.OrderByDescending(x => x.Name),
             "color" => query.OrderByDescending(x => x.Color),
+            "type" => query.OrderByDescending(x => x.Type),
+            "disabled" => query.OrderByDescending(x => x.Disabled),
             _ => query.OrderByDescending(x => x.Name)
         };
     }

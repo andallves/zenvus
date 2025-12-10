@@ -24,6 +24,8 @@ public class CreateUserCommandHandler(
         }
         
         var user = mapper.Map<Domain.Entities.User>(userCommand);
+        // Ensure Photo is not null to avoid DB constraint issues when the column is non-nullable
+        user.Photo ??= string.Empty;
         user.Password = passwordHasher.HashPassword(user, user.Password);
         
         repository.DbSet<Domain.Entities.User>().Add(user);

@@ -22,8 +22,8 @@ public class CategoryConfiguration: IEntityTypeConfiguration<Category>
             .IsRequired();
 
         builder.Property(x => x.Type)
-            .IsRequired(false)
-            .HasDefaultValue(CategoryType.Expense);
+            .HasDefaultValue(IsCategory.Expense)
+            .IsRequired();
 
 
     }
