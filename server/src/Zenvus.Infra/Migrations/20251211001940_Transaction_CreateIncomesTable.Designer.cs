@@ -12,8 +12,8 @@ using Zenvus.Infra.Database;
 namespace Zenvus.Infra.Migrations
 {
     [DbContext(typeof(ZenvusDbContext))]
-    [Migration("20251210234228_Transaction_CreateTableIncomes")]
-    partial class Transaction_CreateTableIncomes
+    [Migration("20251211001940_Transaction_CreateIncomesTable")]
+    partial class Transaction_CreateIncomesTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -99,17 +99,16 @@ namespace Zenvus.Infra.Migrations
 
             modelBuilder.Entity("Zenvus.Domain.Entities.Transaction", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(65,30)");
 
-                    b.Property<Guid>("CategoryId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<int>("CategoryId1")
+                    b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
@@ -133,7 +132,7 @@ namespace Zenvus.Infra.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryId1");
+                    b.HasIndex("CategoryId");
 
                     b.ToTable((string)null);
 
@@ -207,7 +206,7 @@ namespace Zenvus.Infra.Migrations
                 {
                     b.HasOne("Zenvus.Domain.Entities.Category", "Category")
                         .WithMany()
-                        .HasForeignKey("CategoryId1")
+                        .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

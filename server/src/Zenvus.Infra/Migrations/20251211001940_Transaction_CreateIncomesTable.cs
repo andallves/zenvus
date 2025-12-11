@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Zenvus.Infra.Migrations
 {
     /// <inheritdoc />
-    public partial class Transaction_CreateTableIncomes : Migration
+    public partial class Transaction_CreateIncomesTable : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,10 +16,9 @@ namespace Zenvus.Infra.Migrations
                 schema: "Zenvus",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "char(36)", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false),
-                    CategoryId = table.Column<Guid>(type: "char(36)", nullable: false),
-                    CategoryId1 = table.Column<int>(type: "int", nullable: false),
+                    CategoryId = table.Column<int>(type: "int", nullable: false),
                     Amount = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     Description = table.Column<string>(type: "longtext", nullable: false, collation: "utf8mb4_0900_ai_ci")
@@ -33,8 +32,8 @@ namespace Zenvus.Infra.Migrations
                 {
                     table.PrimaryKey("PK_Incomes", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Incomes_Categories_CategoryId1",
-                        column: x => x.CategoryId1,
+                        name: "FK_Incomes_Categories_CategoryId",
+                        column: x => x.CategoryId,
                         principalSchema: "Zenvus",
                         principalTable: "Categories",
                         principalColumn: "Id",
@@ -44,10 +43,10 @@ namespace Zenvus.Infra.Migrations
                 .Annotation("Relational:Collation", "utf8mb4_0900_ai_ci");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Incomes_CategoryId1",
+                name: "IX_Incomes_CategoryId",
                 schema: "Zenvus",
                 table: "Incomes",
-                column: "CategoryId1");
+                column: "CategoryId");
         }
 
         /// <inheritdoc />

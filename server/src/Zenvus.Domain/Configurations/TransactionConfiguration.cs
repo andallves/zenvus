@@ -12,6 +12,10 @@ public class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
 
         builder.HasKey(x => x.Id);
 
+        builder
+            .Property(x => x.Id)
+            .ValueGeneratedOnAdd();
+
         builder.Property(x => x.Amount)
             .HasColumnType("decimal(10,2)")
             .IsRequired();

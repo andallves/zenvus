@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Zenvus.Infra.Database;
 
@@ -11,9 +12,11 @@ using Zenvus.Infra.Database;
 namespace Zenvus.Infra.Migrations
 {
     [DbContext(typeof(ZenvusDbContext))]
-    partial class ZenvusDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251211004420_Transaction_CreateExpensesTables")]
+    partial class Transaction_CreateExpensesTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

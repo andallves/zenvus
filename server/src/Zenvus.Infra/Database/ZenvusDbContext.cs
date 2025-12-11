@@ -10,11 +10,15 @@ public class ZenvusDbContext : BaseDbContext
     public DbSet<LoginAttempts> LoginAttempts { get; set; }
     public DbSet<Category> Categories { get; set; }
     public DbSet<Income> Incomes { get; set; }
+    public DbSet<Expense> Expenses { get; set; }
+    public DbSet<Debt> Debts { get; set; }
+    public DbSet<DebtInstallment> DebtInstallments { get; set; }
 
     public ZenvusDbContext(DbContextOptions<ZenvusDbContext> options) : base(options)
     {
         Schema = "Zenvus";
-        Assembly = GetType().Assembly;
+        // Scan the domain assembly for IEntityTypeConfiguration implementations (configs live in Zenvus.Domain)
+        Assembly = typeof(Expense).Assembly;
     }
 
     public override void AddHealthCheck(IHealthChecksBuilder builder)
