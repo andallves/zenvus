@@ -8,7 +8,7 @@ public class LoginAttemptsConfiguration : IEntityTypeConfiguration<LoginAttempts
 {
     public void Configure(EntityTypeBuilder<LoginAttempts> builder)
     {
-        builder.ToTable("TentativasLogin");
+        builder.ToTable("LoginAttempts");
 
         builder.HasKey(x => x.Id);
             

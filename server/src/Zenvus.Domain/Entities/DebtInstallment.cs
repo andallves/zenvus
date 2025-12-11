@@ -3,7 +3,7 @@ namespace Zenvus.Domain.Entities;
 public class DebtInstallment : SoftDeleteEntity
 {
 
-    public int DebtId { get; set; }
+    public Guid DebtId { get; set; }
     public Debt Debt { get; set; } = null!;
 
     public int Number { get; set; } // parcela 1, 2, 3...

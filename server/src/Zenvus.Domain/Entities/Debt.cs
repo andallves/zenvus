@@ -2,7 +2,7 @@ namespace Zenvus.Domain.Entities;
 
 public class Debt : SoftDeleteEntity
 {
-    public int ExpenseId { get; set; }
+    public Guid ExpenseId { get; set; }
     public Expense Expense { get; set; } = null!;
     public bool IsInstallment { get; set; }       // é parcelada?
     public int? TotalInstallments { get; set; }   // quantidade de parcelas

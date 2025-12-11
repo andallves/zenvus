@@ -14,6 +14,7 @@ public class ZenvusDbContext : BaseDbContext
     public DbSet<Debt> Debts { get; set; }
     public DbSet<DebtInstallment> DebtInstallments { get; set; }
 
+
     public ZenvusDbContext(DbContextOptions<ZenvusDbContext> options) : base(options)
     {
         Schema = "Zenvus";

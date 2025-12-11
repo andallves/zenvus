@@ -4,7 +4,7 @@ namespace Zenvus.Domain.Entities;
 
 public class Category : SoftDeleteEntity
 {
-    public int UserId { get; set; }
+    public Guid UserId { get; set; }
     public string Name { get; set; } = string.Empty;
     public string Color { get; set; } = string.Empty;
     public IsCategory Type { get; set; }

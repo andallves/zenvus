@@ -6,5 +6,5 @@ namespace Zenvus.Application.Commands.Categories;
 
 public class EnableCategoryCommand : BaseCommand<CategoryDto>
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 }

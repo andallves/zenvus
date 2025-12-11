@@ -4,5 +4,5 @@ namespace Zenvus.Application.Queries.Categories;
 
 public class GetCategoryByIdQuery : BaseQuery<CategoryDto>
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 }

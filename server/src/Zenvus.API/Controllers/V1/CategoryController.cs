@@ -28,7 +28,7 @@ public class CategoryController(IMediator mediator) : BaseController(mediator)
     [ProducesResponseType(typeof(CategoryDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async ValueTask<IActionResult> Get([FromRoute] int id, CancellationToken cancellationToken)
+    public async ValueTask<IActionResult> Get([FromRoute] Guid id, CancellationToken cancellationToken)
     {
         return await SendQueryAsync(new GetCategoryByIdQuery { Id = id }, cancellationToken);
     }
@@ -52,7 +52,7 @@ public class CategoryController(IMediator mediator) : BaseController(mediator)
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async ValueTask<IActionResult> Update([FromRoute] int id, [FromForm] UpdateCategoryCommand command, CancellationToken cancellationToken)
+    public async ValueTask<IActionResult> Update([FromRoute] Guid id, [FromForm] UpdateCategoryCommand command, CancellationToken cancellationToken)
     {
         if (id != command.Id)
         {
@@ -67,7 +67,7 @@ public class CategoryController(IMediator mediator) : BaseController(mediator)
     [ProducesResponseType(typeof(CategoryDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async ValueTask<IActionResult> Disable([FromRoute] int id, CancellationToken cancellationToken)
+    public async ValueTask<IActionResult> Disable([FromRoute] Guid id, CancellationToken cancellationToken)
     {
         return await SendCommandAsync(new DisableCategoryCommand { Id = id }, cancellationToken);
     }
@@ -78,7 +78,7 @@ public class CategoryController(IMediator mediator) : BaseController(mediator)
     [ProducesResponseType(typeof(CategoryDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async ValueTask<IActionResult> Enable([FromRoute] int id, CancellationToken cancellationToken)
+    public async ValueTask<IActionResult> Enable([FromRoute] Guid id, CancellationToken cancellationToken)
     {
         return await SendCommandAsync(new EnableCategoryCommand { Id = id }, cancellationToken);
     }

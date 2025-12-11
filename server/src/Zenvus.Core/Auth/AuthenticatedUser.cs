@@ -6,8 +6,8 @@ namespace Zenvus.Core.Auth;
 [ExcludeFromCodeCoverage]
 public class AuthenticatedUser(IHttpContextAccessor httpContextAccessor) : IAuthenticatedUser
 {
-    public int Id { get; } = httpContextAccessor.GetUserId();
+    public Guid Id { get; } = httpContextAccessor.GetUserId();
     public string Name { get; } = httpContextAccessor.ObterNome();
     public string Email { get; set; } = httpContextAccessor.ObterEmail();
-    public bool UserLogged => Id > 0;
+    public bool UserLogged => Id != Guid.Empty;
 }

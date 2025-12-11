@@ -3,20 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Zenvus.Infra.Database;
 
 #nullable disable
 
-namespace Zenvus.Infra.Migrations
+namespace Zenvus.Infra.Database.Migrations
 {
     [DbContext(typeof(ZenvusDbContext))]
-    [Migration("20251211004420_Transaction_CreateExpensesTables")]
-    partial class Transaction_CreateExpensesTables
+    partial class ZenvusDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -31,11 +28,9 @@ namespace Zenvus.Infra.Migrations
 
             modelBuilder.Entity("Zenvus.Domain.Entities.Category", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("Color")
                         .IsRequired()
@@ -59,8 +54,8 @@ namespace Zenvus.Infra.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("char(36)");
 
                     b.HasKey("Id");
 
@@ -69,11 +64,9 @@ namespace Zenvus.Infra.Migrations
 
             modelBuilder.Entity("Zenvus.Domain.Entities.Debt", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("char(36)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
@@ -81,8 +74,8 @@ namespace Zenvus.Infra.Migrations
                     b.Property<bool>("Disabled")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<int>("ExpenseId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("ExpenseId")
+                        .HasColumnType("char(36)");
 
                     b.Property<DateTime?>("FirstDueDate")
                         .HasColumnType("datetime(6)");
@@ -109,11 +102,9 @@ namespace Zenvus.Infra.Migrations
 
             modelBuilder.Entity("Zenvus.Domain.Entities.DebtInstallment", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("char(36)");
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(10,2)");
@@ -121,11 +112,11 @@ namespace Zenvus.Infra.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int>("DebtId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("DebtId")
+                        .HasColumnType("char(36)");
 
-                    b.Property<int>("DebtId1")
-                        .HasColumnType("int");
+                    b.Property<Guid>("DebtId1")
+                        .HasColumnType("char(36)");
 
                     b.Property<bool>("Disabled")
                         .HasColumnType("tinyint(1)");
@@ -156,11 +147,9 @@ namespace Zenvus.Infra.Migrations
 
             modelBuilder.Entity("Zenvus.Domain.Entities.LoginAttempts", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("char(36)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
@@ -183,22 +172,20 @@ namespace Zenvus.Infra.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TentativasLogin", "Zenvus");
+                    b.ToTable("LoginAttempts", "Zenvus");
                 });
 
             modelBuilder.Entity("Zenvus.Domain.Entities.Transaction", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("char(36)");
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(10,2)");
 
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("CategoryId")
+                        .HasColumnType("char(36)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
@@ -206,7 +193,7 @@ namespace Zenvus.Infra.Migrations
                     b.Property<DateTime>("Date")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime(6)")
-                        .HasDefaultValue(new DateTime(2025, 12, 11, 0, 44, 17, 304, DateTimeKind.Utc).AddTicks(8337));
+                        .HasDefaultValue(new DateTime(2025, 12, 11, 1, 39, 49, 180, DateTimeKind.Utc).AddTicks(1004));
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -219,8 +206,8 @@ namespace Zenvus.Infra.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("char(36)");
 
                     b.HasKey("Id");
 
@@ -233,11 +220,9 @@ namespace Zenvus.Infra.Migrations
 
             modelBuilder.Entity("Zenvus.Domain.Entities.User", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("char(36)");
 
                     b.Property<DateOnly?>("BirthDate")
                         .HasColumnType("date");
