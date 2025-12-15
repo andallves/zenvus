@@ -1,4 +1,4 @@
-using Zenvus.Application.DTO.Category;
+using Zenvus.Application.DTO.Categories;
 using Zenvus.Domain.Entities.Enums;
 
 namespace Zenvus.Application.Commands.Categories;

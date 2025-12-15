@@ -1,6 +1,6 @@
 using AutoMapper;
 using Zenvus.Application.Commands.Categories;
-using Zenvus.Application.DTO.Category;
+using Zenvus.Application.DTO.Categories;
 using Zenvus.Core.ValueObjects;
 using Zenvus.Domain.Entities;
 

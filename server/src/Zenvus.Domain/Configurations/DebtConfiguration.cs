@@ -16,23 +16,26 @@ public class DebtConfiguration : IEntityTypeConfiguration<Debt>
             .Property(d => d.Id)
             .ValueGeneratedOnAdd();
 
-        builder.Property(x => x.IsInstallment)
+        builder
+            .Property(x => x.IsInstallment)
             .IsRequired();
 
-        builder.Property(x => x.TotalInstallments);
+        builder
+            .Property(x => x.TotalInstallments);
 
-        builder.Property(x => x.InstallmentAmount)
+        builder
+            .Property(x => x.InstallmentAmount)
             .HasColumnType("decimal(10,2)");
-
-        // Explicitly configure the one-to-one relationship with Expense and specify the foreign key on Debt
-        builder.HasOne(d => d.Expense)
+        
+        builder
+            .HasOne(d => d.Expense)
             .WithOne(e => e.Debt)
             .HasForeignKey<Debt>(d => d.ExpenseId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasMany(d => d.Installments)
-            .WithOne()
+            .WithOne(i => i.Debt)
             .HasForeignKey(i => i.DebtId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

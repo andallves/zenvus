@@ -24,5 +24,10 @@ public class DebtInstallmentConfiguration : IEntityTypeConfiguration<DebtInstall
 
         builder.Property(x => x.IsPaid)
             .IsRequired();
+        
+        builder.HasOne(i => i.Debt)
+            .WithMany(d => d.Installments)
+            .HasForeignKey(i => i.DebtId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

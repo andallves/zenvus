@@ -3,17 +3,20 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Zenvus.Infra.Database;
 
 #nullable disable
 
-namespace Zenvus.Infra.Database.Migrations
+namespace Zenvus.Infra.Migrations
 {
     [DbContext(typeof(ZenvusDbContext))]
-    partial class ZenvusDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251215123509_Transaction_UpdateColumnName")]
+    partial class Transaction_UpdateColumnName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -115,6 +118,9 @@ namespace Zenvus.Infra.Database.Migrations
                     b.Property<Guid>("DebtId")
                         .HasColumnType("char(36)");
 
+                    b.Property<Guid>("DebtId1")
+                        .HasColumnType("char(36)");
+
                     b.Property<bool>("Disabled")
                         .HasColumnType("tinyint(1)");
 
@@ -136,6 +142,8 @@ namespace Zenvus.Infra.Database.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("DebtId");
+
+                    b.HasIndex("DebtId1");
 
                     b.ToTable("DebtInstallments", "Zenvus");
                 });
@@ -188,7 +196,7 @@ namespace Zenvus.Infra.Database.Migrations
                     b.Property<DateTime>("Date")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime(6)")
-                        .HasDefaultValue(new DateTime(2025, 12, 15, 13, 22, 13, 937, DateTimeKind.Utc).AddTicks(8596));
+                        .HasDefaultValue(new DateTime(2025, 12, 15, 12, 35, 8, 836, DateTimeKind.Utc).AddTicks(7647));
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -299,7 +307,7 @@ namespace Zenvus.Infra.Database.Migrations
                     b.HasOne("Zenvus.Domain.Entities.Expense", "Expense")
                         .WithOne("Debt")
                         .HasForeignKey("Zenvus.Domain.Entities.Debt", "ExpenseId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Expense");
@@ -307,10 +315,16 @@ namespace Zenvus.Infra.Database.Migrations
 
             modelBuilder.Entity("Zenvus.Domain.Entities.DebtInstallment", b =>
                 {
-                    b.HasOne("Zenvus.Domain.Entities.Debt", "Debt")
+                    b.HasOne("Zenvus.Domain.Entities.Debt", null)
                         .WithMany("Installments")
                         .HasForeignKey("DebtId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Zenvus.Domain.Entities.Debt", "Debt")
+                        .WithMany()
+                        .HasForeignKey("DebtId1")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Debt");

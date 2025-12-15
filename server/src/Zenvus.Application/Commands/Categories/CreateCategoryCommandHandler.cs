@@ -1,7 +1,7 @@
 using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Zenvus.Application.DTO.Category;
+using Zenvus.Application.DTO.Categories;
 using Zenvus.Core.Auth;
 using Zenvus.Core.ValueObjects;
 using Zenvus.Infra.Abstractions;

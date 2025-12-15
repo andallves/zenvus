@@ -1,4 +1,4 @@
-using Zenvus.Application.DTO.Category;
+using Zenvus.Application.DTO.Categories;
 
 namespace Zenvus.Application.Queries.Categories;
 

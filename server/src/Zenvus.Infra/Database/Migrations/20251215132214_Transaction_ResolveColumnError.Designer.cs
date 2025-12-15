@@ -3,17 +3,20 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Zenvus.Infra.Database;
 
 #nullable disable
 
-namespace Zenvus.Infra.Database.Migrations
+namespace Zenvus.Infra.Migrations
 {
     [DbContext(typeof(ZenvusDbContext))]
-    partial class ZenvusDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251215132214_Transaction_ResolveColumnError")]
+    partial class Transaction_ResolveColumnError
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

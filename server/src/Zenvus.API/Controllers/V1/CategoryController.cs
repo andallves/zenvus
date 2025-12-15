@@ -2,7 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using Zenvus.Application.Commands.Categories;
-using Zenvus.Application.DTO.Category;
+using Zenvus.Application.DTO.Categories;
 using Zenvus.Application.Queries.Categories;
 using Zenvus.Core.ValueObjects;
 

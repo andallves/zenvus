@@ -12,10 +12,5 @@ public class ExpenseConfiguration : IEntityTypeConfiguration<Expense>
 
         builder.Property(x => x.IsExpense)
             .IsRequired();
-
-        builder.Property(x => x.IsDebt)
-            .IsRequired();
-
-        // Relationship to Debt is configured in DebtConfiguration (foreign key lives on Debt)
     }
 }

@@ -1,5 +1,5 @@
 using MediatR;
-using Zenvus.Application.DTO.Category;
+using Zenvus.Application.DTO.Categories;
 using Zenvus.Core.ValueObjects;
 
 namespace Zenvus.Application.Commands.Categories;

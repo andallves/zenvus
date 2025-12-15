@@ -1,16 +1,15 @@
 using Zenvus.API.Configurations.Swagger;
-using Zenvus.Application.DTO.Category;
+using Zenvus.Application.DTO.Categories;
 using Zenvus.Core.ValueObjects;
-using Zenvus.Domain.Entities.Enums;
+using Zenvus.Domain.Entities;
 
 namespace Zenvus.Application.Queries.Categories;
 
-public class GetCategoriesQuery : BasePagedQuery<Domain.Entities.Category, CategoryDto>
+public class GetCategoriesQuery : BasePagedQuery<Category, CategoryDto>
 {
     public string? Name { get; set; }
     public string? Color { get; set; }
     
-    [SwaggerParameterExample("Nulo", null)]
     [SwaggerParameterExample("Income", "1")]
     [SwaggerParameterExample("Expense", "2")]
     public int? Type { get; set; }
