@@ -9,7 +9,7 @@ public class Debt : SoftDeleteEntity
     public decimal? InstallmentAmount { get; set; }
     public DateTime? FirstDueDate { get; set; }
 
-    public ICollection<DebtInstallment> Installments { get; set; }
+    public List<DebtInstallment> Installments { get; set; }
         = new List<DebtInstallment>();
     
     public static Debt CreateInstallmentDebt(

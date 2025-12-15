@@ -1,3 +1,4 @@
+using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Zenvus.Application.DTO.Expenses;
@@ -17,6 +18,7 @@ public class GetExpensesQueryHandler(IRepository<ZenvusDbContext> repository) : 
             .GetQueryable<Expense>()
             .Include(e => e.Category)
             .Include(e => e.Debt)
+            .ThenInclude(d => d.Installments)
             .ApplyFilter(request)
             .ApplyOrdering(request)
             .Select(e => ExpenseDto.From(e))
