@@ -14,7 +14,7 @@ public class CategoryController(IMediator mediator) : BaseController(mediator)
 {
     [HttpGet]
     [MapToApiVersion("1.0")]
-    [SwaggerOperation(Summary = "Obtem  categorias existentes", Tags = ["Categoria"])]
+    [SwaggerOperation(Summary = "Obtem categorias existentes", Tags = ["Categoria"])]
     [ProducesResponseType(typeof(PagedResult<CategoryDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async ValueTask<IActionResult> Get([FromQuery] GetCategoriesQuery query, CancellationToken cancellationToken)

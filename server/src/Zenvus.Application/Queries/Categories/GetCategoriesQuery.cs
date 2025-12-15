@@ -10,6 +10,7 @@ public class GetCategoriesQuery : BasePagedQuery<Category, CategoryDto>
     public string? Name { get; set; }
     public string? Color { get; set; }
     
+    [SwaggerParameterExample("Nulo", null)]
     [SwaggerParameterExample("Income", "1")]
     [SwaggerParameterExample("Expense", "2")]
     public int? Type { get; set; }
