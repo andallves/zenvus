@@ -9,7 +9,6 @@ using Zenvus.Core.ValueObjects;
 
 namespace Zenvus.API.Controllers.V1;
 
-[AllowAnonymous]
 [ApiVersion("1.0")]
 [Route("v{version:apiVersion}/[controller]")]
 public class ExpenseController(IMediator mediator) : BaseController(mediator)

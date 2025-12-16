@@ -12,5 +12,5 @@ public class CreateExpenseCommand : BaseCommand<ExpenseDto>
     public string Description { get; set; } = string.Empty;
     public IsExpense IsExpense { get; set; }
     public bool HasDebt { get; set; }
-    public DebtDto? Debt { get; set; }
+    public CreateDebtDto? Debt { get; set; }
 }
