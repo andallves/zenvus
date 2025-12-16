@@ -25,6 +25,7 @@ public abstract class BaseDbContext(DbContextOptions options) : DbContext(option
         
         modelBuilder.HasDefaultSchema(Schema);
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly);
+        modelBuilder.Entity<Transaction>().UseTpcMappingStrategy();
         
         ApplyConfigurations(modelBuilder);
     }

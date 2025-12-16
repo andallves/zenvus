@@ -1,7 +1,7 @@
 using MediatR;
-using Microsoft.EntityFrameworkCore.Metadata;
-using Zenvus.Application.DTO.Category;
+using Zenvus.Application.DTO.Categories;
 using Zenvus.Core.ValueObjects;
+using Zenvus.Domain.Entities;
 using Zenvus.Infra.Abstractions;
 using Zenvus.Infra.Database;
 using Zenvus.Infra.Extensionsss;
@@ -11,21 +11,14 @@ namespace Zenvus.Application.Queries.Categories;
 public class GetCategoriesQueryHandler(IRepository<ZenvusDbContext> repository)
     : IRequestHandler<GetCategoriesQuery, PagedResult<CategoryDto>>
 {
-    private readonly IRepository<ZenvusDbContext> _repository = repository;
 
     public async Task<PagedResult<CategoryDto>> Handle(GetCategoriesQuery request, CancellationToken cancellationToken)
     {
-        var paged = await _repository
-            .GetQueryable<Domain.Entities.Category>()
+        var paged = await repository
+            .GetQueryable<Category>()
             .ApplyFilter(request)
             .ApplyOrdering(request)
-            .Select(x => new CategoryDto
-            {
-                Id = x.Id,
-                Name = x.Name,
-                Color = x.Color,
-                Disabled = x.Disabled
-            })
+            .Select(x => CategoryDto.From(x))
             .PagedAsync(request, cancellationToken);
         
         return paged;

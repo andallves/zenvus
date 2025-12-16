@@ -30,9 +30,15 @@ public class CreateCategoryCommandValidator : AbstractValidator<CreateCategoryCo
             .WithMessage("A cor da categoria é obrigatória.")
             .Must(BeAValidHexColor)
             .WithMessage("A cor da categoria deve ser um código hexadecimal válido.");
+
+        RuleFor(c => c.Type)
+            .NotNull()
+            .NotEmpty()
+            .WithMessage("O tipo da categoria é obrigatório.")
+            .IsInEnum();
     }
     
-    private bool BeAValidHexColor(string color)
+    private static bool BeAValidHexColor(string color)
     {
         if (string.IsNullOrWhiteSpace(color)) return false;
 
@@ -43,7 +49,7 @@ public class CreateCategoryCommandValidator : AbstractValidator<CreateCategoryCo
     private async Task NameUsed(string name, ValidationContext<CreateCategoryCommand> context, CancellationToken cancellationToken)
     {
         var emUso = await _repository.DbSet<Category>()
-            .AnyAsync(c => c.Name.ToLower() == name.ToLower(), cancellationToken);
+            .AnyAsync(c => c.Name.ToLower() == name.ToLower() && !c.Disabled, cancellationToken);
 
         if (emUso)
         {

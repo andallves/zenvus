@@ -47,8 +47,9 @@ public static class Extensions
         services
             .AddAutoMapper(Assembly.GetExecutingAssembly());
         
+        // Pass configuration to infra layer so it can register the DbContext properly
         services
-            .AddInfraLayer();
+            .AddInfraLayer(configuration);
 
         return services;
     }

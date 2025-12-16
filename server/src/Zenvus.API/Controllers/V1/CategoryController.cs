@@ -2,7 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using Zenvus.Application.Commands.Categories;
-using Zenvus.Application.DTO.Category;
+using Zenvus.Application.DTO.Categories;
 using Zenvus.Application.Queries.Categories;
 using Zenvus.Core.ValueObjects;
 
@@ -14,7 +14,7 @@ public class CategoryController(IMediator mediator) : BaseController(mediator)
 {
     [HttpGet]
     [MapToApiVersion("1.0")]
-    [SwaggerOperation(Summary = "Obtem  categorias existentes", Tags = ["Categoria"])]
+    [SwaggerOperation(Summary = "Obtem categorias existentes", Tags = ["Categoria"])]
     [ProducesResponseType(typeof(PagedResult<CategoryDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async ValueTask<IActionResult> Get([FromQuery] GetCategoriesQuery query, CancellationToken cancellationToken)
@@ -22,13 +22,13 @@ public class CategoryController(IMediator mediator) : BaseController(mediator)
         return await SendQueryAsync(query, cancellationToken);
     }
     
-    [HttpGet("{id:int}")]
+    [HttpGet("{id:Guid}")]
     [MapToApiVersion("1.0")]
     [SwaggerOperation(Summary = "Obtem um categoria existente por id", Tags = ["Categoria"])]
     [ProducesResponseType(typeof(CategoryDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async ValueTask<IActionResult> Get([FromRoute] int id, CancellationToken cancellationToken)
+    public async ValueTask<IActionResult> Get([FromRoute] Guid id, CancellationToken cancellationToken)
     {
         return await SendQueryAsync(new GetCategoryByIdQuery { Id = id }, cancellationToken);
     }
@@ -45,14 +45,14 @@ public class CategoryController(IMediator mediator) : BaseController(mediator)
         return await SendCommandAsync(command, cancellationToken);
     }
     
-    [HttpPut("{id:int}")]
+    [HttpPut("{id:Guid}")]
     [MapToApiVersion("1.0")]
     [SwaggerOperation(Summary = "Atualiza uma categoria existente", Tags = ["Categoria"])]
     [ProducesResponseType(typeof(CategoryDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async ValueTask<IActionResult> Update([FromRoute] int id, [FromForm] UpdateCategoryCommand command, CancellationToken cancellationToken)
+    public async ValueTask<IActionResult> Update([FromRoute] Guid id, [FromForm] UpdateCategoryCommand command, CancellationToken cancellationToken)
     {
         if (id != command.Id)
         {
@@ -61,24 +61,24 @@ public class CategoryController(IMediator mediator) : BaseController(mediator)
         return await SendCommandAsync(command, cancellationToken);
     }
     
-    [HttpDelete("{id:int}")]
+    [HttpDelete("{id:Guid}")]
     [MapToApiVersion("1.0")]
-    [SwaggerOperation(Summary = "Habilita uma categoria existente", Tags = ["Categoria"])]
+    [SwaggerOperation(Summary = "Desativa uma categoria existente", Tags = ["Categoria"])]
     [ProducesResponseType(typeof(CategoryDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async ValueTask<IActionResult> Disable([FromRoute] int id, CancellationToken cancellationToken)
+    public async ValueTask<IActionResult> Disable([FromRoute] Guid id, CancellationToken cancellationToken)
     {
         return await SendCommandAsync(new DisableCategoryCommand { Id = id }, cancellationToken);
     }
     
-    [HttpPatch("{id:int}/enable")]
+    [HttpPatch("{id:Guid}/enable")]
     [MapToApiVersion("1.0")]
     [SwaggerOperation(Summary = "Habilita uma categoria existente", Tags = ["Categoria"])]
     [ProducesResponseType(typeof(CategoryDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async ValueTask<IActionResult> Enable([FromRoute] int id, CancellationToken cancellationToken)
+    public async ValueTask<IActionResult> Enable([FromRoute] Guid id, CancellationToken cancellationToken)
     {
         return await SendCommandAsync(new EnableCategoryCommand { Id = id }, cancellationToken);
     }

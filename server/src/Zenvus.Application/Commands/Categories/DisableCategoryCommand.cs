@@ -1,9 +1,9 @@
 using DocumentFormat.OpenXml.Math;
-using Zenvus.Application.DTO.Category;
+using Zenvus.Application.DTO.Categories;
 
 namespace Zenvus.Application.Commands.Categories;
 
 public class DisableCategoryCommand : BaseCommand<CategoryDto>
 {
-    public int Id { get; set; }
+    public Guid Id { get; init; }
 }

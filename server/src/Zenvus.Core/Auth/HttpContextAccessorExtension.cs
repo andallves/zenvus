@@ -11,10 +11,10 @@ public static class HttpContextAccessorExtension
         return contextAccessor?.HttpContext?.User.UserAuthenticated() ?? false;
     }
     
-    public static int GetUserId(this IHttpContextAccessor? contextAccessor)
+    public static Guid GetUserId(this IHttpContextAccessor? contextAccessor)
     {
         var id = contextAccessor?.HttpContext?.User.GetUserId() ?? string.Empty;
-        return string.IsNullOrWhiteSpace(id) ? 0 : int.Parse(id);
+        return string.IsNullOrWhiteSpace(id) ? Guid.Empty : Guid.Parse((ReadOnlySpan<char>)id);
     }
     
     public static string ObterNome(this IHttpContextAccessor? contextAccessor)

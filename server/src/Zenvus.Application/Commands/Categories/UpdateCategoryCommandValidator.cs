@@ -1,5 +1,6 @@
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using Zenvus.Core.Auth;
 using Zenvus.Domain.Entities;
 using Zenvus.Infra.Abstractions;
 using Zenvus.Infra.Database;
@@ -9,10 +10,12 @@ namespace Zenvus.Application.Commands.Categories;
 public class UpdateCategoryCommandValidator : AbstractValidator<UpdateCategoryCommand>
 {
     private readonly IRepository<ZenvusDbContext> _repository;
+    private readonly IAuthenticatedUser _authenticatedUser;
     
-    public UpdateCategoryCommandValidator(IRepository<ZenvusDbContext> repository)
+    public UpdateCategoryCommandValidator(IRepository<ZenvusDbContext> repository, IAuthenticatedUser authenticatedUser)
     {
         _repository = repository;
+        _authenticatedUser = authenticatedUser;
 
         RuleFor(c => c.Id)
             .NotNull()
@@ -42,7 +45,7 @@ public class UpdateCategoryCommandValidator : AbstractValidator<UpdateCategoryCo
     private async Task NameUsed(string name, ValidationContext<UpdateCategoryCommand> context, CancellationToken cancellationToken)
     {
         var emUso = await _repository.DbSet<Category>()
-            .AnyAsync(c => c.Name.ToLower() == name.ToLower(), cancellationToken);
+            .AnyAsync(c => c.Name.ToLower() == name.ToLower() && c.UserId == _authenticatedUser.Id, cancellationToken);
 
         if (emUso)
         {

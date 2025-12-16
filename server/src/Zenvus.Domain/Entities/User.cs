@@ -9,5 +9,6 @@ public class User : IdentityUser
     public DateOnly? BirthDate { get; set; } = null;
     public string Email { get; set; } = string.Empty;
     public string Telephone { get; set; } = string.Empty;
-    public string? Photo { get; set; } = string.Empty;
+    // Photo can be null when not provided
+    public string? Photo { get; set; } = null;
 }
