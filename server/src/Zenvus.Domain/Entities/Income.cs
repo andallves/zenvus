@@ -4,5 +4,5 @@ namespace Zenvus.Domain.Entities;
 
 public class Income : Transaction
 {
-    public IsIncome Type { get; set; }
+    public IncomeType Type { get; set; }
 }

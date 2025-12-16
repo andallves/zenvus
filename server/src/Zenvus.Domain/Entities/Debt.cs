@@ -1,3 +1,7 @@
+using System.Runtime.CompilerServices;
+using DocumentFormat.OpenXml.Wordprocessing;
+using Zenvus.Domain.Entities.Enums;
+
 namespace Zenvus.Domain.Entities;
 
 public class Debt : SoftDeleteEntity
@@ -8,6 +12,9 @@ public class Debt : SoftDeleteEntity
     public int? TotalInstallments { get; set; }
     public decimal? InstallmentAmount { get; set; }
     public DateTime? FirstDueDate { get; set; }
+    
+    public void Enable() => Disabled = false;
+    public void Disable() => Disabled = true;
 
     public List<DebtInstallment> Installments { get; set; }
         = new List<DebtInstallment>();
@@ -35,8 +42,21 @@ public class Debt : SoftDeleteEntity
             {
                 Number = i,
                 Amount = installmentAmount,
-                DueDate = firstDueDate.AddMonths(i - 1)
+                DueDate = firstDueDate.AddMonths(i - 1),
+                Status = PaymentStatus.Active
             });
+        }
+
+        return debt;
+    }
+
+    public static Debt CancelDebt(Debt debt)
+    {
+        debt.Disable();
+        foreach (var installment in debt.Installments)
+        {
+            installment.Disable();
+            installment.Status = PaymentStatus.Cancelled;
         }
 
         return debt;

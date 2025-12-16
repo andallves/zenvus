@@ -1,3 +1,5 @@
+using Zenvus.Domain.Entities.Enums;
+
 namespace Zenvus.Domain.Entities;
 
 public class DebtInstallment : SoftDeleteEntity
@@ -10,12 +12,15 @@ public class DebtInstallment : SoftDeleteEntity
     public DateTime DueDate { get; set; }
     public decimal Amount { get; set; }
 
-    public bool IsPaid { get; set; }
-    public DateTime? PaymentDate { get; set; }  
+    public PaymentStatus Status { get; set; }
+    public DateTime? PaymentDate { get; set; } 
+    public void Enable() => Disabled = false;
+    public void Disable() => Disabled = true;
+    
     
     public void MarkAsPaid(DateTime paymentDate)
     {
-        IsPaid = true;
+        Status = PaymentStatus.Paid;
         PaymentDate = paymentDate;
     }
 }

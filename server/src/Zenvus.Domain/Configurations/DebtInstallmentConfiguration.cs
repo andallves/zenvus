@@ -22,7 +22,7 @@ public class DebtInstallmentConfiguration : IEntityTypeConfiguration<DebtInstall
         builder.Property(x => x.DueDate)
             .IsRequired();
 
-        builder.Property(x => x.IsPaid)
+        builder.Property(x => x.Status)
             .IsRequired();
         
         builder.HasOne(i => i.Debt)

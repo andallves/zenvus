@@ -1,4 +1,5 @@
 using Zenvus.Domain.Entities;
+using Zenvus.Domain.Entities.Enums;
 
 namespace Zenvus.Application.DTO.Expenses;
 
@@ -9,7 +10,7 @@ public class DebtInstallmentDto
     public int Number { get; set; }
     public DateTime DueDate { get; set; }
     public decimal Amount { get; set; }
-    public bool IsPaid { get; set; }
+    public PaymentStatus Status { get; set; }
     public DateTime? PaymentDate { get; set; }  
     
     public static DebtInstallmentDto From(DebtInstallment debtInstallment)
@@ -20,7 +21,7 @@ public class DebtInstallmentDto
             Number = debtInstallment.Number,
             DueDate = debtInstallment.DueDate,
             Amount = debtInstallment.Amount,
-            IsPaid = debtInstallment.IsPaid,
+            Status = debtInstallment.Status,
             PaymentDate = debtInstallment.PaymentDate
         };
     }
