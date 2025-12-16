@@ -10,9 +10,9 @@ using Zenvus.Infra.Database;
 
 namespace Zenvus.Application.Commands.Expenses;
 
-public class AddExpenseCommandHandler(IMapper mapper, IRepository<ZenvusDbContext> repository, IAuthenticatedUser authenticatedUser) : IRequestHandler<AddExpenseCommand, CustomResult<ExpenseDto>>
+public class CreateExpenseCommandHandler(IMapper mapper, IRepository<ZenvusDbContext> repository, IAuthenticatedUser authenticatedUser) : IRequestHandler<CreateExpenseCommand, CustomResult<ExpenseDto>>
 {
-    public async Task<CustomResult<ExpenseDto>> Handle(AddExpenseCommand request, CancellationToken cancellationToken)
+    public async Task<CustomResult<ExpenseDto>> Handle(CreateExpenseCommand request, CancellationToken cancellationToken)
     {
         var category = await repository
             .GetDbContext().Categories
@@ -36,15 +36,7 @@ public class AddExpenseCommandHandler(IMapper mapper, IRepository<ZenvusDbContex
 
         repository.DbSet<Expense>().Add(expense);
 
-        if (request.HasDebt)
-        {
-            var totalInstallments = request.Debt?.TotalInstallments ?? 1;
-            var firstDueDate = request.Debt?.FirstDueDate ?? request.Date;
-            
-            var debt = Debt.CreateInstallmentDebt(expense, totalInstallments, firstDueDate);
-
-            repository.DbSet<Debt>().Add(debt);
-        }
+        if (request.HasDebt) CreateDebt(expense, request);
 
         if (await repository.SaveChangesAsync(cancellationToken) <= 0)
         {
@@ -54,5 +46,15 @@ public class AddExpenseCommandHandler(IMapper mapper, IRepository<ZenvusDbContex
         
         return CustomResult<ExpenseDto>
             .SuccessResult(ExpenseDto.From(expense), "Despesa cadastrada com sucesso!", 201);
+    }
+    
+    private void CreateDebt(Expense expense, CreateExpenseCommand command) 
+    {
+        var totalInstallments = command.Debt?.TotalInstallments ?? 1;
+        var firstDueDate = command.Debt?.FirstDueDate ?? command.Date;
+            
+        var debt = Debt.CreateInstallmentDebt(expense, totalInstallments, firstDueDate);
+
+        repository.DbSet<Debt>().Add(debt);
     }
 }

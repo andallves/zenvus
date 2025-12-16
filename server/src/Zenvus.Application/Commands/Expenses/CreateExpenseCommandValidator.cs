@@ -6,12 +6,12 @@ using Zenvus.Infra.Database;
 
 namespace Zenvus.Application.Commands.Expenses;
 
-public class AddExpenseCommandValidator : AbstractValidator<AddExpenseCommand>
+public class CreateExpenseCommandValidator : AbstractValidator<CreateExpenseCommand>
 {
     private readonly IRepository<ZenvusDbContext> _repository;
     private readonly IAuthenticatedUser _authenticatedUser;
 
-    public AddExpenseCommandValidator(IRepository<ZenvusDbContext> repository, IAuthenticatedUser authenticatedUser)
+    public CreateExpenseCommandValidator(IRepository<ZenvusDbContext> repository, IAuthenticatedUser authenticatedUser)
     {
         _repository = repository;
         _authenticatedUser = authenticatedUser;
@@ -52,7 +52,7 @@ public class AddExpenseCommandValidator : AbstractValidator<AddExpenseCommand>
         });
     }
     
-    private async Task CategoryExist(Guid categoryId, ValidationContext<AddExpenseCommand> context, CancellationToken cancellationToken)
+    private async Task CategoryExist(Guid categoryId, ValidationContext<CreateExpenseCommand> context, CancellationToken cancellationToken)
     {
         var categoryExist = await _repository.GetDbContext().Categories
             .AnyAsync(c => c.Id == categoryId && c.UserId == _authenticatedUser.Id, cancellationToken);

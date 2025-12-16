@@ -31,8 +31,24 @@ public class ExpenseController(IMediator mediator) : BaseController(mediator)
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async ValueTask<IActionResult> Create([FromBody] AddExpenseCommand command, CancellationToken cancellationToken)
+    public async ValueTask<IActionResult> Create([FromBody] CreateExpenseCommand command, CancellationToken cancellationToken)
     {
+        return await SendCommandAsync(command, cancellationToken);
+    }
+    
+    [HttpPut("{id:int}")]
+    [MapToApiVersion("1.0")]
+    [SwaggerOperation(Summary = "Atualiza uma despesa existente", Tags = ["Categoria"])]
+    [ProducesResponseType(typeof(ExpenseDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async ValueTask<IActionResult> Update([FromRoute] Guid id, [FromForm] UpdateExpenseCommand command, CancellationToken cancellationToken)
+    {
+        if (id != command.Id)
+        {
+            return BadRequest();
+        }
         return await SendCommandAsync(command, cancellationToken);
     }
 }
