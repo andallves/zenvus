@@ -22,7 +22,7 @@ public class CategoryController(IMediator mediator) : BaseController(mediator)
         return await SendQueryAsync(query, cancellationToken);
     }
     
-    [HttpGet("{id:int}")]
+    [HttpGet("{id:Guid}")]
     [MapToApiVersion("1.0")]
     [SwaggerOperation(Summary = "Obtem um categoria existente por id", Tags = ["Categoria"])]
     [ProducesResponseType(typeof(CategoryDto), StatusCodes.Status200OK)]
@@ -45,7 +45,7 @@ public class CategoryController(IMediator mediator) : BaseController(mediator)
         return await SendCommandAsync(command, cancellationToken);
     }
     
-    [HttpPut("{id:int}")]
+    [HttpPut("{id:Guid}")]
     [MapToApiVersion("1.0")]
     [SwaggerOperation(Summary = "Atualiza uma categoria existente", Tags = ["Categoria"])]
     [ProducesResponseType(typeof(CategoryDto), StatusCodes.Status200OK)]
@@ -61,7 +61,7 @@ public class CategoryController(IMediator mediator) : BaseController(mediator)
         return await SendCommandAsync(command, cancellationToken);
     }
     
-    [HttpDelete("{id:int}")]
+    [HttpDelete("{id:Guid}")]
     [MapToApiVersion("1.0")]
     [SwaggerOperation(Summary = "Habilita uma categoria existente", Tags = ["Categoria"])]
     [ProducesResponseType(typeof(CategoryDto), StatusCodes.Status200OK)]
@@ -72,7 +72,7 @@ public class CategoryController(IMediator mediator) : BaseController(mediator)
         return await SendCommandAsync(new DisableCategoryCommand { Id = id }, cancellationToken);
     }
     
-    [HttpPatch("{id:int}/enable")]
+    [HttpPatch("{id:Guid}/enable")]
     [MapToApiVersion("1.0")]
     [SwaggerOperation(Summary = "Habilita uma categoria existente", Tags = ["Categoria"])]
     [ProducesResponseType(typeof(CategoryDto), StatusCodes.Status200OK)]
