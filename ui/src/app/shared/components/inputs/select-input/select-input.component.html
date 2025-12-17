@@ -1,7 +1,9 @@
 <div class="box-input" [class.fixedSize]="fixedSize">
   <label [for]="dropdownId" class="label-select">
     {{ labelSignal() }}
-    <span *ngIf="showMandatory" class="mandatory">*</span>
+    @if (showMandatory) {
+      <span class="mandatory">*</span>
+    }
   </label>
   <div class="input-wrapper">
     <div
@@ -32,28 +34,36 @@
         role="listbox"
         [id]="dropdownId + '-menu'"
       >
-        <a
-          id="{{ dropdownId }}-option-{{ i }}"
-          class="dropdown-item"
-          *ngFor="let option of options; let i = index"
-          (click)="selectOption(option, $event)"
-          [ngClass]="{ active: i === focusedOptionIndex }"
-          role="option"
-          [attr.aria-selected]="i === focusedOptionIndex"
-        >
-          {{ option.label }}
-        </a>
+        @for (option of options; track $index; let i = $index) {
+          <button
+            id="{{ dropdownId }}-option-{{ i }}"
+            class="dropdown-item"
+            role="option"
+            aria-selected="{{ i === focusedOptionIndex }}"
+            [ngClass]="{ active: i === focusedOptionIndex }"
+            (mousedown)="selectOption(option, $event)"
+            (focus)="onFocus()"
+          >
+            {{ option.label }}
+          </button>
+        }
       </div>
     </div>
-    <span
-      *ngIf="showX && value"
-      id="{{ dropdownId }}-clear"
-      class="clear-input"
-      (click)="clearSelection($event)"
-      >&#x2715;</span
-    >
+
+    @if (showX && value) {
+      <button
+        id="{{ dropdownId }}-clear"
+        class="clear-input"
+        (click)="clearSelection($event)"
+      >&#x2715;
+      </button
+      >
+    }
   </div>
-  <div *ngIf="hasError" id="{{ dropdownId }}-error" class="invalid-feedback">
-    {{ errorMsg }}
-  </div>
+
+  @if (hasError) {
+    <div id="{{ dropdownId }}-error" class="invalid-feedback">
+      {{ errorMsg }}
+    </div>
+  }
 </div>

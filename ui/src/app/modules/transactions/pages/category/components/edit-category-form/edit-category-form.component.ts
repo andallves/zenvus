@@ -14,6 +14,7 @@ import { InputDefaultComponent } from '@shared/components/inputs/input-default/i
 import { SelectInputComponent } from '@shared/components/inputs/select-input/select-input.component';
 import { ModalIconType } from '@shared/components/swall/modal-alert/domain-types/modal-types.interface';
 import { ModalAlertService } from '@shared/components/swall/modal-alert/service/modal-alert.service';
+import { IOptions } from '@shared/domain-types/options';
 import { ECategoryType } from '@shared/enums/category-type.enum';
 import { ICategory, ICategoryEdit } from '@shared/interfaces/category.interface';
 import { InputValidationService } from '@shared/validators/input-validator/input-validator.service';
@@ -54,7 +55,7 @@ export class EditCategoryFormComponent implements OnInit {
   private readonly modalAlertService = inject(ModalAlertService);
   private readonly toastr = inject(ToastrService);
 
-  optionsInput: { value: number; label: string }[] = [
+  optionsInput: IOptions[] = [
     { label: 'Entrada', value: ECategoryType.Income },
     { label: 'Saída', value: ECategoryType.Expense },
   ];

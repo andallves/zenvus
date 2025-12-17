@@ -7,12 +7,17 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { GetCategoryTypeLabelPayload } from '@modules/transactions/pages/category/components/edit-category-form/edit-category-form.component';
 import { CategoryService } from '@modules/transactions/services/category.service';
 import { ButtonComponent } from '@shared/components/button/button.component';
 import { ColorPickerInputComponent } from '@shared/components/inputs/color-picker-input/color-picker-input.component';
 import { InputDefaultComponent } from '@shared/components/inputs/input-default/input-default.component';
+import { SelectInputComponent } from '@shared/components/inputs/select-input/select-input.component';
 import { ModalIconType } from '@shared/components/swall/modal-alert/domain-types/modal-types.interface';
 import { ModalAlertService } from '@shared/components/swall/modal-alert/service/modal-alert.service';
+import { IOptions } from '@shared/domain-types/options';
+import { ECategoryType } from '@shared/enums/category-type.enum';
+import { ICategoryCreate } from '@shared/interfaces/category.interface';
 import { InputValidationService } from '@shared/validators/input-validator/input-validator.service';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { validColorValidator } from 'ngx-colors';
@@ -28,6 +33,7 @@ import { ToastrService } from 'ngx-toastr';
     ButtonComponent,
     InputDefaultComponent,
     ColorPickerInputComponent,
+    SelectInputComponent,
   ],
   templateUrl: './add-category-form.component.html',
   styleUrl: './add-category-form.component.scss',
@@ -43,6 +49,11 @@ export class AddCategoryFormComponent {
   private readonly modalService = inject(BsModalService);
   private readonly modalAlertService = inject(ModalAlertService);
   private readonly toastr = inject(ToastrService);
+
+  optionsInput: IOptions[] = [
+    { label: 'Entrada', value: ECategoryType.Income },
+    { label: 'Saída', value: ECategoryType.Expense },
+  ];
 
   constructor() {
     this.initializeForm();
@@ -68,6 +79,7 @@ export class AddCategoryFormComponent {
           validColorValidator(),
         ],
       ],
+      type: [ECategoryType, [Validators.required]],
     });
   }
 
@@ -101,8 +113,9 @@ export class AddCategoryFormComponent {
     this.isLoading = true;
 
     if (this.addCategoryForm.valid) {
-      const payload = {
+      const payload: ICategoryCreate = {
         ...this.addCategoryForm.value,
+        type: GetCategoryTypeLabelPayload[this.addCategoryForm.get('type')?.value as ECategoryType],
       };
 
       this.categoryService.addCategory(payload).subscribe({

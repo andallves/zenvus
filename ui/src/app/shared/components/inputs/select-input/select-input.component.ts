@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, forwardRef, inject, Input, signal, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, forwardRef, HostListener, inject, Input, Output, signal, ViewChild, } from '@angular/core';
 import { FormsModule, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
+import { IOptions, IValueOptions } from '@shared/domain-types/options';
 import { IdGeneratorService } from '../utils/id-generator.service';
 
 @Component({
@@ -18,18 +19,17 @@ import { IdGeneratorService } from '../utils/id-generator.service';
   styleUrls: ['./select-input.component.scss'],
 })
 export class SelectInputComponent {
-  #geradorIdUnico = inject(IdGeneratorService);
+  readonly #geradorIdUnique = inject(IdGeneratorService);
+  readonly elementRef = inject(ElementRef);
 
   @Input() dropdownId = 'dropdown-id-default';
-
   public labelSignal = signal('');
   @Input() set label(nomeLabel: string) {
     this.labelSignal.set(nomeLabel);
 
-    this.dropdownId = this.#geradorIdUnico.gerarId(nomeLabel);
+    this.dropdownId = this.#geradorIdUnique.gerarId(nomeLabel);
   }
-
-  @Input() options: { value: string | number | boolean; label: string }[] = [];
+  @Input() options: IOptions[] = [];
   @Input() hasError = false;
   @Input() errorMsg = '';
   @Input() isDisable = false;
@@ -37,18 +37,17 @@ export class SelectInputComponent {
   @Input() showMandatory = false;
   @Input() showX = false;
   @Input() fixedSize = false;
+  @Output() valueChange = new EventEmitter<IValueOptions>();
 
   @ViewChild('selectedValue', { static: false }) selectedValueRef!: ElementRef;
 
-  value: any = '';
+  value: IValueOptions = '';
   isOpen = false;
   isFocused = false;
   focusedOptionIndex = -1;
 
   onChange: any = () => {};
   onTouched: any = () => {};
-
-  constructor() {}
 
   writeValue(value: any): void {
     this.value = value !== null ? value : '';
@@ -76,21 +75,24 @@ export class SelectInputComponent {
     }
   }
 
-  selectOption(option: { value: string | number | boolean; label: string }, event?: Event) {
+  selectOption(option: IOptions, event?: Event) {
     if (event) {
+      event.preventDefault();
       event.stopPropagation();
     }
     this.value = option.value;
     this.onChange(this.value);
     this.onTouched();
+    this.valueChange.emit(this.value);
     this.isOpen = false;
     this.isFocused = false;
+    console.log('selected: ' + this.value);
   }
 
   clearSelection(event: Event) {
     event.stopPropagation();
     this.value = '';
-    this.onChange(this.value);
+    this.onChange();
     this.onTouched();
   }
 
@@ -162,5 +164,13 @@ export class SelectInputComponent {
 
   onFocus() {
     this.isFocused = true;
+  }
+
+  @HostListener('document:click', ['$event'])
+  onClickOutside(event: MouseEvent) {
+    if (!this.elementRef.nativeElement.contains(event.target)) {
+      this.isOpen = false;
+      this.isFocused = false;
+    }
   }
 }

@@ -24,6 +24,15 @@
     aria-describedby="input-color-error"
     [inputId]="'input-color-picker'"/>
 
+  <zen-select-input
+    id="select-type"
+    label="Tipo:"
+    placeholder="Selecione um tipo"
+    formControlName="type"
+    [options]="optionsInput"
+    [dropdownId]="'select-type'"
+  />
+
   <div class="footer-modal">
     <zen-button
       id="button-fechar"
@@ -38,7 +47,7 @@
     <zen-button
       id="button-salvar"
       width="100px"
-      [disabled]="!addCategoryForm.valid"
+      [disabled]="addCategoryForm.invalid"
       [isLoading]="isLoading"
       (click)="addCategory()"
       aria-label="Salvar a categoria"
