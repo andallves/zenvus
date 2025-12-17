@@ -23,7 +23,6 @@ public class UpdateCategoryCommandValidator : AbstractValidator<UpdateCategoryCo
             .WithMessage("O Id é um campo obrigatório.");
         
         RuleFor(c => c.Name)
-            .CustomAsync(NameUsed)
             .MinimumLength(3)
             .WithMessage("O nome da categoria deve ter no mínimo 3 caracteres.")
             .MaximumLength(15)
@@ -32,6 +31,13 @@ public class UpdateCategoryCommandValidator : AbstractValidator<UpdateCategoryCo
         RuleFor(c => c.Color)
             .Must(BeAValidHexColor)
             .WithMessage("A cor da categoria deve ser um código hexadecimal válido.");
+        
+        RuleFor(c => c.Type)
+            .NotNull()
+            .NotEmpty()
+            .WithMessage("O tipo da categoria é obrigatório.")
+            .IsInEnum()
+            .WithMessage("O tipo não corresponde aos tipos existentes.");
     }
     
     private static bool BeAValidHexColor(string color)
@@ -40,16 +46,5 @@ public class UpdateCategoryCommandValidator : AbstractValidator<UpdateCategoryCo
 
         var regex = "^#(?:[0-9a-fA-F]{3}){1,2}$";
         return System.Text.RegularExpressions.Regex.IsMatch(color, regex);
-    }
-    
-    private async Task NameUsed(string name, ValidationContext<UpdateCategoryCommand> context, CancellationToken cancellationToken)
-    {
-        var emUso = await _repository.DbSet<Category>()
-            .AnyAsync(c => c.Name.ToLower() == name.ToLower() && c.UserId == _authenticatedUser.Id, cancellationToken);
-
-        if (emUso)
-        {
-            context.AddFailure($"O 'Nome' informado já está em uso.");
-        }
     }
 }
