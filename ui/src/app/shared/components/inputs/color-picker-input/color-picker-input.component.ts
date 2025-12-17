@@ -1,4 +1,4 @@
-import { NgClass, NgIf } from '@angular/common';
+import { NgClass } from '@angular/common';
 import {
   Component,
   ElementRef,
@@ -21,15 +21,7 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
   selector: 'zen-color-picker-input',
   standalone: true,
   templateUrl: './color-picker-input.component.html',
-  imports: [
-    NgxColorsModule,
-    FormsModule,
-    NgIf,
-    NgxMaskDirective,
-    NgClass,
-    MatFormFieldModule,
-    MatInput,
-  ],
+  imports: [NgxColorsModule, FormsModule, NgxMaskDirective, NgClass, MatFormFieldModule, MatInput],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -70,8 +62,6 @@ export class ColorPickerInputComponent {
 
   private readonly elementRef = inject(ElementRef);
 
-  constructor() {}
-
   @HostListener('document:click', ['$event'])
   onFocus(event: MouseEvent) {
     const clickedInside = this.elementRef.nativeElement.contains(event.target);
@@ -88,12 +78,21 @@ export class ColorPickerInputComponent {
     let inputValue = (event?.target as HTMLInputElement).value || '';
     const emojiRegex =
       /([\u2700-\u27BF]|[\uE000-\uF8FF]|[\uD83C-\uDFFF]|[\u2600-\u26FF]|[\uD83D-\uDC00-\uDFFF])/g;
-    inputValue = inputValue.replace(emojiRegex, '');
+    inputValue = inputValue.replaceAll(emojiRegex, '');
     (event.target as HTMLInputElement).value = inputValue;
     this.value = inputValue;
     this.onChange(this.value);
     this.onTouched();
     this.valueChange.emit(this.value);
+    console.log(this.value);
+  }
+
+  onInputColorChange(value: string) {
+    this.value = value;
+    this.onChange(this.value);
+    this.onTouched();
+    this.valueChange.emit(this.value);
+    console.log(this.value);
   }
 
   onInputBlur() {
@@ -108,14 +107,14 @@ export class ColorPickerInputComponent {
     this.valueChange.emit(this.value);
   }
 
-  onChange: (value: any) => void = () => {};
+  onChange: (value: string) => void = () => {};
   onTouched: () => void = () => {};
 
-  writeValue(value: any): void {
+  writeValue(value: string): void {
     this.value = value;
   }
 
-  registerOnChange(fn: (value: any) => void): void {
+  registerOnChange(fn: (value: string) => void): void {
     this.onChange = fn;
   }
 

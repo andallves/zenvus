@@ -1,4 +1,6 @@
-export interface IOptions<T> {
+export interface IOptions {
   label: string;
-  value: T;
+  value: IValueOptions;
 }
+
+export type IValueOptions = string | number | boolean;

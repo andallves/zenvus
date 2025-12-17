@@ -18,6 +18,15 @@
     aria-describedby="input-color-error"
     [inputId]="'input-color-picker'"/>
 
+  <zen-select-input
+    id="select-type"
+    label="Tipo:"
+    placeholder="Tipo"
+    formControlName="type"
+    [options]="optionsInput"
+    [dropdownId]="'select-type'"
+  />
+
   <div class="footer-modal">
     <zen-button
       id="button-fechar"

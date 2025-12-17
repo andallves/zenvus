@@ -1,20 +1,22 @@
 <div class="box-input" [class.fixedSize]="fixedSize" [ngClass]="variant">
   <label [for]="inputId" class="form-label">
     {{ labelSignal() }}
-    <span *ngIf="showMandatory" class="mandatory">*</span>
+    @if (showMandatory) {
+      <span class="mandatory">*</span>
+    }
   </label>
   <div
     class="input-wrapper"
     [ngClass]="{ 'is-invalid': hasError, 'custom-input': icon, focused: focus }"
   >
-    <span
-      class="input-group-text"
-      id="{{ inputId }}-icon-addon"
-      *ngIf="icon"
-      class="icone"
-    >
+    @if (icon) {
+      <span
+        class="input-group-text icone"
+        id="{{ inputId }}-icon-addon"
+      >
       <i class="bi bi-person-fill custom-person"></i>
     </span>
+    }
     <input
       matInput
       id="{{ inputId }}"
@@ -32,18 +34,24 @@
       class="suffix"
       matSuffix
       ngx-colors-trigger
+      (input)="onInputColorChange($event)"
+      (blur)="onInputBlur()"
       [(ngModel)]="value"
     ></ngx-colors>
 
-    <span
-      *ngIf="showX && value"
-      id="{{ inputId }}-clear"
-      class="clear-input"
-      (click)="clearInput($event)"
-    >&#x2715;</span
-    >
+    @if (showX && value) {
+      <button
+        id="{{ inputId }}-clear"
+        class="clear-input"
+        (click)="clearInput($event)"
+      >
+        &#x2715;
+      </button>
+    }
   </div>
-  <div *ngIf="hasError" id="{{ inputId }}-error" class="invalid-feedback">
-    {{ errorMsg }}
-  </div>
+  @if (hasError) {
+    <div id="{{ inputId }}-error" class="invalid-feedback">
+      {{ errorMsg }}
+    </div>
+  }
 </div>

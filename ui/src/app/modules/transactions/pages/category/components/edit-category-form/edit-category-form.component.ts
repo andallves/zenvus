@@ -1,16 +1,29 @@
-import {CommonModule} from '@angular/common';
-import {Component, EventEmitter, inject, Input, OnInit, Output} from '@angular/core';
-import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators,} from '@angular/forms';
-import {CategoryService} from '@modules/transactions/services/category.service';
-import {ButtonComponent} from '@shared/components/button/button.component';
-import {ColorPickerInputComponent} from '@shared/components/inputs/color-picker-input/color-picker-input.component';
-import {InputDefaultComponent} from '@shared/components/inputs/input-default/input-default.component';
-import {ModalIconType} from '@shared/components/swall/modal-alert/domain-types/modal-types.interface';
-import {ModalAlertService} from '@shared/components/swall/modal-alert/service/modal-alert.service';
-import {ICategory} from '@shared/interfaces/category.interface';
-import {InputValidationService} from '@shared/validators/input-validator/input-validator.service';
-import {BsModalService} from 'ngx-bootstrap/modal';
-import {ToastrService} from 'ngx-toastr';
+import { CommonModule } from '@angular/common';
+import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { CategoryService } from '@modules/transactions/services/category.service';
+import { ButtonComponent } from '@shared/components/button/button.component';
+import { ColorPickerInputComponent } from '@shared/components/inputs/color-picker-input/color-picker-input.component';
+import { InputDefaultComponent } from '@shared/components/inputs/input-default/input-default.component';
+import { SelectInputComponent } from '@shared/components/inputs/select-input/select-input.component';
+import { ModalIconType } from '@shared/components/swall/modal-alert/domain-types/modal-types.interface';
+import { ModalAlertService } from '@shared/components/swall/modal-alert/service/modal-alert.service';
+import { ECategoryType } from '@shared/enums/category-type.enum';
+import { ICategory, ICategoryEdit } from '@shared/interfaces/category.interface';
+import { InputValidationService } from '@shared/validators/input-validator/input-validator.service';
+import { BsModalService } from 'ngx-bootstrap/modal';
+import { ToastrService } from 'ngx-toastr';
+
+export const GetCategoryTypeLabelPayload: Record<ECategoryType, string> = {
+  [ECategoryType.Income]: 'Income',
+  [ECategoryType.Expense]: 'Expense',
+};
 
 @Component({
   selector: 'zen-edit-category-form',
@@ -23,6 +36,7 @@ import {ToastrService} from 'ngx-toastr';
     ButtonComponent,
     ButtonComponent,
     ColorPickerInputComponent,
+    SelectInputComponent,
   ],
   templateUrl: './edit-category-form.component.html',
   styleUrls: ['./edit-category-form.component.scss'],
@@ -40,11 +54,14 @@ export class EditCategoryFormComponent implements OnInit {
   private readonly modalAlertService = inject(ModalAlertService);
   private readonly toastr = inject(ToastrService);
 
+  optionsInput: { value: number; label: string }[] = [
+    { label: 'Entrada', value: ECategoryType.Income },
+    { label: 'Saída', value: ECategoryType.Expense },
+  ];
+
   ngOnInit(): void {
     this.initializeForm();
     this.loadForm();
-
-    console.log('teste', this.dataCategory);
   }
 
   initializeForm() {
@@ -59,13 +76,16 @@ export class EditCategoryFormComponent implements OnInit {
         ],
       ],
       color: ['', [Validators.required]],
+      type: [ECategoryType, []],
     });
   }
 
   loadForm() {
+    const matchedOption = this.optionsInput.find(option => option.value === this.dataCategory.type);
     this.editCategoryForm.patchValue({
       name: this.dataCategory.name,
       color: this.dataCategory.color,
+      type: matchedOption ? matchedOption.value : null,
     });
   }
 
@@ -97,11 +117,13 @@ export class EditCategoryFormComponent implements OnInit {
   editCategory() {
     this.isLoading = true;
     if (this.editCategoryForm.valid) {
-      const payload: ICategory = {
+      const payload: ICategoryEdit = {
         id: this.dataCategory.id,
         name: this.editCategoryForm.get('name')?.value || this.dataCategory.name,
         color: this.editCategoryForm.get('color')?.value || this.dataCategory.color,
-        disabled: this.dataCategory.disabled,
+        type:
+          GetCategoryTypeLabelPayload[this.editCategoryForm.get('type')?.value as ECategoryType] ||
+          GetCategoryTypeLabelPayload[this.dataCategory.type],
       };
 
       this.categoryService.editCategory(payload, this.dataCategory.id).subscribe({

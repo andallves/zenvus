@@ -239,7 +239,7 @@
                       @if (column === 'cor') {
                         <span [style]="{ color: item['cor'] }">{{ item["cor"] }}</span>
                       } @else if (notTruncateText(column, item) | foto) {
-                        <span [innerHTML]="foto"></span>
+                        <span [innerHTML]="notTruncateText(column, item) | foto"></span>
                       } @else {
                         {{ notTruncateText(column, item) }}
                       }

@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '@env/environment';
 import { ApiResponse } from '@shared/interfaces/api-response.interface';
-import { ICategory, ICategoryCreate } from '@shared/interfaces/category.interface';
+import { ICategory, ICategoryCreate, ICategoryEdit } from '@shared/interfaces/category.interface';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -32,11 +32,11 @@ export class CategoryService {
     return this.httpClient.post<ICategory>(`${this.apiUrl}/v1/category`, data);
   }
 
-  editCategory(data: ICategory, id: number | string): Observable<ICategory> {
+  editCategory(data: ICategoryEdit, id: string): Observable<ICategory> {
     return this.httpClient.put<ICategory>(`${this.apiUrl}/v1/category/${id}`, data);
   }
 
-  deleteCategory(id: number | string): Observable<ICategory> {
+  deleteCategory(id: string): Observable<ICategory> {
     return this.httpClient.delete<ICategory>(`${this.apiUrl}/v1/category/${id}`);
   }
 }
