@@ -1,6 +1,16 @@
 import { CommonModule, TitleCasePipe } from '@angular/common';
-import { Component, EventEmitter, HostListener, Input, Output, TemplateRef } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  EventEmitter,
+  HostListener,
+  Input,
+  Output,
+  TemplateRef,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { CategoryTypeLabel } from '@modules/transactions/pages/category/category.component';
+import { ECategoryType } from '@shared/enums/category-type.enum';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { FotoPipe } from './foto.pipe';
 
@@ -13,7 +23,7 @@ type DataItem<T> = Record<string, T>;
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.scss'],
 })
-export class TableComponent<T> {
+export class TableComponent<T> implements AfterViewInit {
   @Input() noDataMessage = '';
   @Input() totalItens = 0;
   @Input() columns!: string[];
@@ -27,14 +37,17 @@ export class TableComponent<T> {
   @Input() showKey = false;
   @Input() showPrinter = false;
   @Input() itemsPerPage = 10;
-  @Input() shouldShowPrinter: (item: any) => boolean = () => true;
-  @Input() shouldShowDelete: (item: any) => boolean = () => true;
-  @Input() shouldShowEdit: (item: any) => boolean = () => true;
-  @Input() shouldShowView: (item: any) => boolean = () => true;
-  @Input() shouldShowSend: (item: any) => boolean = () => true;
-  @Input() actionTemplate?: TemplateRef<any>;
-  @Input() columnTemplates: Record<string, TemplateRef<any>> = {};
+  @Input() shouldShowPrinter: (item: DataItem<T>) => boolean = () => true;
+  @Input() shouldShowDelete: (item: DataItem<T>) => boolean = () => true;
+  @Input() shouldShowEdit: (item: DataItem<T>) => boolean = () => true;
+  @Input() shouldShowView: (item: DataItem<T>) => boolean = () => true;
+  @Input() shouldShowSend: (item: DataItem<T>) => boolean = () => true;
+  @Input() actionTemplate?: TemplateRef<unknown>;
+  @Input() columnTemplates: Record<string, TemplateRef<unknown>> = {};
   @Input() renderizarCores = false;
+  // New: allow passing enum label maps per column. Example: { tipo: CategoryTypeLabel }
+  @Input() enumLabels: Record<string, Record<string, string>> = {};
+
   @Output() view = new EventEmitter<T>();
   @Output() key = new EventEmitter<T>();
   @Output() edit = new EventEmitter<T>();
@@ -47,8 +60,8 @@ export class TableComponent<T> {
   @Input() currentPage = 1;
   public chave = '/file-arrow-left-right.svg';
 
-  constructor() {
-    console.log(this.data);
+  ngAfterViewInit() {
+    console.log('table: ' + this.data);
   }
 
   get totalPages(): number {
@@ -94,6 +107,18 @@ export class TableComponent<T> {
     return value?.toString() ?? '';
   }
 
+  // Generic method to get label for a column which may contain an enum value.
+  // It looks up an optional map passed via @Input() enumLabels where the key is the column name.
+  getEnumCategoryLabel(type: ECategoryType): string {
+    return CategoryTypeLabel[type] ?? '-';
+  }
+
+  // Backwards-compatible alias for previous usage (kept for tests that might call it).
+  getTypeLabel(item: DataItem<T>): string {
+    const value = item['type'];
+    return this.getEnumCategoryLabel(value as ECategoryType);
+  }
+
   notTruncateText(column: string, item: DataItem<T>): string {
     const value = item[column];
     return value?.toString() ?? '';
@@ -118,12 +143,12 @@ export class TableComponent<T> {
   getDesativadoProperty(item: DataItem<T>) {
     for (const key in item) {
       if (key.toLowerCase().includes('status')) {
-        const isDesativado = item[key];
-        if (isDesativado != 1) {
-          this.isDisabled = true;
+        const isDisabled = item[key];
+        if (isDisabled) {
+          this.isDisabled = false;
           return this.isDisabled;
         } else {
-          this.isDisabled = false;
+          this.isDisabled = true;
           return this.isDisabled;
         }
       }
@@ -156,7 +181,7 @@ export class TableComponent<T> {
     }
   }
 
-  closeDropdown(index: number): void {
+  closeDropdown(_index: number): void {
     this.openDropdownIndex = null;
   }
 
