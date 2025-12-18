@@ -123,8 +123,8 @@
 <div class="cards-container d-block d-md-none">
   @for (item of data; track $index; let i = $index) {
     <div class="card-item mb-3">
-      <div class="card custom-card" [style]="{ borderColor: item['color'] }">
-        <div class="card__header" [style]="{ backgroundColor: item['color'] }">
+      <div class="card" [style]="{ backgroundColor: item['color'], outlineColor: item['color'], borderColor: item['color'] }">
+        <div class="card__header">
           @if (item['name']) {
             <div class="d-flex align-items-center justify-content-between">
               <div class="d-flex align-items-center">

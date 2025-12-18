@@ -41,7 +41,7 @@ $success-color: #188150;
     padding: 24px;
   }
 
-  @media screen and (min-width: 768px) {
+  @media screen and (min-width: 767px) {
     width: 80px;
     padding: 24px 10px;
 
@@ -50,7 +50,6 @@ $success-color: #188150;
       padding: 24px;
     }
   }
-
 
   &::-webkit-scrollbar {
     width: 5px;
@@ -95,11 +94,12 @@ $success-color: #188150;
 
     &.collapsed {
       display: none;
+
+      @media screen and (min-width: 767px) {
+        display: flex;
+      }
     }
 
-    @media screen and (min-width: 768px) {
-      display: flex;
-    }
 
     .btn-logout {
       width: 100%;
@@ -122,8 +122,12 @@ $success-color: #188150;
         transition: 0.3s;
         animation: all 3ms ease-in-out;
 
-        .sidenav-collapsed {
+        &.sidenav-collapsed {
           display: none;
+
+          @media(min-width: 767px) {
+            display: flex;
+          }
         }
       }
 
@@ -136,6 +140,10 @@ $success-color: #188150;
           border-radius: 5rem;
           padding: 6px 10px;
           color: var(--success-color);
+
+          &.sidenav-collapsed {
+            display: none;
+          }
 
           @media (min-width: 768px) {
             font-size: 14px !important;
@@ -162,6 +170,10 @@ $success-color: #188150;
         flex-direction: column;
         align-items: flex-start;
         gap: -10px;
+
+        &.sidenav-collapsed {
+          display: none;
+        }
 
         &__title {
           font-size: 12px;

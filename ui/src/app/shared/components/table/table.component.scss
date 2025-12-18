@@ -201,18 +201,38 @@ body.dark-theme {
 }
 
 .cards-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+
+  @media(min-width: 767px) {
+    display: none;
+  }
+
+  .card-item {
+    outline: none;
+    border: none;
+  }
   .card {
-    border: 2px solid var(--primary-color);
+    position: relative;
     border-radius: 20px;
+    border: 1px solid var(--primary-color);
+    box-sizing: border-box;
+    box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.4);
     overflow: hidden;
+    outline: 1px solid var(--primary-color);
 
     &__header {
+      width: 100%;
       position: relative;
       display: flex;
       flex-direction: row;
       justify-content: space-between;
+      border-top-left-radius: 20px;
+      border-top-right-radius: 20px;
       padding: 20px;
-      background-color: var(--primary-color);
+      outline: none;
+      z-index: 5;
 
       .badge {
         padding: 0.5rem 0.5rem;
@@ -245,6 +265,8 @@ body.dark-theme {
       justify-content: space-between;
       align-items: center;
       padding: 20px 25px;
+      background-color: var(--white-color);
+      z-index: 5;
 
       .field-item {
         display: flex;
@@ -382,11 +404,13 @@ body.dark-theme {
 }
 
 pagination::ng-deep {
+  margin-top: 40px;
   display: flex;
   justify-content: center;
 
   @media (min-width: 767px) {
     justify-content: flex-end;
+    margin-top: 20px;
   }
 
   .pagination {

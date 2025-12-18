@@ -19,7 +19,7 @@
       visibility: hidden;
       opacity: 0;
 
-      @media (min-width: 767px) {
+      @media (min-width: 992px) {
         display: flex;
         visibility: visible;
         opacity: 1;
@@ -102,42 +102,50 @@
           }
 
           i {
-            color: var(--text-primary-color);
-            fill: var(--text-primary-color);
+            font-size: 2rem;
+            color: var(--primary-color);
           }
         }
       }
 
       &__icons {
         display: flex;
+        align-items: center;
+
+        .is-active-sidebar {
+          display: none;
+
+          @media (min-width: 992px) {
+            display: flex;
+          }
+        }
 
         &--icon-notification {
-          display: block;
+          display: none;
           width: 40px;
           margin-right: 1.5rem;
 
-          .icon {
+          @media(min-width: 767px) {
             display: block;
+          }
+
+          .icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
             height: 40px;
             font-size: 2.25rem; // o tamanho do ícone é a fonte
             color: var(--primary-color);
-
-            &::before {
-              vertical-align: 0.0em; // garante que ele fica alinhado ao perfil
-            }
           }
         }
 
         &--profile {
-          display: none;
+          display: flex;
           gap: 10px;
           background-color: transparent;
           border: none;
           transition: display 500ms ease-in-out;
 
-          @media (min-width: 468px) {
-            display: flex;
-          }
 
           .profile-image-container {
             position: relative;
@@ -149,7 +157,7 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            border: 1px solid var(--success-color);
+            border: 1px solid var(--secondary-color);
 
             &__image {
               width: 100%;

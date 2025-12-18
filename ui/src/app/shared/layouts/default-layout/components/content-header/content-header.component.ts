@@ -62,7 +62,6 @@ export class ContentHeaderComponent implements OnInit {
 
   updateHeader() {
     const snapshot = this.activatedRoute.firstChild?.snapshot;
-    console.log(snapshot);
     if (snapshot?.['title'] && snapshot.data?.['description']) {
       this.headerTitle = snapshot?.['title'];
       this.headerDescription = snapshot.data['description'];

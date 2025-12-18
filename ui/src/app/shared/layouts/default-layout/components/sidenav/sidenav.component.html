@@ -27,17 +27,17 @@
       class="btn-logout"
       (click)="logout()"
     >
-      @if (isActiveBar) {
-        <div
-          class="logout-info"
-        >
-          <i class="bi bi-wallet wallet"></i>
-          <div class="status">
-            <h4 class="status__title">Saúde Financeira</h4>
-            <span class="status__description">Excelente</span>
-          </div>
+      <div
+        class="logout-info"
+        [class.sidenav-collapsed]="!isActiveBar"
+      >
+        <i class="bi bi-wallet wallet" [class.sidenav-collapsed]="!isActiveBar"></i>
+        <div class="status" [class.sidenav-collapsed]="!isActiveBar">
+          <h4 class="status__title">Saúde Financeira</h4>
+          <span class="status__description">Excelente</span>
         </div>
-      }
+      </div>
+
       <i class="bi bi-escape logout" title="Sair"></i>
     </button>
   </div>
