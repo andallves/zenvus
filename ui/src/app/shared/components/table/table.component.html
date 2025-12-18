@@ -5,7 +5,7 @@
     <tr>
       @for (column of columns; track $index) {
         <th>
-          {{ columnLabels[$index][column] || column | titlecase }}
+          {{ columnLabels[column] || column | titlecase }}
         </th>
       }
       @if (showActions) {
@@ -152,7 +152,7 @@
                 @if (shouldShowFieldInCard(column, colIndex, item)) {
                   <div class="field-item mb-2">
                     <strong class="field-item__label"
-                    >{{ columnLabels[colIndex][column] || column | titlecase }}:</strong
+                    >{{ columnLabels[column] || column | titlecase }}:</strong
                     >
                     <div class="field-item__value">
                       @if (column === 'color') {

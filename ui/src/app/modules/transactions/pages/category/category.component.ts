@@ -77,7 +77,7 @@ export class CategoryComponent implements OnInit {
 
   categoriesData: ICategory[] = [];
   categoryColumn: string[] = ['name', 'type', 'color'];
-  categoryColumnsLabel: ColumnLabel[] = [{ title: 'nome' }, { color: 'cor' }, { type: 'tipo' }];
+  categoryColumnsLabel: ColumnLabel = { name: 'nome', color: 'cor', type: 'tipo' };
   optionsInput: IOptions[] = [
     { label: 'Entrada', value: ECategoryType.Income },
     { label: 'Saída', value: ECategoryType.Expense },

@@ -1,13 +1,5 @@
 import { CommonModule, TitleCasePipe } from '@angular/common';
-import {
-  AfterViewInit,
-  Component,
-  EventEmitter,
-  HostListener,
-  Input,
-  Output,
-  TemplateRef,
-} from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, Output, TemplateRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CategoryTypeLabel } from '@modules/transactions/pages/category/category.component';
 import { ECategoryType } from '@shared/enums/category-type.enum';
@@ -24,11 +16,11 @@ export type ColumnLabel = Record<string, string>;
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.scss'],
 })
-export class TableComponent<T> implements AfterViewInit {
+export class TableComponent<T> {
   @Input() noDataMessage = '';
   @Input() totalItens = 0;
   @Input() columns!: string[];
-  @Input() columnLabels: ColumnLabel[] = [{}];
+  @Input() columnLabels: ColumnLabel = {} as ColumnLabel;
   @Input() data!: DataItem<T>[];
   @Input() showActions = true;
   @Input() showView = false;
@@ -60,10 +52,6 @@ export class TableComponent<T> implements AfterViewInit {
   @Output() pageChange = new EventEmitter<number>();
   @Input() currentPage = 1;
   public chave = '/file-arrow-left-right.svg';
-
-  ngAfterViewInit() {
-    console.log('table: ' + this.data);
-  }
 
   get totalPages(): number {
     return Math.ceil(
@@ -182,7 +170,7 @@ export class TableComponent<T> implements AfterViewInit {
     }
   }
 
-  closeDropdown(index: number): void {
+  closeDropdown(): void {
     this.openDropdownIndex = null;
   }
 
