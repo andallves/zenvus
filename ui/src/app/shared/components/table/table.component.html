@@ -123,8 +123,8 @@
 <div class="cards-container d-block d-md-none">
   @for (item of data; track $index; let i = $index) {
     <div class="card-item mb-3">
-      <div class="card custom-card">
-        <div class="card__header">
+      <div class="card custom-card" [style]="{ borderColor: item['color'] }">
+        <div class="card__header" [style]="{ backgroundColor: item['color'] }">
           @if (item['name']) {
             <div class="d-flex align-items-center justify-content-between">
               <div class="d-flex align-items-center">
@@ -207,7 +207,7 @@
                   @if (showDelete && shouldShowDelete(item)) {
                     <button
                       class="custom-dropdown-item btn-danger"
-                      (click)="onDelete(item); closeDropdown(i)"
+                      (click)="onDelete(item); closeDropdown()"
                       title="Excluir"
                     >
                       <i class="bi bi-trash-fill"></i>
@@ -217,7 +217,7 @@
                   @if (showKey) {
                     <button
                       class="custom-dropdown-item"
-                      (click)="onKey(item); closeDropdown(i)"
+                      (click)="onKey(item); closeDropdown()"
                     >
                       <img
                         [src]="chave"
@@ -232,7 +232,7 @@
                   @if (showEdit && shouldShowEdit(item)) {
                     <button
                       class="custom-dropdown-item btn-warning"
-                      (click)="onEdit(item); closeDropdown(i)"
+                      (click)="onEdit(item); closeDropdown()"
                       title="Editar"
                     >
                       <i class="bi bi-pencil-fill"></i>
@@ -242,7 +242,7 @@
                   @if (showView || !shouldShowView(item)) {
                     <button
                       class="custom-dropdown-item btn-info"
-                      (click)="onView(item); closeDropdown(i)"
+                      (click)="onView(item); closeDropdown()"
                       [disabled]="!getDesativadoProperty(item)"
                       title="Visualizar"
                     >
