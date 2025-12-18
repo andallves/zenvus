@@ -3,23 +3,53 @@
   align-items: end;
   display: flex;
   justify-content: space-between;
-  margin-bottom: 0.625rem;
+  margin: 1.4rem 0;
+
+  .mobile-filter-toggle {
+    display: flex;
+    gap: 5px;
+    font-size: 14px;
+    color: var(--text-gray-color);
+  }
 
   .inputs-container {
     width: 99.3%;
-    display: flex;
-    gap: 1.375rem;
     align-items: flex-end;
-    flex-wrap: wrap;
     padding-bottom: .875rem;
+
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 800ms ease-in-out, opacity 500ms ease-in-out;
+
+    &.mobile-visible {
+      max-height: 500px;
+      opacity: 1;
+    }
+
+    &.mobile-hidden {
+      max-height: 0;
+      opacity: 0;
+    }
+
+    @media (min-width: 767px) {
+      display: flex;
+      gap: 1.375rem;
+      flex-wrap: wrap;
+      max-height: 100%;
+    }
 
     form {
       height: 100%;
       gap: 1.375rem;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: flex-start;
       flex-wrap: wrap;
+
+      @media (min-width: 767px) {
+        flex-direction: row;
+      }
 
       .badges-container {
         height: 100%;
@@ -31,7 +61,11 @@
     }
 
     form > * {
-      width: 15rem;
+      width: 100%;
+
+      @media (min-width: 767px) {
+        width: 15rem;
+      }
     }
   }
 
@@ -40,6 +74,11 @@
     display: flex;
     justify-content: center;
     margin-bottom: 0.0625rem;
+
+    &.is-mobile {
+      margin: 1.4rem 0;
+      flex-direction: column-reverse;
+    }
 
     .search-button {
       width: 2.5625rem;
@@ -56,6 +95,10 @@
 
       &:hover {
         filter: brightness(0.9);
+      }
+
+      &.is-mobile {
+        width: 100%;
       }
     }
 
@@ -75,6 +118,10 @@
 
       &:hover {
         filter: brightness(0.9);
+      }
+
+      &.is-mobile {
+        width: 100%;
       }
     }
 

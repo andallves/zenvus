@@ -11,10 +11,10 @@
     [filterId]="'filter-categories'"
     [isLoadingFilter]="isLoadingFilter"
     [isLoadingClearFilter]="isLoadingClearFilter"
-    (onFilter)="onSearch()"
-    (onClearFilter)="onClearFilter()"
+    (filter)="onSearch()"
+    (clearFilter)="onClearFilter()"
   >
-    <form id="form-filter-categorias" class="teste" action="javascript:void(0)" [formGroup]="filterForm">
+    <form id="form-filter-categories" action="javascript:void(0)" [formGroup]="filterForm">
       <zen-input
         id="input-name"
         label="Nome:"

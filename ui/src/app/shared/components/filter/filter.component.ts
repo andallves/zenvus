@@ -11,9 +11,9 @@ import { SpinnerComponent } from '../spinner/spinner.component';
 })
 export class FilterComponent implements OnInit {
   @Input() filterId = 'default-filter';
-  @Output() onFilter = new EventEmitter<void>();
-  @Output() onClearFilter = new EventEmitter<void>();
-  @Output() onAdd = new EventEmitter<void>();
+  @Output() filter = new EventEmitter<void>();
+  @Output() clearFilter = new EventEmitter<void>();
+  @Output() add = new EventEmitter<void>();
   @Input() isLoadingFilter = false;
   @Input() isLoadingClearFilter = false;
   @Input() isLoadingAdd = false;
@@ -40,12 +40,8 @@ export class FilterComponent implements OnInit {
   }
 
   private checkScreenSize(): void {
-    this.isMobile = window.innerWidth <= 980;
-    if (!this.isMobile) {
-      this.showMobileFilter = true;
-    } else {
-      this.showMobileFilter = false;
-    }
+    this.isMobile = window.innerWidth <= 767;
+    this.showMobileFilter = this.isMobile;
   }
 
   toggleMobileFilter(): void {
@@ -53,15 +49,15 @@ export class FilterComponent implements OnInit {
   }
 
   onFilterAction() {
-    this.onFilter.emit();
+    this.filter.emit();
   }
 
   onFilterClearedAction() {
-    this.onClearFilter.emit();
+    this.clearFilter.emit();
   }
 
   onAddAction() {
-    this.onAdd.emit();
+    this.add.emit();
   }
 
   /**Integra Enter com o botão de pesquisa */

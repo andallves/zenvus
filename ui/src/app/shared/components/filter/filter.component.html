@@ -1,16 +1,17 @@
 <div class="filter" id="{{ filterId || 'default-filter' }}" [ngClass]="{ 'align-right': alignRight }">
   <!-- Toggle Mobile -->
-  <button
-    *ngIf="enableMobileToggle && isMobile"
-    type="button"
-    class="mobile-filter-toggle"
-    (click)="toggleMobileFilter()"
-    [attr.aria-expanded]="showMobileFilter"
-    aria-label="Toggle filtros mobile"
-  >
-    <span>Filtros</span>
-    <i class="bi" [ngClass]="showMobileFilter ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
-  </button>
+  @if (enableMobileToggle && isMobile) {
+    <button
+      type="button"
+      class="mobile-filter-toggle"
+      (click)="toggleMobileFilter()"
+      [attr.aria-expanded]="showMobileFilter"
+      aria-label="Toggle filtros mobile"
+    >
+      <span class="mobile-filter-toggle__title">Filtros</span>
+      <i class="bi" [ngClass]="showMobileFilter ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
+    </button>
+  }
 
   <div
     class="inputs-container"
@@ -23,16 +24,22 @@
       <ng-content></ng-content>
     </div>
 
-    <div class="actions-container">
+    <div class="actions-container" [class.is-mobile]="isMobile">
       @if (showSearchFilter) {
         <button
           id="{{ filterId || 'default-filter' }}-search-button"
           class="search-button"
+          [class.is-mobile]="isMobile"
           (click)="onFilterAction()"
           [disabled]="disabled"
         >
-          <i class="bi bi-search" *ngIf="!isLoadingFilter"></i>
-          <zen-spinner *ngIf="isLoadingFilter"></zen-spinner>
+          @if (isLoadingFilter) {
+            <zen-spinner />
+          } @else if (isMobile) {
+            <span>Buscar</span>
+          } @else {
+            <i class="bi bi-search"></i>
+          }
         </button>
       }
       @if (showClearadd) {
@@ -43,19 +50,27 @@
           [disabled]="disabledAdd || isLoadingAdd"
           [attr.aria-label]="'Adicionar novo item'"
         >
-          <img src="add.svg" alt="Adicionar" class="add-icon" *ngIf="!isLoadingAdd">
-          <zen-spinner *ngIf="isLoadingAdd"></zen-spinner>
+          @if (isLoadingAdd) {
+            <zen-spinner />
+          } @else {
+            <img src="add.svg" alt="Adicionar" class="add-icon">
+          }
         </button>
       }
-      <button
-        *ngIf="showClearFilter"
-        id="{{ filterId || 'default-filter' }}-clear-button"
-        class="clear-button clearbutton"
-        (click)="onFilterClearedAction()"
-      >
-        Limpar filtros
-        <zen-spinner *ngIf="isLoadingClearFilter"></zen-spinner>
-      </button>
+
+      @if (showClearFilter) {
+        <button
+          id="{{ filterId || 'default-filter' }}-clear-button"
+          class="clear-button clearbutton"
+          [class.is-mobile]="isMobile"
+          (click)="onFilterClearedAction()"
+        >
+          Limpar filtros
+          @if (isLoadingClearFilter) {
+            <zen-spinner />
+          }
+        </button>
+      }
     </div>
   </div>
 </div>
