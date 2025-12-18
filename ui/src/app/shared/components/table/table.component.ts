@@ -15,6 +15,7 @@ import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { FotoPipe } from './foto.pipe';
 
 type DataItem<T> = Record<string, T>;
+export type ColumnLabel = Record<string, string>;
 
 @Component({
   selector: 'zen-table',
@@ -27,7 +28,7 @@ export class TableComponent<T> implements AfterViewInit {
   @Input() noDataMessage = '';
   @Input() totalItens = 0;
   @Input() columns!: string[];
-  @Input() columnLabels: Record<string, string> = {};
+  @Input() columnLabels: ColumnLabel[] = [{}];
   @Input() data!: DataItem<T>[];
   @Input() showActions = true;
   @Input() showView = false;
@@ -160,12 +161,12 @@ export class TableComponent<T> implements AfterViewInit {
   // Método para controlar quais campos mostrar no card mobile
   shouldShowFieldInCard(column: string, colIndex: number, item: DataItem<T>): boolean {
     // Não mostrar a coluna 'título' no corpo do card
-    if (column === 'título') {
+    if (column == 'title' || column == 'name') {
       return false;
     }
 
     // Se não há título, não mostrar a primeira coluna no corpo (já está no header)
-    if (!item['título'] && colIndex === 0) {
+    if (!item['name'] && colIndex === 0) {
       return false;
     }
 
@@ -181,7 +182,7 @@ export class TableComponent<T> implements AfterViewInit {
     }
   }
 
-  closeDropdown(_index: number): void {
+  closeDropdown(index: number): void {
     this.openDropdownIndex = null;
   }
 

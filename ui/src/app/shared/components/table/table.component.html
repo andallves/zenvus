@@ -5,7 +5,7 @@
     <tr>
       @for (column of columns; track $index) {
         <th>
-          {{ columnLabels[column] || column | titlecase }}
+          {{ columnLabels[$index][column] || column | titlecase }}
         </th>
       }
       @if (showActions) {
@@ -18,7 +18,7 @@
         <tr>
           @for (column of columns; track $index) {
             <td>
-              @if (column === 'nome') {
+              @if (column === 'name') {
                 <ng-container>
                   <div class="titulo-wrapper">
                     @if (!item['disabled']) {
@@ -29,11 +29,11 @@
                     <span class="titulo-texto">{{ item["name"] }}</span>
                   </div>
                 </ng-container>
-              } @else if (column === 'cor') {
+              } @else if (column === 'color') {
                 <ng-container>
                   <span [style]="{ color: item['color'] }">{{ item["color"] }}</span>
                 </ng-container>
-              } @else if (column === 'tipo') {
+              } @else if (column === 'type') {
                 {{ getTypeLabel(item) }}
               } @else if (columnTemplates[column]) {
                 <ng-container>
@@ -124,120 +124,41 @@
   @for (item of data; track $index; let i = $index) {
     <div class="card-item mb-3">
       <div class="card custom-card">
-        <div class="card-header custom-header">
-          @if (item['titulo']) {
+        <div class="card__header">
+          @if (item['name']) {
             <div class="d-flex align-items-center justify-content-between">
               <div class="d-flex align-items-center">
-              <span *ngIf="item['ativo']" class="badge me-2 badge-active">
-                Ativo
-              </span>
-                <h6 class="mb-0 header-title">Nome: {{ item["titulo"] }}</h6>
+                @if (!item['disabled']) {
+                  <span class="badge me-2 badge-active">
+                    Ativo
+                  </span>
+                }
+                <h6 class="mb-0 header-title">Nome: <span class="header-title--value">{{ item["name"] }}</span></h6>
               </div>
             </div>
           }
 
-          @if (!item['titulo'] && columns.length > 0) {
+          @if (!item['name'] && columns.length > 0) {
             <div class="d-flex align-items-center justify-content-between">
-              <h6 class="mb-0 header-title">Nome: {{ item[columns[0]] }}</h6>
-            </div>
-          }
-
-          @if (showActions) {
-            <div class="actions-menu">
-              <button
-                type="button"
-                class="three-dots-btn"
-                (click)="toggleDropdown(i)"
-                [attr.aria-expanded]="isDropdownOpen(i)"
-              >
-                <i class="bi bi-three-dots-vertical"></i>
-              </button>
-
-              <div class="custom-dropdown-menu" [class.show]="isDropdownOpen(i)">
-                @if (actionTemplate) {
-                  <ng-container>
-                    <div class="dropdown-item-wrapper">
-                      <ng-container
-                        *ngTemplateOutlet="
-                    actionTemplate;
-                    context: { $implicit: item }
-                  "
-                      ></ng-container>
-                    </div>
-                  </ng-container>
-                }
-                @if (!actionTemplate) {
-                  <ng-container>
-                    @if (showView || !shouldShowView(item)) {
-                      <button
-                        class="custom-dropdown-item"
-                        (click)="onView(item); closeDropdown(i)"
-                        [disabled]="!getDesativadoProperty(item)"
-                      >
-                        <i class="bi bi-eye-fill me-2"></i>
-                        Visualizar
-                      </button>
-                    }
-
-                    @if (showEdit && shouldShowEdit(item)) {
-                      <button
-                        class="custom-dropdown-item"
-                        (click)="onEdit(item); closeDropdown(i)"
-                      >
-                        <i class="bi bi-pencil-fill me-2"></i>
-                        Editar
-                      </button>
-                    }
-
-                    @if (showKey) {
-                      <button
-                        class="custom-dropdown-item"
-                        (click)="onKey(item); closeDropdown(i)"
-                      >
-                        <img
-                          [src]="chave"
-                          alt="Chave"
-                          class="me-2"
-                          style="width: 16px; height: 16px"
-                        />
-                        Chave
-                      </button>
-                    }
-
-                    @if (showDelete && shouldShowDelete(item)) {
-                      <div
-                        class="dropdown-divider"
-                      ></div>
-                    }
-
-                    @if (showDelete && shouldShowDelete(item)) {
-                      <button
-                        class="custom-dropdown-item text-danger"
-                        (click)="onDelete(item); closeDropdown(i)"
-                      >
-                        <i class="bi bi-trash-fill me-2"></i>
-                        Excluir
-                      </button>
-                    }
-                  </ng-container>
-                }
-              </div>
+              <h6 class="mb-0 header-title">Nome: <span class="header-title--value">{{ item[columns[0]] }}</span></h6>
             </div>
           }
         </div>
 
-        <div class="card-body custom-body">
+        <div class="card__body custom-body">
           <div class="row">
             @for (column of columns; track $index; let colIndex = $index) {
               <div class="col-12">
                 @if (shouldShowFieldInCard(column, colIndex, item)) {
                   <div class="field-item mb-2">
-                    <strong class="field-label"
-                    >{{ columnLabels[column] || column | titlecase }}:</strong
+                    <strong class="field-item__label"
+                    >{{ columnLabels[colIndex][column] || column | titlecase }}:</strong
                     >
-                    <div class="field-value">
-                      @if (column === 'cor') {
-                        <span [style]="{ color: item['cor'] }">{{ item["cor"] }}</span>
+                    <div class="field-item__value">
+                      @if (column === 'color') {
+                        <span [style]="{ color: item['color'] }">{{ item["color"] }}</span>
+                      } @else if (column === 'type') {
+                        {{ getTypeLabel(item) }}
                       } @else if (notTruncateText(column, item) | foto) {
                         <span [innerHTML]="notTruncateText(column, item) | foto"></span>
                       } @else {
@@ -249,6 +170,89 @@
               </div>
             }
           </div>
+          @if (showActions) {
+            <div class="actions-menu">
+              <button
+                type="button"
+                class="dropdown-btn three-dots-btn"
+                (click)="toggleDropdown(i)"
+                [attr.aria-expanded]="isDropdownOpen(i)"
+                [class.is-open]="isDropdownOpen(i)"
+              >
+                @if (isDropdownOpen(i)) {
+                  <i class="bi bi-x-lg"></i>
+                } @else {
+                  <i class="bi bi-three-dots-vertical"></i>
+                }
+              </button>
+
+              <div class="custom-dropdown-menu" [class.show]="isDropdownOpen(i)">
+                @if (actionTemplate) {
+                  <div class="dropdown-item-wrapper">
+                    <ng-container
+                      *ngTemplateOutlet="
+                    actionTemplate;
+                    context: { $implicit: item }
+                  "
+                    ></ng-container>
+                  </div>
+                }
+                @if (!actionTemplate) {
+                  @if (showDelete && shouldShowDelete(item)) {
+                    <div
+                      class="dropdown-divider"
+                    ></div>
+                  }
+
+                  @if (showDelete && shouldShowDelete(item)) {
+                    <button
+                      class="custom-dropdown-item btn-danger"
+                      (click)="onDelete(item); closeDropdown(i)"
+                      title="Excluir"
+                    >
+                      <i class="bi bi-trash-fill"></i>
+                    </button>
+                  }
+
+                  @if (showKey) {
+                    <button
+                      class="custom-dropdown-item"
+                      (click)="onKey(item); closeDropdown(i)"
+                    >
+                      <img
+                        [src]="chave"
+                        alt="Chave"
+                        class="me-2"
+                        style="width: 16px; height: 16px"
+                      />
+                      Chave
+                    </button>
+                  }
+
+                  @if (showEdit && shouldShowEdit(item)) {
+                    <button
+                      class="custom-dropdown-item btn-warning"
+                      (click)="onEdit(item); closeDropdown(i)"
+                      title="Editar"
+                    >
+                      <i class="bi bi-pencil-fill"></i>
+                    </button>
+                  }
+
+                  @if (showView || !shouldShowView(item)) {
+                    <button
+                      class="custom-dropdown-item btn-info"
+                      (click)="onView(item); closeDropdown(i)"
+                      [disabled]="!getDesativadoProperty(item)"
+                      title="Visualizar"
+                    >
+                      <i class="bi bi-eye-fill"></i>
+                    </button>
+                  }
+                }
+              </div>
+            </div>
+          }
         </div>
       </div>
     </div>
@@ -257,7 +261,7 @@
 
 @if (hasNoData) {
   <div class="no-data-message">
-    <p class="text-center">
+    <p class="no-data-message__text text-center">
       {{ noDataMessage || "Sem dados registrados" }}
     </p>
   </div>
@@ -270,14 +274,14 @@
     [itemsPerPage]="itemsPerPage"
     [boundaryLinks]="true"
     [directionLinks]="true"
-    [maxSize]="5"
+    [maxSize]="3"
     (pageChanged)="onPageChange($event.page)"
     nextText="Próxima"
     [customPreviousTemplate]="prevTemplate"
     [customNextTemplate]="nextTemplate"
     [customFirstTemplate]="firstTemplate"
     [customLastTemplate]="lastTemplate"
-    [classList]="'d-flex justify-content-end pt-1'"
+    [classList]="'d-flex'"
     class="custom-pagination pagination justify-content-end pagination-green"
   ></pagination>
 </div>
@@ -296,12 +300,12 @@
 
 <ng-template #firstTemplate>
   <span class="d-flex align-items-center">
-    <i class="bi bi-chevron-double-left"></i>
+    <i class="bi bi-three-dots"></i>
   </span>
 </ng-template>
 
 <ng-template #lastTemplate>
   <span class="d-flex align-items-center">
-    <i class="bi bi-chevron-double-right"></i>
+    <i class="bi bi-three-dots"></i>
   </span>
 </ng-template>

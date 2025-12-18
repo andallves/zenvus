@@ -84,7 +84,6 @@ export class ColorPickerInputComponent {
     this.onChange(this.value);
     this.onTouched();
     this.valueChange.emit(this.value);
-    console.log(this.value);
   }
 
   onInputColorChange(value: string) {
@@ -92,7 +91,6 @@ export class ColorPickerInputComponent {
     this.onChange(this.value);
     this.onTouched();
     this.valueChange.emit(this.value);
-    console.log(this.value);
   }
 
   onInputBlur() {

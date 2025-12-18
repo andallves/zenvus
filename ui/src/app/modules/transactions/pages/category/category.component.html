@@ -44,6 +44,7 @@
   <zen-table
     id="table-categories"
     [columns]="categoryColumn"
+    [columnLabels]="categoryColumnsLabel"
     [data]="categoriesData"
     (edit)="openEditModal($event)"
     (delete)="openDeleteModal($event)"

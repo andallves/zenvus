@@ -1,5 +1,16 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, EventEmitter, forwardRef, HostListener, inject, Input, Output, signal, ViewChild, } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  forwardRef,
+  HostListener,
+  inject,
+  Input,
+  Output,
+  signal,
+  ViewChild,
+} from '@angular/core';
 import { FormsModule, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { IOptions, IValueOptions } from '@shared/domain-types/options';
 import { IdGeneratorService } from '../utils/id-generator.service';
@@ -86,7 +97,6 @@ export class SelectInputComponent {
     this.valueChange.emit(this.value);
     this.isOpen = false;
     this.isFocused = false;
-    console.log('selected: ' + this.value);
   }
 
   clearSelection(event: Event) {

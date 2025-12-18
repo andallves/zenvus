@@ -1,26 +1,26 @@
-import {Component, inject, OnInit, TemplateRef, ViewChild} from '@angular/core';
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
-import {AddCategoryFormComponent} from '@modules/transactions/pages/category/components/add-category-form/add-category-form.component';
-import {DeleteTemplateComponent} from '@modules/transactions/pages/category/components/delete-template/delete-template.component';
-import {EditCategoryFormComponent} from '@modules/transactions/pages/category/components/edit-category-form/edit-category-form.component';
-import {CategoryService} from '@modules/transactions/services/category.service';
-import {FilterComponent} from '@shared/components/filter/filter.component';
-import {HeaderTableComponent} from '@shared/components/header-table/header-table.component';
-import {ColorPickerInputComponent} from '@shared/components/inputs/color-picker-input/color-picker-input.component';
-import {InputDefaultComponent} from '@shared/components/inputs/input-default/input-default.component';
-import {SelectInputComponent} from '@shared/components/inputs/select-input/select-input.component';
-import {ModalComponent} from '@shared/components/modal/modal.component';
-import {PageContainerComponent} from '@shared/components/page-container/page-container.component';
-import {ModalIconType} from '@shared/components/swall/modal-alert/domain-types/modal-types.interface';
-import {ModalAlertService} from '@shared/components/swall/modal-alert/service/modal-alert.service';
-import {TableComponent} from '@shared/components/table/table.component';
-import {IBadge} from '@shared/domain-types/badges';
-import {IOptions} from '@shared/domain-types/options';
-import {ECategoryType} from '@shared/enums/category-type.enum';
-import {ICategory, IFilterCategory} from '@shared/interfaces/category.interface';
-import {LoadingService} from '@shared/layouts/default-layout/loading.service';
-import {BsModalRef, BsModalService, ModalOptions} from 'ngx-bootstrap/modal';
-import {NgxColorsModule, validColorValidator} from 'ngx-colors';
+import { Component, inject, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AddCategoryFormComponent } from '@modules/transactions/pages/category/components/add-category-form/add-category-form.component';
+import { DeleteTemplateComponent } from '@modules/transactions/pages/category/components/delete-template/delete-template.component';
+import { EditCategoryFormComponent } from '@modules/transactions/pages/category/components/edit-category-form/edit-category-form.component';
+import { CategoryService } from '@modules/transactions/services/category.service';
+import { FilterComponent } from '@shared/components/filter/filter.component';
+import { HeaderTableComponent } from '@shared/components/header-table/header-table.component';
+import { ColorPickerInputComponent } from '@shared/components/inputs/color-picker-input/color-picker-input.component';
+import { InputDefaultComponent } from '@shared/components/inputs/input-default/input-default.component';
+import { SelectInputComponent } from '@shared/components/inputs/select-input/select-input.component';
+import { ModalComponent } from '@shared/components/modal/modal.component';
+import { PageContainerComponent } from '@shared/components/page-container/page-container.component';
+import { ModalIconType } from '@shared/components/swall/modal-alert/domain-types/modal-types.interface';
+import { ModalAlertService } from '@shared/components/swall/modal-alert/service/modal-alert.service';
+import { ColumnLabel, TableComponent } from '@shared/components/table/table.component';
+import { IBadge } from '@shared/domain-types/badges';
+import { IOptions } from '@shared/domain-types/options';
+import { ECategoryType } from '@shared/enums/category-type.enum';
+import { ICategory, IFilterCategory } from '@shared/interfaces/category.interface';
+import { LoadingService } from '@shared/layouts/default-layout/loading.service';
+import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
+import { NgxColorsModule, validColorValidator } from 'ngx-colors';
 
 export const CategoryTypeLabel: Record<ECategoryType, string> = {
   [ECategoryType.Income]: 'Entrada',
@@ -76,7 +76,8 @@ export class CategoryComponent implements OnInit {
   }
 
   categoriesData: ICategory[] = [];
-  categoryColumn: string[] = ['nome', 'cor', 'tipo'];
+  categoryColumn: string[] = ['name', 'type', 'color'];
+  categoryColumnsLabel: ColumnLabel[] = [{ title: 'nome' }, { color: 'cor' }, { type: 'tipo' }];
   optionsInput: IOptions[] = [
     { label: 'Entrada', value: ECategoryType.Income },
     { label: 'Saída', value: ECategoryType.Expense },

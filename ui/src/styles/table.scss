@@ -13,7 +13,11 @@ zen-table {
   }
 
   .page-link {
-    color: var(--primary-color);
+    color: #000;
+
+    @media(min-width: 767px) {
+      color: var(--primary-color);
+    }
 
     &:hover {
       color: var(--link-hover);
