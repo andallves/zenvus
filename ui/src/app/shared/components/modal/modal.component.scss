@@ -12,12 +12,12 @@
   h4 {
     font-size: 1.1rem;
     margin-right: 0.75rem;
-    color: var(--primary-color);
+    color: var(--secondary-color);
     font-weight: 600;
   }
 
   .modal-subtitle {
-    color: var(--text-secundary-color);
+    color: var(--text-secondary-color);
   }
 
   button {
@@ -25,8 +25,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--background-primary-color);
-    color: var(--text-primary-color);
+    background: transparent;
+    color: var(--white-color);
 
     width: 2.5rem;
     height: 2.5rem;

@@ -31,11 +31,11 @@ export class ButtonComponent {
     if (this.borderColor === '') {
       // Se for variant custom, sempre tem borda verde
       if (this.variant === 'custom') {
-        return 'var(--primary)';
+        return 'var(--primary-color)';
       }
       return '';
     } else {
-      return 'var(--primary)';
+      return 'var(--primary-color)';
     }
   }
 
@@ -63,16 +63,16 @@ export class ButtonComponent {
   get color(): string {
     // Se for variant custom, sempre retorna verde
     if (this.variant === 'custom') {
-      return 'var(--primary)';
+      return 'var(--primary-color)';
     }
 
     switch (this.colorText) {
       case 'white':
-        return 'var(--white)';
+        return 'var(--white-color)';
       case 'primary':
-        return 'var(--primary)';
+        return 'var(--primary-color)';
       default:
-        return 'var(--white)';
+        return 'var(--white-color)';
     }
   }
 }

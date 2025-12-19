@@ -1,3 +1,9 @@
+// Breakpoints
+$bp-small: 425px;
+$bp-medium: 768px;
+$bp-large: 1024px;
+$bp-huge: 1440px;
+
 // Colors
 :root {
   --primary-color: #B90504;
@@ -24,13 +30,6 @@
 
   --primary-font: 'Open Sans';
   --brand-font: 'Monoton';
-
-  // MEDIAS
-  --lteSmall: 479px;
-  --lteMedium: '767px';
-  --lteLarge: 991px;
-  --lteHuge: 1191px;
-  --lteXHuge: 1440px;
 }
 
 body.dark-theme {
@@ -46,4 +45,5 @@ body.dark-theme {
 }
 
 $brandFont: 'Monoton';
+
 

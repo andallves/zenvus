@@ -1,4 +1,5 @@
 @use 'variables' as *;
+@use 'mixins' as *;
 
 .dropdown-toggle {
   outline: 0;
@@ -25,11 +26,11 @@
   transition: all 500ms ease-in-out;
   font-size: 14px !important;
 
-  @media (min-width: var(--lteMedium)) {
+  @include up($bp-medium) {
     font-size: 16px !important;
   }
 
-  @media (min-width: var(--lteXHuge)) {
+  @include up($bp-huge) {
     font-size: 2vw !important;
   }
 

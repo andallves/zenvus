@@ -1,4 +1,5 @@
-@use '../../../../../../styles/variables' as *;
+@use 'variables' as *;
+@use 'mixins' as *;
 @use "sass:color";
 
 $success-color: #188150;
@@ -14,7 +15,7 @@ $success-color: #188150;
     width: 250px;
   }
 
-  @media screen and (min-width: 768px) {
+  @include up($bp-medium) {
     width: 80px;
 
     &.is-active {
@@ -41,7 +42,7 @@ $success-color: #188150;
     padding: 24px;
   }
 
-  @media screen and (min-width: 767px) {
+  @include up($bp-medium) {
     width: 80px;
     padding: 24px 10px;
 
@@ -77,7 +78,7 @@ $success-color: #188150;
     &.is-collapsed {
       display: none;
 
-      @media screen and (min-width: 768px) {
+      @include up($bp-medium) {
         display: flex;
       }
     }
@@ -95,7 +96,7 @@ $success-color: #188150;
     &.is-collapsed {
       display: none;
 
-      @media screen and (min-width: 767px) {
+      @include up($bp-medium) {
         display: flex;
       }
     }
@@ -129,7 +130,7 @@ $success-color: #188150;
         &.is-collapsed {
           display: none;
 
-          @media(min-width: 767px) {
+          @include up($bp-medium) {
             display: flex;
           }
         }
@@ -149,11 +150,11 @@ $success-color: #188150;
             display: none;
           }
 
-          @media (min-width: var(--lteMedium)) {
+        @include up($bp-medium) {
             font-size: 14px !important;
           }
 
-          @media (min-width: var(--lteXHuge)) {
+        @include up($bp-huge) {
             font-size: 1vw !important;
           }
         }
@@ -185,11 +186,11 @@ $success-color: #188150;
           color: var(--text-primary-color);
           margin: 0;
 
-          @media (min-width: var(--lteMedium)) {
+        @include up($bp-medium) {
             font-size: 14px !important;
           }
 
-          @media (min-width: var(--lteXHuge)) {
+        @include up($bp-huge) {
             font-size: 2vw !important;
           }
         }
@@ -197,11 +198,11 @@ $success-color: #188150;
         &__description {
           font-size: 10px;
 
-          @media (min-width: var(--lteMedium)) {
+        @include up($bp-medium) {
             font-size: 12px !important;
           }
 
-          @media (min-width: var(--lteXHuge)) {
+        @include up($bp-huge) {
             font-size: 1.1vw !important;
           }
         }

@@ -1,3 +1,6 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
 body.dark-theme {
   --background-alt: #242424;
 }
@@ -68,7 +71,7 @@ body.dark-theme {
       font-size: 14.4px;
     }
 
-    @media (max-width: 62rem) {
+    @include up($bp-medium) {
       justify-content: center;
     }
   }
@@ -183,7 +186,7 @@ body.dark-theme {
       letter-spacing: 0.1rem;
     }
 
-    @media (max-width: 62rem) {
+    @include up($bp-medium) {
       table-layout: unset;
 
       th.actions-header {
@@ -232,7 +235,6 @@ body.dark-theme {
       border-top-right-radius: 20px;
       padding: 20px;
       outline: none;
-      z-index: 5;
 
       .badge {
         padding: 0.5rem 0.5rem;
@@ -266,7 +268,6 @@ body.dark-theme {
       align-items: center;
       padding: 20px 25px;
       background-color: var(--white-color);
-      z-index: 5;
 
       .field-item {
         display: flex;
@@ -407,7 +408,8 @@ pagination::ng-deep {
   margin-top: 40px;
   display: flex;
   justify-content: center;
-  @media (min-width: var(--lteMedium, 767)) {
+
+  @include up($bp-medium) {
     justify-content: flex-end;
     margin-top: 20px;
   }
@@ -418,12 +420,18 @@ pagination::ng-deep {
     gap: 1rem;
 
 
-    @media (min-width: var(--lteMedium)) {
+    @include up($bp-medium) {
       gap: 0;
     }
 
     .page-item {
       list-style: none;
+
+      @include up($bp-medium) {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
 
 
       a {
@@ -437,12 +445,20 @@ pagination::ng-deep {
         border: none;
         font-size: 16px;
 
+        @include up($bp-medium) {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border: 1px solid var(--border-color);
+          width: 34px;
+          height: 34px;
+        }
 
         &:focus {
           box-shadow: none;
         }
 
-        @media(min-width: var(--lteMedium)) {
+        @include up($bp-medium) {
           color: var(--primary-color);
         }
 
@@ -467,7 +483,9 @@ pagination::ng-deep {
         flex-shrink: 0;
         font-size: 20px;
 
-        @media(min-width: var(--lteMedium)) {
+        @include up($bp-medium) {
+          width: 34px;
+          height: 34px;
           padding: 2px 6px;
           border-radius: 0;
         }
@@ -491,7 +509,7 @@ pagination::ng-deep {
   align-items: center;
   gap: 0.5rem;
 
-  @media (max-width: 62rem) {
+  @include up($bp-medium) {
     gap: 0.25rem;
   }
 }
