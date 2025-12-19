@@ -1,40 +1,57 @@
-@use '../../../../../../styles/variables' as *;
+@use 'variables' as *;
 
 .dropdown-toggle {
   outline: 0;
 }
 
+.menu-item {
+  &.is-collapsed {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
 .item {
+  width: 100%;
   display: flex;
+  align-items: center;
+  justify-content: flex-start;
   gap: 10px;
-  padding: 20px;
+  padding: 16px;
   font-weight: 500;
   color: var(--text-gray-color);
   background-color: transparent;
-  transition: all 0.2s ease-in-out;
-  font-size: 12px !important;
+  transition: all 500ms ease-in-out;
+  font-size: 14px !important;
 
-  @media (min-width: 768px) {
-    font-size: 14px !important;
+  @media (min-width: var(--lteMedium)) {
+    font-size: 16px !important;
   }
 
-  @media (min-width: 968px) {
-    font-size: 1vw !important;
+  @media (min-width: var(--lteXHuge)) {
+    font-size: 2vw !important;
   }
 
-  &__text {
-    margin-right: 1rem;
-  }
-
-  &--active {
+  &--is-active {
     width: 100%;
+    display: flex;
+    justify-content: flex-start;
     color: var(--text-primary-color) !important;
     font-weight: 600;
     background-color: var(--active-background-color);
     border-right: 3px solid var(--primary-color) !important;
   }
 
-  &:hover:not(.item--active) {
+  &.is-collapsed {
+    justify-content: center;
+  }
+
+  &__text {
+    margin-right: 1rem;
+  }
+
+  &:hover:not(.item--is-active) {
     color: var(--text-primary-color);
     font-weight: 600;
     transition: color, font-weight 0.2s ease-in-out;
@@ -76,28 +93,28 @@
   flex-direction: column;
   gap: 8px;
 
-  &--active {
+  &--is-active {
     color: var(--primary-color) !important;
     font-weight: 700;
   }
 
 }
 
-.item--toggle-nav a.link-item {
+.item--toggle-nav .item {
   color: var(--text-secondary-color) !important;
   padding: .1875rem .5rem;
   margin-top: .125rem;
   transition: color, font-weight 0.4s ease-in-out !important;
 
-  &--active {
+  &--is-active {
     color: var(--primary-color) !important;
     font-weight: 700;
   }
 
 }
 
-.item--toggle-nav a:hover:not(.link-item--active),
-.item--toggle-nav a:focus:not(.link-item--active) {
+.item--toggle-nav a:hover:not(.item--is-active),
+.item--toggle-nav a:focus:not(.item--is-active) {
   color: var(--primary-color) !important;
   font-weight: 600 !important;
 }

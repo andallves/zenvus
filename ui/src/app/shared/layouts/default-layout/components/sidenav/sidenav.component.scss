@@ -10,14 +10,14 @@ $success-color: #188150;
   height: 100%;
   transition: width 300ms ease;
 
-  &.isActive {
+  &.is-active {
     width: 250px;
   }
 
   @media screen and (min-width: 768px) {
     width: 80px;
 
-    &.isActive {
+    &.is-active {
       width: 300px;
     }
   }
@@ -36,7 +36,7 @@ $success-color: #188150;
   left: 0;
   top: 0;
 
-  &.isActive {
+  &.is-active {
     width: 250px;
     padding: 24px;
   }
@@ -45,7 +45,7 @@ $success-color: #188150;
     width: 80px;
     padding: 24px 10px;
 
-    &.isActive {
+    &.is-active {
       width: 300px;
       padding: 24px;
     }
@@ -74,7 +74,7 @@ $success-color: #188150;
     gap: 10px;
     margin: 26px 0;
 
-    &.collapsed {
+    &.is-collapsed {
       display: none;
 
       @media screen and (min-width: 768px) {
@@ -92,7 +92,7 @@ $success-color: #188150;
     box-shadow: 0 -2px 10px 1px rgba(0, 0, 0, 0.2);
     padding: 10px 20px;
 
-    &.collapsed {
+    &.is-collapsed {
       display: none;
 
       @media screen and (min-width: 767px) {
@@ -111,6 +111,10 @@ $success-color: #188150;
       background: transparent;
       border: none;
 
+      &.is-collapsed {
+        display: block;
+      }
+
       .logout-info {
         display: flex;
         align-items: center;
@@ -122,7 +126,7 @@ $success-color: #188150;
         transition: 0.3s;
         animation: all 3ms ease-in-out;
 
-        &.sidenav-collapsed {
+        &.is-collapsed {
           display: none;
 
           @media(min-width: 767px) {
@@ -141,15 +145,15 @@ $success-color: #188150;
           padding: 6px 10px;
           color: var(--success-color);
 
-          &.sidenav-collapsed {
+          &.is-collapsed {
             display: none;
           }
 
-          @media (min-width: 768px) {
+          @media (min-width: var(--lteMedium)) {
             font-size: 14px !important;
           }
 
-          @media (min-width: 968px) {
+          @media (min-width: var(--lteXHuge)) {
             font-size: 1vw !important;
           }
         }
@@ -171,7 +175,7 @@ $success-color: #188150;
         align-items: flex-start;
         gap: -10px;
 
-        &.sidenav-collapsed {
+        &.is-collapsed {
           display: none;
         }
 
@@ -181,24 +185,24 @@ $success-color: #188150;
           color: var(--text-primary-color);
           margin: 0;
 
-          @media (min-width: 768px) {
+          @media (min-width: var(--lteMedium)) {
             font-size: 14px !important;
           }
 
-          @media (min-width: 968px) {
-            font-size: 1vw !important;
+          @media (min-width: var(--lteXHuge)) {
+            font-size: 2vw !important;
           }
         }
 
         &__description {
           font-size: 10px;
 
-          @media (min-width: 768px) {
+          @media (min-width: var(--lteMedium)) {
             font-size: 12px !important;
           }
 
-          @media (min-width: 968px) {
-            font-size: 0.9vw !important;
+          @media (min-width: var(--lteXHuge)) {
+            font-size: 1.1vw !important;
           }
         }
       }

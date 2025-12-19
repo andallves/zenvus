@@ -6,7 +6,7 @@ import { SidenavMenuItems } from '@shared/layouts/default-layout/components/side
 @Component({
   selector: 'zen-sidenav-menu-item',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive, NgClass],
+  imports: [RouterLink, RouterLinkActive],
   templateUrl: './menu-item.component.html',
   styleUrl: './menu-item.component.scss',
 })
@@ -16,4 +16,8 @@ export class MenuItemComponent {
   @Input() path!: string;
   @Input() classIcon!: string;
   @Input() menuItems!: SidenavMenuItems[] | null;
+
+  get isCollapsed(): boolean {
+    return !this.isActiveBar;
+  }
 }

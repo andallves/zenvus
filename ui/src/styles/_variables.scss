@@ -24,6 +24,13 @@
 
   --primary-font: 'Open Sans';
   --brand-font: 'Monoton';
+
+  // MEDIAS
+  --lteSmall: 479px;
+  --lteMedium: '767px';
+  --lteLarge: 991px;
+  --lteHuge: 1191px;
+  --lteXHuge: 1440px;
 }
 
 body.dark-theme {
