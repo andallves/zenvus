@@ -1,0 +1,11 @@
+<button id="{{ buttonId || 'button-default' }}"
+        [style.width]="width || '100%'"
+        [style.font-size]="size || '0.8rem'"
+        [style.background-color]="backgroundColor"
+        [style.border-color]="border"
+        [style.color]="color"
+        [disabled]="disabled"
+>
+  <zen-spinner *ngIf="isLoading"/>
+  <ng-content *ngIf="!isLoading"></ng-content>
+</button>

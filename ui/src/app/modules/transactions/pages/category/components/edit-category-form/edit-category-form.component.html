@@ -1,0 +1,51 @@
+<form id="form-edit-category" action="javascript:void(0)" [formGroup]="editCategoryForm">
+  <zen-input
+    id="input-name"
+    label="Nome:"
+    placeholder="Digite o nome"
+    [hasError]="hasMaxLengthAndRequiredError('name')"
+    [errorMsg]="getMaxLengthAndRequiredErrorMsg('name')"
+    formControlName="name"
+    maxlength="20"
+  />
+
+  <zen-color-picker-input
+    id="input-color"
+    label="Cor:"
+    placeholder="#000000"
+    formControlName="color"
+    aria-label="Cor da categoria"
+    aria-describedby="input-color-error"
+    [inputId]="'input-color-picker'"/>
+
+  <zen-select-input
+    id="select-type"
+    label="Tipo:"
+    placeholder="Selecione um tipo"
+    formControlName="type"
+    [options]="optionsInput"
+    [dropdownId]="'select-type'"
+  />
+
+  <div class="footer-modal">
+    <zen-button
+      id="button-fechar"
+      variant="danger"
+      width="100px"
+      (click)="onCloseModal()"
+      [buttonId]="'button-fechar'"
+    >
+      Fechar
+    </zen-button>
+    <zen-button
+      id="button-salvar"
+      width="100px"
+      [disabled]="!editCategoryForm.valid"
+      [isLoading]="isLoading"
+      (click)="editCategory()"
+      [buttonId]="'button-salvar'"
+    >
+      Salvar
+    </zen-button>
+  </div>
+</form>

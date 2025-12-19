@@ -1,0 +1,311 @@
+<!-- Versão Desktop - Tabela -->
+<div class="table-container d-none d-md-block">
+  <table class="table table-bordered table-hover">
+    <thead>
+    <tr>
+      @for (column of columns; track $index) {
+        <th>
+          {{ columnLabels[column] || column | titlecase }}
+        </th>
+      }
+      @if (showActions) {
+        <th class="actions-header">Ações</th>
+      }
+    </tr>
+    </thead>
+    <tbody>
+      @for (item of data; track $index) {
+        <tr>
+          @for (column of columns; track $index) {
+            <td>
+              @if (column === 'name') {
+                <ng-container>
+                  <div class="titulo-wrapper">
+                    @if (!item['disabled']) {
+                      <span class="badge badge-class badge-ativo">
+                        Ativo
+                      </span>
+                    }
+                    <span class="titulo-texto">{{ item["name"] }}</span>
+                  </div>
+                </ng-container>
+              } @else if (column === 'color') {
+                <ng-container>
+                  <span [style]="{ color: item['color'] }">{{ item["color"] }}</span>
+                </ng-container>
+              } @else if (column === 'type') {
+                {{ getTypeLabel(item) }}
+              } @else if (columnTemplates[column]) {
+                <ng-container>
+                  <ng-container
+                    *ngTemplateOutlet="
+                  columnTemplates[column];
+                  context: { value: item[column], item: item }
+                "></ng-container>
+                </ng-container>
+              } @else if (notTruncateText(column, item) | foto) {
+                <span [innerHTML]="notTruncateText(column, item) | foto"></span>
+              } @else {
+                {{ notTruncateText(column, item) }}
+              }
+            </td>
+          }
+          @if (actionTemplate) {
+            <td class="actions-container"
+            >
+              <ng-container
+                *ngTemplateOutlet="actionTemplate; context: { $implicit: item }"
+              ></ng-container>
+            </td>
+          } @else if (showActions) {
+            <td class="actions-container">
+              <div class="d-flex justify-content-center flex-row">
+                @if (showEdit && shouldShowEdit(item)) {
+                  <button
+                    id="btn-edit"
+                    data-testid="btn-edit"
+                    aria-label="Botão de editar"
+                    class="btn btn-warning"
+                    (click)="onEdit(item)"
+                  >
+                    <i class="bi bi-pencil-fill" aria-hidden="true"> </i>
+                  </button>
+                }
+                @if (showDelete && shouldShowDelete(item)) {
+                  <button
+                    id="btn-delete"
+                    data-testid="btn-delete"
+                    aria-label="Botão de deletar"
+                    class="btn btn-danger"
+                    (click)="onDelete(item)"
+                  >
+                    <i class="bi bi-trash-fill" aria-hidden="true"></i>
+                  </button>
+                }
+                @if (showKey) {
+                  <button
+                    (click)="onKey(item)"
+                    class="btn btn-warning key"
+                  >
+                    <img [src]="chave" alt="Chave"/>
+                  </button>
+                }
+                @if (showView || !shouldShowView(item)) {
+                  <button
+                    (click)="onView(item)"
+                    class="btn btn-info"
+                    [ngClass]="{ desativado: !getDesativadoProperty(item) }"
+                    [disabled]="!getDesativadoProperty(item)"
+                  >
+                    <i class="bi bi-eye-fill"></i>
+                  </button>
+                }
+                @if (showPrinter && shouldShowPrinter(item)) {
+                  <button
+                    id="btn-print"
+                    data-testid="btn-print"
+                    aria-label="Botão de imprimir"
+                    class="btn btn-secondary"
+                    (click)="onPrint(item)"
+                    title="Imprimir"
+                  >
+                    <i class="bi bi-printer-fill" aria-hidden="true"></i>
+                  </button>
+                }
+              </div>
+            </td>
+          }
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+<div class="cards-container d-block d-md-none">
+  @for (item of data; track $index; let i = $index) {
+    <div class="card-item mb-3">
+      <div class="card" [style]="{ backgroundColor: item['color'], outlineColor: item['color'], borderColor: item['color'] }">
+        <div class="card__header">
+          @if (item['name']) {
+            <div class="d-flex align-items-center justify-content-between">
+              <div class="d-flex align-items-center">
+                @if (!item['disabled']) {
+                  <span class="badge me-2 badge-active">
+                    Ativo
+                  </span>
+                }
+                <h6 class="mb-0 header-title">Nome: <span class="header-title--value">{{ item["name"] }}</span></h6>
+              </div>
+            </div>
+          }
+
+          @if (!item['name'] && columns.length > 0) {
+            <div class="d-flex align-items-center justify-content-between">
+              <h6 class="mb-0 header-title">Nome: <span class="header-title--value">{{ item[columns[0]] }}</span></h6>
+            </div>
+          }
+        </div>
+
+        <div class="card__body custom-body">
+          <div class="row">
+            @for (column of columns; track $index; let colIndex = $index) {
+              <div class="col-12">
+                @if (shouldShowFieldInCard(column, colIndex, item)) {
+                  <div class="field-item mb-2">
+                    <strong class="field-item__label"
+                    >{{ columnLabels[column] || column | titlecase }}:</strong
+                    >
+                    <div class="field-item__value">
+                      @if (column === 'color') {
+                        <span [style]="{ color: item['color'] }">{{ item["color"] }}</span>
+                      } @else if (column === 'type') {
+                        {{ getTypeLabel(item) }}
+                      } @else if (notTruncateText(column, item) | foto) {
+                        <span [innerHTML]="notTruncateText(column, item) | foto"></span>
+                      } @else {
+                        {{ notTruncateText(column, item) }}
+                      }
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+          @if (showActions) {
+            <div class="actions-menu">
+              <button
+                type="button"
+                class="dropdown-btn three-dots-btn"
+                (click)="toggleDropdown(i)"
+                [attr.aria-expanded]="isDropdownOpen(i)"
+                [class.is-open]="isDropdownOpen(i)"
+              >
+                @if (isDropdownOpen(i)) {
+                  <i class="bi bi-x-lg"></i>
+                } @else {
+                  <i class="bi bi-three-dots-vertical"></i>
+                }
+              </button>
+
+              <div class="custom-dropdown-menu" [class.show]="isDropdownOpen(i)">
+                @if (actionTemplate) {
+                  <div class="dropdown-item-wrapper">
+                    <ng-container
+                      *ngTemplateOutlet="
+                    actionTemplate;
+                    context: { $implicit: item }
+                  "
+                    ></ng-container>
+                  </div>
+                }
+                @if (!actionTemplate) {
+                  @if (showDelete && shouldShowDelete(item)) {
+                    <div
+                      class="dropdown-divider"
+                    ></div>
+                  }
+
+                  @if (showDelete && shouldShowDelete(item)) {
+                    <button
+                      class="custom-dropdown-item btn-danger"
+                      (click)="onDelete(item); closeDropdown()"
+                      title="Excluir"
+                    >
+                      <i class="bi bi-trash-fill"></i>
+                    </button>
+                  }
+
+                  @if (showKey) {
+                    <button
+                      class="custom-dropdown-item"
+                      (click)="onKey(item); closeDropdown()"
+                    >
+                      <img
+                        [src]="chave"
+                        alt="Chave"
+                        class="me-2"
+                        style="width: 16px; height: 16px"
+                      />
+                      Chave
+                    </button>
+                  }
+
+                  @if (showEdit && shouldShowEdit(item)) {
+                    <button
+                      class="custom-dropdown-item btn-warning"
+                      (click)="onEdit(item); closeDropdown()"
+                      title="Editar"
+                    >
+                      <i class="bi bi-pencil-fill"></i>
+                    </button>
+                  }
+
+                  @if (showView || !shouldShowView(item)) {
+                    <button
+                      class="custom-dropdown-item btn-info"
+                      (click)="onView(item); closeDropdown()"
+                      [disabled]="!getDesativadoProperty(item)"
+                      title="Visualizar"
+                    >
+                      <i class="bi bi-eye-fill"></i>
+                    </button>
+                  }
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  }
+</div>
+
+@if (hasNoData) {
+  <div class="no-data-message">
+    <p class="no-data-message__text text-center">
+      {{ noDataMessage || "Sem dados registrados" }}
+    </p>
+  </div>
+}
+
+<div class="pagination-container">
+  <pagination
+    [totalItems]="totalItens"
+    [(ngModel)]="currentPage"
+    [itemsPerPage]="itemsPerPage"
+    [boundaryLinks]="true"
+    [directionLinks]="true"
+    [maxSize]="3"
+    (pageChanged)="onPageChange($event.page)"
+    nextText="Próxima"
+    [customPreviousTemplate]="prevTemplate"
+    [customNextTemplate]="nextTemplate"
+    [customFirstTemplate]="firstTemplate"
+    [customLastTemplate]="lastTemplate"
+    [classList]="'d-flex'"
+    class="custom-pagination pagination justify-content-end pagination-green"
+  ></pagination>
+</div>
+
+<ng-template #prevTemplate>
+  <span class="d-flex align-items-center">
+    <i class="bi bi-chevron-left"></i>
+  </span>
+</ng-template>
+
+<ng-template #nextTemplate>
+  <span class="d-flex align-items-center">
+    <i class="bi bi-chevron-right"></i>
+  </span>
+</ng-template>
+
+<ng-template #firstTemplate>
+  <span class="d-flex align-items-center">
+    <i class="bi bi-three-dots"></i>
+  </span>
+</ng-template>
+
+<ng-template #lastTemplate>
+  <span class="d-flex align-items-center">
+    <i class="bi bi-three-dots"></i>
+  </span>
+</ng-template>

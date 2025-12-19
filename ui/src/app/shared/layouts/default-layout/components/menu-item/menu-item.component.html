@@ -1,18 +1,18 @@
-<li class="menu-item">
+<li class="menu-item" [class.is-collapsed]="isCollapsed">
   @if (menuItems === null) {
     <a
       [routerLink]="path"
       class="btn item d-inline-flex align-items-center rounded border-0 collapsed"
-      [ngClass]="{ 'sidenav-collapsed': !isActiveBar }"
+      [class.is-collapsed]="isCollapsed"
       data-bs-toggle="collapse"
       data-bs-target="#dashbo-collapse"
       aria-expanded="false"
-      routerLinkActive="item--active"
+      routerLinkActive="item--is-active"
       [routerLinkActiveOptions]="{ exact: true }"
     >
       <i [className]="classIcon"></i>
       @if (isActiveBar) {
-        {{ label }}
+        <span class="item__text">{{ label }}</span>
       }
     </a>
   } @else {
@@ -37,7 +37,7 @@
           <li>
             <a
               [routerLink]="item.exactPath"
-              routerLinkActive="link-item--active"
+              routerLinkActive="item--is-active"
               [routerLinkActiveOptions]="{ exact: true }"
               class="link-item d-inline-flex text-decoration-none"
             >

@@ -1,0 +1,20 @@
+<div class="modal-header">
+  <div class="info-modal d-flex flex-column align-items-start">
+    <div class="d-flex align-items-center">
+      <h4 class="modal-title pull-left">{{ title }}</h4>
+      <i
+        [className]="iconTemplate"
+        class="ms-2"
+        style="font-size: 1.1rem; color: var(--primary-color)"
+      ></i>
+    </div>
+    <small class="modal-subtitle">{{ subtitle }}</small>
+  </div>
+  <button (click)="bsModalRef.hide()">
+    <i class="bi bi-x" style="font-size: 1.5rem"></i>
+  </button>
+</div>
+
+<div class="modal-body">
+  <ng-container *ngTemplateOutlet="formTemplate"></ng-container>
+</div>

@@ -1,0 +1,41 @@
+<div class="box-input" [class.fixedSize]="fixedSize" [ngClass]="variant">
+  <label [for]="inputId" class="form-label">
+    {{ labelSignal() }}
+    <span *ngIf="showMandatory" class="mandatory">*</span>
+  </label>
+  <div
+    class="input-wrapper"
+    [ngClass]="{ 'is-invalid': hasError, 'custom-input': icon, focused: focus }"
+  >
+    <span
+      class="input-group-text"
+      id="{{ inputId }}-icon-addon"
+      *ngIf="icon"
+      class="icone"
+    >
+      <i class="bi bi-person-fill custom-person"></i>
+    </span>
+    <input
+      id="{{ inputId }}"
+      [type]="type"
+      (input)="onInputChange($event)"
+      (blur)="onInputBlur()"
+      [(ngModel)]="value"
+      [placeholder]="placeholder"
+      [disabled]="isDisable"
+      [readOnly]="readonly"
+      class="clear"
+      [mask]="mask"
+    />
+    <span
+      *ngIf="showX && value"
+      id="{{ inputId }}-clear"
+      class="clear-input"
+      (click)="clearInput($event)"
+      >&#x2715;</span
+    >
+  </div>
+  <div *ngIf="hasError" id="{{ inputId }}-error" class="invalid-feedback">
+    {{ errorMsg }}
+  </div>
+</div>

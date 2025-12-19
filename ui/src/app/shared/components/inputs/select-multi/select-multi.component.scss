@@ -1,0 +1,103 @@
+.box-input {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    &.fixedSize {
+      width: 11.25rem;
+    }
+    label {
+      font-size: 0.9rem;
+      color: var(--color-text-secundary);
+      font-weight: 500;
+      margin: 0px;
+  
+      .mandatory {
+        color: red;
+      }
+    }
+  
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+  
+      .dropdown {
+        width: 100%;
+  
+        .dropdown-toggle {
+          height: 2.7rem;
+          font-size: 0.9rem;
+          min-width: 150px;
+          text-align: left;
+          color: black;
+          background: transparent;
+          border: var(--bs-border-width) solid var(--bs-border-color);
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+  
+          &:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 0.2rem rgba(0, 155, 21, 0.397);
+          }
+  
+          &.is-invalid {
+            border-color: #ff0000 !important;
+          }
+  
+          &.is-invalid:focus {
+            box-shadow: 0 0 0 0.2rem rgba(255, 0, 0, 0.25) !important;
+          }
+  
+          .dropdown-arrow {
+            margin-left: auto;
+            font-size: 1rem;
+            color: #999;
+          }
+        }
+  
+        .dropdown-menu {
+          width: 100%;
+        }
+  
+        .dropdown-item.active {
+          background-color: #2f9e41;
+          color: #fff;
+        }
+      }
+  
+      .clear-input {
+        position: absolute;
+        right: 10px;
+        cursor: pointer;
+        font-size: 1.2em;
+        color: #999;
+        transition: color 0.3s ease;
+  
+        &:hover {
+          color: #333;
+        }
+      }
+    }
+  
+    .invalid-feedback {
+      font-weight: 500;
+      color: #ff0000;
+      display: block;
+    }
+  
+    &.is-disabled {
+      .dropdown-toggle {
+        background-color: #e9ecef;
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  @media (max-width: 980px) {
+  .box-input {
+    &.fixedSize {
+      width: 100%;
+    }
+  }
+}

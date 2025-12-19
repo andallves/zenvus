@@ -54,27 +54,21 @@ export class ContentHeaderComponent implements OnInit {
 
   openSideBar(): void {
     this.sidebarService.onActiveSide();
-    console.log(this.isActiveSidebar);
   }
 
   closeSideBar(): void {
     this.sidebarService.onInactiveSide();
-    console.log(this.isActiveSidebar);
   }
 
   updateHeader() {
     const snapshot = this.activatedRoute.firstChild?.snapshot;
-    console.log(snapshot);
     if (snapshot?.['title'] && snapshot.data?.['description']) {
       this.headerTitle = snapshot?.['title'];
       this.headerDescription = snapshot.data['description'];
-      console.log('tem title', this.headerTitle);
-      console.log(this.headerDescription);
     } else {
       this.headerTitle = this.saudacaoComBaseNaHora();
       this.headerDescription = this.name ? '' : 'Bem-vindo ao Zenvus!';
     }
-    console.log('é inicial page: ', this.router.url.split('?')[0] === '/');
     this.isInitialPage = this.router.url.split('?')[0] === '/';
   }
 

@@ -1,0 +1,72 @@
+<div class="box-input" [class.fixedSize]="fixedSize">
+  <label [for]="inputId" class="label-select">
+    {{ labelSignal() }}
+    <span *ngIf="showMandatory" class="mandatory">*</span>
+  </label>
+  <div
+    class="input-wrapper"
+    [ngClass]="{
+      focused: isFocused,
+      'is-invalid': hasError
+    }"
+  >
+    <div class="dropdown-input">
+      <input
+        id="{{ inputId }}"
+        [type]="type"
+        (input)="onInputChange($event)"
+        (keydown)="onKeydown($event)"
+        (focus)="onInputFocus()"
+        (blur)="onBlur()"
+        [(ngModel)]="displayValue"
+        [placeholder]="placeholder"
+        [title]="placeholder"
+        [disabled]="isDisable"
+        class="clear"
+        [mask]="mask"
+        #selectedValue
+        [autocomplete]="'off'"
+      />
+      <span
+        *ngIf="showX && displayValue"
+        id="{{ inputId }}-clear"
+        class="clear-input"
+        (click)="clearSelection($event)"
+        >&#x2715;</span
+      >
+    </div>
+    <div
+      class="custom-dropdown-menu"
+      [class.show]="isOpen"
+      (scroll)="onDropdownScroll($event)"
+      #dropdownMenu
+    >
+      <a
+        id="{{ inputId }}-option-{{ i }}"
+        class="dropdown-item"
+        *ngFor="let option of options; let i = index"
+        (click)="selectOption(option, $event)"
+        [ngClass]="{ active: i === focusedOptionIndex }"
+      >
+        {{ option.label }}
+      </a>
+
+      <div *ngIf="isLoadingMore" class="dropdown-item loading-item">
+        <div class="spinner-container">
+          <intra-spinner [width]="'20px'" [height]="'20px'"></intra-spinner>
+          <span class="loading-text">Carregando mais itens...</span>
+        </div>
+      </div>
+
+      <div
+        *ngIf="!hasMoreItems && options.length > itemsPerPage"
+        class="dropdown-item no-more-items"
+      >
+        <span class="text-muted">Todos os itens foram carregados</span>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="hasError" id="{{ inputId }}-error" class="invalid-feedback">
+    {{ errorMsg }}
+  </div>
+</div>

@@ -1,0 +1,59 @@
+<form class="add-form" id="form-add-category" action="javascript:void(0)" [formGroup]="addCategoryForm"
+      aria-labelledby="form-add-curso-title">
+  <h2 id="form-add-curso-title" class="visually-hidden">Adicionar Curso</h2>
+
+  <zen-input
+    id="input-name"
+    label="Digite o nome"
+    placeholder="Nome:"
+    [hasError]="hasMaxLengthAndRequiredError('name')"
+    [errorMsg]="getMaxLengthAndRequiredErrorMsg('name')"
+    formControlName="name"
+    aria-label="Nome da categoria"
+    aria-describedby="input-name-error"
+    maxlength="50"
+    [inputId]="'input-name-add'"
+  />
+
+  <zen-color-picker-input
+    id="input-color"
+    label="Cor:"
+    placeholder="#000000"
+    formControlName="color"
+    aria-label="Cor da categoria"
+    aria-describedby="input-color-error"
+    [inputId]="'input-color-picker'"/>
+
+  <zen-select-input
+    id="select-type"
+    label="Tipo:"
+    placeholder="Selecione um tipo"
+    formControlName="type"
+    [options]="optionsInput"
+    [dropdownId]="'select-type'"
+  />
+
+  <div class="footer-modal">
+    <zen-button
+      id="button-fechar"
+      variant="danger"
+      width="100px"
+      (click)="onCloseModal()"
+      aria-label="Fechar o formulário"
+      [buttonId]="'button-fechar'"
+    >
+      Fechar
+    </zen-button>
+    <zen-button
+      id="button-salvar"
+      width="100px"
+      [disabled]="addCategoryForm.invalid"
+      [isLoading]="isLoading"
+      (click)="addCategory()"
+      aria-label="Salvar a categoria"
+      [buttonId]="'button-salvar'"
+    >
+      Salvar
+    </zen-button>
+  </div>
+</form>

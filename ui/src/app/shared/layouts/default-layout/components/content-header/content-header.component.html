@@ -25,8 +25,8 @@
         </button>
       </div>
 
-      <div class="navbar-actions__icons">
-        @if (!isActiveSidebar) {
+      <div class="navbar-actions__icons" [class.is-active-sidebar]="isActiveSidebar">
+
           <a
             class="navbar-actions__icons--icon-notification"
             routerLink="/notificacoes/pendentes"
@@ -41,7 +41,6 @@
               }
             </div>
           </button>
-        }
       </div>
 
       @if (isDropdownOpen) {

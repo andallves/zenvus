@@ -39,8 +39,8 @@ const protectedChildren: Routes = [
     title: 'Categorias',
     data: { description: 'Página de gerenciamento e visualização das despesas.' },
     loadComponent: () =>
-      import('./modules/initial-page/pages/home-dashboard/home-dashboard.component').then(
-        m => m.HomeDashboardComponent
+      import('./modules/transactions/pages/category/category.component').then(
+        m => m.CategoryComponent
       ),
   },
   {

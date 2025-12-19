@@ -54,6 +54,10 @@ export class SidenavComponent implements OnInit {
   isDropdownOpen = false;
   name? = '';
 
+  get isCollapsed(): boolean {
+    return !this.isActiveBar;
+  }
+
   @HostListener('window:resize', ['$event'])
   onResize(): void {
     this.screenWidth = window.innerWidth;

@@ -1,3 +1,9 @@
+// Breakpoints
+$bp-small: 425px;
+$bp-medium: 768px;
+$bp-large: 1024px;
+$bp-huge: 1440px;
+
 // Colors
 :root {
   --primary-color: #B90504;
@@ -14,12 +20,13 @@
   --background-color: #c9c9c9;
 
   --chevron-color: rgba(255, 255, 255, 0.7);
-  --positive-color: #0d6dfb;
-  --success-color: #188150;
-  --warning-color: #F89406;
-  --danger-color: #d73443;
+  --positive-color: #1b85c7;
+  --success-color: #16be70;
+  --warning-color: #ffae00;
+  --danger-color: #ef172b;
   --border-color: #DEE2E6;
   --active-background-color: rgb(255, 233, 233);
+  --white-color: #ffffff;
 
   --primary-font: 'Open Sans';
   --brand-font: 'Monoton';
@@ -38,4 +45,5 @@ body.dark-theme {
 }
 
 $brandFont: 'Monoton';
+
 

@@ -1,12 +1,13 @@
-<div class="sidenav-placeholder {{ isActiveBar ? 'isActive' : '' }}"></div>
+<div class="sidenav-placeholder" [class.is-active]="isActiveBar"></div>
 
 <div
-  class="shadow sidenav flex-shrink-0 {{ isActiveBar ? 'isActive' : '' }}"
+  class="shadow sidenav flex-shrink-0"
+  [class.is-active]="isActiveBar"
 >
   <zen-sidenav-header></zen-sidenav-header>
 
   <ul class="list-unstyled ps-0"
-      [ngClass]="{ 'collapsed': !isActiveBar }"
+      [class.is-collapsed]="isCollapsed"
   >
     @for (item of navData; track $index) {
       <zen-sidenav-menu-item
@@ -21,23 +22,24 @@
 
   <div
     class="wrapper-btn-logout"
-    [ngClass]="{ 'collapsed': !isActiveBar }"
+    [class.is-collapsed]="isCollapsed"
   >
     <button
       class="btn-logout"
+      [class.is-collapsed]="isCollapsed"
       (click)="logout()"
     >
-      @if (isActiveBar) {
-        <div
-          class="logout-info"
-        >
-          <i class="bi bi-wallet wallet"></i>
-          <div class="status">
-            <h4 class="status__title">Saúde Financeira</h4>
-            <span class="status__description">Excelente</span>
-          </div>
+      <div
+        class="logout-info"
+        [class.is-collapsed]="isCollapsed"
+      >
+        <i class="bi bi-wallet wallet" [class.is-collapsed]="isCollapsed"></i>
+        <div class="status" [class.is-collapsed]="isCollapsed">
+          <h4 class="status__title">Saúde Financeira</h4>
+          <span class="status__description">Excelente</span>
         </div>
-      }
+      </div>
+
       <i class="bi bi-escape logout" title="Sair"></i>
     </button>
   </div>

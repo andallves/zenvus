@@ -1,0 +1,69 @@
+<div class="box-input" [class.fixedSize]="fixedSize">
+  <label [for]="dropdownId" class="label-select">
+    {{ labelSignal() }}
+    @if (showMandatory) {
+      <span class="mandatory">*</span>
+    }
+  </label>
+  <div class="input-wrapper">
+    <div
+      class="dropdown"
+      [ngClass]="{ 'is-invalid': hasError, 'is-focused': isFocused }"
+    >
+      <button
+        class="btn btn-secondary dropdown-toggle form-control"
+        [class.show-x]="showX && value"
+        type="button"
+        id="{{ dropdownId }}"
+        [disabled]="isDisable"
+        (click)="toggleDropdown()"
+        (blur)="onBlur()"
+        (focus)="onFocus()"
+        (keydown)="onKeydown($event)"
+        aria-haspopup="listbox"
+        [attr.aria-expanded]="isOpen"
+        [attr.aria-controls]="dropdownId + '-menu'"
+      >
+        <span id="{{ dropdownId }}-selected-label" class="text-truncate">
+          {{ getSelectedLabel() }}
+        </span>
+      </button>
+      <div
+        class="dropdown-menu "
+        [class.show]="isOpen"
+        role="listbox"
+        [id]="dropdownId + '-menu'"
+      >
+        @for (option of options; track $index; let i = $index) {
+          <button
+            id="{{ dropdownId }}-option-{{ i }}"
+            class="dropdown-item"
+            role="option"
+            aria-selected="{{ i === focusedOptionIndex }}"
+            [ngClass]="{ active: i === focusedOptionIndex }"
+            (mousedown)="selectOption(option, $event)"
+            (focus)="onFocus()"
+          >
+            {{ option.label }}
+          </button>
+        }
+      </div>
+    </div>
+
+    @if (showX && value) {
+      <button
+        id="{{ dropdownId }}-clear"
+        class="clear-input"
+        (click)="clearSelection($event)"
+      >&#x2715;
+      </button
+      >
+    }
+  </div>
+
+  @if (hasError) {
+    <div id="{{ dropdownId }}-error" class="invalid-feedback">
+      {{ errorMsg }}
+    </div>
+  }
+</div>

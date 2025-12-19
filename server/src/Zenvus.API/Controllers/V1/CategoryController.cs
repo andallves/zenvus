@@ -52,7 +52,7 @@ public class CategoryController(IMediator mediator) : BaseController(mediator)
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async ValueTask<IActionResult> Update([FromRoute] Guid id, [FromForm] UpdateCategoryCommand command, CancellationToken cancellationToken)
+    public async ValueTask<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateCategoryCommand command, CancellationToken cancellationToken)
     {
         if (id != command.Id)
         {

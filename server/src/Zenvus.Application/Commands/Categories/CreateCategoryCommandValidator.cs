@@ -35,7 +35,8 @@ public class CreateCategoryCommandValidator : AbstractValidator<CreateCategoryCo
             .NotNull()
             .NotEmpty()
             .WithMessage("O tipo da categoria é obrigatório.")
-            .IsInEnum();
+            .IsInEnum()
+            .WithMessage("O tipo não corresponde aos tipos existentes.");
     }
     
     private static bool BeAValidHexColor(string color)
@@ -53,7 +54,7 @@ public class CreateCategoryCommandValidator : AbstractValidator<CreateCategoryCo
 
         if (emUso)
         {
-            context.AddFailure($"O '{context.DisplayName}' informado já está em uso.");
+            context.AddFailure($"O 'Nome' informado já está em uso.");
         }
     }
 }

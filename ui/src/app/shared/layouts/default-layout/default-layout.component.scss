@@ -93,7 +93,7 @@ main {
 
 
   section {
-    padding: 0 54px;
+    padding: 0 20px;
   }
 }
 
@@ -139,12 +139,6 @@ main {
     }
   }
 
-}
-
-@media screen and (max-width: 1200px) {
-  section {
-    padding: 0 20px !important;
-  }
 }
 
 @media (max-width: 992px) {
