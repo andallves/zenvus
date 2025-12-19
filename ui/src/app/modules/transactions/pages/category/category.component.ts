@@ -29,7 +29,6 @@ export const CategoryTypeLabel: Record<ECategoryType, string> = {
 
 @Component({
   selector: 'zen-category',
-  standalone: true,
   templateUrl: './category.component.html',
   styleUrl: './category.component.scss',
   imports: [

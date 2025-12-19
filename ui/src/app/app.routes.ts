@@ -17,30 +17,10 @@ const protectedChildren: Routes = [
       ),
   },
   {
-    path: 'receitas',
-    title: 'Receitas',
-    data: { description: 'Página de gerenciamento e visualização das receitas.' },
-    loadComponent: () =>
-      import('./modules/initial-page/pages/home-dashboard/home-dashboard.component').then(
-        m => m.HomeDashboardComponent
-      ),
-  },
-  {
-    path: 'despesas',
-    title: 'Despesas',
-    data: { description: 'Página de gerenciamento e visualização das despesas.' },
-    loadComponent: () =>
-      import('./modules/initial-page/pages/home-dashboard/home-dashboard.component').then(
-        m => m.HomeDashboardComponent
-      ),
-  },
-  {
-    path: 'categorias',
-    title: 'Categorias',
-    data: { description: 'Página de gerenciamento e visualização das despesas.' },
-    loadComponent: () =>
-      import('./modules/transactions/pages/category/category.component').then(
-        m => m.CategoryComponent
+    path: 'transacoes',
+    loadChildren: () =>
+      import('./modules/transactions/transactions-routing.module').then(
+        m => m.TransactionsRoutingModule
       ),
   },
   {
@@ -85,7 +65,7 @@ export const routes: Routes = [
   {
     path: 'auth',
     component: AuthLayoutComponent,
-    loadChildren: () => import('./modules/auth/auth.module').then(m => m.AuthModule),
+    loadChildren: () => import('./modules/auth/auth-routing.module').then(m => m.AuthRoutingModule),
   },
   {
     path: '',

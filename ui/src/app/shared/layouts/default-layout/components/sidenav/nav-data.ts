@@ -19,17 +19,17 @@ export const navbarData: SidenavMenu[] = [
   {
     label: 'Receitas',
     classIcon: 'bi bi-arrow-up-right-circle',
-    path: '/receitas',
+    path: '/transacoes/receitas',
   },
   {
     label: 'Despesas',
     classIcon: 'bi bi-arrow-down-left-circle',
-    path: '/despesas',
+    path: '/transacoes/despesas',
   },
   {
     label: 'Categorias',
     classIcon: 'bi bi-tag',
-    path: '/categorias',
+    path: '/transacoes/categorias',
   },
   {
     label: 'Orçamentos',
