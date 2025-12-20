@@ -2,7 +2,7 @@ using System.ComponentModel;
 
 namespace Zenvus.Domain.Entities.Enums;
 
-public enum IncomeType
+public enum EIncome
 {
     [Description("Salario")]
     Salary = 1,

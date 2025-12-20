@@ -12,7 +12,7 @@ public class DebtInstallment : SoftDeleteEntity
     public DateTime DueDate { get; set; }
     public decimal Amount { get; set; }
 
-    public PaymentStatus Status { get; set; }
+    public EPaymentStatus Status { get; set; }
     public DateTime? PaymentDate { get; set; } 
     public void Enable() => Disabled = false;
     public void Disable() => Disabled = true;
@@ -20,7 +20,7 @@ public class DebtInstallment : SoftDeleteEntity
     
     public void MarkAsPaid(DateTime paymentDate)
     {
-        Status = PaymentStatus.Paid;
+        Status = EPaymentStatus.Paid;
         PaymentDate = paymentDate;
     }
 }

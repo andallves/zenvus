@@ -5,12 +5,13 @@ using Zenvus.Application.DTO.Expenses;
 using Zenvus.Core.Auth;
 using Zenvus.Core.ValueObjects;
 using Zenvus.Domain.Entities;
+using Zenvus.Domain.Entities.Enums;
 using Zenvus.Infra.Abstractions;
 using Zenvus.Infra.Database;
 
 namespace Zenvus.Application.Commands.Expenses;
 
-public class UpdateExpenseCommandHandler(IMapper mapper, IRepository<ZenvusDbContext> repository, IAuthenticatedUser authenticatedUser) : IRequestHandler<UpdateExpenseCommand, CustomResult<ExpenseDto>>
+public class UpdateExpenseCommandHandler(IRepository<ZenvusDbContext> repository, IAuthenticatedUser authenticatedUser) : IRequestHandler<UpdateExpenseCommand, CustomResult<ExpenseDto>>
 {
     public async Task<CustomResult<ExpenseDto>> Handle(UpdateExpenseCommand request, CancellationToken cancellationToken)
     {
@@ -31,9 +32,9 @@ public class UpdateExpenseCommandHandler(IMapper mapper, IRepository<ZenvusDbCon
             CategoryId = request.CategoryId,
             Category = category,
             Amount = request.Amount,
-            Description = request.Description ?? string.Empty,
+            Description = request.Description,
             Date = request.Date,
-            IsExpense = request.IsExpense,
+            Type = (EExpense)request.Type,
         };
 
         repository.DbSet<Expense>().Update(expense);

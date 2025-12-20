@@ -7,5 +7,5 @@ public class CreateCategoryCommand : BaseCommand<CategoryDto>
 {
     public string Name { get; set; } = string.Empty;
     public string Color { get; set; } = string.Empty;
-    public IsCategory Type { get; set; }
+    public int Type { get; set; }
 }

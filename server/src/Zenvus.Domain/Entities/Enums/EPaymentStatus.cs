@@ -2,7 +2,7 @@ using System.ComponentModel;
 
 namespace Zenvus.Domain.Entities.Enums;
 
-public enum PaymentStatus
+public enum EPaymentStatus
 {
     [Description("Pending")]
     Pending = 1,

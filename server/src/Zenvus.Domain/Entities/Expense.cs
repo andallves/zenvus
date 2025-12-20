@@ -5,7 +5,7 @@ namespace Zenvus.Domain.Entities;
 
 public class Expense : Transaction
 {
-    public IsExpense IsExpense { get; set; } 
+    public EExpense Type { get; set; } 
     public Debt? Debt { get; set; }
     
     [NotMapped]

@@ -10,7 +10,7 @@ public class ExpenseConfiguration : IEntityTypeConfiguration<Expense>
     {
         builder.ToTable("Expenses");
 
-        builder.Property(x => x.IsExpense)
+        builder.Property(x => x.Type)
             .IsRequired();
     }
 }

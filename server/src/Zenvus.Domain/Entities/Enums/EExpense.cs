@@ -1,6 +1,6 @@
 namespace Zenvus.Domain.Entities.Enums;
 
-public enum IsExpense
+public enum EExpense
 {
     Fixed,
     Variable,

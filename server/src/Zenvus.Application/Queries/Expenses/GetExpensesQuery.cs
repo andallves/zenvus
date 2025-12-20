@@ -19,7 +19,7 @@ public class GetExpensesQuery : BasePagedQuery<Expense, ExpenseDto>
     [SwaggerParameterExample("Subscription", "3")]
     [SwaggerParameterExample("Loan", "4")]
     [SwaggerParameterExample("Other", "5")]
-    public int? IsExpense { get; set; }
+    public int? Type { get; set; }
     public bool? HasDebt { get; set; }
     
     [SwaggerParameterExample("Id", "Id")]
@@ -51,9 +51,9 @@ public class GetExpensesQuery : BasePagedQuery<Expense, ExpenseDto>
             query = query.Where(e => e.Disabled == Disabled);
         }
         
-        if (IsExpense is not null)
+        if (Type is not null)
         {
-            query = query.Where(e => (int)e.IsExpense == IsExpense);
+            query = query.Where(e => (int)e.Type == Type);
         }
         
         if (HasDebt is not null)
@@ -72,7 +72,7 @@ public class GetExpensesQuery : BasePagedQuery<Expense, ExpenseDto>
                 "date" => query.OrderBy(e => e.Date),
                 "description" => query.OrderBy(e => e.Description),
                 "disabled" => query.OrderBy(e => e.Disabled),
-                "isExpense" => query.OrderBy(e => e.IsExpense),
+                "isExpense" => query.OrderBy(e => e.Type),
                 "hasDebt" => query.OrderBy(e => e.HasDebt),
                 _ => query.OrderBy(x => x.Id)
             };
@@ -85,7 +85,7 @@ public class GetExpensesQuery : BasePagedQuery<Expense, ExpenseDto>
             "date" => query.OrderByDescending(e => e.Date),
             "description" => query.OrderByDescending(e => e.Description),
             "disabled" => query.OrderByDescending(e => e.Disabled),
-            "isExpense" => query.OrderByDescending(e => e.IsExpense),
+            "isExpense" => query.OrderByDescending(e => e.Type),
             "hasDebt" => query.OrderByDescending(e => e.HasDebt),
             _ => query.OrderByDescending(e => e.Id)
         };

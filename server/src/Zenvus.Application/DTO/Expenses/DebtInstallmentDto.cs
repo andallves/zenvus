@@ -10,7 +10,7 @@ public class DebtInstallmentDto
     public int Number { get; set; }
     public DateTime DueDate { get; set; }
     public decimal Amount { get; set; }
-    public PaymentStatus Status { get; set; }
+    public EPaymentStatus Status { get; set; }
     public DateTime? PaymentDate { get; set; }  
     
     public static DebtInstallmentDto From(DebtInstallment debtInstallment)

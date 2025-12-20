@@ -10,7 +10,7 @@ public class UpdateExpenseCommand : BaseCommand<ExpenseDto>
     public decimal Amount { get; set; }
     public DateTime Date { get; set; }
     public string Description { get; set; } = string.Empty;
-    public IsExpense IsExpense { get; set; }
+    public int Type { get; set; }
     public bool HasDebt { get; set; }
     public DebtDto? Debt { get; set; }
 }

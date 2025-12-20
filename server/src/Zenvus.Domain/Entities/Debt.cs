@@ -43,7 +43,7 @@ public class Debt : SoftDeleteEntity
                 Number = i,
                 Amount = installmentAmount,
                 DueDate = firstDueDate.AddMonths(i - 1),
-                Status = PaymentStatus.Active
+                Status = EPaymentStatus.Active
             });
         }
 
@@ -56,7 +56,7 @@ public class Debt : SoftDeleteEntity
         foreach (var installment in debt.Installments)
         {
             installment.Disable();
-            installment.Status = PaymentStatus.Cancelled;
+            installment.Status = EPaymentStatus.Cancelled;
         }
 
         return debt;
