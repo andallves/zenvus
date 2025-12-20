@@ -1,1 +1,67 @@
-<p>expense works!</p>
+<zen-page-container id="page-container-expenses">
+  <zen-header-table
+    title="Filtros"
+    [mobileTitle]="'Despesas'"
+    [mobileTitleIcon]="imgCursos"
+    (add)="openAddModal()"
+    [uniqueId]="'expenses'"
+  />
+
+  <zen-filter
+    [filterId]="'filter-expensesId'"
+    [isLoadingFilter]="isLoadingFilter"
+    [isLoadingClearFilter]="isLoadingClearFilter"
+    (filter)="onSearch()"
+    (clearFilter)="onClearFilter()"
+  >
+    <form id="form-filter-expenses" action="javascript:void(0)" [formGroup]="filterForm">
+      <zen-input
+        id="input-name"
+        label="Nome:"
+        placeholder="Digite o nome"
+        formControlName="description"
+        [inputId]="'input-name'"
+      />
+
+      <zen-color-picker-input
+        id="input-color"
+        label="Cor:"
+        placeholder="#000000"
+        formControlName="category"
+        [inputId]="'input-color-picker'"/>
+
+      <zen-select-input
+        id="select-type"
+        label="Tipo:"
+        placeholder="Selecione um tipo"
+        formControlName="type"
+        [options]="optionsInput"
+        [dropdownId]="'select-type'"
+      />
+    </form>
+  </zen-filter>
+
+  <zen-table
+    id="table-expenses"
+    [columns]="expenseColumn"
+    [columnLabels]="expenseColumnsLabel"
+    [enumLabels]="tableEnumLabels"
+    [data]="expensesData"
+    (edit)="openEditModal($event)"
+    (delete)="openDeleteModal($event)"
+    (pageChange)="onPageChange($event)"
+    [totalItens]="totalItens"
+  />
+</zen-page-container>
+
+<ng-template #formAddTemplate>
+  <zen-add-category-form id="form-add-expense" (changeData)="changeData()"/>
+</ng-template>
+
+<!--<ng-template #formEditTemplate>-->
+<!--  <zen-edit-category-form id="form-edit-expense" [dataCategory]="dataExpense" (changeData)="changeData()"/>-->
+<!--</ng-template>-->
+
+<!--<ng-template #deleteTemplate>-->
+<!--  <zen-delete-template id="template-delete-expense" [dataCategory]="dataExpense" (changeData)="changeData()"/>-->
+<!--</ng-template>-->

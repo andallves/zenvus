@@ -16,16 +16,11 @@ import { ModalAlertService } from '@shared/components/swall/modal-alert/service/
 import { ColumnLabel, TableComponent } from '@shared/components/table/table.component';
 import { IBadge } from '@shared/domain-types/badges';
 import { IOptions } from '@shared/domain-types/options';
-import { ECategoryType } from '@shared/enums/category-type.enum';
+import { CategoryTypeLabel, ECategoryType } from '@shared/enums/category-type.enum';
 import { ICategory, IFilterCategory } from '@shared/interfaces/category.interface';
 import { LoadingService } from '@shared/layouts/default-layout/loading.service';
 import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
 import { NgxColorsModule, validColorValidator } from 'ngx-colors';
-
-export const CategoryTypeLabel: Record<ECategoryType, string> = {
-  [ECategoryType.Income]: 'Entrada',
-  [ECategoryType.Expense]: 'Saída',
-};
 
 @Component({
   selector: 'zen-category',
@@ -82,6 +77,10 @@ export class CategoryComponent implements OnInit {
     { label: 'Saída', value: ECategoryType.Expense },
   ];
 
+  public tableEnumLabels = {
+    type: CategoryTypeLabel, // 'type' deve ser o nome da coluna vinda da API
+    // category: CategoryTypeLabel // Se tivesse outra coluna de enum
+  };
   @ViewChild('formAddTemplate', { static: true })
   formAddTemplate!: TemplateRef<HTMLElement>;
   @ViewChild('formEditTemplate', { static: true })

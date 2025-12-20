@@ -1,8 +1,6 @@
 import { CommonModule, TitleCasePipe } from '@angular/common';
 import { Component, EventEmitter, HostListener, Input, Output, TemplateRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { CategoryTypeLabel } from '@modules/transactions/pages/category/category.component';
-import { ECategoryType } from '@shared/enums/category-type.enum';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { FotoPipe } from './foto.pipe';
 
@@ -53,14 +51,6 @@ export class TableComponent<T> {
   @Input() currentPage = 1;
   public chave = '/file-arrow-left-right.svg';
 
-  get totalPages(): number {
-    return Math.ceil(
-      this.totalItens > 0
-        ? this.totalItens / this.itemsPerPage
-        : this.data.length / this.itemsPerPage
-    );
-  }
-
   isDisabled = false;
 
   // Propriedades para o dropdown personalizado
@@ -72,8 +62,69 @@ export class TableComponent<T> {
   //   return this.data.slice(startIndex, endIndex);
   // }
 
+  get totalPages(): number {
+    return Math.ceil(
+      this.totalItens > 0
+        ? this.totalItens / this.itemsPerPage
+        : this.data.length / this.itemsPerPage
+    );
+  }
+
   get hasNoData(): boolean {
     return !this.data || this.data.length === 0;
+  }
+
+  getDesativadoProperty(item: DataItem<T>) {
+    for (const key in item) {
+      if (key.toLowerCase().includes('status')) {
+        const isDisabled = item[key];
+        if (isDisabled) {
+          this.isDisabled = false;
+          return this.isDisabled;
+        } else {
+          this.isDisabled = true;
+          return this.isDisabled;
+        }
+      }
+    }
+    this.isDisabled = false;
+    return this.isDisabled;
+  }
+
+  getDateValue(value: unknown): Date | string | number | null {
+    if (value instanceof Date) return value;
+    if (typeof value === 'string' || typeof value === 'number') return value;
+    return null;
+  }
+
+  getValueLabel(column: string, value: unknown): string {
+    if (this.enumLabels?.[column]) {
+      const mapping = this.enumLabels[column];
+
+      const lookupValue =
+        typeof value === 'number' || typeof value === 'string' ? value : String(value);
+
+      return mapping[lookupValue] ?? String(value);
+    }
+
+    if (typeof value === 'boolean') {
+      return value ? 'Sim' : 'Não';
+    }
+
+    return value?.toString() ?? '-';
+  }
+
+  truncateText(column: string, item: DataItem<T>): string {
+    const value = item[column];
+    if (typeof value === 'string' && value.length > 30) {
+      return value.slice(0, 30) + '...';
+    }
+    return value?.toString() ?? '';
+  }
+
+  notTruncateText(column: string, item: DataItem<T>): string {
+    const value = item[column];
+    return value?.toString() ?? '';
   }
 
   onPageChange(page: number): void {
@@ -86,31 +137,6 @@ export class TableComponent<T> {
 
   onPrint(item: DataItem<T>): void {
     this.print.emit(item as T);
-  }
-
-  truncateText(column: string, item: DataItem<T>): string {
-    const value = item[column];
-    if (typeof value === 'string' && value.length > 30) {
-      return value.slice(0, 30) + '...';
-    }
-    return value?.toString() ?? '';
-  }
-
-  // Generic method to get label for a column which may contain an enum value.
-  // It looks up an optional map passed via @Input() enumLabels where the key is the column name.
-  getEnumCategoryLabel(type: ECategoryType): string {
-    return CategoryTypeLabel[type] ?? '-';
-  }
-
-  // Backwards-compatible alias for previous usage (kept for tests that might call it).
-  getTypeLabel(item: DataItem<T>): string {
-    const value = item['type'];
-    return this.getEnumCategoryLabel(value as ECategoryType);
-  }
-
-  notTruncateText(column: string, item: DataItem<T>): string {
-    const value = item[column];
-    return value?.toString() ?? '';
   }
 
   onEdit(item: DataItem<T>): void {
@@ -128,22 +154,6 @@ export class TableComponent<T> {
   }
   onSend(item: DataItem<T>): void {
     this.send.emit(item as T);
-  }
-  getDesativadoProperty(item: DataItem<T>) {
-    for (const key in item) {
-      if (key.toLowerCase().includes('status')) {
-        const isDisabled = item[key];
-        if (isDisabled) {
-          this.isDisabled = false;
-          return this.isDisabled;
-        } else {
-          this.isDisabled = true;
-          return this.isDisabled;
-        }
-      }
-    }
-    this.isDisabled = false;
-    return this.isDisabled;
   }
 
   // Método para controlar quais campos mostrar no card mobile

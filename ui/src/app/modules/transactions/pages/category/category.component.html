@@ -45,6 +45,7 @@
     id="table-categories"
     [columns]="categoryColumn"
     [columnLabels]="categoryColumnsLabel"
+    [enumLabels]="tableEnumLabels"
     [data]="categoriesData"
     (edit)="openEditModal($event)"
     (delete)="openDeleteModal($event)"

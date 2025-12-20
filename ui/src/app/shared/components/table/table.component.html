@@ -26,15 +26,15 @@
                         Ativo
                       </span>
                     }
-                    <span class="titulo-texto">{{ item["name"] }}</span>
+                    <span class="titulo-texto">{{ item[column] }}</span>
                   </div>
                 </ng-container>
               } @else if (column === 'color') {
                 <ng-container>
-                  <span [style]="{ color: item['color'] }">{{ item["color"] }}</span>
+                  <span [style]="{ color: item[column] }">{{ item[column] }}</span>
                 </ng-container>
-              } @else if (column === 'type') {
-                {{ getTypeLabel(item) }}
+              } @else if (column === 'date') {
+                {{ getDateValue(item[column]) | date:'medium' }}
               } @else if (columnTemplates[column]) {
                 <ng-container>
                   <ng-container
@@ -46,7 +46,7 @@
               } @else if (notTruncateText(column, item) | foto) {
                 <span [innerHTML]="notTruncateText(column, item) | foto"></span>
               } @else {
-                {{ notTruncateText(column, item) }}
+                {{ getValueLabel(column, item[column]) }}
               }
             </td>
           }
@@ -158,7 +158,7 @@
                       @if (column === 'color') {
                         <span [style]="{ color: item['color'] }">{{ item["color"] }}</span>
                       } @else if (column === 'type') {
-                        {{ getTypeLabel(item) }}
+                        {{ getValueLabel(column, item[column]) }}
                       } @else if (notTruncateText(column, item) | foto) {
                         <span [innerHTML]="notTruncateText(column, item) | foto"></span>
                       } @else {
