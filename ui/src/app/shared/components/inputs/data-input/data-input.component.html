@@ -17,17 +17,10 @@
       [disabled]="isDisable"
       (bsValueChange)="onValueChange($event)"
       (input)="onInputChange($event)"
-      (blur)="closeDatepicker($event, dp)"
       (focus)="openDatepicker(dp)"
       [(ngModel)]="value"
       (click)="openDatepicker(dp)"
-      [bsConfig]="{
-        dateInputFormat: 'DD/MM/YYYY',
-        clearPosition: 'right',
-        showWeekNumbers: bsConfigShowWeeksNumbers,
-        minDate: minDate,
-        maxDate: maxDate
-      }"
+      [bsConfig]="datePickerConfig"
     />
 
     <i
@@ -38,7 +31,9 @@
     ></i>
   </div>
 
-  <div *ngIf="hasError" id="{{ inputId }}-error" class="feedback-invalido">
-    {{ customErrorMsg || errorMsg }}
-  </div>
+  @if (hasError) {
+    <div id="{{ inputId }}-error" class="feedback-invalido">
+      {{ customErrorMsg || errorMsg }}
+    </div>
+  }
 </div>

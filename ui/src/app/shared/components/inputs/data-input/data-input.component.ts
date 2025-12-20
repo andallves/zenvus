@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, forwardRef, inject, Input, signal } from '@angular/core';
+import { Component, EventEmitter, forwardRef, inject, Input, Output, signal } from '@angular/core';
 import {
   ControlValueAccessor,
   FormsModule,
@@ -7,7 +7,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { defineLocale, ptBrLocale } from 'ngx-bootstrap/chronos';
-import { BsDatepickerModule, BsLocaleService } from 'ngx-bootstrap/datepicker';
+import { BsDatepickerConfig, BsDatepickerModule, BsLocaleService } from 'ngx-bootstrap/datepicker';
 import { IdGeneratorService } from '../utils/id-generator.service';
 
 ptBrLocale.invalidDate = '';
@@ -28,7 +28,8 @@ defineLocale('pt-br', ptBrLocale);
   styleUrls: ['./data-input.component.scss'],
 })
 export class DataInputComponent implements ControlValueAccessor {
-  #geradorIdUnico = inject(IdGeneratorService);
+  readonly #geradorIdUnico = inject(IdGeneratorService);
+  private readonly bsLocaleService = inject(BsLocaleService);
 
   @Input() inputId = 'data-input-default';
 
@@ -42,22 +43,34 @@ export class DataInputComponent implements ControlValueAccessor {
   @Input() placeholder = '';
   @Input() errorMsg = '';
   @Input() isDisable = false;
-  @Input() withTimepicker = false;
+  @Input() withTimepicker = true;
   @Input() showMandatory = false;
   @Input() bsConfigShowWeeksNumbers = false;
   @Input() showX = false;
   @Input() minDate: Date = new Date(1900, 0, 1);
   @Input() maxDate: Date = new Date(2100, 11, 31);
   @Input() fixedSize = false;
+  @Output() valueChange: any = new EventEmitter<number>();
 
   data?: Date;
-  value: any;
+  value?: Date;
   customErrorMsg = '';
 
-  onChange: (value: any) => void = () => {};
+  datePickerConfig: Partial<BsDatepickerConfig> = {
+    dateInputFormat: this.withTimepicker ? 'DD/MM/YYYY HH:mm' : 'DD/MM/YYYY',
+    clearPosition: 'right',
+    showWeekNumbers: this.bsConfigShowWeeksNumbers,
+    minDate: this.minDate,
+    maxDate: this.maxDate,
+    withTimepicker: this.withTimepicker,
+    isDisabled: this.isDisable,
+    isAnimated: true,
+  };
+
+  onChange: (value: Date) => void = () => {};
   onTouched: () => void = () => {};
 
-  constructor(private readonly bsLocaleService: BsLocaleService) {
+  constructor() {
     this.bsLocaleService.use('pt-br');
   }
 
@@ -97,18 +110,19 @@ export class DataInputComponent implements ControlValueAccessor {
 
   onValueChange(value: Date) {
     if (value) {
-      this.data = value;
-      this.onChange(this.data);
+      this.value = value;
+      this.onChange(this.value);
       this.onTouched();
+      this.valueChange.emit(this.value);
     }
   }
 
-  writeValue(value: any): void {
+  writeValue(value: Date): void {
     this.value = value;
     this.data = value;
   }
 
-  registerOnChange(fn: (value: any) => void): void {
+  registerOnChange(fn: (value: Date) => void): void {
     this.onChange = fn;
   }
 
@@ -123,7 +137,9 @@ export class DataInputComponent implements ControlValueAccessor {
   onInputChange(event: any): void {
     const inputValue = event.target.value;
     const date = new Date(inputValue);
-    if (isNaN(date.getTime())) {
+    console.log('date' + date);
+    console.log('inputValue:' + inputValue);
+    if (Number.isNaN(date.getTime())) {
       this.customErrorMsg = 'Valor de data inválido. Ou não está no formato DD/MM/AAAA.';
       this.hasError = true;
     } else {
@@ -132,6 +148,7 @@ export class DataInputComponent implements ControlValueAccessor {
       this.value = date;
       this.onChange(this.value);
       this.onTouched();
+      this.valueChange.emit(this.value);
     }
   }
 }

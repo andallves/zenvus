@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
-import { CategoryService } from '@modules/transactions/services/category.service';
+import CategoryService from '@modules/transactions/services/category.service';
 import { ButtonComponent } from '@shared/components/button/button.component';
 import { ModalIconType } from '@shared/components/swall/modal-alert/domain-types/modal-types.interface';
 import { ModalAlertService } from '@shared/components/swall/modal-alert/service/modal-alert.service';

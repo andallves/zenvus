@@ -2,7 +2,7 @@
   <zen-header-table
     title="Filtros"
     [mobileTitle]="'Despesas'"
-    [mobileTitleIcon]="imgCursos"
+    [mobileTitleIcon]="imgExpenses"
     (add)="openAddModal()"
     [uniqueId]="'expenses'"
   />
@@ -16,27 +16,47 @@
   >
     <form id="form-filter-expenses" action="javascript:void(0)" [formGroup]="filterForm">
       <zen-input
-        id="input-name"
-        label="Nome:"
-        placeholder="Digite o nome"
+        id="input-description"
+        label="Descrição:"
+        placeholder="Digite a descrição"
         formControlName="description"
-        [inputId]="'input-name'"
+        [inputId]="'input-description'"
       />
 
-      <zen-color-picker-input
-        id="input-color"
-        label="Cor:"
-        placeholder="#000000"
+      <zen-select-input
+        id="input-category"
+        label="Categoria:"
+        placeholder="Selecione uma categoria"
         formControlName="category"
-        [inputId]="'input-color-picker'"/>
+        [options]="categoriesOptions"
+        [dropdownId]="'select-category'"/>
 
       <zen-select-input
         id="select-type"
         label="Tipo:"
         placeholder="Selecione um tipo"
         formControlName="type"
-        [options]="optionsInput"
+        [options]="typesOptions"
         [dropdownId]="'select-type'"
+      />
+
+
+      <zen-select-input
+        id="select-has-debt"
+        label="Parcelado:"
+        placeholder="Selecione um valor"
+        formControlName="hasDebt"
+        [options]="hasDebtOptions"
+        [dropdownId]="'select-has-debt'"
+      />
+
+      <zen-data-input
+        id="input-date"
+        label="Data:"
+        placeholder="Informe uma data"
+        formControlName="date"
+        [withTimepicker]="false"
+        [inputId]="'input-date'"
       />
     </form>
   </zen-filter>
@@ -45,7 +65,7 @@
     id="table-expenses"
     [columns]="expenseColumn"
     [columnLabels]="expenseColumnsLabel"
-    [enumLabels]="tableEnumLabels"
+    [enumLabels]="enumLabels"
     [data]="expensesData"
     (edit)="openEditModal($event)"
     (delete)="openDeleteModal($event)"

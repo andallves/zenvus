@@ -8,7 +8,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { GetCategoryTypeLabelPayload } from '@modules/transactions/pages/category/components/edit-category-form/edit-category-form.component';
-import { CategoryService } from '@modules/transactions/services/category.service';
+import CategoryService from '@modules/transactions/services/category.service';
 import { ButtonComponent } from '@shared/components/button/button.component';
 import { ColorPickerInputComponent } from '@shared/components/inputs/color-picker-input/color-picker-input.component';
 import { InputDefaultComponent } from '@shared/components/inputs/input-default/input-default.component';

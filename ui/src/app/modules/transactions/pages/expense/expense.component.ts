@@ -1,10 +1,11 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AddCategoryFormComponent } from '@modules/transactions/pages/category/components/add-category-form/add-category-form.component';
+import CategoryService from '@modules/transactions/services/category.service';
 import { ExpenseService } from '@modules/transactions/services/expense.service';
 import { FilterComponent } from '@shared/components/filter/filter.component';
 import { HeaderTableComponent } from '@shared/components/header-table/header-table.component';
-import { ColorPickerInputComponent } from '@shared/components/inputs/color-picker-input/color-picker-input.component';
+import { DataInputComponent } from '@shared/components/inputs/data-input/data-input.component';
 import { InputDefaultComponent } from '@shared/components/inputs/input-default/input-default.component';
 import { SelectInputComponent } from '@shared/components/inputs/select-input/select-input.component';
 import { ModalComponent } from '@shared/components/modal/modal.component';
@@ -14,8 +15,9 @@ import { ModalAlertService } from '@shared/components/swall/modal-alert/service/
 import { ColumnLabel, TableComponent } from '@shared/components/table/table.component';
 import { IBadge } from '@shared/domain-types/badges';
 import { IOptions } from '@shared/domain-types/options';
+import { ECategoryType } from '@shared/enums/category-type.enum';
 import { EExpenseType, ExpenseTypeLabel } from '@shared/enums/expense-type.enum';
-import { IExpense } from '@shared/interfaces/expense.interface';
+import { IExpense, IExpenseFilter } from '@shared/interfaces/expense.interface';
 import { LoadingService } from '@shared/layouts/default-layout/loading.service';
 import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
 
@@ -25,7 +27,6 @@ import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
   styleUrl: './expense.component.scss',
   imports: [
     AddCategoryFormComponent,
-    ColorPickerInputComponent,
     FilterComponent,
     FormsModule,
     HeaderTableComponent,
@@ -34,6 +35,7 @@ import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
     ReactiveFormsModule,
     SelectInputComponent,
     TableComponent,
+    DataInputComponent,
   ],
 })
 export class ExpenseComponent implements OnInit {
@@ -43,26 +45,11 @@ export class ExpenseComponent implements OnInit {
   isLoadingClearFilter = false;
   activeBadges: IBadge[] = [];
   bsModalRef?: BsModalRef;
+  imgExpenses = './header.svg';
   page = 1;
-  itensPorPagina = 10;
-  totalItens = 0;
-
-  private readonly fb = inject(FormBuilder);
-  private readonly modalService = inject(BsModalService);
-  private readonly expenseService = inject(ExpenseService);
-  private readonly loadingService = inject(LoadingService);
-  private readonly modalAlertService = inject(ModalAlertService);
-
-  constructor() {
-    this.initializeForm();
-  }
-
-  imgCursos = './header.svg';
-
-  ngOnInit(): void {
-    this.loaderExpenses();
-  }
-
+  itemsPerPage = 10;
+  totalItems = 0;
+  enumLabels = { type: ExpenseTypeLabel };
   expensesData: IExpense[] = [];
   expenseColumn: string[] = ['description', 'categoryName', 'amount', 'date', 'type', 'hasDebt'];
   expenseColumnsLabel: ColumnLabel = {
@@ -73,30 +60,47 @@ export class ExpenseComponent implements OnInit {
     date: 'Data',
     hasDebt: 'Parcelado',
   };
-  optionsInput: IOptions[] = [
+  typesOptions: IOptions[] = [
     { label: 'Fixo', value: EExpenseType.Fixed },
     { label: 'Variáveis', value: EExpenseType.Variable },
     { label: 'Assinaturas', value: EExpenseType.Subscription },
     { label: 'Empréstimo', value: EExpenseType.Loan },
     { label: 'Outros', value: EExpenseType.Other },
   ];
+  categoriesOptions: IOptions[] = [];
+  hasDebtOptions: IOptions[] = [
+    { label: 'Não', value: false },
+    { label: 'Sim', value: true },
+  ];
 
-  public tableEnumLabels = {
-    type: ExpenseTypeLabel,
-  };
+  @ViewChild('formAddTemplate', { static: true })
+  formAddTemplate!: TemplateRef<HTMLElement>;
+  @ViewChild('formEditTemplate', { static: true })
+  formEditTemplate!: TemplateRef<HTMLElement>;
+  @ViewChild('deleteTemplate', { static: true }) deleteTemplate!: TemplateRef<HTMLElement>;
 
-  // @ViewChild('formAddTemplate', { static: true })
-  // formAddTemplate!: TemplateRef<HTMLElement>;
-  // @ViewChild('formEditTemplate', { static: true })
-  // formEditTemplate!: TemplateRef<HTMLElement>;
-  // @ViewChild('deleteTemplate', { static: true }) deleteTemplate!: TemplateRef<HTMLElement>;
+  private readonly fb = inject(FormBuilder);
+  private readonly modalService = inject(BsModalService);
+  private readonly expenseService = inject(ExpenseService);
+  private readonly categoryService = inject(CategoryService);
+  private readonly loadingService = inject(LoadingService);
+  private readonly modalAlertService = inject(ModalAlertService);
+
+  constructor() {
+    this.initializeForm();
+  }
+
+  ngOnInit(): void {
+    this.loaderExpenses();
+    this.loaderCategoriesOptions();
+  }
 
   initializeForm() {
     this.filterForm = this.fb.group({
       category: ['', []],
       date: ['', []],
       description: ['', []],
-      type: [EExpenseType, []],
+      type: ['', []],
       hasDebt: ['', []],
     });
   }
@@ -112,11 +116,21 @@ export class ExpenseComponent implements OnInit {
 
   loaderExpenses() {
     console.log('Carregando categorias para a página:', this.page);
-    const payload = this.filterForm.value;
+    const filter: IExpenseFilter = {
+      description: this.filterForm.get('description')?.value,
+      type: this.filterForm.get('type')?.value,
+      categoryName: this.filterForm.get('categoryName')?.value,
+      date: this.filterForm.get('date')?.value,
+      disabled: this.filterForm.get('disabled')?.value,
+      page: this.page,
+      itemsPerPage: this.itemsPerPage,
+      orderAsc: this.filterForm.get('orderAsc')?.value,
+      orderBy: this.filterForm.get('orderBy')?.value,
+    };
     this.loadingService.onActiveLoading();
-    this.expenseService.getExpenses(this.page, this.itensPorPagina, payload).subscribe({
+    this.expenseService.getExpenses(filter).subscribe({
       next: response => {
-        this.totalItens = response.totalResults;
+        this.totalItems = response.totalResults;
         this.expensesData = response.result
           .filter((expense: IExpense) => !expense.disabled)
           .map((expense: IExpense) => ({
@@ -145,6 +159,15 @@ export class ExpenseComponent implements OnInit {
         this.isLoadingClearFilter = false;
         this.loadingService.onInactiveLoading();
       },
+    });
+  }
+
+  loaderCategoriesOptions() {
+    this.categoryService.getCategoriesForSelect(false, ECategoryType.Expense).subscribe({
+      next: options => {
+        this.categoriesOptions = options;
+      },
+      error: err => console.error('Erro ao carregar categorias para o filtro', err),
     });
   }
 

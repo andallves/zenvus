@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { InputDefaultComponent } from './input-default.component';
+import { CheckInputComponent } from './check-input.component';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 
 describe('CheckInputComponent', () => {
-  let component: InputDefaultComponent;
-  let fixture: ComponentFixture<InputDefaultComponent>;
+  let component: CheckInputComponent;
+  let fixture: ComponentFixture<CheckInputComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FormsModule, ReactiveFormsModule, InputDefaultComponent],
+      imports: [FormsModule, ReactiveFormsModule, CheckInputComponent],
       providers: [provideNgxMask()],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(InputDefaultComponent);
+    fixture = TestBed.createComponent(CheckInputComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
