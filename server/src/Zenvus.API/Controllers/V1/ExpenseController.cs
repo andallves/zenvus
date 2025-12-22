@@ -53,7 +53,7 @@ public class ExpenseController(IMediator mediator) : BaseController(mediator)
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async ValueTask<IActionResult> Update([FromRoute] Guid id, [FromForm] UpdateExpenseCommand command, CancellationToken cancellationToken)
+    public async ValueTask<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateExpenseCommand command, CancellationToken cancellationToken)
     {
         if (id != command.Id)
         {

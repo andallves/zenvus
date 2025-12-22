@@ -13,5 +13,3 @@ export const ExpenseTypeLabel: Record<number, string> = {
   [EExpenseType.Loan]: 'Empréstimo',
   [EExpenseType.Other]: 'Outro',
 };
-
-export const ExpenseIsInstallmentLabel: Record<number, string> = {};

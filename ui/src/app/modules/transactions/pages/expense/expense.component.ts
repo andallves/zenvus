@@ -58,7 +58,7 @@ export class ExpenseComponent implements OnInit {
   expenseColumn: string[] = ['description', 'categoryName', 'amount', 'date', 'type', 'hasDebt'];
   expenseColumnsLabel: ColumnLabel = {
     description: 'Descrição',
-    type: 'Tipo de Despesa',
+    type: 'Tipo',
     categoryName: 'Categoria',
     amount: 'Valor',
     date: 'Data',
@@ -66,8 +66,8 @@ export class ExpenseComponent implements OnInit {
   };
   typesOptions: IOptions[] = [
     { label: 'Fixo', value: EExpenseType.Fixed },
-    { label: 'Variáveis', value: EExpenseType.Variable },
-    { label: 'Assinaturas', value: EExpenseType.Subscription },
+    { label: 'Variável', value: EExpenseType.Variable },
+    { label: 'Assinatura', value: EExpenseType.Subscription },
     { label: 'Empréstimo', value: EExpenseType.Loan },
     { label: 'Outros', value: EExpenseType.Other },
   ];
@@ -174,9 +174,10 @@ export class ExpenseComponent implements OnInit {
   }
 
   loaderCategoriesOptions() {
-    this.categoryService.getCategoriesForSelect(false, ECategoryType.Expense).subscribe({
+    this.categoryService.getCategoriesForSelect(true, ECategoryType.Expense).subscribe({
       next: options => {
         this.categoriesOptions = options;
+        this.formFieldOptions.categoriesOptions = options;
       },
       error: err => console.error('Erro ao carregar categorias para o filtro', err),
     });

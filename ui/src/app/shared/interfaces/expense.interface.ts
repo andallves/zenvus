@@ -8,13 +8,14 @@ export interface IExpense {
   id: string;
   description: string;
   type: EExpenseType;
+  categoryId: string;
   categoryName: string;
   category: ICategory;
   color: string;
   amount: number;
   date: Date | string;
   hasDebt: boolean;
-  debt: Debt;
+  debt?: Debt;
   disabled: boolean;
 }
 
@@ -40,11 +41,11 @@ export interface IExpenseCreate {
   categoryId: string;
   amount: number;
   date: Date;
-  debt: DebtCreate | null;
+  debt?: DebtCreate | null;
   disabled: boolean;
 }
 
-export type IExpenseUpdate = Omit<IExpense, 'disabled' | 'categoryColor'>;
+export type IExpenseUpdate = Omit<IExpense, 'categoryColor'>;
 
 export interface IExpenseOptions {
   categoriesOptions: IOptions[];

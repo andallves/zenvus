@@ -8,6 +8,7 @@
     placeholder="Digite a descrição"
     formControlName="description"
     [inputId]="'input-description'"
+    [showMandatory]="true"
   />
 
   <zen-data-input
@@ -17,15 +18,18 @@
     formControlName="date"
     [withTimepicker]="false"
     [inputId]="'input-date'"
+    [showMandatory]="true"
   />
 
   <zen-select-input
     id="input-category"
     label="Categoria:"
     placeholder="Selecione uma categoria"
-    formControlName="category"
-    [options]="options().categoriesOptions"
-    [dropdownId]="'select-category'"/>
+    formControlName="categoryId"
+    [options]="categoriesOptions"
+    [dropdownId]="'select-category'"
+    [showMandatory]="true"
+  />
 
   <zen-select-input
     id="select-type"
@@ -34,17 +38,48 @@
     formControlName="type"
     [options]="options().typesOptions"
     [dropdownId]="'select-type'"
+    [showMandatory]="true"
+  />
+
+  <zen-input
+    id="input-amount"
+    label="Valor:"
+    placeholder="Digite o valor"
+    formControlName="amount"
+    [inputId]="'input-amount'"
+    [showMandatory]="true"
   />
 
 
   <zen-select-input
-    id="select-has-debt"
+    id="select-is-installments"
     label="Parcelado:"
     placeholder="Selecione um valor"
-    formControlName="hasDebt"
+    formControlName="isInstallment"
     [options]="options().isInstallmentsOptions"
-    [dropdownId]="'select-has-debt'"
+    [dropdownId]="'select-is-installments'"
+    [showMandatory]="true"
   />
+  @if (isInstallments()) {
+    <zen-input
+      id="input-total-installments"
+      label="Quantidade de parcela:"
+      placeholder="Número de parcelas"
+      formControlName="totalInstallments"
+      [inputId]="'input-total-installments'"
+      [showMandatory]="false"
+    />
+
+    <zen-data-input
+      id="input-first-due-date"
+      label="Data:"
+      placeholder="Informe a data da primeira parcela"
+      formControlName="firstDueDate"
+      [withTimepicker]="false"
+      [inputId]="'input-first-due-date'"
+      [showMandatory]="false"
+    />
+  }
 
 
   <div class="footer-modal">
