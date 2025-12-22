@@ -1,6 +1,8 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AddCategoryFormComponent } from '@modules/transactions/pages/category/components/add-category-form/add-category-form.component';
+import { AddExpenseFormComponent } from '@modules/transactions/pages/expense/components/add-expense-form/add-expense-form.component';
+import { DeleteTemplateComponent } from '@modules/transactions/pages/expense/components/delete-template/delete-template.component';
+import { UpdateExpenseFormComponent } from '@modules/transactions/pages/expense/components/update-expense-form/update-expense-form.component';
 import CategoryService from '@modules/transactions/services/category.service';
 import { ExpenseService } from '@modules/transactions/services/expense.service';
 import { FilterComponent } from '@shared/components/filter/filter.component';
@@ -17,7 +19,7 @@ import { IBadge } from '@shared/domain-types/badges';
 import { IOptions } from '@shared/domain-types/options';
 import { ECategoryType } from '@shared/enums/category-type.enum';
 import { EExpenseType, ExpenseTypeLabel } from '@shared/enums/expense-type.enum';
-import { IExpense, IExpenseFilter } from '@shared/interfaces/expense.interface';
+import { IExpense, IExpenseFilter, IExpenseOptions } from '@shared/interfaces/expense.interface';
 import { LoadingService } from '@shared/layouts/default-layout/loading.service';
 import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
 
@@ -26,7 +28,6 @@ import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
   templateUrl: './expense.component.html',
   styleUrl: './expense.component.scss',
   imports: [
-    AddCategoryFormComponent,
     FilterComponent,
     FormsModule,
     HeaderTableComponent,
@@ -36,6 +37,9 @@ import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
     SelectInputComponent,
     TableComponent,
     DataInputComponent,
+    AddExpenseFormComponent,
+    UpdateExpenseFormComponent,
+    DeleteTemplateComponent,
   ],
 })
 export class ExpenseComponent implements OnInit {
@@ -68,16 +72,18 @@ export class ExpenseComponent implements OnInit {
     { label: 'Outros', value: EExpenseType.Other },
   ];
   categoriesOptions: IOptions[] = [];
-  hasDebtOptions: IOptions[] = [
+  isInstallmentsOptions: IOptions[] = [
     { label: 'Não', value: false },
     { label: 'Sim', value: true },
   ];
+  formFieldOptions: IExpenseOptions = {} as IExpenseOptions;
 
-  @ViewChild('formAddTemplate', { static: true })
+  @ViewChild('formAddExpenseTemplate', { static: true })
   formAddTemplate!: TemplateRef<HTMLElement>;
-  @ViewChild('formEditTemplate', { static: true })
+  @ViewChild('formEditExpenseTemplate', { static: true })
   formEditTemplate!: TemplateRef<HTMLElement>;
-  @ViewChild('deleteTemplate', { static: true }) deleteTemplate!: TemplateRef<HTMLElement>;
+  @ViewChild('deleteExpenseTemplate', { static: true }) deleteTemplate!: TemplateRef<HTMLElement>;
+  @ViewChild('viewExpenseTemplate', { static: true }) viewTemplate!: TemplateRef<HTMLElement>;
 
   private readonly fb = inject(FormBuilder);
   private readonly modalService = inject(BsModalService);
@@ -93,6 +99,11 @@ export class ExpenseComponent implements OnInit {
   ngOnInit(): void {
     this.loaderExpenses();
     this.loaderCategoriesOptions();
+    this.formFieldOptions = {
+      typesOptions: this.typesOptions,
+      categoriesOptions: this.categoriesOptions,
+      isInstallmentsOptions: this.isInstallmentsOptions,
+    };
   }
 
   initializeForm() {
@@ -131,14 +142,14 @@ export class ExpenseComponent implements OnInit {
     this.expenseService.getExpenses(filter).subscribe({
       next: response => {
         this.totalItems = response.totalResults;
-        this.expensesData = response.result
-          .filter((expense: IExpense) => !expense.disabled)
-          .map((expense: IExpense) => ({
-            ...expense,
-            categoryName: expense.category.name,
-            date: expense.date,
-            type: expense.type,
-          }));
+        this.expensesData = response.result.map((expense: IExpense) => ({
+          ...expense,
+          categoryName: expense.category.name,
+          date: expense.date,
+          type: expense.type,
+          color: expense.category.color,
+        }));
+        console.log(this.expensesData);
         this.activeBadges = [];
       },
       error: error => {
@@ -187,7 +198,7 @@ export class ExpenseComponent implements OnInit {
       initialState: {
         iconTemplate: 'bi bi-plus',
         title: 'Adicionar Categoria',
-        // formTemplate: this.formAddTemplate,
+        formTemplate: this.formAddTemplate,
       },
       class: 'modal-dialog-centered',
     };
@@ -201,7 +212,7 @@ export class ExpenseComponent implements OnInit {
       initialState: {
         iconTemplate: 'bi bi-pencil-fill',
         title: 'Editar Categoria',
-        // formTemplate: this.formEditTemplate,
+        formTemplate: this.formEditTemplate,
       },
       class: 'modal-dialog-centered',
     };
@@ -215,7 +226,21 @@ export class ExpenseComponent implements OnInit {
       initialState: {
         iconTemplate: 'bi bi-trash-fill',
         title: 'Deletar Categoria',
-        // formTemplate: this.deleteTemplate,
+        formTemplate: this.deleteTemplate,
+      },
+      class: 'modal-dialog-centered',
+    };
+    this.bsModalRef = this.modalService.show(ModalComponent, initialState);
+    this.bsModalRef.content.closeBtnName = 'Close';
+  }
+
+  openViewModal(event: IExpense) {
+    this.dataExpense = event;
+    const initialState: ModalOptions = {
+      initialState: {
+        iconTemplate: 'bi bi-pencil-fill',
+        title: 'Editar Categoria',
+        formTemplate: this.viewTemplate,
       },
       class: 'modal-dialog-centered',
     };

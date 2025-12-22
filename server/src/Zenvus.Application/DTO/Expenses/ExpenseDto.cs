@@ -36,7 +36,7 @@ public class ExpenseDto
             Description = expense.Description,
             Type = expense.Type,
             HasDebt = expense.HasDebt,
-            Debt = DebtDto.From(expense.Debt),
+            Debt = expense.Debt != null ? DebtDto.From(expense.Debt) : null,
             Disabled = expense.Disabled
         };
     }

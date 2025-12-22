@@ -1,0 +1,75 @@
+<form class="add-form" id="form-update-expense" action="javascript:void(0)" [formGroup]="updateExpenseForm"
+      aria-labelledby="form-update-expense-title">
+  <h2 id="form-update-expense-title" class="visually-hidden">Atualizar Despesa</h2>
+
+  <zen-input
+    id="input-description"
+    label="Descrição:"
+    placeholder="Digite a descrição"
+    formControlName="description"
+    [inputId]="'input-description'"
+  />
+
+  <zen-data-input
+    id="input-date"
+    label="Data:"
+    placeholder="Informe uma data"
+    formControlName="date"
+    [withTimepicker]="false"
+    [inputId]="'input-date'"
+  />
+
+  <zen-select-input
+    id="input-category"
+    label="Categoria:"
+    placeholder="Selecione uma categoria"
+    formControlName="category"
+    [options]="options().categoriesOptions"
+    [dropdownId]="'select-category'"/>
+
+  <zen-select-input
+    id="select-type"
+    label="Tipo:"
+    placeholder="Selecione um tipo"
+    formControlName="type"
+    [options]="options().typesOptions"
+    [dropdownId]="'select-type'"
+  />
+
+
+  <zen-select-input
+    id="select-has-debt"
+    label="Parcelado:"
+    placeholder="Selecione um valor"
+    formControlName="hasDebt"
+    [options]="options().isInstallmentsOptions"
+    [dropdownId]="'select-has-debt'"
+  />
+
+
+  <div class="footer-modal">
+    <zen-button
+      id="button-fechar"
+      variant="danger"
+      width="100px"
+      (click)="onCloseModal()"
+      (keyup)="onCloseModal()"
+      aria-label="Fechar o formulário"
+      [buttonId]="'button-fechar'"
+    >
+      Fechar
+    </zen-button>
+    <zen-button
+      id="button-salvar"
+      width="100px"
+      [disabled]="updateExpenseForm.invalid"
+      [isLoading]="isLoading"
+      (click)="updateExpense()"
+      (keyup)="updateExpense()"
+      aria-label="Salvar a despesa"
+      [buttonId]="'button-salvar'"
+    >
+      Salvar
+    </zen-button>
+  </div>
+</form>

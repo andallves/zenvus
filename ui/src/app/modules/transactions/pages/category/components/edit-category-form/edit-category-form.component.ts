@@ -122,9 +122,7 @@ export class EditCategoryFormComponent implements OnInit {
         id: this.dataCategory.id,
         name: this.editCategoryForm.get('name')?.value || this.dataCategory.name,
         color: this.editCategoryForm.get('color')?.value || this.dataCategory.color,
-        type:
-          GetCategoryTypeLabelPayload[this.editCategoryForm.get('type')?.value as ECategoryType] ||
-          GetCategoryTypeLabelPayload[this.dataCategory.type],
+        type: (this.editCategoryForm.get('type')?.value as ECategoryType) || this.dataCategory.type,
       };
 
       this.categoryService.editCategory(payload, this.dataCategory.id).subscribe({

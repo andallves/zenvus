@@ -16,7 +16,7 @@ export interface ICategoryCreate {
 }
 
 export type ICategoryEdit = Omit<ICategory, 'type' | 'disabled'> & {
-  type: string;
+  type: number;
 };
 
 export interface ICategoryFilter extends IFilter<ICategoryOrderBy> {

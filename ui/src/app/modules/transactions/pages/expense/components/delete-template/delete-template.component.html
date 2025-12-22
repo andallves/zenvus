@@ -1,0 +1,30 @@
+<div>
+  <div class="body-pop-up">
+    <p>
+      Deseja realmente excluir o despesa:
+      <span id="curso-nome">{{ truncateText(dataExpense.description) }}</span> ?
+    </p>
+  </div>
+
+  <div class="footer-modal">
+    <zen-button
+      id="button-fechar"
+      variant="danger"
+      width="100px"
+      (click)="onCloseModal()"
+      [buttonId]="'button-fechar'"
+    >
+      Fechar
+    </zen-button>
+    <zen-button
+      id="button-confirmar"
+      width="100px"
+      [isLoading]="isLoading"
+      (click)="deleteCategory()"
+      [buttonId]="'button-salvar'"
+
+    >
+      Confirmar
+    </zen-button>
+  </div>
+</div>

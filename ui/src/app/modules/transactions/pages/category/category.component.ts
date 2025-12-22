@@ -17,7 +17,7 @@ import { ColumnLabel, TableComponent } from '@shared/components/table/table.comp
 import { IBadge } from '@shared/domain-types/badges';
 import { IOptions } from '@shared/domain-types/options';
 import { CategoryTypeLabel, ECategoryType } from '@shared/enums/category-type.enum';
-import { ICategory, IFilterCategory } from '@shared/interfaces/category.interface';
+import { ICategory, ICategoryFilter } from '@shared/interfaces/category.interface';
 import { LoadingService } from '@shared/layouts/default-layout/loading.service';
 import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
 import { NgxColorsModule, validColorValidator } from 'ngx-colors';
@@ -49,9 +49,9 @@ export class CategoryComponent implements OnInit {
   activeBadges: IBadge[] = [];
   bsModalRef?: BsModalRef;
   page = 1;
-  itensPorPagina = 10;
-  totalItens = 0;
-  filters: IFilterCategory = {} as IFilterCategory;
+  itemsPerPage = 10;
+  totalItems = 0;
+  filters: ICategoryFilter = {} as ICategoryFilter;
 
   private readonly fb = inject(FormBuilder);
   private readonly modalService = inject(BsModalService);
@@ -63,7 +63,7 @@ export class CategoryComponent implements OnInit {
     this.initializeForm();
   }
 
-  imgCursos = './header.svg';
+  imgCategory = './header.svg';
 
   ngOnInit(): void {
     this.loaderCategories();
@@ -78,8 +78,7 @@ export class CategoryComponent implements OnInit {
   ];
 
   public tableEnumLabels = {
-    type: CategoryTypeLabel, // 'type' deve ser o nome da coluna vinda da API
-    // category: CategoryTypeLabel // Se tivesse outra coluna de enum
+    type: CategoryTypeLabel,
   };
   @ViewChild('formAddTemplate', { static: true })
   formAddTemplate!: TemplateRef<HTMLElement>;
@@ -106,11 +105,15 @@ export class CategoryComponent implements OnInit {
 
   loaderCategories() {
     console.log('Carregando categorias para a página:', this.page);
-    const payload = this.filterForm.value;
     this.loadingService.onActiveLoading();
-    this.categoryService.getCategories(this.page, this.itensPorPagina, payload).subscribe({
+    this.filters = {
+      ...this.filterForm.value,
+      page: this.page,
+      itemsPerPage: this.itemsPerPage,
+    };
+    this.categoryService.getCategories(this.filters).subscribe({
       next: response => {
-        this.totalItens = response.totalResults;
+        this.totalItems = response.totalResults;
         this.categoriesData = response.result
           .filter((category: ICategory) => !category.disabled)
           .map((category: ICategory) => ({

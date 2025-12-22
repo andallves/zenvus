@@ -16,7 +16,7 @@ export type ColumnLabel = Record<string, string>;
 })
 export class TableComponent<T> {
   @Input() noDataMessage = '';
-  @Input() totalItens = 0;
+  @Input() totalItems = 0;
   @Input() columns!: string[];
   @Input() columnLabels: ColumnLabel = {} as ColumnLabel;
   @Input() data!: DataItem<T>[];
@@ -64,8 +64,8 @@ export class TableComponent<T> {
 
   get totalPages(): number {
     return Math.ceil(
-      this.totalItens > 0
-        ? this.totalItens / this.itemsPerPage
+      this.totalItems > 0
+        ? this.totalItems / this.itemsPerPage
         : this.data.length / this.itemsPerPage
     );
   }

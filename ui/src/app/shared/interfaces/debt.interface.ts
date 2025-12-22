@@ -8,6 +8,12 @@ export interface Debt {
   installments: DebtInstallment[];
 }
 
+export interface DebtCreate {
+  isInstallment: boolean;
+  totalInstallments: number;
+  firstDueDate: Date;
+}
+
 export interface DebtInstallment {
   id: string;
   number: number;

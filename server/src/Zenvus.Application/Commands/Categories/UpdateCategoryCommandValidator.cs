@@ -35,9 +35,7 @@ public class UpdateCategoryCommandValidator : AbstractValidator<UpdateCategoryCo
         RuleFor(c => c.Type)
             .NotNull()
             .NotEmpty()
-            .WithMessage("O tipo da categoria é obrigatório.")
-            .IsInEnum()
-            .WithMessage("O tipo não corresponde aos tipos existentes.");
+            .WithMessage("O tipo da categoria é obrigatório.");
     }
     
     private static bool BeAValidHexColor(string color)

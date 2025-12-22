@@ -6,11 +6,11 @@ import { BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
 import { of, throwError } from 'rxjs';
 import { CursosService } from '../../services/cursos.service';
-import { AddCategoryFormComponent } from './add-category-form.component';
+import { AddExpenseFormComponent } from './add-expense-form.component';
 
 describe('UpdateExpenseFormComponent', () => {
-  let component: AddCategoryFormComponent;
-  let fixture: ComponentFixture<AddCategoryFormComponent>;
+  let component: AddExpenseFormComponent;
+  let fixture: ComponentFixture<AddExpenseFormComponent>;
   let cursosService: jasmine.SpyObj<CursosService>;
   let modalAlertService: jasmine.SpyObj<ModalAlertService>;
   let toastr: jasmine.SpyObj<ToastrService>;
@@ -23,7 +23,7 @@ describe('UpdateExpenseFormComponent', () => {
     const modalServiceSpy = jasmine.createSpyObj('BsModalService', ['hide']);
 
     await TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, FormsModule, AddCategoryFormComponent],
+      imports: [ReactiveFormsModule, FormsModule, AddExpenseFormComponent],
       providers: [
         ValidationService,
         { provide: CursosService, useValue: cursosServiceSpy },
@@ -33,7 +33,7 @@ describe('UpdateExpenseFormComponent', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(AddCategoryFormComponent);
+    fixture = TestBed.createComponent(AddExpenseFormComponent);
     component = fixture.componentInstance;
     cursosService = TestBed.inject(CursosService) as jasmine.SpyObj<CursosService>;
     modalAlertService = TestBed.inject(ModalAlertService) as jasmine.SpyObj<ModalAlertService>;

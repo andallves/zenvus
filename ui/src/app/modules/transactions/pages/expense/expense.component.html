@@ -46,7 +46,7 @@
         label="Parcelado:"
         placeholder="Selecione um valor"
         formControlName="hasDebt"
-        [options]="hasDebtOptions"
+        [options]="isInstallmentsOptions"
         [dropdownId]="'select-has-debt'"
       />
 
@@ -67,21 +67,27 @@
     [columnLabels]="expenseColumnsLabel"
     [enumLabels]="enumLabels"
     [data]="expensesData"
+    [totalItems]="totalItems"
+    [showView]="true"
     (edit)="openEditModal($event)"
     (delete)="openDeleteModal($event)"
     (pageChange)="onPageChange($event)"
-    [totalItens]="totalItens"
+    (view)="openViewModal($event)"
   />
 </zen-page-container>
 
-<ng-template #formAddTemplate>
-  <zen-add-category-form id="form-add-expense" (changeData)="changeData()"/>
+<ng-template #formAddExpenseTemplate>
+  <zen-add-expense-form id="form-add-expense" (changeData)="changeData()" [options]="formFieldOptions"/>
 </ng-template>
 
-<!--<ng-template #formEditTemplate>-->
-<!--  <zen-edit-category-form id="form-edit-expense" [dataCategory]="dataExpense" (changeData)="changeData()"/>-->
-<!--</ng-template>-->
+<ng-template #formEditExpenseTemplate>
+  <zen-update-expense-form id="form-edit-expense" [dataExpense]="dataExpense" [options]="formFieldOptions" (changeData)="changeData()"/>
+</ng-template>
 
-<!--<ng-template #deleteTemplate>-->
-<!--  <zen-delete-template id="template-delete-expense" [dataCategory]="dataExpense" (changeData)="changeData()"/>-->
-<!--</ng-template>-->
+<ng-template #deleteExpenseTemplate>
+  <zen-delete-template id="template-delete-expense" [dataExpense]="dataExpense" (changeData)="changeData()"/>
+</ng-template>
+
+<ng-template #viewExpenseTemplate>
+  <zen-update-expense-form id="template-view-expense" [dataExpense]="dataExpense" [options]="formFieldOptions" (changeData)="changeData()"/>
+</ng-template>

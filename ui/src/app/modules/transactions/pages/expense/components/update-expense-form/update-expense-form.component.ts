@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, inject, Output } from '@angular/core';
+import { Component, EventEmitter, inject, input, Output } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -7,23 +7,20 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import CategoryService from '@modules/transactions/services/category.service';
+import { ExpenseService } from '@modules/transactions/services/expense.service';
 import { ButtonComponent } from '@shared/components/button/button.component';
-import { ColorPickerInputComponent } from '@shared/components/inputs/color-picker-input/color-picker-input.component';
+import { DataInputComponent } from '@shared/components/inputs/data-input/data-input.component';
 import { InputDefaultComponent } from '@shared/components/inputs/input-default/input-default.component';
 import { SelectInputComponent } from '@shared/components/inputs/select-input/select-input.component';
 import { ModalIconType } from '@shared/components/swall/modal-alert/domain-types/modal-types.interface';
 import { ModalAlertService } from '@shared/components/swall/modal-alert/service/modal-alert.service';
-import { IOptions } from '@shared/domain-types/options';
-import { ECategoryType } from '@shared/enums/category-type.enum';
-import { ICategoryCreate } from '@shared/interfaces/category.interface';
+import { IExpense, IExpenseOptions, IExpenseUpdate } from '@shared/interfaces/expense.interface';
 import { InputValidationService } from '@shared/validators/input-validator/input-validator.service';
 import { BsModalService } from 'ngx-bootstrap/modal';
-import { validColorValidator } from 'ngx-colors';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
-  selector: 'zen-add-category-form',
+  selector: 'zen-update-expense-form',
   standalone: true,
   imports: [
     CommonModule,
@@ -31,54 +28,48 @@ import { ToastrService } from 'ngx-toastr';
     ReactiveFormsModule,
     ButtonComponent,
     InputDefaultComponent,
-    ColorPickerInputComponent,
     SelectInputComponent,
+    DataInputComponent,
   ],
-  templateUrl: './add-category-form.component.html',
-  styleUrl: './add-category-form.component.scss',
+  templateUrl: './update-expense-form.component.html',
+  styleUrl: './update-expense-form.component.scss',
 })
-export class AddCategoryFormComponent {
-  addCategoryForm!: FormGroup;
+export class UpdateExpenseFormComponent {
+  updateExpenseForm!: FormGroup;
   isLoading = false;
+  options = input.required<IExpenseOptions>();
+  dataExpense = input.required<IExpense>();
   @Output() changeData = new EventEmitter<void>();
 
   private readonly fb = inject(FormBuilder);
   private readonly validatorsService = inject(InputValidationService);
-  private readonly categoryService = inject(CategoryService);
+  private readonly expenseService = inject(ExpenseService);
   private readonly modalService = inject(BsModalService);
   private readonly modalAlertService = inject(ModalAlertService);
   private readonly toastr = inject(ToastrService);
 
-  optionsInput: IOptions[] = [
-    { label: 'Entrada', value: ECategoryType.Income },
-    { label: 'Saída', value: ECategoryType.Expense },
-  ];
-
   constructor() {
     this.initializeForm();
+    this.loadForm();
   }
 
   initializeForm() {
-    this.addCategoryForm = this.fb.group({
-      name: [
-        '',
-        [
-          Validators.required,
-          Validators.maxLength(256),
-          Validators.minLength(3),
-          Validators.pattern('.*[a-zA-ZÀ-ÿ].*'),
-        ],
-      ],
-      color: [
-        '',
-        [
-          Validators.required,
-          Validators.maxLength(7),
-          Validators.minLength(4),
-          validColorValidator(),
-        ],
-      ],
+    this.updateExpenseForm = this.fb.group({
+      description: ['', [Validators.required]],
+      category: ['', [Validators.required]],
+      date: ['', [Validators.required]],
       type: ['', [Validators.required]],
+      hasDebt: ['', [Validators.required]],
+    });
+  }
+
+  loadForm() {
+    this.updateExpenseForm.patchValue({
+      description: this.dataExpense().description,
+      category: this.dataExpense().category,
+      date: this.dataExpense().date,
+      type: this.dataExpense().type,
+      hasDebt: this.dataExpense().hasDebt,
     });
   }
 
@@ -87,11 +78,11 @@ export class AddCategoryFormComponent {
   }
 
   hasMaxLengthAndRequiredError(input: string): boolean {
-    return this.validatorsService.hasMaxLengthAndRequiredError(this.addCategoryForm, input);
+    return this.validatorsService.hasMaxLengthAndRequiredError(this.updateExpenseForm, input);
   }
 
   getMaxLengthAndRequiredErrorMsg(input: string): string {
-    const control = this.addCategoryForm.get(input);
+    const control = this.updateExpenseForm.get(input);
 
     if (control?.hasError('required')) {
       return 'Este campo é obrigatório.';
@@ -108,22 +99,22 @@ export class AddCategoryFormComponent {
     return '';
   }
 
-  addCategory() {
+  updateExpense() {
     this.isLoading = true;
 
-    if (this.addCategoryForm.valid) {
-      const payload: ICategoryCreate = {
-        ...this.addCategoryForm.value,
-        type: this.addCategoryForm.get('type')?.value as ECategoryType,
+    if (this.updateExpenseForm.valid) {
+      const payload: IExpenseUpdate = {
+        ...this.updateExpenseForm.value,
+        id: this.dataExpense().id,
       };
 
-      this.categoryService.addCategory(payload).subscribe({
+      this.expenseService.updateExpense(payload, this.dataExpense().id).subscribe({
         next: () => {
           this.modalService.hide();
           this.isLoading = false;
           this.changeData.emit();
 
-          this.toastr.success('Categoria cadastrada com sucesso!', 'Sucesso!');
+          this.toastr.success('Despesa atualizada com sucesso!', 'Sucesso!');
         },
         error: error => {
           const erros = error.error.errors?.join('<br>') || error.message;
