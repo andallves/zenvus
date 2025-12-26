@@ -14,24 +14,24 @@ ptBrLocale.invalidDate = '';
 defineLocale('pt-br', ptBrLocale);
 
 @Component({
-  selector: 'zen-data-input',
+  selector: 'zen-date-input',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, FormsModule, BsDatepickerModule],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => DataInputComponent),
+      useExisting: forwardRef(() => DateInputComponent),
       multi: true,
     },
   ],
-  templateUrl: './data-input.component.html',
-  styleUrls: ['./data-input.component.scss'],
+  templateUrl: './date-input.component.html',
+  styleUrls: ['./date-input.component.scss'],
 })
-export class DataInputComponent implements ControlValueAccessor {
+export class DateInputComponent implements ControlValueAccessor {
   readonly #geradorIdUnico = inject(IdGeneratorService);
   private readonly bsLocaleService = inject(BsLocaleService);
 
-  @Input() inputId = 'data-input-default';
+  @Input() inputId = 'date-input-default';
 
   public labelSignal = signal('');
   @Input() set label(nomeLabel: string) {
@@ -43,14 +43,14 @@ export class DataInputComponent implements ControlValueAccessor {
   @Input() placeholder = '';
   @Input() errorMsg = '';
   @Input() isDisable = false;
-  @Input() withTimepicker = true;
+  @Input() withTimepicker = false;
   @Input() showMandatory = false;
   @Input() bsConfigShowWeeksNumbers = false;
   @Input() showX = false;
   @Input() minDate: Date = new Date(1900, 0, 1);
   @Input() maxDate: Date = new Date(2100, 11, 31);
   @Input() fixedSize = false;
-  @Output() valueChange: any = new EventEmitter<number>();
+  @Output() valueChange = new EventEmitter<Date>();
 
   data?: Date;
   value?: Date;
@@ -65,6 +65,7 @@ export class DataInputComponent implements ControlValueAccessor {
     withTimepicker: this.withTimepicker,
     isDisabled: this.isDisable,
     isAnimated: true,
+    adaptivePosition: true,
   };
 
   onChange: (value: Date) => void = () => {};

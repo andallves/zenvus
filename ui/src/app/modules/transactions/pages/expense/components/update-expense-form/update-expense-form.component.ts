@@ -10,7 +10,7 @@ import {
 import CategoryService from '@modules/transactions/services/category.service';
 import { ExpenseService } from '@modules/transactions/services/expense.service';
 import { ButtonComponent } from '@shared/components/button/button.component';
-import { DataInputComponent } from '@shared/components/inputs/data-input/data-input.component';
+import { DateInputComponent } from '@shared/components/inputs/date-input/date-input.component';
 import { InputDefaultComponent } from '@shared/components/inputs/input-default/input-default.component';
 import { MoneyInputComponent } from '@shared/components/inputs/money-input/money-input.component';
 import { SelectInputComponent } from '@shared/components/inputs/select-input/select-input.component';
@@ -34,7 +34,7 @@ import { ToastrService } from 'ngx-toastr';
     ButtonComponent,
     InputDefaultComponent,
     SelectInputComponent,
-    DataInputComponent,
+    DateInputComponent,
     MoneyInputComponent,
   ],
   templateUrl: './update-expense-form.component.html',

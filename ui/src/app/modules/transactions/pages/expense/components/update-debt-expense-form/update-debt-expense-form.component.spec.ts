@@ -47,16 +47,16 @@ describe('UpdateDebtExpenseFormComponent', () => {
   });
 
   it('should initialize the form', () => {
-    expect(component.addCursoForm).toBeDefined();
-    expect(component.addCursoForm.get('nome')).toBeDefined();
-    expect(component.addCursoForm.get('tipo')).toBeDefined();
+    expect(component.updateDebtInstallmentForm).toBeDefined();
+    expect(component.updateDebtInstallmentForm.get('nome')).toBeDefined();
+    expect(component.updateDebtInstallmentForm.get('tipo')).toBeDefined();
   });
 
   it('should call addCurso on form submit', () => {
-    component.addCursoForm.setValue({ nome: 'Test Curso', tipo: '1' });
+    component.updateDebtInstallmentForm.setValue({ nome: 'Test Curso', tipo: '1' });
     cursosService.addCurso.and.returnValue(of({}));
 
-    component.addCurso();
+    component.updateDebtInstallment();
 
     expect(cursosService.addCurso).toHaveBeenCalled();
     expect(toastr.success).toHaveBeenCalledWith('Curso cadastrado com sucesso!', 'Sucesso!');
@@ -76,10 +76,10 @@ describe('UpdateDebtExpenseFormComponent', () => {
   // });
 
   it('should show error modal on service error', () => {
-    component.addCursoForm.setValue({ nome: 'Test Curso', tipo: '1' });
+    component.updateDebtInstallmentForm.setValue({ nome: 'Test Curso', tipo: '1' });
     cursosService.addCurso.and.returnValue(throwError({ error: { erros: 'Erro ao criar curso' } }));
 
-    component.addCurso();
+    component.updateDebtInstallment();
 
     expect(modalAlertService.open).toHaveBeenCalledWith({
       icon: 'error',

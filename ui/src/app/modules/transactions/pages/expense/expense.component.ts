@@ -8,7 +8,7 @@ import CategoryService from '@modules/transactions/services/category.service';
 import { ExpenseService } from '@modules/transactions/services/expense.service';
 import { FilterComponent } from '@shared/components/filter/filter.component';
 import { HeaderTableComponent } from '@shared/components/header-table/header-table.component';
-import { DataInputComponent } from '@shared/components/inputs/data-input/data-input.component';
+import { DateInputComponent } from '@shared/components/inputs/date-input/date-input.component';
 import { InputDefaultComponent } from '@shared/components/inputs/input-default/input-default.component';
 import { SelectInputComponent } from '@shared/components/inputs/select-input/select-input.component';
 import { ModalComponent } from '@shared/components/modal/modal.component';
@@ -37,7 +37,7 @@ import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
     ReactiveFormsModule,
     SelectInputComponent,
     TableComponent,
-    DataInputComponent,
+    DateInputComponent,
     AddExpenseFormComponent,
     UpdateExpenseFormComponent,
     DeleteTemplateComponent,
