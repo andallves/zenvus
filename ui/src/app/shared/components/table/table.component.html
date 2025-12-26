@@ -29,8 +29,10 @@
                   </div>
               } @else if (column === 'color') {
                   <span [style]="{ color: item[column] }">{{ item[column] }}</span>
+              } @else if (column === 'amount') {
+                {{ getValueLabel(column, item[column]) | currency: 'BRL' }}
               } @else if (column === 'date') {
-                {{ getDateValue(item[column]) | date:'medium' }}
+                {{ getDateValue(item[column]) | date:'short' }}
               } @else if (columnTemplates[column]) {
                   <ng-container
                     *ngTemplateOutlet="
