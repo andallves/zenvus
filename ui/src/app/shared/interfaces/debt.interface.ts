@@ -1,23 +1,24 @@
 import { EPaymentStatus } from '@shared/enums/payment-status.enum';
 
-export interface Debt {
+export interface IDebt {
   id: string;
   isInstallment: boolean;
   totalInstallments: number;
   firstDueDate: Date;
-  installments: DebtInstallment[];
+  installments: IDebtInstallment[];
 }
 
-export interface DebtCreate {
+export interface IDebtCreate {
   isInstallment: boolean;
   totalInstallments: number;
   firstDueDate: Date;
 }
 
-export interface DebtInstallment {
+export interface IDebtInstallment {
   id: string;
   number: number;
   amount: number;
   status: EPaymentStatus;
+  dueDate: Date;
   paymentDate: Date;
 }

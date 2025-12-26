@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, inject, input, OnInit, output } from '@angular/core';
+import { Component, inject, input, OnInit, output, signal } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -12,11 +12,13 @@ import { ExpenseService } from '@modules/transactions/services/expense.service';
 import { ButtonComponent } from '@shared/components/button/button.component';
 import { DataInputComponent } from '@shared/components/inputs/data-input/data-input.component';
 import { InputDefaultComponent } from '@shared/components/inputs/input-default/input-default.component';
+import { MoneyInputComponent } from '@shared/components/inputs/money-input/money-input.component';
 import { SelectInputComponent } from '@shared/components/inputs/select-input/select-input.component';
 import { ModalIconType } from '@shared/components/swall/modal-alert/domain-types/modal-types.interface';
 import { ModalAlertService } from '@shared/components/swall/modal-alert/service/modal-alert.service';
-import { IOptions } from '@shared/domain-types/options';
+import { IOptions, IValueOptions } from '@shared/domain-types/options';
 import { ECategoryType } from '@shared/enums/category-type.enum';
+import { IDebt, IDebtInstallment } from '@shared/interfaces/debt.interface';
 import { IExpense, IExpenseOptions, IExpenseUpdate } from '@shared/interfaces/expense.interface';
 import { InputValidationService } from '@shared/validators/input-validator/input-validator.service';
 import { BsModalService } from 'ngx-bootstrap/modal';
@@ -33,6 +35,7 @@ import { ToastrService } from 'ngx-toastr';
     InputDefaultComponent,
     SelectInputComponent,
     DataInputComponent,
+    MoneyInputComponent,
   ],
   templateUrl: './update-expense-form.component.html',
   styleUrl: './update-expense-form.component.scss',
@@ -54,7 +57,7 @@ export class UpdateExpenseFormComponent implements OnInit {
   private readonly modalAlertService = inject(ModalAlertService);
   private readonly toastr = inject(ToastrService);
 
-  isInstallments = computed<boolean>(() => this.updateExpenseForm.value.isInstallment == true);
+  isInstallments = signal<boolean>(false);
 
   constructor() {
     this.initializeForm();
@@ -95,6 +98,8 @@ export class UpdateExpenseFormComponent implements OnInit {
       totalInstallments: this.dataExpense().debt?.totalInstallments ?? '',
       firstDueDate: new Date(this.dataExpense().debt?.firstDueDate ?? ''),
     });
+    this.isInstallments.set(this.dataExpense().debt?.isInstallment ?? false);
+    console.log(this.updateExpenseForm.value);
   }
 
   onCloseModal() {
@@ -141,19 +146,24 @@ export class UpdateExpenseFormComponent implements OnInit {
       return;
     }
 
-    const isInstallments = this.updateExpenseForm.value.isInstallment;
+    const formValues = this.updateExpenseForm.value;
+    const debt: IDebt = {
+      id: this.dataExpense().debt?.id || '',
+      isInstallment: formValues.isInstallment,
+      totalInstallments: formValues.totalInstallments,
+      firstDueDate: formValues.firstDueDate,
+      installments: this.dataExpense().debt?.installments || ([] as IDebtInstallment[]),
+    };
 
     const payload: IExpenseUpdate = {
-      ...this.updateExpenseForm.value,
       id: this.dataExpense().id,
+      description: formValues.description,
+      categoryId: formValues.categoryId,
       amount: Number.parseFloat(this.updateExpenseForm.value.amount),
-      debt: isInstallments
-        ? {
-            isInstallment: this.updateExpenseForm?.value.isInstallment,
-            totalInstallments: this.updateExpenseForm?.value.totalInstallments,
-            firstDueDate: this.updateExpenseForm.value.firstDueDate,
-          }
-        : null,
+      date: formValues.date,
+      type: formValues.type,
+      debt: this.isInstallments() ? debt : undefined,
+      disabled: this.dataExpense().disabled,
     };
 
     this.expenseService.updateExpense(payload, payload.id).subscribe({
@@ -179,5 +189,11 @@ export class UpdateExpenseFormComponent implements OnInit {
       },
       complete: () => (this.isLoading = false),
     });
+  }
+
+  isInstallmentsChange(value: IValueOptions) {
+    if (typeof value == 'boolean') {
+      this.isInstallments.update(() => value);
+    }
   }
 }

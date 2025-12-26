@@ -19,7 +19,6 @@
           @for (column of columns; track $index) {
             <td>
               @if (column === 'name') {
-                <ng-container>
                   <div class="titulo-wrapper">
                     @if (!item['disabled']) {
                       <span class="badge badge-class badge-ativo">
@@ -28,21 +27,16 @@
                     }
                     <span class="titulo-texto">{{ item[column] }}</span>
                   </div>
-                </ng-container>
               } @else if (column === 'color') {
-                <ng-container>
                   <span [style]="{ color: item[column] }">{{ item[column] }}</span>
-                </ng-container>
               } @else if (column === 'date') {
                 {{ getDateValue(item[column]) | date:'medium' }}
               } @else if (columnTemplates[column]) {
-                <ng-container>
                   <ng-container
                     *ngTemplateOutlet="
                   columnTemplates[column];
                   context: { value: item[column], item: item }
                 "></ng-container>
-                </ng-container>
               } @else if (notTruncateText(column, item) | foto) {
                 <span [innerHTML]="notTruncateText(column, item) | foto"></span>
               } @else {

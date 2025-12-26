@@ -1,0 +1,79 @@
+<form class="update-form" id="form-update-expense" action="javascript:void(0)"
+      [formGroup]="updateDebtInstallmentForm"  aria-labelledby="form-update-expense-title">
+  <h2 id="form-update-expense-title" class="visually-hidden">Atualizar Despesa</h2>
+
+  <zen-input
+    id="input-number"
+    label="Nº da Parcela:"
+    placeholder="1"
+    formControlName="number"
+    [inputId]="'input-number'"
+    [showMandatory]="true"
+  />
+
+  <zen-money-input
+    id="input-amount"
+    label="Valor da Parcela:"
+    placeholder="0,00"
+    formControlName="amount"
+    [inputId]="'input-amount'"
+    [showMandatory]="true"
+  />
+
+
+  <zen-select-input
+    id="select-is-installments"
+    label="Status:"
+    placeholder="Selecione status"
+    formControlName="status"
+    [options]="statusOptions"
+    [dropdownId]="'select-status'"
+    [showMandatory]="true"
+  />
+
+  <zen-data-input
+    id="input-due-date"
+    label="Data de Vencimento:"
+    placeholder="Informe a data da vencimento"
+    formControlName="dueDate"
+    [withTimepicker]="false"
+    [inputId]="'input-due-date'"
+    [showMandatory]="false"
+  />
+
+  <zen-data-input
+    id="input-first-due-date"
+    label="Data de Pagamento:"
+    placeholder="Informe a data de pagamento"
+    formControlName="paymentDate"
+    [withTimepicker]="false"
+    [inputId]="'input-first-due-date'"
+    [showMandatory]="false"
+  />
+
+  <div class="footer-modal">
+    <zen-button
+      id="button-fechar"
+      variant="danger"
+      width="100px"
+      (click)="onCloseModal()"
+      (keyup)="onCloseModal()"
+      aria-label="Fechar o formulário"
+      [buttonId]="'button-fechar'"
+    >
+      Fechar
+    </zen-button>
+    <zen-button
+      id="button-salvar"
+      width="100px"
+      [disabled]="updateDebtInstallmentForm.invalid"
+      [isLoading]="isLoading"
+      (click)="updateDebtInstallment()"
+      (keyup)="updateDebtInstallment()"
+      aria-label="Salvar a despesa"
+      [buttonId]="'button-salvar'"
+    >
+      Salvar
+    </zen-button>
+  </div>
+</form>

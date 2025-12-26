@@ -11,13 +11,13 @@ using Zenvus.Infra.Database;
 
 namespace Zenvus.Application.Commands.Expenses;
 
-public class UpdateExpenseCommandHandler(IRepository<ZenvusDbContext> repository, IAuthenticatedUser authenticatedUser) : IRequestHandler<UpdateExpenseCommand, CustomResult<ExpenseDto>>
+public class UpdateExpenseCommandHandler(IMapper mapper, IRepository<ZenvusDbContext> repository, IAuthenticatedUser authenticatedUser) : IRequestHandler<UpdateExpenseCommand, CustomResult<ExpenseDto>>
 {
-    public async Task<CustomResult<ExpenseDto>> Handle(UpdateExpenseCommand request, CancellationToken cancellationToken)
+    public async Task<CustomResult<ExpenseDto>> Handle(UpdateExpenseCommand command, CancellationToken cancellationToken)
     {
         var category = await repository
             .GetDbContext().Categories
-            .FirstOrDefaultAsync(c => c.Id == request.CategoryId && c.UserId == authenticatedUser.Id, cancellationToken);
+            .FirstOrDefaultAsync(c => c.Id == command.CategoryId && c.UserId == authenticatedUser.Id, cancellationToken);
 
         if (category is null)
         {
@@ -25,22 +25,20 @@ public class UpdateExpenseCommandHandler(IRepository<ZenvusDbContext> repository
                 .ErrorResult("Não foi possível cadastrar despesa pois a categoria não existe.", errorType: IsResultErrorType.NotFound);
         } 
         
-        var expense = new Expense()
+        var expense = await repository
+            .DbSet<Expense>()
+            .FirstOrDefaultAsync(e => e.Id == command.Id && e.UserId == authenticatedUser.Id, cancellationToken);
+
+        if (expense is null)
         {
-            Id = request.Id,
-            UserId = authenticatedUser.Id,
-            CategoryId = request.CategoryId,
-            Category = category,
-            Amount = request.Amount,
-            Description = request.Description,
-            Date = request.Date,
-            Type = (EExpense)request.Type,
-        };
+            return CustomResult<ExpenseDto>
+                .ErrorResult("Despesa não encontrada.", errorType: IsResultErrorType.NotFound);
+        }
 
+        if (command.HasDebt) CreateDebt(expense, command);
+        
+        mapper.Map(command, expense);
         repository.DbSet<Expense>().Update(expense);
-
-        if (request.HasDebt) CreateDebt(expense, request);
-     
 
         if (await repository.SaveChangesAsync(cancellationToken) <= 0)
         {
@@ -58,6 +56,7 @@ public class UpdateExpenseCommandHandler(IRepository<ZenvusDbContext> repository
         var firstDueDate = command.Debt?.FirstDueDate ?? command.Date;
             
         var debt = Debt.CreateInstallmentDebt(expense, totalInstallments, firstDueDate);
+        expense.Debt = debt;
 
         repository.DbSet<Debt>().Update(debt);
     }
