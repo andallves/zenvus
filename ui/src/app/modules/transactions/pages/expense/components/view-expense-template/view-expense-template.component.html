@@ -1,0 +1,65 @@
+<div class="expense-view-wrapper">
+  <p class="expense-view-wrapper__category">Categoria: {{ dataExpense().categoryName }}</p>
+  <p class="expense-view-wrapper__type">Tipo: {{ dataExpense().type }}</p>
+  <p class="expense-view-wrapper__type">Data de Registro: {{ dataExpense().date | date: 'longDate' }}</p>
+  <p class="expense-view-wrapper__amount-total">Valor total: {{ dataExpense().amount | currency: 'BRL' }}</p>
+  @if (dataExpense().hasDebt) {
+    <table>
+      <thead>
+      <tr>
+        @for (column of columns; track $index) {
+          <th>
+            {{ columnsLabel[column] }}
+          </th>
+        }
+        @if (showActions) {
+          <th class="actions-header">Ações</th>
+        }
+      </tr>
+      </thead>
+      <tbody class="table__body">
+      @for (installment of installments; track installment.dueDate) {
+        <tr class="">
+          @for(column of columns; track $index) {
+            <td>
+              @if (column === 'dueDate' || column === 'paymentDate') {
+                <span>
+                  {{ (getDateValue(installment[column]) | date: 'medium') || '-'}}
+                </span>
+              } @else if(column === 'amount') {
+                <span>
+                  {{ installment[column] | currency: 'BRL' }}
+                </span>
+              }
+              @else {
+                {{ getValueLabel(column, installment[column]) }}
+              }
+            </td>
+
+      }
+          <td class="actions-container">
+            <div class="d-flex justify-content-center flex-row">
+                <button
+                  id="btn-edit"
+                  data-testid="btn-edit"
+                  aria-label="Botão de editar"
+                  class="btn btn-warning"
+                  (click)="openEditModal(installment)"
+                >
+                  <i class="bi bi-pencil-fill" aria-hidden="true"> </i>
+                </button>
+
+            </div>
+          </td>
+        </tr>
+      }
+      </tbody>
+
+    </table>
+  }
+
+</div>
+
+<ng-template #formEditTemplate>
+  <zen-update-debt-expense-form id="form-edit-expense" [dataDebtInstallment]="installment" />
+</ng-template>

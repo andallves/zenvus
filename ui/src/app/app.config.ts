@@ -21,6 +21,22 @@ import localePt from '@angular/common/locales/pt';
 
 registerLocaleData(localePt);
 
+import { NGX_CURRENCY_CONFIG } from 'ngx-currency';
+
+export const CustomCurrencyMaskConfig = {
+  align: 'right',
+  allowNegative: false,
+  allowZero: true,
+  decimal: ',',
+  precision: 2,
+  prefix: 'R$ ',
+  suffix: '',
+  thousands: '.',
+  nullable: true,
+  min: undefined,
+  max: undefined,
+};
+
 export const appConfig: ApplicationConfig = {
   providers: [
     provideAnimations(),
@@ -33,6 +49,7 @@ export const appConfig: ApplicationConfig = {
     JwtHelperService,
     { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
     { provide: LOCALE_ID, useValue: 'pt-BR' },
+    { provide: NGX_CURRENCY_CONFIG, useValue: CustomCurrencyMaskConfig },
 
     importProvidersFrom(
       BsDatepickerModule.forRoot(),

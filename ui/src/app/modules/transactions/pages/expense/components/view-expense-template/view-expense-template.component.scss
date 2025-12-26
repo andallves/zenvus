@@ -1,0 +1,31 @@
+.expense-view-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+
+  &__debt-list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  &__debt-item {
+    width: 100%;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    &--header{
+      &.text:not(:last-child) {
+        border-right: 1px solid var(--border-color);
+        padding-right: 10px;
+      }
+    }
+  }
+}

@@ -8,7 +8,7 @@ import { of, throwError } from 'rxjs';
 import { CursosService } from '../../services/cursos.service';
 import { AddExpenseFormComponent } from './add-expense-form.component';
 
-describe('UpdateExpenseFormComponent', () => {
+describe(AddExpenseFormComponent.name, () => {
   let component: AddExpenseFormComponent;
   let fixture: ComponentFixture<AddExpenseFormComponent>;
   let cursosService: jasmine.SpyObj<CursosService>;

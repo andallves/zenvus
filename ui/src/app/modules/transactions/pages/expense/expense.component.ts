@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angul
 import { AddExpenseFormComponent } from '@modules/transactions/pages/expense/components/add-expense-form/add-expense-form.component';
 import { DeleteTemplateComponent } from '@modules/transactions/pages/expense/components/delete-template/delete-template.component';
 import { UpdateExpenseFormComponent } from '@modules/transactions/pages/expense/components/update-expense-form/update-expense-form.component';
+import { ViewExpenseTemplateComponent } from '@modules/transactions/pages/expense/components/view-expense-template/view-expense-template.component';
 import CategoryService from '@modules/transactions/services/category.service';
 import { ExpenseService } from '@modules/transactions/services/expense.service';
 import { FilterComponent } from '@shared/components/filter/filter.component';
@@ -40,6 +41,7 @@ import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
     AddExpenseFormComponent,
     UpdateExpenseFormComponent,
     DeleteTemplateComponent,
+    ViewExpenseTemplateComponent,
   ],
 })
 export class ExpenseComponent implements OnInit {
@@ -135,8 +137,8 @@ export class ExpenseComponent implements OnInit {
       disabled: this.filterForm.get('disabled')?.value,
       page: this.page,
       itemsPerPage: this.itemsPerPage,
-      orderAsc: this.filterForm.get('orderAsc')?.value,
-      orderBy: this.filterForm.get('orderBy')?.value,
+      orderAsc: this.filterForm.get('orderAsc')?.value || true,
+      orderBy: this.filterForm.get('orderBy')?.value || 'createdAt',
     };
     this.loadingService.onActiveLoading();
     this.expenseService.getExpenses(filter).subscribe({
@@ -198,7 +200,7 @@ export class ExpenseComponent implements OnInit {
     const initialState: ModalOptions = {
       initialState: {
         iconTemplate: 'bi bi-plus',
-        title: 'Adicionar Categoria',
+        title: 'Adicionar Despesa',
         formTemplate: this.formAddTemplate,
       },
       class: 'modal-dialog-centered',
@@ -212,7 +214,7 @@ export class ExpenseComponent implements OnInit {
     const initialState: ModalOptions = {
       initialState: {
         iconTemplate: 'bi bi-pencil-fill',
-        title: 'Editar Categoria',
+        title: 'Editar Despesa',
         formTemplate: this.formEditTemplate,
       },
       class: 'modal-dialog-centered',
@@ -226,7 +228,7 @@ export class ExpenseComponent implements OnInit {
     const initialState: ModalOptions = {
       initialState: {
         iconTemplate: 'bi bi-trash-fill',
-        title: 'Deletar Categoria',
+        title: 'Deletar Despesa',
         formTemplate: this.deleteTemplate,
       },
       class: 'modal-dialog-centered',
@@ -240,7 +242,7 @@ export class ExpenseComponent implements OnInit {
     const initialState: ModalOptions = {
       initialState: {
         iconTemplate: 'bi bi-pencil-fill',
-        title: 'Editar Categoria',
+        title: `Visualizar Detalhes`,
         formTemplate: this.viewTemplate,
       },
       class: 'modal-dialog-centered',

@@ -41,15 +41,15 @@
     [showMandatory]="true"
   />
 
-  <zen-input
+  <zen-money-input
     id="input-amount"
     label="Valor:"
     placeholder="Digite o valor"
     formControlName="amount"
     [inputId]="'input-amount'"
     [showMandatory]="true"
+    (valueChange)="isInstallmentsChange($event)"
   />
-
 
   <zen-select-input
     id="select-is-installments"
@@ -59,28 +59,29 @@
     [options]="options().isInstallmentsOptions"
     [dropdownId]="'select-is-installments'"
     [showMandatory]="true"
+    (valueChange)="isInstallmentsChange($event)"
   />
 
-  <zen-input
-    id="input-total-installments"
-    label="Quantidade de parcela:"
-    placeholder="Número de parcelas"
-    formControlName="totalInstallments"
-    [inputId]="'input-total-installments'"
-    [showMandatory]="false"
-  />
+  @if (isInstallments()) {
+    <zen-input
+      id="input-total-installments"
+      label="Quantidade de parcela:"
+      placeholder="Número de parcelas"
+      formControlName="totalInstallments"
+      [inputId]="'input-total-installments'"
+      [showMandatory]="false"
+    />
 
-  <zen-data-input
-    id="input-first-due-date"
-    label="Data:"
-    placeholder="Informe a data da primeira parcela"
-    formControlName="firstDueDate"
-    [withTimepicker]="false"
-    [inputId]="'input-first-due-date'"
-    [showMandatory]="false"
-  />
-
-
+    <zen-data-input
+      id="input-first-due-date"
+      label="Data:"
+      placeholder="Informe a data da primeira parcela"
+      formControlName="firstDueDate"
+      [withTimepicker]="false"
+      [inputId]="'input-first-due-date'"
+      [showMandatory]="false"
+    />
+  }
 
   <div class="footer-modal">
     <zen-button

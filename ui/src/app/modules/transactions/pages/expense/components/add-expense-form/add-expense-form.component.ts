@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, input, output } from '@angular/core';
+import { Component, inject, input, output, signal } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -12,11 +12,13 @@ import { ExpenseService } from '@modules/transactions/services/expense.service';
 import { ButtonComponent } from '@shared/components/button/button.component';
 import { DataInputComponent } from '@shared/components/inputs/data-input/data-input.component';
 import { InputDefaultComponent } from '@shared/components/inputs/input-default/input-default.component';
+import { MoneyInputComponent } from '@shared/components/inputs/money-input/money-input.component';
 import { SelectInputComponent } from '@shared/components/inputs/select-input/select-input.component';
 import { ModalIconType } from '@shared/components/swall/modal-alert/domain-types/modal-types.interface';
 import { ModalAlertService } from '@shared/components/swall/modal-alert/service/modal-alert.service';
-import { IOptions } from '@shared/domain-types/options';
+import { IOptions, IValueOptions } from '@shared/domain-types/options';
 import { ECategoryType } from '@shared/enums/category-type.enum';
+import { IDebtCreate } from '@shared/interfaces/debt.interface';
 import { IExpenseCreate, IExpenseOptions } from '@shared/interfaces/expense.interface';
 import { InputValidationService } from '@shared/validators/input-validator/input-validator.service';
 import { BsModalService } from 'ngx-bootstrap/modal';
@@ -33,6 +35,7 @@ import { ToastrService } from 'ngx-toastr';
     InputDefaultComponent,
     SelectInputComponent,
     DataInputComponent,
+    MoneyInputComponent,
   ],
   templateUrl: './add-expense-form.component.html',
   styleUrl: './add-expense-form.component.scss',
@@ -52,6 +55,8 @@ export class AddExpenseFormComponent {
   private readonly modalService = inject(BsModalService);
   private readonly modalAlertService = inject(ModalAlertService);
   private readonly toastr = inject(ToastrService);
+
+  isInstallments = signal<boolean>(false);
 
   constructor() {
     this.initializeForm();
@@ -115,18 +120,20 @@ export class AddExpenseFormComponent {
       return;
     }
 
-    const isInstallments = this.addExpenseForm.get('isInstallments')?.value;
+    const formValues = this.addExpenseForm.value;
+    const debt: IDebtCreate = {
+      isInstallment: formValues.isInstallment,
+      totalInstallments: formValues.totalInstallments,
+      firstDueDate: formValues.firstDueDate,
+    };
 
     const payload: IExpenseCreate = {
-      ...this.addExpenseForm.value,
+      description: formValues.description,
+      categoryId: formValues.categoryId,
       amount: Number.parseFloat(this.addExpenseForm.value.amount),
-      debt: isInstallments
-        ? {
-            isInstallment: this.addExpenseForm.value.isInstallment,
-            totalInstallments: this.addExpenseForm.get('totalInstallments')?.value,
-            firstDueDate: this.addExpenseForm.get('firstDueDate')?.value,
-          }
-        : null,
+      date: formValues.date,
+      type: formValues.type,
+      debt: this.isInstallments() ? debt : null,
     };
 
     this.expenseService.addExpense(payload).subscribe({
@@ -152,5 +159,11 @@ export class AddExpenseFormComponent {
       },
       complete: () => (this.isLoading = false),
     });
+  }
+
+  isInstallmentsChange(value: IValueOptions) {
+    if (typeof value == 'boolean') {
+      this.isInstallments.update(() => value);
+    }
   }
 }

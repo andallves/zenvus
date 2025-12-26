@@ -1,7 +1,7 @@
 import { IOptions } from '@shared/domain-types/options';
 import { EExpenseType } from '@shared/enums/expense-type.enum';
 import { ICategory } from '@shared/interfaces/category.interface';
-import { Debt, DebtCreate } from '@shared/interfaces/debt.interface';
+import { IDebt, IDebtCreate } from '@shared/interfaces/debt.interface';
 import { IFilter } from '@shared/interfaces/filter.interface';
 
 export interface IExpense {
@@ -15,7 +15,7 @@ export interface IExpense {
   amount: number;
   date: Date | string;
   hasDebt: boolean;
-  debt?: Debt;
+  debt?: IDebt;
   disabled: boolean;
 }
 
@@ -41,11 +41,19 @@ export interface IExpenseCreate {
   categoryId: string;
   amount: number;
   date: Date;
-  debt?: DebtCreate | null;
-  disabled: boolean;
+  debt: IDebtCreate | null;
 }
 
-export type IExpenseUpdate = Omit<IExpense, 'categoryColor'>;
+export interface IExpenseUpdate {
+  id: string;
+  description: string;
+  type: EExpenseType;
+  categoryId: string;
+  amount: number;
+  date: Date | string;
+  debt?: IDebt;
+  disabled: boolean;
+}
 
 export interface IExpenseOptions {
   categoriesOptions: IOptions[];

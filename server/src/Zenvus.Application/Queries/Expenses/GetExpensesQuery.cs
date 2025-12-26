@@ -22,7 +22,8 @@ public class GetExpensesQuery : BasePagedQuery<Expense, ExpenseDto>
     public int? Type { get; set; }
     public bool? HasDebt { get; set; }
     
-    [SwaggerParameterExample("Id", "Id")]
+    [SwaggerParameterExample("Id", "Id")] 
+    [SwaggerParameterExample("Description", "Description")]
     [SwaggerParameterExample("Category", "Category")]
     [SwaggerParameterExample("Color", "Color")]
     [SwaggerParameterExample("Type", "Type")]
@@ -74,6 +75,7 @@ public class GetExpensesQuery : BasePagedQuery<Expense, ExpenseDto>
                 "disabled" => query.OrderBy(e => e.Disabled),
                 "isExpense" => query.OrderBy(e => e.Type),
                 "hasDebt" => query.OrderBy(e => e.HasDebt),
+                "createdAt" => query.OrderBy(e => e.CreatedAt),
                 _ => query.OrderBy(x => x.Id)
             };
             return;
@@ -87,6 +89,7 @@ public class GetExpensesQuery : BasePagedQuery<Expense, ExpenseDto>
             "disabled" => query.OrderByDescending(e => e.Disabled),
             "isExpense" => query.OrderByDescending(e => e.Type),
             "hasDebt" => query.OrderByDescending(e => e.HasDebt),
+            "createdAt" => query.OrderBy(e => e.CreatedAt),
             _ => query.OrderByDescending(e => e.Id)
         };
     }
