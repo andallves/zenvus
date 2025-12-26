@@ -41,6 +41,7 @@
     "ngx": "^2.4.0",
     "ngx-bootstrap": "^20.0.2",
     "ngx-colors": "^3.6.0",
+    "ngx-currency": "^19.0.0",
     "ngx-mask": "^20.0.3",
     "ngx-quill": "^28.0.2",
     "ngx-toastr": "^19.1.0",
