@@ -2,6 +2,7 @@ import { CurrencyPipe, DatePipe } from '@angular/common';
 import { Component, inject, input, TemplateRef, ViewChild } from '@angular/core';
 import { UpdateDebtExpenseFormComponent } from '@modules/transactions/pages/expense/components/update-debt-expense-form/update-debt-expense-form.component';
 import { ModalComponent } from '@shared/components/modal/modal.component';
+import { ExpenseTypeLabel } from '@shared/enums/expense-type.enum';
 import { StatusTypeLabel } from '@shared/enums/payment-status.enum';
 import { IDebtInstallment } from '@shared/interfaces/debt.interface';
 import { IExpense } from '@shared/interfaces/expense.interface';
@@ -31,12 +32,17 @@ export class ViewExpenseTemplateComponent {
   };
   enumLabels: Record<string, Record<string, string>> = {
     status: StatusTypeLabel,
+    type: ExpenseTypeLabel,
   };
 
   private readonly modalService = inject(BsModalService);
 
   get installments() {
     return this.dataExpense().debt?.installments.sort((a, b) => a.number - b.number) ?? [];
+  }
+
+  get type(): string {
+    return this.getValueLabel('type', this.dataExpense().type);
   }
 
   getValueLabel(column: string, value: unknown): string {

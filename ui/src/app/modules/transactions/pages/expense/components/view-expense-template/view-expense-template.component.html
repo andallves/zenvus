@@ -1,30 +1,30 @@
 <div class="expense-view-wrapper">
-  <p class="expense-view-wrapper__category">Categoria: {{ dataExpense().categoryName }}</p>
-  <p class="expense-view-wrapper__type">Tipo: {{ dataExpense().type }}</p>
-  <p class="expense-view-wrapper__type">Data de Registro: {{ dataExpense().date | date: 'longDate' }}</p>
-  <p class="expense-view-wrapper__amount-total">Valor total: {{ dataExpense().amount | currency: 'BRL' }}</p>
+  <p class="expense-view-wrapper__text">Categoria: <span class="expense-view-wrapper__text--answer">{{ dataExpense().categoryName }}</span></p>
+  <p class="expense-view-wrapper__text">Tipo: <span class="expense-view-wrapper__text--answer">{{ type }}</span></p>
+  <p class="expense-view-wrapper__text">Data de Registro: <span class="expense-view-wrapper__text--answer">{{ dataExpense().date | date: 'longDate' }}</span></p>
+  <p class="expense-view-wrapper__text">Valor total: <span class="expense-view-wrapper__text--answer total-amount">{{ dataExpense().amount | currency: 'BRL' }}</span></p>
   @if (dataExpense().hasDebt) {
-    <table>
-      <thead>
-      <tr>
-        @for (column of columns; track $index) {
-          <th>
-            {{ columnsLabel[column] }}
-          </th>
-        }
-        @if (showActions) {
-          <th class="actions-header">Ações</th>
-        }
-      </tr>
+    <table class="table">
+      <thead class="table__head">
+        <tr class="table__row">
+          @for (column of columns; track $index) {
+            <th class="table__column column-{{ column }}">
+              {{ columnsLabel[column] }}
+            </th>
+          }
+          @if (showActions) {
+            <th class="actions-header">Ações</th>
+          }
+        </tr>
       </thead>
       <tbody class="table__body">
       @for (installment of installments; track installment.dueDate) {
-        <tr class="">
+        <tr class="table__row">
           @for(column of columns; track $index) {
-            <td>
+            <td class="table__column column-{{ column }}">
               @if (column === 'dueDate' || column === 'paymentDate') {
                 <span>
-                  {{ (getDateValue(installment[column]) | date: 'medium') || '-'}}
+                  {{ (getDateValue(installment[column]) | date: 'shortDate') || '-'}}
                 </span>
               } @else if(column === 'amount') {
                 <span>

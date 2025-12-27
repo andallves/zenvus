@@ -241,11 +241,11 @@ export class ExpenseComponent implements OnInit {
     this.dataExpense = event;
     const initialState: ModalOptions = {
       initialState: {
-        iconTemplate: 'bi bi-pencil-fill',
-        title: `Visualizar Detalhes`,
+        iconTemplate: 'bi bi-chat-text',
+        title: `Detalhes ${event.description}`,
         formTemplate: this.viewTemplate,
       },
-      class: 'modal-dialog-centered',
+      class: 'modal-dialog-centered modal-lg',
     };
     this.bsModalRef = this.modalService.show(ModalComponent, initialState);
     this.bsModalRef.content.closeBtnName = 'Close';
