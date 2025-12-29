@@ -29,6 +29,11 @@ public class DebtInstallment : SoftDeleteEntity
     {
         if (newAmount <= 0)
             return DomainResult.Failure("Valor da parcela inválido.");
+        
+        var roundedCurrent = Math.Round(Amount, 2);
+        var roundedNew = Math.Round(newAmount, 2);
+        if (roundedCurrent == roundedNew)
+            return DomainResult.Success();
 
         Amount = newAmount;
         return DomainResult.Success();

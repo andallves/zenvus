@@ -28,6 +28,7 @@ export class ExpenseService extends BaseService {
   }
 
   updateExpense(data: IExpenseUpdate, id: string): Observable<IExpense> {
+    console.log(data);
     return this.httpClient.put<IExpense>(`${this.apiUrl}/v1/expense/${id}`, data);
   }
 

@@ -42,7 +42,7 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class AddExpenseFormComponent {
   options = input.required<IExpenseOptions>();
-  changeData = output<void>();
+  changeData = output<IExpenseCreate>();
 
   addExpenseForm!: FormGroup;
   isLoading = false;
@@ -68,7 +68,7 @@ export class AddExpenseFormComponent {
       description: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
       categoryId: ['', [Validators.required]],
       date: ['', [Validators.required]],
-      type: ['', [Validators.required]],
+      typeId: ['', [Validators.required]],
       amount: ['', []],
       isInstallment: ['', []],
       totalInstallments: ['', []],
@@ -132,15 +132,15 @@ export class AddExpenseFormComponent {
       categoryId: formValues.categoryId,
       amount: Number.parseFloat(this.addExpenseForm.value.amount),
       date: formValues.date,
-      type: formValues.type,
+      typeId: formValues.typeId,
       debt: this.isInstallments() ? debt : null,
     };
-
+    console.log(payload);
     this.expenseService.addExpense(payload).subscribe({
       next: () => {
         this.modalService.hide();
         this.isLoading = false;
-        this.changeData.emit();
+        this.changeData.emit(payload);
 
         this.toastr.success('Despesa cadastrada com sucesso!', 'Sucesso!');
       },

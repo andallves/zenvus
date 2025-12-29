@@ -18,7 +18,7 @@ import { ModalIconType } from '@shared/components/swall/modal-alert/domain-types
 import { ModalAlertService } from '@shared/components/swall/modal-alert/service/modal-alert.service';
 import { IOptions, IValueOptions } from '@shared/domain-types/options';
 import { ECategoryType } from '@shared/enums/category-type.enum';
-import { IDebt, IDebtCreate, IDebtInstallment } from '@shared/interfaces/debt.interface';
+import { IDebt, IDebtCreate } from '@shared/interfaces/debt.interface';
 import { IExpense, IExpenseOptions, IExpenseUpdate } from '@shared/interfaces/expense.interface';
 import { InputValidationService } from '@shared/validators/input-validator/input-validator.service';
 import { BsModalService } from 'ngx-bootstrap/modal';
@@ -47,7 +47,7 @@ export class UpdateExpenseFormComponent implements OnInit {
   categoriesOptions: IOptions[] = [];
   options = input.required<IExpenseOptions>();
   dataExpense = input.required<IExpense>();
-  changeData = output<IExpense>();
+  changeData = output<IExpenseUpdate>();
 
   private readonly fb = inject(FormBuilder);
   private readonly validatorsService = inject(InputValidationService);
@@ -73,7 +73,7 @@ export class UpdateExpenseFormComponent implements OnInit {
       description: ['', [Validators.required]],
       categoryId: ['', [Validators.required]],
       date: ['', [Validators.required]],
-      type: ['', [Validators.required]],
+      typeId: ['', [Validators.required]],
       amount: [0, [Validators.required]],
       isInstallment: ['', []],
       totalInstallments: [0, []],
@@ -92,7 +92,7 @@ export class UpdateExpenseFormComponent implements OnInit {
       description: this.dataExpense().description,
       categoryId: matchedCategoryOption ? matchedCategoryOption.value : null,
       date: new Date(this.dataExpense().date),
-      type: matchedTypeOption ? matchedTypeOption.value : null,
+      typeId: matchedTypeOption ? matchedTypeOption.value : null,
       amount: this.dataExpense().amount,
       isInstallment: this.dataExpense().debt?.isInstallment ?? '',
       totalInstallments: this.dataExpense().debt?.totalInstallments ?? 1,
@@ -164,9 +164,9 @@ export class UpdateExpenseFormComponent implements OnInit {
       id: this.dataExpense().id,
       description: formValues.description,
       categoryId: formValues.categoryId,
-      amount: formValues.amount,
+      amount: Number(formValues.amount),
       date: formValues.date,
-      type: formValues.type,
+      typeId: formValues.typeId,
       debt: this.isInstallments() ? debt : null,
       disabled: this.dataExpense().disabled,
     };
@@ -175,7 +175,7 @@ export class UpdateExpenseFormComponent implements OnInit {
       next: () => {
         this.modalService.hide();
         this.isLoading = false;
-        this.changeData.emit(payload as IExpense);
+        this.changeData.emit(payload as IExpenseUpdate);
 
         this.toastr.success('Despesa atualizada com sucesso!', 'Sucesso!');
       },

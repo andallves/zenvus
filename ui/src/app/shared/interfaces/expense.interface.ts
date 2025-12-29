@@ -8,6 +8,7 @@ export interface IExpense {
   id: string;
   description: string;
   type: EExpenseType;
+  typeId: EExpenseType;
   categoryId: string;
   categoryName: string;
   category: ICategory;
@@ -37,7 +38,7 @@ export interface IExpenseFilter extends IFilter<IExpenseOrderBy> {
 
 export interface IExpenseCreate {
   description: string;
-  type: EExpenseType;
+  typeId: EExpenseType;
   categoryId: string;
   amount: number;
   date: Date;
@@ -47,7 +48,7 @@ export interface IExpenseCreate {
 export interface IExpenseUpdate {
   id: string;
   description: string;
-  type: EExpenseType;
+  typeId: EExpenseType;
   categoryId: string;
   amount: number;
   date: Date | string;

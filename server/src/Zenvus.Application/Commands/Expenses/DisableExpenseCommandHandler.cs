@@ -31,7 +31,7 @@ public class DisableExpenseCommandHandler(IRepository<ZenvusDbContext> repositor
 
         if (expense.HasDebt)
         {
-            var cancelResult = expense.Debt!.Cancel(expense.Debt);
+            var cancelResult = expense.Debt!.Cancel();
             if (!cancelResult.IsValid)
             {
                     return CustomResult<ExpenseDto>.ErrorResult(
