@@ -1,3 +1,4 @@
+using Zenvus.Core.ValueObjects;
 using Zenvus.Domain.Entities.Enums;
 
 namespace Zenvus.Domain.Entities;
@@ -22,5 +23,14 @@ public class DebtInstallment : SoftDeleteEntity
     {
         Status = EPaymentStatus.Paid;
         PaymentDate = paymentDate;
+    }
+    
+    public DomainResult UpdateAmount(decimal newAmount)
+    {
+        if (newAmount <= 0)
+            return DomainResult.Failure("Valor da parcela inválido.");
+
+        Amount = newAmount;
+        return DomainResult.Success();
     }
 }

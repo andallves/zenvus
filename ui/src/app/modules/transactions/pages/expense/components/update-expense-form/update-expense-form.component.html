@@ -47,8 +47,8 @@
     formControlName="amount"
     [inputId]="'input-amount'"
     [showMandatory]="true"
+    (valueChange)="isInstallmentsChange($event)"
   />
-
 
   <zen-select-input
     id="select-is-installments"

@@ -144,13 +144,15 @@ export class ExpenseComponent implements OnInit {
     this.expenseService.getExpenses(filter).subscribe({
       next: response => {
         this.totalItems = response.totalResults;
-        this.expensesData = response.result.map((expense: IExpense) => ({
-          ...expense,
-          categoryName: expense.category.name,
-          date: expense.date,
-          type: expense.type,
-          color: expense.category.color,
-        }));
+        this.expensesData = response.result
+          .filter((expense: IExpense) => !expense.disabled)
+          .map((expense: IExpense) => ({
+            ...expense,
+            categoryName: expense.category.name,
+            date: expense.date,
+            type: expense.type,
+            color: expense.category.color,
+          }));
         console.log(this.expensesData);
         this.activeBadges = [];
       },

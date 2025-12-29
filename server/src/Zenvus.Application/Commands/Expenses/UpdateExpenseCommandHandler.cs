@@ -27,27 +27,52 @@ public class UpdateExpenseCommandHandler(IMapper mapper, IRepository<ZenvusDbCon
         
         var expense = await repository
             .DbSet<Expense>()
-            .FirstOrDefaultAsync(e => e.Id == command.Id && e.UserId == authenticatedUser.Id, cancellationToken);
+            .Include(e => e.Debt)
+            .ThenInclude(d => d.Installments)
+            .FirstOrDefaultAsync(e => 
+                e.Id == command.Id && 
+                e.UserId == authenticatedUser.Id,
+                cancellationToken);
 
-        if (expense is null)
+        if (expense == null)
         {
             return CustomResult<ExpenseDto>
                 .ErrorResult("Despesa não encontrada.", errorType: IsResultErrorType.NotFound);
         }
 
-        if (command.HasDebt) CreateDebt(expense, command);
-        
-        mapper.Map(command, expense);
-        repository.DbSet<Expense>().Update(expense);
+        if (command.HasDebt)
+        {
+            if (expense.Debt is null)
+            {
+                CreateDebt(expense, command);
+            }
+            else {
+                UpdateDebt(expense, command);
+            }
+        }
+        else
+        {
+            expense.UpdateAmount(command.Amount);
+            if (expense?.Debt != null)
+            {
+                var cancelResult = expense.Debt.Cancel(expense.Debt);
+                if (!cancelResult.IsValid)
+                {
+                    return CustomResult<ExpenseDto>.ErrorResult(
+                        cancelResult.Message,
+                        errorType: IsResultErrorType.BusinessRuleViolation);
+                }
+            }
+        }
 
         if (await repository.SaveChangesAsync(cancellationToken) <= 0)
         {
             return CustomResult<ExpenseDto>
-                .ErrorResult("Não foi possível cadastrar Despesa.", errorType: IsResultErrorType.ServerError);
+                .ErrorResult("Não foi possível atualizar Despesa.", errorType: IsResultErrorType.ServerError);
         }
         
         return CustomResult<ExpenseDto>
-            .SuccessResult(ExpenseDto.From(expense), "Despesa cadastrada com sucesso!", 201);
+            .SuccessResult(ExpenseDto.From(expense), "Despesa atualizada com sucesso!", 200);
     }
     
     private void CreateDebt(Expense expense, UpdateExpenseCommand command) 
@@ -58,6 +83,45 @@ public class UpdateExpenseCommandHandler(IMapper mapper, IRepository<ZenvusDbCon
         var debt = Debt.CreateInstallmentDebt(expense, totalInstallments, firstDueDate);
         expense.Debt = debt;
 
-        repository.DbSet<Debt>().Update(debt);
+        repository.DbSet<Debt>().Add(debt);
+    }
+    
+    private void UpdateDebt(Expense expense, UpdateExpenseCommand command)
+    {
+        var debt = expense.Debt;
+        if (debt is null)
+            return;
+
+        if (!debt.CanBeRecalculated())
+            return;
+        
+
+        var newTotalInstallments = command.Debt?.TotalInstallments ?? debt.TotalInstallments ?? 1;
+        var newFirstDueDate = command.Debt?.FirstDueDate ?? debt.FirstDueDate ?? command.Date;
+        
+        var amountChanged = expense.Amount != command.Amount;
+        var installmentsChanged = newTotalInstallments != debt.TotalInstallments;
+        
+
+        if (amountChanged)
+        {
+            var updateAmountResult = expense.UpdateAmount(command.Amount); 
+            if (!updateAmountResult.IsValid)
+            {
+                CustomResult<ExpenseDto>.ErrorResult(
+                    updateAmountResult.Message,
+                    errorType: IsResultErrorType.BusinessRuleViolation);
+                return;
+            }
+        }
+        
+        if (amountChanged || installmentsChanged)
+        {
+            debt.RecreateInstallments(
+                newTotalInstallments,
+                newFirstDueDate,
+                expense.Amount
+            );
+        }
     }
 }

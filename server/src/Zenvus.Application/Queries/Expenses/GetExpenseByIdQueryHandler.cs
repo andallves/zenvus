@@ -18,9 +18,12 @@ public class GetExpenseByIdQueryHandler(IRepository<ZenvusDbContext> repository,
             .GetQueryable<Expense>()
             .Include(e => e.Category)
             .Include(e => e.Debt)
-            .ThenInclude(d => d.Installments)
+                .ThenInclude(d => d.Installments)
             .AsNoTrackingWithIdentityResolution()
-            .FirstOrDefaultAsync(e => e.Id == query.ExpenseId && e.UserId == authenticatedUser.Id, cancellationToken);
+            .FirstOrDefaultAsync(e => 
+                e.Id == query.ExpenseId && 
+                e.UserId == authenticatedUser.Id,
+                cancellationToken);
         
         return expense == null
             ? CustomResult<ExpenseDto>.ErrorResult("Despesa não encontrada.", errorType: IsResultErrorType.NotFound)

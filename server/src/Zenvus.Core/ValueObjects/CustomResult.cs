@@ -40,6 +40,7 @@ public class CustomResult<T>
 public enum IsResultErrorType
 {
     Validation = 400,
+    BusinessRuleViolation = 422,
     NotFound = 404,
     ServerError = 500,
     ServiceError = 503,

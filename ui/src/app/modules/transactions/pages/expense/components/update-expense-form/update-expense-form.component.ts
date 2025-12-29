@@ -18,7 +18,7 @@ import { ModalIconType } from '@shared/components/swall/modal-alert/domain-types
 import { ModalAlertService } from '@shared/components/swall/modal-alert/service/modal-alert.service';
 import { IOptions, IValueOptions } from '@shared/domain-types/options';
 import { ECategoryType } from '@shared/enums/category-type.enum';
-import { IDebt, IDebtInstallment } from '@shared/interfaces/debt.interface';
+import { IDebt, IDebtCreate, IDebtInstallment } from '@shared/interfaces/debt.interface';
 import { IExpense, IExpenseOptions, IExpenseUpdate } from '@shared/interfaces/expense.interface';
 import { InputValidationService } from '@shared/validators/input-validator/input-validator.service';
 import { BsModalService } from 'ngx-bootstrap/modal';
@@ -74,9 +74,9 @@ export class UpdateExpenseFormComponent implements OnInit {
       categoryId: ['', [Validators.required]],
       date: ['', [Validators.required]],
       type: ['', [Validators.required]],
-      amount: ['', [Validators.required]],
+      amount: [0, [Validators.required]],
       isInstallment: ['', []],
-      totalInstallments: ['', []],
+      totalInstallments: [0, []],
       firstDueDate: ['', []],
     });
   }
@@ -95,11 +95,10 @@ export class UpdateExpenseFormComponent implements OnInit {
       type: matchedTypeOption ? matchedTypeOption.value : null,
       amount: this.dataExpense().amount,
       isInstallment: this.dataExpense().debt?.isInstallment ?? '',
-      totalInstallments: this.dataExpense().debt?.totalInstallments ?? '',
+      totalInstallments: this.dataExpense().debt?.totalInstallments ?? 1,
       firstDueDate: new Date(this.dataExpense().debt?.firstDueDate ?? ''),
     });
     this.isInstallments.set(this.dataExpense().debt?.isInstallment ?? false);
-    console.log(this.updateExpenseForm.value);
   }
 
   onCloseModal() {
@@ -147,25 +146,31 @@ export class UpdateExpenseFormComponent implements OnInit {
     }
 
     const formValues = this.updateExpenseForm.value;
-    const debt: IDebt = {
-      id: this.dataExpense().debt?.id || '',
-      isInstallment: formValues.isInstallment,
-      totalInstallments: formValues.totalInstallments,
-      firstDueDate: formValues.firstDueDate,
-      installments: this.dataExpense().debt?.installments || ([] as IDebtInstallment[]),
-    };
+    const debt: IDebt | IDebtCreate =
+      this.dataExpense().debt === null
+        ? {
+            isInstallment: formValues.isInstallment,
+            totalInstallments: Number(formValues.totalInstallments),
+            firstDueDate: formValues.firstDueDate,
+          }
+        : {
+            id: this.dataExpense().debt?.id || '',
+            isInstallment: formValues.isInstallment,
+            totalInstallments: Number(formValues.totalInstallments),
+            firstDueDate: formValues.firstDueDate,
+          };
 
     const payload: IExpenseUpdate = {
       id: this.dataExpense().id,
       description: formValues.description,
       categoryId: formValues.categoryId,
-      amount: Number.parseFloat(this.updateExpenseForm.value.amount),
+      amount: formValues.amount,
       date: formValues.date,
       type: formValues.type,
-      debt: this.isInstallments() ? debt : undefined,
+      debt: this.isInstallments() ? debt : null,
       disabled: this.dataExpense().disabled,
     };
-
+    console.log(payload);
     this.expenseService.updateExpense(payload, payload.id).subscribe({
       next: () => {
         this.modalService.hide();
@@ -175,7 +180,8 @@ export class UpdateExpenseFormComponent implements OnInit {
         this.toastr.success('Despesa atualizada com sucesso!', 'Sucesso!');
       },
       error: error => {
-        const erros = error.error.errors?.join('<br>') || error.message;
+        const erros = error.error.errors?.join('<br>') || error.error.message;
+        console.log('errors:' + erros);
         this.modalAlertService
           .open({
             icon: ModalIconType.Error,

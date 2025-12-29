@@ -45,10 +45,11 @@ export class DeleteTemplateComponent {
         this.modalService.hide();
         this.isLoading = false;
         this.changeData.emit();
-        this.toastr.success('Categoria deletada com sucesso!', 'Sucesso!');
+        this.toastr.success('Despesa deletada com sucesso!', 'Sucesso!');
       },
       error: error => {
-        const erros = error.error.errors?.join('<br>') || error.message;
+        console.log(error);
+        const erros = error.error.errors?.join('<br>') || error.error.message;
         this.modalAlertService
           .open({
             icon: ModalIconType.Error,
@@ -58,7 +59,7 @@ export class DeleteTemplateComponent {
             showCancelButton: false,
             cancelButtonText: '',
           })
-          .then();
+          .then(() => (this.isLoading = false));
       },
       complete: () => (this.isLoading = false),
     });

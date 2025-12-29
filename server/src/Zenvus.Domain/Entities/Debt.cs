@@ -1,5 +1,4 @@
-using System.Runtime.CompilerServices;
-using DocumentFormat.OpenXml.Wordprocessing;
+using Zenvus.Core.ValueObjects;
 using Zenvus.Domain.Entities.Enums;
 
 namespace Zenvus.Domain.Entities;
@@ -50,16 +49,101 @@ public class Debt : SoftDeleteEntity
         return debt;
     }
 
-    public static Debt CancelDebt(Debt debt)
+    public DomainResult Cancel(Debt debt)
     {
+        if (Installments.Count < 1)
+            return DomainResult.Failure(
+                "Não foi possível cancelar a dívida: parcelas não carregadas.");
+        
+        if (!CanBeCancelled())
+        {
+            return DomainResult.Failure(
+                "Não é possível cancelar uma dívida com parcelas pagas ou vencidas.");
+        }
+        
         debt.Disable();
         foreach (var installment in debt.Installments)
         {
             installment.Disable();
             installment.Status = EPaymentStatus.Cancelled;
         }
+        
+        return DomainResult.Success();
+    }
+    
+    public bool CanBeRecalculated()
+    {
+        return Installments.All(i => i.Status == EPaymentStatus.Active);
+    }
+    
+    public bool HasPaidInstallments()
+    {
+        return Installments.Any(i => i.Status == EPaymentStatus.Paid);
+    }
 
-        return debt;
+    public bool HasOverdueInstallments()
+    {
+        return Installments.Any(i =>
+            i.Status == EPaymentStatus.Active && i.DueDate < DateTime.UtcNow);
+    }
+
+    public bool CanBeCancelled()
+    {
+        return !HasPaidInstallments() && !HasOverdueInstallments();
+    }
+    
+    public DomainResult RecalculateInstallmentsAmount(decimal expenseAmount)
+    {
+        if (!IsInstallment)
+            return DomainResult.Failure("Não há parcelas.");
+
+        if (!CanBeRecalculated())
+            return DomainResult.Failure(
+                "Não é possível recalcular parcelas pagas, vencidas ou canceladas.");
+
+        if (TotalInstallments is null || TotalInstallments <= 0)
+            return DomainResult.Failure("Quantidade de parcelas inválida.");
+
+        var newInstallmentAmount = expenseAmount / TotalInstallments.Value;
+
+        InstallmentAmount = newInstallmentAmount;
+
+        foreach (var installment in Installments)
+        {
+            installment.UpdateAmount(newInstallmentAmount);
+        }
+
+        return DomainResult.Success();
+    }
+
+    public DomainResult RecreateInstallments(
+        int totalInstallments,
+        DateTime firstDueDate,
+        decimal expenseAmount)
+    {
+        if (!CanBeRecalculated())
+            return DomainResult.Failure("Não é possível recalcular parcelas.");
+
+        Installments.Clear();
+
+        TotalInstallments = totalInstallments;
+        FirstDueDate = firstDueDate;
+
+        var installmentAmount = expenseAmount / totalInstallments;
+        InstallmentAmount = installmentAmount;
+
+        for (int i = 1; i <= totalInstallments; i++)
+        {
+            Installments.Add(new DebtInstallment
+            {
+                Number = i,
+                Amount = installmentAmount,
+                DueDate = firstDueDate.AddMonths(i - 1),
+                Status = EPaymentStatus.Active
+            });
+        }
+
+        return DomainResult.Success();
     }
 
 }

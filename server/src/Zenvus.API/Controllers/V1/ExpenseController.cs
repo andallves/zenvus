@@ -55,9 +55,16 @@ public class ExpenseController(IMediator mediator) : BaseController(mediator)
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async ValueTask<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateExpenseCommand command, CancellationToken cancellationToken)
     {
+        
+        
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+        
         if (id != command.Id)
         {
-            return BadRequest();
+            return BadRequest("Os ids informados não coincidem.");
         }
         return await SendCommandAsync(command, cancellationToken);
     }
