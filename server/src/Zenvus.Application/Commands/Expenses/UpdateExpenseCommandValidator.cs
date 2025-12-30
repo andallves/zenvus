@@ -106,13 +106,11 @@ public class UpdateExpenseCommandValidator : AbstractValidator<UpdateExpenseComm
                     .Null()
                     .WithMessage("Data do primeiro vencimento não deve ser informada para dívidas não parceladas.");
             });
-
-            // Validação de consistência entre despesa e dívida
+            
             RuleFor(e => e)
                 .CustomAsync(ValidateExpenseDebtConsistency);
         });
-
-        // Validação para quando NÃO tem dívida
+        
         When(e => !e.HasDebt, () =>
         {
             RuleFor(e => e.Debt)
@@ -143,8 +141,7 @@ public class UpdateExpenseCommandValidator : AbstractValidator<UpdateExpenseComm
             context.AddFailure($"Despesa não encontrada ou você não tem permissão para editá-la.");
             return;
         }
-
-        // Armazena a despesa existente no contexto para uso em outras validações
+        
         context.RootContextData[ExistingExpense] = expense;
     }
 
@@ -196,13 +193,13 @@ public class UpdateExpenseCommandValidator : AbstractValidator<UpdateExpenseComm
         }
     }
 
-    private async Task ValidateFirstDueDateAgainstExistingDebt(
+    private Task ValidateFirstDueDateAgainstExistingDebt(
         DateTime? firstDueDate,
         ValidationContext<UpdateExpenseCommand> context,
         CancellationToken cancellationToken)
     {
         if (!firstDueDate.HasValue)
-            return;
+            return Task.CompletedTask;
 
         if (context.RootContextData.TryGetValue(ExistingExpense, out var existingExpenseObj) &&
             existingExpenseObj is Expense { Debt: not null } existingExpense)
@@ -225,9 +222,10 @@ public class UpdateExpenseCommandValidator : AbstractValidator<UpdateExpenseComm
                 }
             }
         }
+        return Task.CompletedTask;
     }
 
-    private async Task ValidateExpenseDebtConsistency(
+    private Task ValidateExpenseDebtConsistency(
         UpdateExpenseCommand command,
         ValidationContext<UpdateExpenseCommand> context,
         CancellationToken cancellationToken)
@@ -235,23 +233,18 @@ public class UpdateExpenseCommandValidator : AbstractValidator<UpdateExpenseComm
         if (context.RootContextData.TryGetValue(ExistingExpense, out var existingExpenseObj) &&
             existingExpenseObj is Expense existingExpense)
         {
-            // Validações baseadas no estado atual da despesa
-
-            // Se está tentando adicionar dívida a uma despesa que já tem dívida
             if (command.Debt?.Id == null && existingExpense.Debt != null)
             {
                 context.AddFailure(
                     "Esta despesa já possui uma dívida. Use o ID da dívida existente para atualizá-la ou remova a dívida primeiro.");
             }
-
-            // Se está tentando atualizar uma dívida que não existe
+            
             if (command.Debt?.Id.HasValue == true &&
                 (existingExpense.Debt == null || existingExpense.Debt.Id != command.Debt.Id.Value))
             {
                 context.AddFailure("A dívida informada não pertence a esta despesa.");
             }
-
-            // Valida tipo de despesa vs tipo de dívida
+  
             if ((EExpense)command.TypeId == EExpense.Variable && command.HasDebt)
             {
                 context.AddFailure(
@@ -267,8 +260,7 @@ public class UpdateExpenseCommandValidator : AbstractValidator<UpdateExpenseComm
                     "O valor da parcela não pode ser menor que R$ 1,00. " +
                     "Aumente o valor total ou reduza o número de parcelas.");
             }
-
-            // Valida se pode alterar de não-parcelado para parcelado
+            
             if (existingExpense.Debt is { IsInstallment: false } &&
                 command.Debt?.IsInstallment == true)
             {
@@ -277,6 +269,7 @@ public class UpdateExpenseCommandValidator : AbstractValidator<UpdateExpenseComm
                     "Remova a dívida existente e crie uma nova.");
             }
         }
+        return Task.CompletedTask;
     }
 
 }

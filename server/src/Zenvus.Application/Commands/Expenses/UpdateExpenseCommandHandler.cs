@@ -1,4 +1,3 @@
-using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Zenvus.Application.DTO.Expenses;
@@ -20,6 +19,7 @@ public class UpdateExpenseCommandHandler(IRepository<ZenvusDbContext> repository
             .Include(e => e.Category)
             .Include(e => e.Debt)
             .ThenInclude(d => d.Installments)
+            .AsTracking()
             .FirstOrDefaultAsync(e => 
                 e.Id == command.Id && 
                 e.UserId == authenticatedUser.Id,
@@ -46,13 +46,36 @@ public class UpdateExpenseCommandHandler(IRepository<ZenvusDbContext> repository
                 result.Message,
                 errorType: IsResultErrorType.BusinessRuleViolation);    
   
-        if (await repository.SaveChangesAsync(cancellationToken) <= 0)
+        try
+        {
+            await repository.SaveChangesAsync(cancellationToken);
+            
+            // Reload the updated expense from database to ensure navigation properties are
+            // in sync with database state and avoid NullReference in mapping.
+            expense = await repository
+                .DbSet<Expense>()
+                .Include(e => e.Category)
+                .Include(e => e.Debt)
+                .ThenInclude(d => d.Installments)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(e => e.Id == expense.Id, cancellationToken);
+        
+            return CustomResult<ExpenseDto>
+                .SuccessResult(ExpenseDto.From(expense!), "Despesa atualizada com sucesso!", 200);
+        }
+        catch (DbUpdateConcurrencyException ex)
+        {
+            // Do not retry recursively. Return a concurrency error so client can decide next steps.
+            Console.WriteLine($"Concurrency error: {ex.Message}");
+            return CustomResult<ExpenseDto>.ErrorResult(
+                "Falha de concorrência ao atualizar entidade(s). Tente novamente.",
+                errorType: IsResultErrorType.Conflict);
+        }
+        catch (Exception ex)
         {
             return CustomResult<ExpenseDto>
-                .ErrorResult("Não foi possível atualizar Despesa.", errorType: IsResultErrorType.ServerError);
+                .ErrorResult($"Erro ao atualizar: {ex.Message}", 
+                    errorType: IsResultErrorType.ServerError);
         }
-        
-        return CustomResult<ExpenseDto>
-            .SuccessResult(ExpenseDto.From(expense), "Despesa atualizada com sucesso!", 200);
     }
 }

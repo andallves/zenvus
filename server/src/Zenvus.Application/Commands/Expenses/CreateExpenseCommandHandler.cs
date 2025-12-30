@@ -23,17 +23,20 @@ public class CreateExpenseCommandHandler(IRepository<ZenvusDbContext> repository
         {
             return CustomResult<ExpenseDto>
                 .ErrorResult("Não foi possível cadastrar Despesa pois a categoria não existe.", errorType: IsResultErrorType.NotFound);
-        } 
-        var expense = new Expense()
-        {
-            UserId = authenticatedUser.Id,
-            CategoryId = request.CategoryId,
-            Category = category,
-            Amount = request.Amount,
-            Description = request.Description ?? string.Empty,
-            Date = request.Date,
-            Type = (EExpense)request.Type,
-        };
+        }
+
+        var expense = Expense.Create(
+
+            request.Description ?? string.Empty,
+            request.Amount,
+            request.Date,
+            (EExpense)request.Type,
+            request.CategoryId,
+            authenticatedUser.Id,
+            request.Debt?.IsInstallment ?? false,
+            request.Debt?.TotalInstallments,
+            request.Debt?.FirstDueDate
+        );
 
         repository.DbSet<Expense>().Add(expense);
 

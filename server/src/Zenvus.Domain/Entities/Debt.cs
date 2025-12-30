@@ -1,3 +1,4 @@
+using Zenvus.Core.Exceptions;
 using Zenvus.Core.ValueObjects;
 using Zenvus.Domain.Entities.Enums;
 
@@ -11,69 +12,73 @@ public class Debt : SoftDeleteEntity
     public int? TotalInstallments { get; set; }
     public decimal? InstallmentAmount { get; set; }
     public DateTime? FirstDueDate { get; set; }
+    private uint _version;
     
-    public void Enable() => Disabled = false;
-    public void Disable() => Disabled = true;
-
+    public uint Version 
+    { 
+        get => _version;
+        private set => _version = value;
+    }
     public List<DebtInstallment> Installments { get; set; }
         = new List<DebtInstallment>();
+    
+    public void Enable() => Disabled = false;
+
+    private void Disable()
+    {
+        if (HasPaidInstallments())
+            throw new DomainException("Não é possível desativar uma dívida com parcelas pagas.");
+        
+        Disabled = true;
+    }
+    
+    private Debt() { } 
+
+    private Debt(
+        Expense expense,
+        int totalInstallments,
+        DateTime firstDueDate)
+    {
+        Id = Guid.NewGuid();
+        ExpenseId = expense.Id;
+        Expense = expense;
+        IsInstallment = true;
+        TotalInstallments = totalInstallments;
+        InstallmentAmount = CalculateInstallmentAmount(expense.Amount, totalInstallments);
+        FirstDueDate = firstDueDate.Date;
+        Installments = new List<DebtInstallment>();
+        CreatedAt = DateTime.UtcNow;
+    }
     
     public static Debt CreateInstallmentDebt(
         Expense expense,
         int totalInstallments,
         DateTime firstDueDate)
     {
-        var installmentAmount = expense.Amount / totalInstallments;
-
-        var debt = new Debt
-        {
-            Expense = expense,
-            ExpenseId = expense.Id,
-            IsInstallment = true,
-            TotalInstallments = totalInstallments,
-            InstallmentAmount = installmentAmount,
-            FirstDueDate = firstDueDate
-        };
-
-        for (int i = 1; i <= totalInstallments; i++)
-        {
-            debt.Installments.Add(new DebtInstallment
-            {
-                Number = i,
-                Amount = installmentAmount,
-                DueDate = firstDueDate.AddMonths(i - 1),
-                Status = EPaymentStatus.Active
-            });
-        }
-
+        ValidateCreationParameters(expense, totalInstallments, firstDueDate);
+        
+        var debt = new Debt(expense, totalInstallments, firstDueDate);
+        debt.GenerateInstallments(expense.Amount);
+        
         return debt;
     }
 
     public DomainResult Cancel()
     {
-        if (Installments.Count < 1)
-            return DomainResult.Failure(
-                "Não foi possível cancelar a dívida: parcelas não carregadas.");
-        
-        if (!CanBeCancelled())
-        {
-            return DomainResult.Failure(
-                "Não é possível cancelar uma dívida com parcelas pagas ou vencidas.");
-        }
+        var validationResult = ValidateCancellation();
+        if (!validationResult.IsValid)
+            return validationResult;
         
         Disable();
-        foreach (var installment in Installments)
-        {
-            installment.Disable();
-            installment.Status = EPaymentStatus.Cancelled;
-        }
+        CancelAllInstallments();
         
         return DomainResult.Success();
     }
     
     public bool CanBeRecalculated()
     {
-        return Installments.All(i => i.Status == EPaymentStatus.Active);
+        return Installments.All(i => 
+            i.Status is EPaymentStatus.Active or EPaymentStatus.Pending);
     }
     
     public bool HasPaidInstallments()
@@ -84,12 +89,19 @@ public class Debt : SoftDeleteEntity
     public bool HasOverdueInstallments()
     {
         return Installments.Any(i =>
-            i.Status == EPaymentStatus.Active && i.DueDate < DateTime.UtcNow);
+            i.Status == EPaymentStatus.Active && i.DueDate < DateTime.UtcNow.Date);
+    }
+
+    public bool HasPendingInstallments()
+    {
+        return Installments.Any(i => i.Status == EPaymentStatus.Pending);
     }
 
     public bool CanBeCancelled()
     {
-        return !HasPaidInstallments() && !HasOverdueInstallments();
+        return !HasPaidInstallments() && 
+               !HasOverdueInstallments() &&
+               !HasPendingInstallments();
     }
 
     public DomainResult RecreateInstallments(
@@ -97,147 +109,240 @@ public class Debt : SoftDeleteEntity
         DateTime firstDueDate,
         decimal expenseAmount)
     {
+        var validationResult = ValidateRecreation(totalInstallments);
+        return validationResult.IsValid 
+            ? ReplaceInstallments(totalInstallments, firstDueDate, expenseAmount)
+            : validationResult;
+    }
+    
+    public bool CanBeUpdated(bool keepExistingInstallments)
+    {
+        return keepExistingInstallments || CanBeRecalculated();
+    }
+    
+    public DomainResult UpdateDebtDetails(
+        int totalInstallments,
+        DateTime firstDueDate,
+        decimal expenseAmount)
+    {
+        if (!HasChanges(totalInstallments, firstDueDate, expenseAmount))
+            return DomainResult.Success();
+        
+        if (TotalInstallments == totalInstallments)
+        {
+            return UpdateWithExistingInstallments(totalInstallments, firstDueDate, expenseAmount);
+        }
+        
+        return RecreateInstallments(totalInstallments, firstDueDate, expenseAmount);
+    }
+    
+    public bool CanModifyInstallment(int installmentNumber)
+    {
+        var installment = GetInstallment(installmentNumber);
+        return installment?.Status == EPaymentStatus.Active;
+    }
+    
+    public DebtInstallment? GetInstallment(int number)
+    {
+        return Installments.FirstOrDefault(i => i.Number == number);
+    }
+    
+    public DomainResult PayInstallment(int installmentNumber, decimal amountPaid, DateTime paymentDate)
+    {
+        var installment = GetInstallment(installmentNumber);
+        if (installment == null)
+            return DomainResult.Failure($"Parcela {installmentNumber} não encontrada.");
+
+        return installment.Pay(amountPaid, paymentDate);
+    }
+    
+    private static void ValidateCreationParameters(
+        Expense expense, 
+        int totalInstallments, 
+        DateTime firstDueDate)
+    {
+        if (expense == null)
+            throw new ArgumentNullException(nameof(expense));
+        
+        if (totalInstallments <= 0)
+            throw new DomainException("O número de parcelas deve ser maior que zero.");
+        
+        if (firstDueDate < DateTime.UtcNow.Date.AddDays(-1))
+            throw new DomainException("A data de vencimento não pode ser no passado.");
+    }
+    
+    private DomainResult ValidateCancellation()
+    {
+        if (Installments.Count < 1)
+            return DomainResult.Failure("Não foi possível cancelar a dívida: parcelas não carregadas.");
+        
+        if (!CanBeCancelled())
+        {
+            return DomainResult.Failure(
+                "Não é possível cancelar uma dívida com parcelas pagas, vencidas ou pendentes.");
+        }
+        
+        return DomainResult.Success();
+    }
+    
+    private DomainResult ValidateRecreation(int totalInstallments)
+    {
         if (!CanBeRecalculated())
             return DomainResult.Failure("Não é possível recalcular parcelas.");
 
         if (totalInstallments <= 0)
             return DomainResult.Failure("A quantidade de parcelas deve ser maior que zero.");
 
-        // If the number of installments is the same, update existing installments in-place
-        if (Installments.Count == totalInstallments)
-        {
-            TotalInstallments = totalInstallments;
-            FirstDueDate = firstDueDate;
-
-            var baseAmount = Math.Round(expenseAmount / totalInstallments, 2);
-            var totalCalculated = baseAmount * totalInstallments;
-            var difference = expenseAmount - totalCalculated;
-
-            InstallmentAmount = baseAmount;
-
-            for (int i = 0; i < totalInstallments; i++)
-            {
-                var installment = Installments[i];
-                var currentAmount = (i == totalInstallments - 1) ? (baseAmount + difference) : baseAmount;
-                installment.Number = i + 1;
-                installment.DueDate = firstDueDate.AddMonths(i);
-                var updateRes = installment.UpdateAmount(currentAmount);
-                if (!updateRes.IsValid) return updateRes;
-                installment.Status = EPaymentStatus.Active;
-            }
-
-            return DomainResult.Success();
-        }
-
-        // Otherwise, mark existing installments as cancelled/disabled and add new ones
-        foreach (var inst in Installments)
-        {
-            inst.Disable();
-            inst.Status = EPaymentStatus.Cancelled;
-        }
-
-        TotalInstallments = totalInstallments;
-        FirstDueDate = firstDueDate;
-        var baseAmt = Math.Round(expenseAmount / totalInstallments, 2);
-        var totalCalc = baseAmt * totalInstallments;
-        var diff = expenseAmount - totalCalc;
-
-        InstallmentAmount = baseAmt;
-
-        for (int i = 1; i <= totalInstallments; i++)
-        {
-            var currentAmount = (i == totalInstallments) ? (baseAmt + diff) : baseAmt;
-
-            Installments.Add(new DebtInstallment
-            {
-                Number = i,
-                Amount = currentAmount,
-                DueDate = firstDueDate.AddMonths(i - 1),
-                Status = EPaymentStatus.Active
-            });
-        }
-
         return DomainResult.Success();
     }
     
-    public bool CanBeUpdated(bool keepExistingInstallments)
+    private void GenerateInstallments(decimal totalAmount)
     {
-        if (keepExistingInstallments)
+        var (baseAmount, lastInstallmentAmount) = 
+            CalculateInstallmentDistribution(totalAmount, TotalInstallments!.Value);
+
+        InstallmentAmount = baseAmount;
+
+        for (int i = 1; i <= TotalInstallments; i++)
         {
-            return true;
+            var amount = (i == TotalInstallments) ? lastInstallmentAmount : baseAmount;
+            var dueDate = CalculateSafeDueDate(FirstDueDate!.Value, i - 1);
+
+            Installments.Add(DebtInstallment.Create(
+                this,
+                i,
+                dueDate,
+                amount));
         }
-   
-        return CanBeRecalculated();
     }
     
-    public DomainResult UpdateDebtDetails(
-        int totalInstallments,
-        DateTime firstDueDate,
-        decimal expenseAmount,
-        bool keepExistingInstallments = false)
+    private DateTime CalculateSafeDueDate(DateTime baseDate, int monthsToAdd)
     {
-        var hasChanged = TotalInstallments != totalInstallments || 
-                         FirstDueDate != firstDueDate || 
-                         (Expense?.Amount != expenseAmount);
-        
-        if (!hasChanged)
-            return DomainResult.Success();
-        
-        if (keepExistingInstallments)
+        try
         {
-            return UpdateExistingInstallments(totalInstallments, firstDueDate, expenseAmount);
+            return baseDate.AddMonths(monthsToAdd);
         }
+        catch (ArgumentOutOfRangeException)
+        {
+            var targetMonth = baseDate.Month + monthsToAdd;
+            var targetYear = baseDate.Year;
+            
+            while (targetMonth > 12)
+            {
+                targetMonth -= 12;
+                targetYear += 1;
+            }
+            
+            var daysInMonth = DateTime.DaysInMonth(targetYear, targetMonth);
         
-        return RecreateInstallments(totalInstallments, firstDueDate, expenseAmount);
+            var day = Math.Min(baseDate.Day, daysInMonth);
+        
+            return new DateTime(targetYear, targetMonth, day, 
+                baseDate.Hour, baseDate.Minute, baseDate.Second, 
+                baseDate.Kind);
+        }
     }
+
+    private static (decimal baseAmount, decimal lastAmount) CalculateInstallmentDistribution(
+        decimal totalAmount, 
+        int installments)
+    {
+        var baseAmount = Math.Round(totalAmount / installments, 2);
+        var calculatedTotal = baseAmount * installments;
+        var difference = totalAmount - calculatedTotal;
+        var lastAmount = baseAmount + difference;
+
+        return (baseAmount, lastAmount);
+    }
+
+    private static decimal CalculateInstallmentAmount(decimal totalAmount, int installments)
+    {
+        return Math.Round(totalAmount / installments, 2);
+    }
+
     
-    private DomainResult UpdateExistingInstallments(
+    private void CancelAllInstallments()
+    {
+        foreach (var installment in Installments)
+        {
+            installment.Cancel();
+        }
+    }
+
+    private DomainResult ReplaceInstallments(
         int totalInstallments,
         DateTime firstDueDate,
         decimal expenseAmount)
     {
-        // Só permite atualizar se o número de parcelas for o mesmo
+        foreach (var installment in Installments)
+        {
+            installment.Cancel();
+        }
+        
+        TotalInstallments = totalInstallments;
+        FirstDueDate = firstDueDate.Date;
+        GenerateInstallments(expenseAmount);
+        
+        Version = 1 + Version;
+        return DomainResult.Success();
+    }
+
+    private bool HasChanges(int totalInstallments, DateTime firstDueDate, decimal expenseAmount)
+    {
+        return TotalInstallments != totalInstallments || 
+               FirstDueDate?.Date != firstDueDate.Date || 
+               Expense?.Amount != expenseAmount;
+    }
+
+    private DomainResult UpdateWithExistingInstallments(
+        int totalInstallments,
+        DateTime firstDueDate,
+        decimal expenseAmount)
+    {
         if (TotalInstallments != totalInstallments)
             return DomainResult.Failure(
                 "Para manter parcelas existentes, o número de parcelas não pode ser alterado.");
         
-        // Atualiza datas e valores mantendo o status das parcelas
-        FirstDueDate = firstDueDate;
-        
-        // Recalcula valores das parcelas
-        var baseAmount = Math.Round(expenseAmount / totalInstallments, 2);
-        var totalCalculated = baseAmount * totalInstallments;
-        var difference = expenseAmount - totalCalculated;
-        
-        InstallmentAmount = baseAmount;
-        
-        // Ordena parcelas por número
-        var installments = Installments.OrderBy(i => i.Number).ToList();
-        
-        for (int i = 0; i < totalInstallments; i++)
+        if (FirstDueDate?.Date != firstDueDate.Date)
         {
-            var installment = installments[i];
-            var currentAmount = (i == totalInstallments - 1) 
-                ? (baseAmount + difference) 
-                : baseAmount;
-            
-            // Atualiza apenas se a parcela estiver ativa (não paga)
-            if (installment.Status == EPaymentStatus.Active)
-            {
-                installment.DueDate = firstDueDate.AddMonths(i);
-                var updateRes = installment.UpdateAmount(currentAmount);
-                if (!updateRes.IsValid) 
-                    return updateRes;
-            }
+            FirstDueDate = firstDueDate.Date;
+            UpdateInstallmentsDueDates();
         }
         
+        if (Expense?.Amount != expenseAmount)
+        {
+            var (baseAmount, lastAmount) = 
+                CalculateInstallmentDistribution(expenseAmount, totalInstallments);
+            
+            InstallmentAmount = baseAmount;
+            UpdateInstallmentsAmounts(baseAmount, lastAmount);
+        }
+
+        Version = 1 + Version;
         return DomainResult.Success();
     }
-    
-    // Método auxiliar para verificar se pode modificar parcela
-    public bool CanModifyInstallment(int installmentNumber)
+
+    private void UpdateInstallmentsDueDates()
     {
-        var installment = Installments.FirstOrDefault(i => i.Number == installmentNumber);
-        return installment?.Status == EPaymentStatus.Active;
+        var orderedInstallments = Installments.OrderBy(i => i.Number).ToList();
+        
+        for (int i = 0; i < orderedInstallments.Count; i++)
+        {
+            var newDueDate = CalculateSafeDueDate(FirstDueDate!.Value, i);
+            orderedInstallments[i].UpdateDueDate(newDueDate);
+        }
     }
+
+    private void UpdateInstallmentsAmounts(decimal baseAmount, decimal lastAmount)
+    {
+        var orderedInstallments = Installments.OrderBy(i => i.Number).ToList();
+        
+        for (int i = 0; i < orderedInstallments.Count; i++)
+        {
+            var amount = (i == orderedInstallments.Count - 1) ? lastAmount : baseAmount;
+            orderedInstallments[i].UpdateAmount(amount);
+        }
+    }
+  
+    
 }

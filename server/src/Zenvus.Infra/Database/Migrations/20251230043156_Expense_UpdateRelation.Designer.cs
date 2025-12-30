@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Zenvus.Infra.Database;
 
@@ -11,9 +12,11 @@ using Zenvus.Infra.Database;
 namespace Zenvus.Infra.Database.Migrations
 {
     [DbContext(typeof(ZenvusDbContext))]
-    partial class ZenvusDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251230043156_Expense_UpdateRelation")]
+    partial class Expense_UpdateRelation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -95,8 +98,7 @@ namespace Zenvus.Infra.Database.Migrations
                     b.Property<uint>("Version")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("int unsigned")
-                        .HasDefaultValue(0u);
+                        .HasColumnType("int unsigned");
 
                     b.HasKey("Id");
 
@@ -114,9 +116,6 @@ namespace Zenvus.Infra.Database.Migrations
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(10,2)");
-
-                    b.Property<decimal?>("AmountPaid")
-                        .HasColumnType("decimal(65,30)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
@@ -197,7 +196,7 @@ namespace Zenvus.Infra.Database.Migrations
                     b.Property<DateTime>("Date")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime(6)")
-                        .HasDefaultValue(new DateTime(2025, 12, 30, 16, 49, 2, 703, DateTimeKind.Utc).AddTicks(9740));
+                        .HasDefaultValue(new DateTime(2025, 12, 30, 4, 31, 56, 32, DateTimeKind.Utc).AddTicks(3812));
 
                     b.Property<string>("Description")
                         .IsRequired()

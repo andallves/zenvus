@@ -32,8 +32,8 @@ export const CustomCurrencyMaskConfig = {
   prefix: 'R$ ',
   suffix: '',
   thousands: '.',
-  nullable: true,
-  min: undefined,
+  nullable: false,
+  min: 0.01,
   max: undefined,
 };
 
