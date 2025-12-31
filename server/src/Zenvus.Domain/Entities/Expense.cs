@@ -76,9 +76,8 @@ public class Expense : Transaction
         EExpense type, 
         Guid categoryId, 
         bool hasDebt, 
-        int? totalInstallments = null, 
-        DateTime? firstDueDate = null,
-        bool keepExistingInstallments = true)
+        int? totalInstallments, 
+        DateTime? firstDueDate)
     {
         ValidateAmount(amount);
 
@@ -108,15 +107,9 @@ public class Expense : Transaction
             changes.Add("categoria");
         }
         
-        if (Amount != amount)
-        {
-            Amount = amount;
-            changes.Add("valor");
-        }
-        
         return hasDebt
-            ? HandleDebtUpdate(amount, totalInstallments, firstDueDate, keepExistingInstallments)
-            : HandleNoDebtUpdate();
+            ? HandleDebtUpdate(amount, firstDueDate ?? DateTime.UtcNow, totalInstallments ?? 1)
+            : HandleNoDebtUpdate(amount);
     }
     
     public DomainResult AddDebt(int totalInstallments, DateTime firstDueDate)
@@ -173,31 +166,33 @@ public class Expense : Transaction
     
     private DomainResult HandleDebtUpdate(
         decimal amount,
-        int? totalInstallments,
-        DateTime? firstDueDate,
-        bool keepExistingInstallments = true)
+        DateTime firstDueDate,
+        int totalInstallments)
     {
         if (Debt is null)
         {
             return CreateNewDebt(amount, totalInstallments, firstDueDate);
         }
         
-        if (!Debt.CanBeUpdated(keepExistingInstallments))
+        if (!Debt.CanBeRecalculated())
             return DomainResult.Failure(
                 "Não é possível alterar esta dívida. Já existem parcelas pagas.");
         
-        Amount = amount;
-        
-        ValidateDebtParametersForUpdate(totalInstallments, firstDueDate);     
-        
+        ValidateDebtParametersForUpdate(totalInstallments, firstDueDate);
+
         return Debt.UpdateDebtDetails(
-            totalInstallments ?? Debt.TotalInstallments!.Value,
-            firstDueDate ?? Debt.FirstDueDate!.Value,
-            amount);
+            amount,
+            firstDueDate,
+            totalInstallments);
     }
 
-    private DomainResult HandleNoDebtUpdate()
+    private DomainResult HandleNoDebtUpdate(decimal amount)
     {
+        if (Amount != amount)
+        {
+            Amount = amount;
+        }
+        
         if (Debt is not null)
         {
             var removeResult = RemoveDebt();

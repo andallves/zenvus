@@ -9,6 +9,8 @@ import {
   Input,
   Output,
   signal,
+  OnChanges,
+  SimpleChanges,
 } from '@angular/core';
 import { FormsModule, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { NgxCurrencyDirective } from 'ngx-currency';
@@ -30,7 +32,7 @@ import { IdGeneratorService } from '../utils/id-generator.service';
   templateUrl: './money-input.component.html',
   styleUrls: ['./money-input.component.scss'],
 })
-export class MoneyInputComponent {
+export class MoneyInputComponent implements OnChanges {
   readonly #geradorIdUnico = inject(IdGeneratorService);
 
   @Input() inputId = 'input-id-default';
@@ -53,12 +55,35 @@ export class MoneyInputComponent {
   @Input() showMandatory = false;
   @Input() icon = false;
   @Input() fixedSize = false;
-  @Output() valueChange: any = new EventEmitter<number>();
+  @Input() options: any = {}; // Opções para ngx-currency
 
-  value: any;
+  @Output() valueChange = new EventEmitter<number | null>();
+
+  value: any = null;
   focus = false;
 
-  constructor(private readonly elementRef: ElementRef) {}
+  // Configuração padrão para moeda brasileira
+  currencyOptions = {
+    align: 'right',
+    allowNegative: false,
+    allowZero: true,
+    decimal: ',',
+    precision: 2,
+    prefix: 'R$ ',
+    suffix: '',
+    thousands: '.',
+    nullable: true,
+  };
+
+  constructor(private readonly elementRef: ElementRef) {
+    this.currencyOptions = { ...this.currencyOptions, ...this.options };
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['options']) {
+      this.currencyOptions = { ...this.currencyOptions, ...changes['options'].currentValue };
+    }
+  }
 
   @HostListener('document:click', ['$event'])
   onFocus(event: MouseEvent) {
@@ -72,35 +97,56 @@ export class MoneyInputComponent {
     }
   }
 
-  onInputChange(event: any) {
-    let inputValue = event.target.value;
-    const emojiRegex =
-      /([\u2700-\u27BF]|[\uE000-\uF8FF]|[\uD83C-\uDFFF]|[\u2600-\u26FF]|[\uD83D\uDC00-\uDFFF])/g;
-    inputValue = inputValue.replaceAll(emojiRegex, '');
-    event.target.value = inputValue;
-    this.value = inputValue;
-    this.onChange(this.value);
+  onCurrencyChange(value: number) {
+    console.log(value);
+
+    // Atualiza o valor local
+    this.value = value;
+
+    // Notifica o ControlValueAccessor
+    this.onChange(value);
     this.onTouched();
-    this.valueChange.emit(this.value);
+
+    // Emite o evento para o componente pai
+    this.valueChange.emit(value);
   }
 
   onInputBlur() {
     this.focus = false;
+    this.onTouched();
   }
 
   clearInput(event: Event) {
     event.stopPropagation();
-    this.value = '';
-    this.onChange(this.value);
+    this.value = null;
+    this.onChange(null);
     this.onTouched();
-    this.valueChange.emit(this.value);
+    this.valueChange.emit(null);
   }
 
   onChange: (value: any) => void = () => {};
   onTouched: () => void = () => {};
 
   writeValue(value: any): void {
-    this.value = value;
+    if (value !== undefined && value !== null) {
+      // Converte para número se for string
+      if (typeof value === 'string') {
+        // Remove formatação se necessário
+        const cleanValue = value
+          .replace(/[^\d,.-]/g, '')
+          .replace('.', '')
+          .replace(',', '.');
+        this.value = parseFloat(cleanValue);
+      } else {
+        this.value = parseFloat(value);
+      }
+
+      if (isNaN(this.value)) {
+        this.value = null;
+      }
+    } else {
+      this.value = null;
+    }
   }
 
   registerOnChange(fn: (value: any) => void): void {

@@ -52,7 +52,7 @@ export class InputDefaultComponent {
   @Input() showMandatory = false;
   @Input() icon = false;
   @Input() fixedSize = false;
-  @Output() valueChange: any = new EventEmitter<number>();
+  @Output() valueChange = new EventEmitter<number>();
 
   value: any;
   focus = false;

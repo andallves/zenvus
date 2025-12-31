@@ -115,25 +115,17 @@ public class Debt : SoftDeleteEntity
             : validationResult;
     }
     
-    public bool CanBeUpdated(bool keepExistingInstallments)
-    {
-        return keepExistingInstallments || CanBeRecalculated();
-    }
-    
     public DomainResult UpdateDebtDetails(
-        int totalInstallments,
+        decimal expenseAmount,
         DateTime firstDueDate,
-        decimal expenseAmount)
+        int totalInstallments )
     {
-        if (!HasChanges(totalInstallments, firstDueDate, expenseAmount))
+        if (HasNoChanges(totalInstallments, firstDueDate, expenseAmount))
             return DomainResult.Success();
         
-        if (TotalInstallments == totalInstallments)
-        {
-            return UpdateWithExistingInstallments(totalInstallments, firstDueDate, expenseAmount);
-        }
-        
-        return RecreateInstallments(totalInstallments, firstDueDate, expenseAmount);
+        return TotalInstallments == totalInstallments 
+            ? UpdateWithExistingInstallments(totalInstallments, firstDueDate, expenseAmount) 
+            : RecreateInstallments(totalInstallments, firstDueDate, expenseAmount);
     }
     
     public bool CanModifyInstallment(int installmentNumber)
@@ -287,11 +279,11 @@ public class Debt : SoftDeleteEntity
         return DomainResult.Success();
     }
 
-    private bool HasChanges(int totalInstallments, DateTime firstDueDate, decimal expenseAmount)
+    private bool HasNoChanges(int totalInstallments, DateTime firstDueDate, decimal expenseAmount)
     {
-        return TotalInstallments != totalInstallments || 
-               FirstDueDate?.Date != firstDueDate.Date || 
-               Expense?.Amount != expenseAmount;
+        return TotalInstallments == totalInstallments && 
+               FirstDueDate?.Date == firstDueDate.Date &&
+               Expense.Amount == expenseAmount;
     }
 
     private DomainResult UpdateWithExistingInstallments(
@@ -311,6 +303,9 @@ public class Debt : SoftDeleteEntity
         
         if (Expense?.Amount != expenseAmount)
         {
+            Expense!.Amount = expenseAmount;
+            Console.WriteLine(Expense.Amount);
+            Console.WriteLine(expenseAmount);
             var (baseAmount, lastAmount) = 
                 CalculateInstallmentDistribution(expenseAmount, totalInstallments);
             

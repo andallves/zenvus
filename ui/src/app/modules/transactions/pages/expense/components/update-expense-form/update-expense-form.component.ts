@@ -7,7 +7,6 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import CategoryService from '@modules/transactions/services/category.service';
 import { ExpenseService } from '@modules/transactions/services/expense.service';
 import { ButtonComponent } from '@shared/components/button/button.component';
 import { DateInputComponent } from '@shared/components/inputs/date-input/date-input.component';
@@ -17,7 +16,6 @@ import { SelectInputComponent } from '@shared/components/inputs/select-input/sel
 import { ModalIconType } from '@shared/components/swall/modal-alert/domain-types/modal-types.interface';
 import { ModalAlertService } from '@shared/components/swall/modal-alert/service/modal-alert.service';
 import { IOptions, IValueOptions } from '@shared/domain-types/options';
-import { ECategoryType } from '@shared/enums/category-type.enum';
 import { IDebt, IDebtCreate } from '@shared/interfaces/debt.interface';
 import { IExpense, IExpenseOptions, IExpenseUpdate } from '@shared/interfaces/expense.interface';
 import { InputValidationService } from '@shared/validators/input-validator/input-validator.service';
@@ -52,7 +50,6 @@ export class UpdateExpenseFormComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly validatorsService = inject(InputValidationService);
   private readonly expenseService = inject(ExpenseService);
-  private readonly categoryService = inject(CategoryService);
   private readonly modalService = inject(BsModalService);
   private readonly modalAlertService = inject(ModalAlertService);
   private readonly toastr = inject(ToastrService);
@@ -61,7 +58,6 @@ export class UpdateExpenseFormComponent implements OnInit {
 
   constructor() {
     this.initializeForm();
-    this.loaderCategoriesOptions();
   }
 
   ngOnInit() {
@@ -74,7 +70,7 @@ export class UpdateExpenseFormComponent implements OnInit {
       categoryId: ['', [Validators.required]],
       date: ['', [Validators.required]],
       typeId: ['', [Validators.required]],
-      amount: [0, [Validators.required]],
+      amount: ['', [Validators.required]],
       isInstallment: ['', []],
       totalInstallments: [0, []],
       firstDueDate: ['', []],
@@ -127,15 +123,6 @@ export class UpdateExpenseFormComponent implements OnInit {
     return '';
   }
 
-  loaderCategoriesOptions() {
-    this.categoryService.getCategoriesForSelect(true, ECategoryType.Expense).subscribe({
-      next: options => {
-        this.categoriesOptions = options;
-      },
-      error: err => console.error('Erro ao carregar categorias para o filtro', err),
-    });
-  }
-
   updateExpense() {
     this.isLoading = true;
 
@@ -144,7 +131,8 @@ export class UpdateExpenseFormComponent implements OnInit {
       this.isLoading = false;
       return;
     }
-
+    console.log('Input money');
+    console.log(this.updateExpenseForm.value.amount);
     const formValues = this.updateExpenseForm.value;
     const debt: IDebt | IDebtCreate =
       this.dataExpense().debt === null
@@ -160,11 +148,25 @@ export class UpdateExpenseFormComponent implements OnInit {
             firstDueDate: formValues.firstDueDate,
           };
 
+    console.log('Form values before submission:', this.updateExpenseForm.value);
+    console.log('Amount value:', this.updateExpenseForm.value.amount);
+    console.log('Type of amount:', typeof this.updateExpenseForm.value.amount);
+
+    // Adicione uma verificação de conversão
+    let amountValue: number;
+    if (typeof formValues.amount === 'string') {
+      amountValue = parseFloat(formValues.amount.replace(',', '.'));
+    } else {
+      amountValue = Number(formValues.amount);
+    }
+
+    console.log('Parsed amount value:', amountValue);
+
     const payload: IExpenseUpdate = {
       id: this.dataExpense().id,
       description: formValues.description,
       categoryId: formValues.categoryId,
-      amount: Number(formValues.amount),
+      amount: amountValue,
       date: formValues.date,
       typeId: formValues.typeId,
       debt: this.isInstallments() ? debt : null,
@@ -197,9 +199,26 @@ export class UpdateExpenseFormComponent implements OnInit {
     });
   }
 
+  handleCurrencyChange(value: number | null) {
+    console.log('handleCurrencyChange called with value:', value);
+    console.log('Type of value:', typeof value);
+
+    // Log o estado atual do formulário
+    console.log('Form amount before patch:', this.updateExpenseForm.get('amount')?.value);
+
+    this.updateExpenseForm.patchValue({ amount: value });
+
+    // Log depois da atualização
+    console.log('Form amount after patch:', this.updateExpenseForm.get('amount')?.value);
+    console.log('Form validity:', this.updateExpenseForm.valid);
+    console.log('Form errors:', this.updateExpenseForm.get('amount')?.errors);
+  }
+
   isInstallmentsChange(value: IValueOptions) {
     if (typeof value == 'boolean') {
       this.isInstallments.update(() => value);
     }
   }
+
+  protected readonly console = console;
 }

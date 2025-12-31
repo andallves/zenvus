@@ -21,8 +21,8 @@
       currencyMask
       id="{{ inputId }}"
       [type]="type"
-      (input)="onInputChange($event)"
       (blur)="onInputBlur()"
+      (ngModelChange)="onCurrencyChange($event)"
       [(ngModel)]="value"
       [placeholder]="placeholder"
       [disabled]="isDisable"
