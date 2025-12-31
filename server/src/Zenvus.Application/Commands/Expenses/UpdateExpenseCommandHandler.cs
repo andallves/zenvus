@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Zenvus.Application.DTO.Expenses;
 using Zenvus.Core.Auth;
 using Zenvus.Core.ValueObjects;
@@ -10,7 +11,11 @@ using Zenvus.Infra.Database;
 
 namespace Zenvus.Application.Commands.Expenses;
 
-public class UpdateExpenseCommandHandler(IRepository<ZenvusDbContext> repository, IAuthenticatedUser authenticatedUser) : IRequestHandler<UpdateExpenseCommand, CustomResult<ExpenseDto>>
+public class UpdateExpenseCommandHandler(
+    IRepository<ZenvusDbContext> repository, 
+    IAuthenticatedUser authenticatedUser,
+    ILogger<UpdateExpenseCommandHandler> logger
+    ) : IRequestHandler<UpdateExpenseCommand, CustomResult<ExpenseDto>>
 {
     public async Task<CustomResult<ExpenseDto>> Handle(UpdateExpenseCommand command, CancellationToken cancellationToken)
     {
@@ -48,6 +53,19 @@ public class UpdateExpenseCommandHandler(IRepository<ZenvusDbContext> repository
   
         try
         {
+            // Ensure any newly created installments are marked as Added so EF will INSERT them
+            if (expense.Debt?.Installments != null)
+            {
+                foreach (var installment in expense.Debt.Installments)
+                {
+                    // newly created installments will have default CreatedAt (DateTime.MinValue)
+                    if (installment.CreatedAt == default)
+                    {
+                        repository.SetEntityState(installment, EntityState.Added);
+                    }
+                }
+            }
+
             await repository.SaveChangesAsync(cancellationToken);
             
             // Reload the updated expense from database to ensure navigation properties are
@@ -58,18 +76,39 @@ public class UpdateExpenseCommandHandler(IRepository<ZenvusDbContext> repository
                 .Include(e => e.Debt)
                 .ThenInclude(d => d.Installments)
                 .AsNoTracking()
-                .FirstOrDefaultAsync(e => e.Id == expense.Id, cancellationToken);
+                .FirstOrDefaultAsync(e => 
+                    e.Id == expense.Id && 
+                    e.UserId == authenticatedUser.Id, 
+                cancellationToken);
         
             return CustomResult<ExpenseDto>
                 .SuccessResult(ExpenseDto.From(expense!), "Despesa atualizada com sucesso!", 200);
         }
         catch (DbUpdateConcurrencyException ex)
         {
-            // Do not retry recursively. Return a concurrency error so client can decide next steps.
-            Console.WriteLine($"Concurrency error: {ex.Message}");
-            return CustomResult<ExpenseDto>.ErrorResult(
-                "Falha de concorrência ao atualizar entidade(s). Tente novamente.",
-                errorType: IsResultErrorType.Conflict);
+            logger.LogError(ex, "Concurrency error updating expense {ExpenseId}", command.Id);
+    
+            foreach (var entry in ex.Entries)
+            {
+                logger.LogError("Entity: {EntityType}, State: {State}", 
+                    entry.Entity.GetType().Name, entry.State);
+            
+                var proposedValues = entry.CurrentValues;
+                var databaseValues = await entry.GetDatabaseValuesAsync();
+
+                foreach (var property in proposedValues.Properties)
+                {
+                    var proposedValue = proposedValues[property];
+                    var databaseValue = databaseValues?[property];
+            
+                    logger.LogError("Property: {Property}, Proposed: {Proposed}, Database: {Database}",
+                        property.Name, proposedValue, databaseValue);
+                }
+            }
+    
+            return CustomResult<ExpenseDto>
+                .ErrorResult("Erro de concorrência ao atualizar a despesa. Por favor, tente novamente.",
+                    errorType: IsResultErrorType.Conflict);
         }
         catch (Exception ex)
         {

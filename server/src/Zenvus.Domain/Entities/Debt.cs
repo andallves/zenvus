@@ -12,13 +12,7 @@ public class Debt : SoftDeleteEntity
     public int? TotalInstallments { get; set; }
     public decimal? InstallmentAmount { get; set; }
     public DateTime? FirstDueDate { get; set; }
-    private uint _version;
-    
-    public uint Version 
-    { 
-        get => _version;
-        private set => _version = value;
-    }
+
     public List<DebtInstallment> Installments { get; set; }
         = new List<DebtInstallment>();
     
@@ -275,7 +269,6 @@ public class Debt : SoftDeleteEntity
         FirstDueDate = firstDueDate.Date;
         GenerateInstallments(expenseAmount);
         
-        Version = 1 + Version;
         return DomainResult.Success();
     }
 
@@ -312,8 +305,7 @@ public class Debt : SoftDeleteEntity
             InstallmentAmount = baseAmount;
             UpdateInstallmentsAmounts(baseAmount, lastAmount);
         }
-
-        Version = 1 + Version;
+        
         return DomainResult.Success();
     }
 

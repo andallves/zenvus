@@ -25,7 +25,7 @@
     label="Categoria:"
     placeholder="Selecione uma categoria"
     formControlName="categoryId"
-    [options]="categoriesOptions"
+    [options]="options().categoriesOptions"
     [dropdownId]="'select-category'"
     [showMandatory]="true"
   />
@@ -47,7 +47,7 @@
     formControlName="amount"
     [inputId]="'input-amount'"
     [showMandatory]="true"
-    (valueChange)="isInstallmentsChange($event)"
+    (valueChange)="console.log('🟢 Evento emitido:', $event); handleCurrencyChange($event)"
   />
 
   <zen-select-input
@@ -72,7 +72,7 @@
 
     <zen-date-input
       id="input-first-due-date"
-      label="Data:"
+      label="Data da 1ª parcela:"
       placeholder="Informe a data da primeira parcela"
       formControlName="firstDueDate"
       [inputId]="'input-first-due-date'"

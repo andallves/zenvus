@@ -16,8 +16,10 @@ public class ExpenseProfile: Profile
             .ReverseMap();
       
         CreateMap<CreateExpenseCommand, Expense>();
-        // Do not map Debt automatically from UpdateExpenseCommand - handled manually in handler
+       
         CreateMap<UpdateExpenseCommand, Expense>()
-            .ForMember(dest => dest.Debt, opt => opt.Ignore());
+            .ForMember(x => x.Debt, opt => opt.Ignore())
+            .ForMember(x => x.Debt!.Installments, opt => opt.Ignore());
+
     }
 }

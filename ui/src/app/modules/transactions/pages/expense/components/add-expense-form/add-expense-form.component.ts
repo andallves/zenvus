@@ -16,8 +16,7 @@ import { MoneyInputComponent } from '@shared/components/inputs/money-input/money
 import { SelectInputComponent } from '@shared/components/inputs/select-input/select-input.component';
 import { ModalIconType } from '@shared/components/swall/modal-alert/domain-types/modal-types.interface';
 import { ModalAlertService } from '@shared/components/swall/modal-alert/service/modal-alert.service';
-import { IOptions, IValueOptions } from '@shared/domain-types/options';
-import { ECategoryType } from '@shared/enums/category-type.enum';
+import { IValueOptions } from '@shared/domain-types/options';
 import { IDebtCreate } from '@shared/interfaces/debt.interface';
 import { IExpenseCreate, IExpenseOptions } from '@shared/interfaces/expense.interface';
 import { InputValidationService } from '@shared/validators/input-validator/input-validator.service';
@@ -46,7 +45,6 @@ export class AddExpenseFormComponent {
 
   addExpenseForm!: FormGroup;
   isLoading = false;
-  categoriesOptions: IOptions[] = [];
 
   private readonly fb = inject(FormBuilder);
   private readonly validatorsService = inject(InputValidationService);
@@ -60,7 +58,6 @@ export class AddExpenseFormComponent {
 
   constructor() {
     this.initializeForm();
-    this.loaderCategoriesOptions();
   }
 
   initializeForm() {
@@ -100,15 +97,6 @@ export class AddExpenseFormComponent {
     }
 
     return '';
-  }
-
-  loaderCategoriesOptions() {
-    this.categoryService.getCategoriesForSelect(true, ECategoryType.Expense).subscribe({
-      next: options => {
-        this.categoriesOptions = options;
-      },
-      error: err => console.error('Erro ao carregar categorias para o filtro', err),
-    });
   }
 
   addExpense() {
