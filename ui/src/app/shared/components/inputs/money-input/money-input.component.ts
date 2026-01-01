@@ -11,6 +11,7 @@ import {
   signal,
   OnChanges,
   SimpleChanges,
+  input,
 } from '@angular/core';
 import { FormsModule, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { NgxCurrencyDirective } from 'ngx-currency';
@@ -56,6 +57,7 @@ export class MoneyInputComponent implements OnChanges {
   @Input() icon = false;
   @Input() fixedSize = false;
   @Input() options: any = {}; // Opções para ngx-currency
+  errorMessages = input<string[] | null>(null);
 
   @Output() valueChange = new EventEmitter<number | null>();
 

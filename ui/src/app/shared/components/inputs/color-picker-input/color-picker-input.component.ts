@@ -6,6 +6,7 @@ import {
   forwardRef,
   HostListener,
   inject,
+  input,
   Input,
   Output,
   signal,
@@ -56,6 +57,7 @@ export class ColorPickerInputComponent {
   @Input() icon = false;
   @Input() fixedSize = false;
   @Output() valueChange = new EventEmitter<string>();
+  errorMessages = input<string[] | null>(null);
 
   value = '';
   focus = false;

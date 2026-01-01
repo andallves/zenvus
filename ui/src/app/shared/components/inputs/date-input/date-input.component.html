@@ -31,9 +31,16 @@
     ></i>
   </div>
 
-  @if (hasError) {
-    <div id="{{ inputId }}-error" class="feedback-invalido">
-      {{ customErrorMsg || errorMsg }}
-    </div>
+  @if (errorMessages()?.length) {
+    <ul class="error-messages">
+      @for (msg of errorMessages(); track $index) {
+        <li
+          class="error-message"
+        >
+          <i class="bi bi-x-circle-fill"></i>
+          <p [innerHTML]="msg"></p>
+        </li>
+      }
+    </ul>
   }
 </div>

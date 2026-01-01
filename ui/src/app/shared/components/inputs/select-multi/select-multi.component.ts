@@ -1,5 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, forwardRef, inject, Input, signal, ViewChild, OnInit } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  forwardRef,
+  inject,
+  Input,
+  signal,
+  ViewChild,
+  OnInit,
+  input,
+} from '@angular/core';
 import { FormsModule, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { IdGeneratorService } from '../utils/id-generator.service';
 
@@ -37,7 +47,7 @@ export class SelectMultiInputComponent implements OnInit {
   @Input() showMandatory = false;
   @Input() showX = false;
   @Input() fixedSize = false;
-
+  errorMessages = input<string[] | null>(null);
   @ViewChild('selectedValue', { static: false }) selectedValueRef!: ElementRef;
 
   selectedOptions: any[] = [];

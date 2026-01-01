@@ -1,5 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, forwardRef, inject, Input, Output, signal } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  forwardRef,
+  inject,
+  input,
+  Input,
+  Output,
+  signal,
+} from '@angular/core';
 import {
   ControlValueAccessor,
   FormsModule,
@@ -51,6 +60,7 @@ export class DateInputComponent implements ControlValueAccessor {
   @Input() maxDate: Date = new Date(2100, 11, 31);
   @Input() fixedSize = false;
   @Output() valueChange = new EventEmitter<Date>();
+  errorMessages = input<string[] | null>(null);
 
   data?: Date;
   value?: Date;
@@ -138,8 +148,7 @@ export class DateInputComponent implements ControlValueAccessor {
   onInputChange(event: any): void {
     const inputValue = event.target.value;
     const date = new Date(inputValue);
-    console.log('date' + date);
-    console.log('inputValue:' + inputValue);
+
     if (Number.isNaN(date.getTime())) {
       this.customErrorMsg = 'Valor de data inválido. Ou não está no formato DD/MM/AAAA.';
       this.hasError = true;

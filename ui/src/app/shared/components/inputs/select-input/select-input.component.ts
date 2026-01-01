@@ -6,6 +6,7 @@ import {
   forwardRef,
   HostListener,
   inject,
+  input,
   Input,
   Output,
   signal,
@@ -49,6 +50,7 @@ export class SelectInputComponent {
   @Input() showX = false;
   @Input() fixedSize = false;
   @Output() valueChange = new EventEmitter<IValueOptions>();
+  errorMessages = input<string[] | null>(null);
 
   @ViewChild('selectedValue', { static: false }) selectedValueRef!: ElementRef;
 

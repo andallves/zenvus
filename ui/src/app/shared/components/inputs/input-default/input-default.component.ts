@@ -6,6 +6,7 @@ import {
   forwardRef,
   HostListener,
   inject,
+  input,
   Input,
   Output,
   signal,
@@ -53,6 +54,7 @@ export class InputDefaultComponent {
   @Input() icon = false;
   @Input() fixedSize = false;
   @Output() valueChange = new EventEmitter<number>();
+  errorMessages = input<string[] | null>(null);
 
   value: any;
   focus = false;
