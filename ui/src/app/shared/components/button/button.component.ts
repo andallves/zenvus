@@ -22,7 +22,7 @@ export class ButtonComponent {
     | 'white'
     | 'success'
     | 'custom'
-    | null = 'primary';
+    | null = 'warning';
   @Input() disabled = false;
   @Input() colorText: 'primary' | 'white' | null = 'white';
   @Input() borderColor: '' | 'primary' | null = '';
