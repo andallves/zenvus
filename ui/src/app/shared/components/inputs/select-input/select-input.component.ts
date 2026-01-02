@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
+  computed,
   ElementRef,
   EventEmitter,
   forwardRef,
@@ -29,6 +30,10 @@ import { IdGeneratorService } from '../utils/id-generator.service';
   ],
   templateUrl: './select-input.component.html',
   styleUrls: ['./select-input.component.scss'],
+  host: {
+    role: 'fieldset',
+    '[ngClass]': 'borderClass',
+  },
 })
 export class SelectInputComponent {
   readonly #geradorIdUnique = inject(IdGeneratorService);
@@ -51,6 +56,8 @@ export class SelectInputComponent {
   @Input() fixedSize = false;
   @Output() valueChange = new EventEmitter<IValueOptions>();
   errorMessages = input<string[] | null>(null);
+  isValid = input(false);
+  isInvalid = computed(() => !this.isValid);
 
   @ViewChild('selectedValue', { static: false }) selectedValueRef!: ElementRef;
 
@@ -58,6 +65,20 @@ export class SelectInputComponent {
   isOpen = false;
   isFocused = false;
   focusedOptionIndex = -1;
+  touched = false;
+
+  get borderClass() {
+    if (!this.touched) {
+      return 'default';
+    }
+    if (this.isValid()) {
+      return 'is-valid';
+    }
+    if (this.isInvalid()) {
+      return 'is-invalid';
+    }
+    return 'default';
+  }
 
   onChange: any = () => {};
   onTouched: any = () => {};

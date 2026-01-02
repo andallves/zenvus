@@ -1,6 +1,7 @@
 import { NgClass } from '@angular/common';
 import {
   Component,
+  computed,
   ElementRef,
   EventEmitter,
   forwardRef,
@@ -31,6 +32,11 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
     },
     provideNgxMask(),
   ],
+  host: {
+    class: 'fieldset-input',
+    role: 'fieldset',
+    '[ngClass]': 'borderClass',
+  },
   styleUrl: './color-picker-input.component.scss',
 })
 export class ColorPickerInputComponent {
@@ -58,11 +64,27 @@ export class ColorPickerInputComponent {
   @Input() fixedSize = false;
   @Output() valueChange = new EventEmitter<string>();
   errorMessages = input<string[] | null>(null);
+  isValid = input<boolean>(false);
+  isInvalid = computed(() => !this.isValid());
 
   value = '';
   focus = false;
+  touched = false;
 
   private readonly elementRef = inject(ElementRef);
+
+  get borderClass() {
+    if (!this.touched) {
+      return 'default';
+    }
+    if (this.isValid()) {
+      return 'is-valid';
+    }
+    if (this.isInvalid()) {
+      return 'is-invalid';
+    }
+    return 'default';
+  }
 
   @HostListener('document:click', ['$event'])
   onFocus(event: MouseEvent) {
@@ -107,8 +129,12 @@ export class ColorPickerInputComponent {
     this.valueChange.emit(this.value);
   }
 
-  onChange: (value: string) => void = () => {};
-  onTouched: () => void = () => {};
+  onChange: (value: string) => void = () => {
+    /* empty */
+  };
+  onTouched: () => void = () => {
+    /* empty */
+  };
 
   writeValue(value: string): void {
     this.value = value;

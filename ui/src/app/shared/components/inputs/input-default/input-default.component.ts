@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
+  computed,
   ElementRef,
   EventEmitter,
   forwardRef,
@@ -29,6 +30,11 @@ import { IdGeneratorService } from '../utils/id-generator.service';
   ],
   templateUrl: './input-default.component.html',
   styleUrls: ['./input-default.component.scss'],
+  host: {
+    class: 'fieldset-input',
+    role: 'fieldset',
+    '[ngClass]': 'borderClass',
+  },
 })
 export class InputDefaultComponent {
   #geradorIdUnico = inject(IdGeneratorService);
@@ -55,11 +61,26 @@ export class InputDefaultComponent {
   @Input() fixedSize = false;
   @Output() valueChange = new EventEmitter<number>();
   errorMessages = input<string[] | null>(null);
-
+  isValid = input(false);
+  isInvalid = computed(() => !this.isValid());
   value: any;
   focus = false;
+  touched = false;
 
-  constructor(private readonly elementRef: ElementRef) {}
+  private readonly elementRef = inject(ElementRef);
+
+  get borderClass() {
+    if (!this.touched) {
+      return 'default';
+    }
+    if (this.isValid()) {
+      return 'is-valid';
+    }
+    if (this.isInvalid()) {
+      return 'is-invalid';
+    }
+    return 'default';
+  }
 
   @HostListener('document:click', ['$event'])
   onFocus(event: MouseEvent) {
