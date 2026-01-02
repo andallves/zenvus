@@ -17,9 +17,6 @@ import { map, Observable } from 'rxjs';
   providedIn: 'root',
 })
 class CategoryService extends BaseService {
-  private readonly apiUrl = environment.apiUrl;
-  private readonly httpClient = inject(HttpClient);
-
   getCategoriesForSelect(isIdValue = true, type = ECategoryType.Expense): Observable<IOptions[]> {
     return this.httpClient.get<ApiResponse<ICategory>>(`${this.apiUrl}/v1/category`).pipe(
       map(response =>
