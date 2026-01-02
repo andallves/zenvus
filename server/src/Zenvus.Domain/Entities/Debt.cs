@@ -26,7 +26,7 @@ public class Debt : SoftDeleteEntity
         Disabled = true;
     }
     
-    private Debt() { } 
+    private Debt() {}
 
     private Debt(
         Expense expense,
@@ -72,7 +72,7 @@ public class Debt : SoftDeleteEntity
     public bool CanBeRecalculated()
     {
         return Installments.All(i => 
-            i.Status is EPaymentStatus.Active or EPaymentStatus.Pending);
+            i.Status is EPaymentStatus.Active or EPaymentStatus.Pending or EPaymentStatus.Cancelled);
     }
     
     public bool HasPaidInstallments()
@@ -202,7 +202,7 @@ public class Debt : SoftDeleteEntity
         }
     }
     
-    private DateTime CalculateSafeDueDate(DateTime baseDate, int monthsToAdd)
+    private static DateTime CalculateSafeDueDate(DateTime baseDate, int monthsToAdd)
     {
         try
         {
@@ -294,7 +294,7 @@ public class Debt : SoftDeleteEntity
             UpdateInstallmentsDueDates();
         }
         
-        if (Expense?.Amount != expenseAmount)
+        if (Expense.Amount != expenseAmount)
         {
             Expense!.Amount = expenseAmount;
             Console.WriteLine(Expense.Amount);

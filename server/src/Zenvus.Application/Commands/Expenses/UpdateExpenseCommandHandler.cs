@@ -53,12 +53,10 @@ public class UpdateExpenseCommandHandler(
   
         try
         {
-            // Ensure any newly created installments are marked as Added so EF will INSERT them
             if (expense.Debt?.Installments != null)
             {
                 foreach (var installment in expense.Debt.Installments)
                 {
-                    // newly created installments will have default CreatedAt (DateTime.MinValue)
                     if (installment.CreatedAt == default)
                     {
                         repository.SetEntityState(installment, EntityState.Added);
@@ -68,8 +66,6 @@ public class UpdateExpenseCommandHandler(
 
             await repository.SaveChangesAsync(cancellationToken);
             
-            // Reload the updated expense from database to ensure navigation properties are
-            // in sync with database state and avoid NullReference in mapping.
             expense = await repository
                 .DbSet<Expense>()
                 .Include(e => e.Category)
@@ -94,7 +90,7 @@ public class UpdateExpenseCommandHandler(
                     entry.Entity.GetType().Name, entry.State);
             
                 var proposedValues = entry.CurrentValues;
-                var databaseValues = await entry.GetDatabaseValuesAsync();
+                var databaseValues = await entry.GetDatabaseValuesAsync(cancellationToken);
 
                 foreach (var property in proposedValues.Properties)
                 {

@@ -19,7 +19,7 @@ public class ExpenseProfile: Profile
        
         CreateMap<UpdateExpenseCommand, Expense>()
             .ForMember(x => x.Debt, opt => opt.Ignore())
-            .ForMember(x => x.Debt!.Installments, opt => opt.Ignore());
+            .ForPath(x => x.Debt!.Installments, opt => opt.Ignore());
 
     }
 }

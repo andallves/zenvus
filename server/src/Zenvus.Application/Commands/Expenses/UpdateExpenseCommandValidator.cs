@@ -119,7 +119,7 @@ public class UpdateExpenseCommandValidator : AbstractValidator<UpdateExpenseComm
         });
     }
 
-    private bool BeValidExpenseTypeId(int typeId)
+    private static bool BeValidExpenseTypeId(int typeId)
     {
         return Enum.IsDefined(typeof(EExpense), typeId);
     }
@@ -161,7 +161,7 @@ public class UpdateExpenseCommandValidator : AbstractValidator<UpdateExpenseComm
         }
     }
 
-    private async Task ValidateInstallmentsAgainstExistingDebt(
+    private static async Task ValidateInstallmentsAgainstExistingDebt(
         int? totalInstallments,
         ValidationContext<UpdateExpenseCommand> context,
         CancellationToken cancellationToken)
@@ -172,18 +172,15 @@ public class UpdateExpenseCommandValidator : AbstractValidator<UpdateExpenseComm
         if (context.RootContextData.TryGetValue(ExistingExpense, out var existingExpenseObj) &&
             existingExpenseObj is Expense { Debt: not null } existingExpense)
         {
-            // Se está atualizando uma dívida existente
             var existingDebt = existingExpense.Debt;
-
-            // Se já tem parcelas pagas, não pode reduzir o número de parcelas
+            
             if (existingDebt.HasPaidInstallments() &&
                 totalInstallments < existingDebt.Installments.Count(i => i.Status == EPaymentStatus.Active))
             {
                 context.AddFailure(
                     "Não é possível reduzir o número de parcelas quando já existem parcelas pagas.");
             }
-
-            // Se está alterando o número de parcelas, valida se pode recalcular
+            
             if (totalInstallments != existingDebt.TotalInstallments &&
                 !existingDebt.CanBeRecalculated())
             {
@@ -193,7 +190,7 @@ public class UpdateExpenseCommandValidator : AbstractValidator<UpdateExpenseComm
         }
     }
 
-    private Task ValidateFirstDueDateAgainstExistingDebt(
+    private static Task ValidateFirstDueDateAgainstExistingDebt(
         DateTime? firstDueDate,
         ValidationContext<UpdateExpenseCommand> context,
         CancellationToken cancellationToken)
@@ -206,26 +203,23 @@ public class UpdateExpenseCommandValidator : AbstractValidator<UpdateExpenseComm
         {
             var existingDebt = existingExpense.Debt;
 
-            // Se já tem parcelas pagas, não pode alterar a data da primeira parcela para antes da última parcela paga
-            if (existingDebt.HasPaidInstallments())
-            {
-                var lastPaidInstallment = existingDebt.Installments
-                    .Where(i => i.Status == EPaymentStatus.Paid)
-                    .OrderByDescending(i => i.DueDate)
-                    .FirstOrDefault();
+            if (!existingDebt.HasPaidInstallments()) return Task.CompletedTask;
+            var lastPaidInstallment = existingDebt.Installments
+                .Where(i => i.Status == EPaymentStatus.Paid)
+                .OrderByDescending(i => i.DueDate)
+                .FirstOrDefault();
 
-                if (lastPaidInstallment != null && firstDueDate < lastPaidInstallment.DueDate)
-                {
-                    context.AddFailure(
-                        $"Não é possível alterar a data da primeira parcela para antes de {lastPaidInstallment.DueDate:dd/MM/yyyy}, " +
-                        $"que é a data da última parcela paga.");
-                }
+            if (lastPaidInstallment != null && firstDueDate < lastPaidInstallment.DueDate)
+            {
+                context.AddFailure(
+                    $"Não é possível alterar a data da primeira parcela para antes de {lastPaidInstallment.DueDate:dd/MM/yyyy}, " +
+                    $"que é a data da última parcela paga.");
             }
         }
         return Task.CompletedTask;
     }
 
-    private Task ValidateExpenseDebtConsistency(
+    private static Task ValidateExpenseDebtConsistency(
         UpdateExpenseCommand command,
         ValidationContext<UpdateExpenseCommand> context,
         CancellationToken cancellationToken)
@@ -251,8 +245,7 @@ public class UpdateExpenseCommandValidator : AbstractValidator<UpdateExpenseComm
                     "Despesas variáveis não podem ter dívidas associadas. " +
                     "Altere o tipo da despesa para 'Fixa' ou remova a dívida.");
             }
-
-            // Valida limite máximo de parcelas baseado no valor
+            
             if (command.Debt is { IsInstallment: true, TotalInstallments: not null } &&
                 command.Amount / command.Debt.TotalInstallments.Value < 1)
             {

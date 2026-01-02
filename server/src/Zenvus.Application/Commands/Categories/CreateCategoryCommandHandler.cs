@@ -18,7 +18,9 @@ public class CreateCategoryCommandHandler(IMapper mapper, IRepository<ZenvusDbCo
         CancellationToken cancellationToken)
     {
         var category = await repository.DbSet<Category>()
-            .FirstOrDefaultAsync(c => c.Name.ToLower() == request.Name.ToLower() && c.UserId == authenticatedUser.Id,
+            .FirstOrDefaultAsync(c => 
+                c.Name.ToLower().Equals(request.Name.ToLower()) && 
+                c.UserId == authenticatedUser.Id,
                 cancellationToken);
         
         if (category is null) {
