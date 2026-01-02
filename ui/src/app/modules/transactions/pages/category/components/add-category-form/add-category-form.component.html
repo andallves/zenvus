@@ -4,15 +4,15 @@
 
   <zen-input
     id="input-name"
-    label="Digite o nome"
-    placeholder="Nome:"
-    [hasError]="hasMaxLengthAndRequiredError('name')"
-    [errorMsg]="getMaxLengthAndRequiredErrorMsg('name')"
+    label="Nome:"
+    placeholder="Digite o nome"
     formControlName="name"
     aria-label="Nome da categoria"
     aria-describedby="input-name-error"
     maxlength="50"
     [inputId]="'input-name-add'"
+    [errorMessages]="getErrorMessages('name')"
+    [isValid]="isValid('name')"
   />
 
   <zen-color-picker-input
@@ -22,15 +22,20 @@
     formControlName="color"
     aria-label="Cor da categoria"
     aria-describedby="input-color-error"
-    [inputId]="'input-color-picker'"/>
+    [inputId]="'input-color-picker'"
+    [errorMessages]="getErrorMessages('color')"
+    [isValid]="isValid('color')"
+  />
 
   <zen-select-input
     id="select-type"
     label="Tipo:"
     placeholder="Selecione um tipo"
     formControlName="type"
-    [options]="optionsInput"
+    [options]="options().typesOptions"
     [dropdownId]="'select-type'"
+    [errorMessages]="getErrorMessages('type')"
+    [isValid]="isValid('type')"
   />
 
   <div class="footer-modal">

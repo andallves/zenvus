@@ -90,6 +90,10 @@ export class EditCategoryFormComponent implements OnInit {
     return this.validationHelper.getErrorMessages(control, fieldConfig, categoryLabels());
   }
 
+  isValid(controlName: string): boolean {
+    return !!this.editCategoryForm.get(controlName)?.valid;
+  }
+
   onCloseModal() {
     this.modalService.hide();
   }

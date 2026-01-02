@@ -1,3 +1,4 @@
+import { IOptions } from '@shared/domain-types/options';
 import { ECategoryType } from '@shared/enums/category-type.enum';
 import { IFilter } from '@shared/interfaces/filter.interface';
 
@@ -31,4 +32,8 @@ export interface ICategoryOrderBy {
   color: string;
   type: string;
   disabled: boolean;
+}
+
+export interface ICategoryOptions {
+  typesOptions: IOptions[];
 }

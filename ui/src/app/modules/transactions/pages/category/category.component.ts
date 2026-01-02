@@ -15,9 +15,12 @@ import { ModalIconType } from '@shared/components/swall/modal-alert/domain-types
 import { ModalAlertService } from '@shared/components/swall/modal-alert/service/modal-alert.service';
 import { ColumnLabel, TableComponent } from '@shared/components/table/table.component';
 import { IBadge } from '@shared/domain-types/badges';
-import { IOptions } from '@shared/domain-types/options';
 import { CategoryTypeLabel, ECategoryType } from '@shared/enums/category-type.enum';
-import { ICategory, ICategoryFilter } from '@shared/interfaces/category.interface';
+import {
+  ICategory,
+  ICategoryFilter,
+  ICategoryOptions,
+} from '@shared/interfaces/category.interface';
 import { LoadingService } from '@shared/layouts/default-layout/loading.service';
 import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
 import { NgxColorsModule, validColorValidator } from 'ngx-colors';
@@ -72,10 +75,12 @@ export class CategoryComponent implements OnInit {
   categoriesData: ICategory[] = [];
   categoryColumn: string[] = ['name', 'type', 'color'];
   categoryColumnsLabel: ColumnLabel = { name: 'nome', color: 'cor', type: 'tipo' };
-  optionsInput: IOptions[] = [
-    { label: 'Entrada', value: ECategoryType.Income },
-    { label: 'Saída', value: ECategoryType.Expense },
-  ];
+  categoryOptions: ICategoryOptions = {
+    typesOptions: [
+      { label: 'Entrada', value: ECategoryType.Income },
+      { label: 'Saída', value: ECategoryType.Expense },
+    ],
+  };
 
   public tableEnumLabels = {
     type: CategoryTypeLabel,

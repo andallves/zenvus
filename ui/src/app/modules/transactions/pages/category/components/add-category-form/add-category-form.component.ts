@@ -90,6 +90,10 @@ export class AddCategoryFormComponent implements OnInit {
     return this.validationHelper.getErrorMessages(control, fieldConfig, categoryLabels());
   }
 
+  isValid(controlName: string): boolean {
+    return !!this.addCategoryForm.get(controlName)?.valid;
+  }
+
   addCategory() {
     this.isLoading = true;
 
