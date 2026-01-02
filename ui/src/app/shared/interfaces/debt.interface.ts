@@ -22,3 +22,12 @@ export interface IDebtInstallment {
   dueDate: Date;
   paymentDate: Date;
 }
+
+export interface IDebtInstallmentUpdate {
+  id: string;
+  number: number;
+  amount: number;
+  status: EPaymentStatus;
+  dueDate: Date;
+  paymentDate: Date;
+}
