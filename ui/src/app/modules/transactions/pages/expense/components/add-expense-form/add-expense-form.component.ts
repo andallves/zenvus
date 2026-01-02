@@ -1,13 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, input, output, signal } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
-import CategoryService from '@modules/transactions/services/category.service';
+import { Component, inject, input, OnInit, output, signal } from '@angular/core';
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { EXPENSE_VALIDATION_CONFIG } from '@modules/transactions/pages/expense/utils/expense-validation.config';
+import { expenseLabels } from '@modules/transactions/pages/expense/utils/form-labels';
 import { ExpenseService } from '@modules/transactions/services/expense.service';
 import { ButtonComponent } from '@shared/components/button/button.component';
 import { DateInputComponent } from '@shared/components/inputs/date-input/date-input.component';
@@ -19,7 +14,9 @@ import { ModalAlertService } from '@shared/components/swall/modal-alert/service/
 import { IValueOptions } from '@shared/domain-types/options';
 import { IDebtCreate } from '@shared/interfaces/debt.interface';
 import { IExpenseCreate, IExpenseOptions } from '@shared/interfaces/expense.interface';
-import { InputValidationService } from '@shared/validators/input-validator/input-validator.service';
+import { IFieldConfig } from '@shared/interfaces/validation.interface';
+import { ValidationBuilderService } from '@shared/validators/validation-builder.service';
+import { ValidationHelperService } from '@shared/validators/validation-helper.service';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
 
@@ -39,64 +36,48 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './add-expense-form.component.html',
   styleUrl: './add-expense-form.component.scss',
 })
-export class AddExpenseFormComponent {
+export class AddExpenseFormComponent implements OnInit {
   options = input.required<IExpenseOptions>();
   changeData = output<IExpenseCreate>();
 
   addExpenseForm!: FormGroup;
   isLoading = false;
 
-  private readonly fb = inject(FormBuilder);
-  private readonly validatorsService = inject(InputValidationService);
   private readonly expenseService = inject(ExpenseService);
-  private readonly categoryService = inject(CategoryService);
   private readonly modalService = inject(BsModalService);
   private readonly modalAlertService = inject(ModalAlertService);
   private readonly toastr = inject(ToastrService);
+  private readonly validationHelper = inject(ValidationHelperService);
+  private readonly validationBuilder = inject(ValidationBuilderService);
 
   isInstallments = signal<boolean>(false);
+  fieldConfigs = signal<IFieldConfig[]>([]);
 
-  constructor() {
+  ngOnInit() {
+    this.initializeFieldConfigs();
     this.initializeForm();
   }
 
+  initializeFieldConfigs() {
+    this.fieldConfigs.set(EXPENSE_VALIDATION_CONFIG);
+  }
+
   initializeForm() {
-    this.addExpenseForm = this.fb.group({
-      description: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
-      categoryId: ['', [Validators.required]],
-      date: ['', [Validators.required]],
-      typeId: ['', [Validators.required]],
-      amount: ['', []],
-      isInstallment: ['', []],
-      totalInstallments: ['', []],
-      firstDueDate: ['', []],
-    });
+    this.addExpenseForm = this.validationBuilder.buildFormGroup(this.fieldConfigs());
   }
 
-  onCloseModal() {
-    this.modalService.hide();
-  }
+  getErrorMessages(controlName: string): string[] {
+    const control = this.addExpenseForm.get(controlName);
+    const fieldConfig = this.fieldConfigs().find(f => f.key === controlName);
 
-  hasMaxLengthAndRequiredError(input: string): boolean {
-    return this.validatorsService.hasMaxLengthAndRequiredError(this.addExpenseForm, input);
-  }
-
-  getMaxLengthAndRequiredErrorMsg(input: string): string {
-    const control = this.addExpenseForm.get(input);
-
-    if (control?.hasError('required')) {
-      return 'Este campo é obrigatório.';
+    if (!fieldConfig) {
+      const defaultConfig: IFieldConfig = {
+        key: controlName,
+        label: this.getFieldLabel(controlName),
+      };
+      return this.validationHelper.getErrorMessages(control, defaultConfig, expenseLabels());
     }
-
-    if (control?.hasError('maxlength')) {
-      return 'O nome não pode ter mais de 30 caracteres.';
-    }
-
-    if (control?.hasError('pattern')) {
-      return 'O nome deve conter pelo menos uma letra.';
-    }
-
-    return '';
+    return this.validationHelper.getErrorMessages(control, fieldConfig, expenseLabels());
   }
 
   addExpense() {
@@ -143,15 +124,28 @@ export class AddExpenseFormComponent {
             showCancelButton: false,
             cancelButtonText: '',
           })
-          .then();
+          .finally(() => (this.isLoading = false));
       },
       complete: () => (this.isLoading = false),
     });
+  }
+
+  handleCurrencyChange(value: number | null) {
+    this.addExpenseForm.patchValue({ amount: value });
   }
 
   isInstallmentsChange(value: IValueOptions) {
     if (typeof value == 'boolean') {
       this.isInstallments.update(() => value);
     }
+  }
+
+  onCloseModal() {
+    this.modalService.hide();
+  }
+
+  private getFieldLabel(controlName: string): string {
+    const labelsMap: Record<string, string> = expenseLabels();
+    return labelsMap[controlName] || controlName;
   }
 }

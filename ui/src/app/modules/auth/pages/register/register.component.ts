@@ -1,14 +1,10 @@
-import { Component, computed, inject, signal } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { RegisterUserForm } from '@modules/auth/interfaces/register-user.interface';
 import { RegisterService } from '@modules/auth/services/register.service';
+import { REGISTER_VALIDATION_CONFIG } from '@modules/auth/utils/auth-validation.config';
+import { registerLabels } from '@modules/auth/utils/form-labels';
 import { InputPasswordComponent } from '@shared/components/form/input-password/input-password.component';
 import { InputTextComponent } from '@shared/components/form/input-text/input-text.component';
 import {
@@ -16,13 +12,14 @@ import {
   ModalIconType,
 } from '@shared/components/swall/modal-alert/domain-types/modal-types.interface';
 import { ModalAlertService } from '@shared/components/swall/modal-alert/service/modal-alert.service';
+import { IFieldConfig } from '@shared/interfaces/validation.interface';
 import {
   PrimaryButton,
   SecondaryButton,
   UnauthenticatedCommonLayoutComponent,
 } from '@shared/layouts/unauthenticated-common-layout/unauthenticated-common-layout.component';
-import { ErrorMessageHelper } from '@shared/validators/error-message-helper/error-message.helper';
-import { FormValidations } from '@shared/validators/form-validations/form-validations';
+import { ValidationBuilderService } from '@shared/validators/validation-builder.service';
+import { ValidationHelperService } from '@shared/validators/validation-helper.service';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -36,8 +33,8 @@ import { ToastrService } from 'ngx-toastr';
   ],
   styleUrl: './register.component.scss',
 })
-export class RegisterComponent {
-  protected registerForm: FormGroup<RegisterUserForm>;
+export class RegisterComponent implements OnInit {
+  protected registerForm!: FormGroup<RegisterUserForm>;
   public isLoading = signal<boolean>(false);
   submitted = false;
 
@@ -47,38 +44,16 @@ export class RegisterComponent {
     () => this.registerForm.invalid || this.isLoading() || !this.submitted
   );
 
-  private readonly fb = inject(FormBuilder);
   private readonly registerService = inject(RegisterService);
   private readonly router = inject(Router);
   private readonly modalAlertService = inject(ModalAlertService);
   private readonly toastrService = inject(ToastrService);
+  private readonly validationHelper = inject(ValidationHelperService);
+  private readonly validationBuilder = inject(ValidationBuilderService);
+
+  fieldConfigs = signal<IFieldConfig[]>([]);
 
   constructor() {
-    this.registerForm = this.fb.group<RegisterUserForm>({
-      name: new FormControl('', [
-        Validators.required,
-        Validators.minLength(3),
-        Validators.maxLength(60),
-      ]),
-      email: new FormControl('', [Validators.required, Validators.email]),
-      phone: new FormControl('', [
-        Validators.required,
-        Validators.pattern(/^\(\d{2}\) \d{5}-\d{4}$/),
-      ]),
-      password: new FormControl('', [
-        Validators.required,
-        Validators.pattern(
-          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).+$/
-        ),
-        Validators.minLength(8),
-        Validators.maxLength(30),
-      ]),
-      confirmPassword: new FormControl('', [
-        Validators.required,
-        FormValidations.equalTo('password'),
-      ]),
-    });
-
     this.primaryBtn = {
       btnText: 'Cadastrar',
       disabled: this.isDisabledButton(),
@@ -91,9 +66,31 @@ export class RegisterComponent {
     };
   }
 
+  ngOnInit() {
+    this.initializeFieldConfigs();
+    this.initializeForm();
+  }
+
+  initializeFieldConfigs() {
+    this.fieldConfigs.set(REGISTER_VALIDATION_CONFIG);
+  }
+
+  initializeForm() {
+    this.registerForm = this.validationBuilder.buildFormGroup(this.fieldConfigs());
+  }
+
   getErrorMessages(controlName: string): string[] {
     const control = this.registerForm.get(controlName);
-    return ErrorMessageHelper.getErrorMessages(control, controlName);
+    const fieldConfig = this.fieldConfigs().find(f => f.key === controlName);
+
+    if (!fieldConfig) {
+      const defaultConfig: IFieldConfig = {
+        key: controlName,
+        label: this.getFieldLabel(controlName),
+      };
+      return this.validationHelper.getErrorMessages(control, defaultConfig, registerLabels());
+    }
+    return this.validationHelper.getErrorMessages(control, fieldConfig, registerLabels());
   }
 
   registerSubmit(event: Event): void {
@@ -130,7 +127,6 @@ export class RegisterComponent {
         this.registerForm.reset();
       },
       error: error => {
-        this.isLoading.set(false);
         const errorMessage = error.error?.errors?.join('<br>') || error.message;
         this.modalAlertService
           .open({
@@ -139,7 +135,7 @@ export class RegisterComponent {
             message: `${errorMessage}`,
             confirmButtonText: 'Ok',
           } as ModalConfig)
-          .then();
+          .finally(() => this.isLoading.set(false));
       },
       complete: () => this.isLoading.set(false),
     });
@@ -151,5 +147,9 @@ export class RegisterComponent {
 
   protected isInvalid(nameField: string) {
     return this.registerForm.get(nameField)?.invalid;
+  }
+  private getFieldLabel(controlName: string): string {
+    const labelsMap: Record<string, string> = registerLabels();
+    return labelsMap[controlName] || controlName;
   }
 }
