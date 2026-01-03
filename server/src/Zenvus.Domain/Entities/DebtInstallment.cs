@@ -189,27 +189,50 @@
             return DomainResult.Success();
         }
         
-        public DomainResult UpdateDetails(int newNumber, DateTime newDueDate, decimal newAmount)
+        public DomainResult UpdatePaymentDate(DateTime newPaymentDate)
+        {
+            if (IsPaid)
+                return DomainResult.Failure("Não é possível alterar a data de pagamento de uma parcela já paga.");
+                
+            if (IsCancelled)
+                return DomainResult.Failure("Não é possível alterar a data de pagamento de uma parcela cancelada.");
+                
+            if (newPaymentDate.Date < CreatedAt.Date)
+                return DomainResult.Failure("A data de pagamento não pode ser anterior à data de criação.");
+                
+            if (PaymentDate.HasValue && newPaymentDate.Date < PaymentDate.Value.Date)
+                return DomainResult.Failure("A data de vencimento não pode ser anterior à data de pagamento.");
+                
+            PaymentDate = newPaymentDate;
+            UpdatedAt = DateTime.UtcNow;
+            
+            return DomainResult.Success();
+        }
+        
+        public DomainResult UpdateDetails(DateTime? newDueDate, DateTime? newPaymentDate)
         {
             var errors = new List<string>();
             
-            var dueDateResult = UpdateDueDate(newDueDate);
-            if (!dueDateResult.IsValid)
-                errors.Add(dueDateResult.Message);
+            if (newDueDate.HasValue)
+            {
+                var dueDateResult = UpdateDueDate(newDueDate.Value);
+                if (!dueDateResult.IsValid)
+                    errors.Add(dueDateResult.Message);
+            }
                 
-            var amountResult = UpdateAmount(newAmount);
-            if (!amountResult.IsValid)
-                errors.Add(amountResult.Message);
+            if (newPaymentDate.HasValue)
+            {
+                var paymentDateResult = UpdatePaymentDate(newPaymentDate.Value);
+                if (!paymentDateResult.IsValid)
+                    errors.Add(paymentDateResult.Message);
+            }
                 
-            if (errors.Any())
+            if (errors.Count > 0)
             {
                 var errorMessage = string.Join(" ", errors);
                 return DomainResult.Failure($"Falha ao atualizar detalhes: {errorMessage}");
             }
-
-            if (Number == newNumber) return DomainResult.Success();
             
-            Number = newNumber;
             UpdatedAt = DateTime.UtcNow;
 
             return DomainResult.Success();

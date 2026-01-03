@@ -5,13 +5,14 @@ namespace Zenvus.Application.DTO.Installments;
 
 public class InstallmentDto
 {
-    public Guid Id { get; set; }
+    public Guid Id { get; init; }
 
-    public int Number { get; set; }
-    public DateTime DueDate { get; set; }
-    public decimal Amount { get; set; }
-    public EPaymentStatus Status { get; set; }
-    public DateTime? PaymentDate { get; set; }  
+    public int Number { get; init; }
+    public DateTime DueDate { get; init; }
+    public decimal Amount { get; init; }
+    public decimal? AmountPaid { get; init; }
+    public EPaymentStatus Status { get; init; }
+    public DateTime? PaymentDate { get; init; }  
     
     public static InstallmentDto From(DebtInstallment debtInstallment)
     {
@@ -21,6 +22,7 @@ public class InstallmentDto
             Number = debtInstallment.Number,
             DueDate = debtInstallment.DueDate,
             Amount = debtInstallment.Amount,
+            AmountPaid = debtInstallment.AmountPaid,
             Status = debtInstallment.Status,
             PaymentDate = debtInstallment.PaymentDate
         };
@@ -28,14 +30,14 @@ public class InstallmentDto
     
     public static List<InstallmentDto> From(List<DebtInstallment> debtInstallments)
     {
-        var listaIdentificacoes = new List<InstallmentDto>();
+        var installmentList = new List<InstallmentDto>();
 
         foreach (var debtInstallment in debtInstallments)
         {
-            listaIdentificacoes.Add(From(debtInstallment));
+            installmentList.Add(From(debtInstallment));
         }
 
-        return listaIdentificacoes;
+        return installmentList;
     }
         
 }
