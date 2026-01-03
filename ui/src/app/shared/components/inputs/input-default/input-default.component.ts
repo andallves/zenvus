@@ -3,13 +3,12 @@ import {
   Component,
   computed,
   ElementRef,
-  EventEmitter,
   forwardRef,
   HostListener,
   inject,
   input,
   Input,
-  Output,
+  output,
   signal,
 } from '@angular/core';
 import { FormsModule, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
@@ -59,11 +58,13 @@ export class InputDefaultComponent {
   @Input() showMandatory = false;
   @Input() icon = false;
   @Input() fixedSize = false;
-  @Output() valueChange = new EventEmitter<number>();
+
   errorMessages = input<string[] | null>(null);
   isValid = input(false);
   isInvalid = computed(() => !this.isValid());
-  value: any;
+  valueChange = output<string>();
+
+  value = '';
   focus = false;
   touched = false;
 
@@ -97,7 +98,7 @@ export class InputDefaultComponent {
   onInputChange(event: any) {
     let inputValue = event.target.value;
     const emojiRegex =
-      /([\u2700-\u27BF]|[\uE000-\uF8FF]|[\uD83C-\uDFFF]|[\u2600-\u26FF]|[\uD83D\uDC00-\uDFFF])/g;
+      /([\u2700-\u27BF]|[\uE000-\uF8FF]|[\uD83C-\uDFFF]|[\u2600-\u26FF]|[\uD83D-\uDC00-\uDFFF])/g;
     inputValue = inputValue.replace(emojiRegex, '');
     event.target.value = inputValue;
     this.value = inputValue;
@@ -118,14 +119,18 @@ export class InputDefaultComponent {
     this.valueChange.emit(this.value);
   }
 
-  onChange: (value: any) => void = () => {};
-  onTouched: () => void = () => {};
+  onChange: (value: string) => void = () => {
+    /* empty */
+  };
+  onTouched: () => void = () => {
+    /* empty */
+  };
 
-  writeValue(value: any): void {
+  writeValue(value: string): void {
     this.value = value;
   }
 
-  registerOnChange(fn: (value: any) => void): void {
+  registerOnChange(fn: (value: string) => void): void {
     this.onChange = fn;
   }
 

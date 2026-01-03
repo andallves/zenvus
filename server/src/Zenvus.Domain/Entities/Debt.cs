@@ -135,12 +135,12 @@ public class Debt : SoftDeleteEntity
         return Installments.FirstOrDefault(i => i.Id == id);
     }
     
-    public DomainResult PayInstallment(Guid id, int installmentNumber, decimal amountPaid, DateTime paymentDate)
+    public DomainResult PayInstallment(Guid id, decimal amountPaid, DateTime paymentDate)
     {
         var installment = GetInstallmentById(id);
 
         if (installment == null)
-            return DomainResult.Failure($"Parcela {installmentNumber} não encontrada.");
+            return DomainResult.Failure($"Parcela não encontrada.");
             
         return InstallmentAmount >= amountPaid 
             ? installment.PayFull(paymentDate)

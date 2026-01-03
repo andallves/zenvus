@@ -1,4 +1,4 @@
-<div class="box-input" [class.fixedSize]="fixedSize" [ngClass]="variant">
+<div [class.fixedSize]="fixedSize" [ngClass]="variant">
   <label [for]="inputId" class="form-label">
     {{ labelSignal() }}
     @if (showMandatory) {
@@ -7,19 +7,25 @@
   </label>
   <div
     class="input-wrapper"
-    [ngClass]="{ 'is-invalid': hasError, 'custom-input': icon, focused: focus }"
+    [class]="{
+      'custom-input': icon,
+      'is-focused': focus,
+      'is-valid': isValid(),
+      'is-invalid': isInvalid() && focus,
+      'is-read-only': readonly
+    }"
   >
     <span
-      class="input-group-text"
+      class="input-group-text icon"
       id="{{ inputId }}-icon-addon"
       *ngIf="icon"
-      class="icone"
     >
       <i class="bi bi-person-fill custom-person"></i>
     </span>
     <input
       currencyMask
       id="{{ inputId }}"
+      class="input clear"
       [type]="type"
       (blur)="onInputBlur()"
       (ngModelChange)="onCurrencyChange($event)"
@@ -27,7 +33,7 @@
       [placeholder]="placeholder"
       [disabled]="isDisable"
       [readOnly]="readonly"
-      class="clear"
+      [class.is-read-only]="readonly"
     />
     @if (showX && value) {
       <button
@@ -44,6 +50,7 @@
       @for (msg of errorMessages(); track $index) {
         <li
           class="error-message"
+          [class]="{ 'is-valid': isValid(), 'is-invalid': isInvalid()}"
         >
           <i class="bi bi-x-circle-fill"></i>
           <p [innerHTML]="msg"></p>

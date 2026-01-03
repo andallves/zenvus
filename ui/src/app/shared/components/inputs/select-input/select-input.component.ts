@@ -3,13 +3,12 @@ import {
   Component,
   computed,
   ElementRef,
-  EventEmitter,
   forwardRef,
   HostListener,
   inject,
   input,
   Input,
-  Output,
+  output,
   signal,
   ViewChild,
 } from '@angular/core';
@@ -49,15 +48,17 @@ export class SelectInputComponent {
   @Input() options: IOptions[] = [];
   @Input() hasError = false;
   @Input() errorMsg = '';
-  @Input() isDisable = false;
   @Input() placeholder = 'Selecione uma opção';
   @Input() showMandatory = false;
   @Input() showX = false;
   @Input() fixedSize = false;
-  @Output() valueChange = new EventEmitter<IValueOptions>();
+
+  isDisabled = input(false);
   errorMessages = input<string[] | null>(null);
   isValid = input(false);
   isInvalid = computed(() => !this.isValid);
+
+  valueChange = output<IValueOptions>();
 
   @ViewChild('selectedValue', { static: false }) selectedValueRef!: ElementRef;
 
@@ -66,6 +67,7 @@ export class SelectInputComponent {
   isFocused = false;
   focusedOptionIndex = -1;
   touched = false;
+  isDisable = false;
 
   get borderClass() {
     if (!this.touched) {
@@ -80,18 +82,22 @@ export class SelectInputComponent {
     return 'default';
   }
 
-  onChange: any = () => {};
-  onTouched: any = () => {};
+  onChange: (value: IValueOptions) => void = () => {
+    /*Empty*/
+  };
+  onTouched: () => void = () => {
+    /*Empty*/
+  };
 
-  writeValue(value: any): void {
+  writeValue(value: IValueOptions): void {
     this.value = value !== null ? value : '';
   }
 
-  registerOnChange(fn: any): void {
+  registerOnChange(fn: (value: IValueOptions) => void): void {
     this.onChange = fn;
   }
 
-  registerOnTouched(fn: any): void {
+  registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
   }
 
@@ -125,7 +131,7 @@ export class SelectInputComponent {
   clearSelection(event: Event) {
     event.stopPropagation();
     this.value = '';
-    this.onChange();
+    this.onChange('');
     this.onTouched();
   }
 

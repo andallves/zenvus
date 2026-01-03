@@ -8,6 +8,6 @@ import { Observable } from 'rxjs';
 })
 export class DebtInstallmentService extends BaseService {
   updateInstallment(data: IDebtInstallmentUpdate, id: string): Observable<IDebtInstallment> {
-    return this.httpClient.put<IDebtInstallment>(`${this.apiUrl}/v1/expense/debt/${id}`, data);
+    return this.httpClient.put<IDebtInstallment>(`${this.apiUrl}/v1/debt/installment/${id}`, data);
   }
 }

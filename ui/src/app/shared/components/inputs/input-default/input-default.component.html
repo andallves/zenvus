@@ -11,7 +11,8 @@
       'custom-input': icon,
       'is-focused': focus,
       'is-valid': isValid(),
-      'is-invalid': isInvalid() && focus
+      'is-invalid': isInvalid() && focus,
+      'is-read-only': readonly
     }"
   >
     @if (icon) {
@@ -33,6 +34,7 @@
       [disabled]="isDisable"
       [readOnly]="readonly"
       [mask]="mask"
+      [class.is-read-only]="readonly"
     />
     @if (showX && value) {
       <button

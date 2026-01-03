@@ -1,7 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, input, OnInit, output, signal } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { EXPENSE_VALIDATION_CONFIG } from '@modules/transactions/pages/expense/utils/expense-validation.config';
+import {
+  DEBT_INSTALLMENT_VALIDATION_CONFIG,
+  EXPENSE_VALIDATION_CONFIG,
+} from '@modules/transactions/pages/expense/utils/expense-validation.config';
 import { debtInstallmentLabels } from '@modules/transactions/pages/expense/utils/form-labels';
 import { DebtInstallmentService } from '@modules/transactions/services/debt-installment.service';
 import { ButtonComponent } from '@shared/components/button/button.component';
@@ -66,7 +69,7 @@ export class UpdateDebtExpenseFormComponent implements OnInit {
   }
 
   initializeFieldConfigs() {
-    this.fieldConfigs.set(EXPENSE_VALIDATION_CONFIG);
+    this.fieldConfigs.set(DEBT_INSTALLMENT_VALIDATION_CONFIG);
   }
 
   initializeForm() {
@@ -77,6 +80,7 @@ export class UpdateDebtExpenseFormComponent implements OnInit {
     this.updateDebtInstallmentForm.patchValue({
       number: this.dataDebtInstallment().number,
       amount: this.dataDebtInstallment().amount,
+      amountPaid: this.dataDebtInstallment().amountPaid,
       status: this.dataDebtInstallment().status,
       dueDate: new Date(this.dataDebtInstallment().dueDate),
       paymentDate: new Date(this.dataDebtInstallment().paymentDate),
@@ -112,15 +116,13 @@ export class UpdateDebtExpenseFormComponent implements OnInit {
 
     const formValues = this.updateDebtInstallmentForm.value;
     const payload: IDebtInstallmentUpdate = {
-      id: this.dataDebtInstallment().id || '',
-      number: this.dataDebtInstallment().number,
-      amount: this.dataDebtInstallment().amount,
-      status: this.dataDebtInstallment().status,
+      debtId: this.dataDebtInstallment().debtId,
+      installmentId: this.dataDebtInstallment().id,
       dueDate: formValues.dueDate,
       paymentDate: formValues.paymentDate,
     };
 
-    this.debtInstallmentService.updateInstallment(payload, payload.id).subscribe({
+    this.debtInstallmentService.updateInstallment(payload, payload.debtId).subscribe({
       next: response => {
         this.modalService.hide();
         this.isLoading = false;

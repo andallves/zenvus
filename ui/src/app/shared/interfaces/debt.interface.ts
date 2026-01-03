@@ -16,18 +16,25 @@ export interface IDebtCreate {
 
 export interface IDebtInstallment {
   id: string;
+  debtId: string;
   number: number;
   amount: number;
+  amountPaid: number;
   status: EPaymentStatus;
   dueDate: Date;
   paymentDate: Date;
 }
 
 export interface IDebtInstallmentUpdate {
-  id: string;
-  number: number;
-  amount: number;
-  status: EPaymentStatus;
+  debtId: string;
+  installmentId: string;
   dueDate: Date;
   paymentDate: Date;
+}
+
+export interface IDebtInstallmentPay {
+  debtId: string;
+  installment: string;
+  paymentDate: Date;
+  amountPaid: number;
 }

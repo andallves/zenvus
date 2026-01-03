@@ -9,6 +9,7 @@
     formControlName="description"
     [inputId]="'input-description'"
     [showMandatory]="true"
+    [errorMessages]="getErrorMessages('description')"
   />
 
   <zen-date-input
@@ -18,6 +19,7 @@
     formControlName="date"
     [inputId]="'input-date'"
     [showMandatory]="true"
+    [errorMessages]="getErrorMessages('date')"
   />
 
   <zen-select-input
@@ -28,6 +30,7 @@
     [options]="options().categoriesOptions"
     [dropdownId]="'select-category'"
     [showMandatory]="true"
+    [errorMessages]="getErrorMessages('categoryId')"
   />
 
   <zen-select-input
@@ -38,15 +41,18 @@
     [options]="options().typesOptions"
     [dropdownId]="'select-type'"
     [showMandatory]="true"
+    [errorMessages]="getErrorMessages('typeId')"
   />
 
   <zen-money-input
     id="input-amount"
     label="Valor:"
-    placeholder="Digite o valor"
+    placeholder="0,00"
     formControlName="amount"
     [inputId]="'input-amount'"
     [showMandatory]="true"
+    [errorMessages]="getErrorMessages('amount')"
+    (valueChange)="handleCurrencyChange($event)"
   />
 
   <zen-select-input
@@ -57,9 +63,9 @@
     [options]="options().isInstallmentsOptions"
     [dropdownId]="'select-is-installments'"
     [showMandatory]="true"
+    [errorMessages]="getErrorMessages('isInstallment')"
     (valueChange)="isInstallmentsChange($event)"
   />
-
   @if (isInstallments()) {
     <zen-input
       id="input-total-installments"
@@ -68,6 +74,7 @@
       formControlName="totalInstallments"
       [inputId]="'input-total-installments'"
       [showMandatory]="false"
+      [errorMessages]="getErrorMessages('totalInstallments')"
     />
 
     <zen-date-input
@@ -77,6 +84,7 @@
       formControlName="firstDueDate"
       [inputId]="'input-first-due-date'"
       [showMandatory]="false"
+      [errorMessages]="getErrorMessages('firstDueDate')"
     />
   }
 

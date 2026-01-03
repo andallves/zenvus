@@ -1,18 +1,17 @@
 @use "sass:color";
 
-$color: gray;
+$color: #fc8585;
 
 .box-input {
   width: 100%;
   display: flex;
   flex-direction: column;
-  z-index: 20;
 
-  .is-valid {
+  &.is-valid {
     border-color: var(--success-color);
   }
 
-  .is-invalid:not(&.is-focused){
+  &.is-invalid:not(&.is-focused){
     border: 1px solid var(--danger-color);
     box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.20);
   }
@@ -54,7 +53,7 @@ $color: gray;
         justify-content: space-between;
         color: var(--text-primary-color);
         background: transparent;
-        border: var(--bs-border-width) solid var(--bs-border-color);
+        border: 1px solid var(--border-color);
 
         .text-truncate {
           display: block;
@@ -71,10 +70,8 @@ $color: gray;
           }
         }
 
-        &.is-focused {
-          border: 1px solid var(--positive-color);
-          box-shadow: 0 0 0 3px rgba(102, 16, 242, 0.15);
-          outline: none;
+        &.is-read-only {
+          background: var(--border-color) !important;
         }
 
         &.is-valid {
@@ -86,9 +83,9 @@ $color: gray;
           box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.20);
         }
 
-        &:focus, &.is-focused {
+        &:focus {
           border-color: var(--positive-color);
-          box-shadow: 0 0 0 0.1rem var(--positive-color);
+          box-shadow: 0 0 0 1px var(--positive-color);
         }
       }
 
@@ -98,6 +95,11 @@ $color: gray;
         overflow-y: auto;
         max-width: 1050px;
         max-height: 200px;
+        z-index: 2000 !important;
+
+        &.show {
+          z-index: 120;
+        }
 
         @media (max-width: 1000px) {
           max-width: 75vw;

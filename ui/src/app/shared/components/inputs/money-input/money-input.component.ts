@@ -9,9 +9,8 @@ import {
   Input,
   Output,
   signal,
-  OnChanges,
-  SimpleChanges,
   input,
+  computed,
 } from '@angular/core';
 import { FormsModule, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { NgxCurrencyDirective } from 'ngx-currency';
@@ -32,8 +31,13 @@ import { IdGeneratorService } from '../utils/id-generator.service';
   ],
   templateUrl: './money-input.component.html',
   styleUrls: ['./money-input.component.scss'],
+  host: {
+    class: 'fieldset-input',
+    role: 'fieldset',
+    '[ngClass]': 'borderClass',
+  },
 })
-export class MoneyInputComponent implements OnChanges {
+export class MoneyInputComponent {
   readonly #geradorIdUnico = inject(IdGeneratorService);
 
   @Input() inputId = 'input-id-default';
@@ -56,35 +60,30 @@ export class MoneyInputComponent implements OnChanges {
   @Input() showMandatory = false;
   @Input() icon = false;
   @Input() fixedSize = false;
-  @Input() options: any = {}; // Opções para ngx-currency
+
   errorMessages = input<string[] | null>(null);
+  isValid = input<boolean | null>(null);
+  isInvalid = computed(() => !this.isValid());
 
   @Output() valueChange = new EventEmitter<number | null>();
 
-  value: any = null;
+  value: number | null = null;
   focus = false;
+  touched = false;
 
-  // Configuração padrão para moeda brasileira
-  currencyOptions = {
-    align: 'right',
-    allowNegative: false,
-    allowZero: true,
-    decimal: ',',
-    precision: 2,
-    prefix: 'R$ ',
-    suffix: '',
-    thousands: '.',
-    nullable: true,
-  };
+  private readonly elementRef = inject(ElementRef);
 
-  constructor(private readonly elementRef: ElementRef) {
-    this.currencyOptions = { ...this.currencyOptions, ...this.options };
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['options']) {
-      this.currencyOptions = { ...this.currencyOptions, ...changes['options'].currentValue };
+  get borderClass() {
+    if (!this.touched) {
+      return 'default';
     }
+    if (this.isValid()) {
+      return 'is-valid';
+    }
+    if (this.isInvalid()) {
+      return 'is-invalid';
+    }
+    return 'default';
   }
 
   @HostListener('document:click', ['$event'])
@@ -100,16 +99,9 @@ export class MoneyInputComponent implements OnChanges {
   }
 
   onCurrencyChange(value: number) {
-    console.log(value);
-
-    // Atualiza o valor local
     this.value = value;
-
-    // Notifica o ControlValueAccessor
     this.onChange(value);
     this.onTouched();
-
-    // Emite o evento para o componente pai
     this.valueChange.emit(value);
   }
 
@@ -121,37 +113,23 @@ export class MoneyInputComponent implements OnChanges {
   clearInput(event: Event) {
     event.stopPropagation();
     this.value = null;
-    this.onChange(null);
+    this.onChange(0);
     this.onTouched();
     this.valueChange.emit(null);
   }
 
-  onChange: (value: any) => void = () => {};
-  onTouched: () => void = () => {};
+  onChange: (value: number) => void = () => {
+    /* Empty */
+  };
+  onTouched: () => void = () => {
+    /* Empty */
+  };
 
-  writeValue(value: any): void {
-    if (value !== undefined && value !== null) {
-      // Converte para número se for string
-      if (typeof value === 'string') {
-        // Remove formatação se necessário
-        const cleanValue = value
-          .replace(/[^\d,.-]/g, '')
-          .replace('.', '')
-          .replace(',', '.');
-        this.value = parseFloat(cleanValue);
-      } else {
-        this.value = parseFloat(value);
-      }
-
-      if (isNaN(this.value)) {
-        this.value = null;
-      }
-    } else {
-      this.value = null;
-    }
+  writeValue(value: number): void {
+    this.value = value;
   }
 
-  registerOnChange(fn: (value: any) => void): void {
+  registerOnChange(fn: (value: number) => void): void {
     this.onChange = fn;
   }
 

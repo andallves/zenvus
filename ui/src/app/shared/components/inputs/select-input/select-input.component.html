@@ -11,16 +11,22 @@
     <div
       class="dropdown"
       [class]="{
-      'is-focused': isFocused,
-      'is-valid': isValid(),
-      'is-invalid': isInvalid() && isFocused
-    }" >
+        'is-focused': isFocused,
+        'is-valid': isValid(),
+        'is-invalid': isInvalid() && isFocused,
+      }" >
       <button
-        class="btn btn-secondary dropdown-toggle form-control"
-        [class.show-x]="showX && value"
+        class="btn btn-secondary dropdown-toggle"
+        [class]="{
+          'show-x': showX && value,
+          'is-focused': isFocused,
+          'is-valid': isValid(),
+          'is-invalid': isInvalid() && isFocused,
+          'is-read-only': isDisabled(),
+        }"
         type="button"
         id="{{ dropdownId }}"
-        [disabled]="isDisable"
+        [disabled]="isDisabled()"
         (click)="toggleDropdown()"
         (blur)="onBlur()"
         (focus)="onFocus()"

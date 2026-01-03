@@ -35,7 +35,7 @@
         label="Tipo:"
         placeholder="Selecione um tipo"
         formControlName="type"
-        [options]="optionsInput"
+        [options]="categoryOptions.typesOptions"
         [dropdownId]="'select-type'"
       />
     </form>
@@ -55,11 +55,11 @@
 </zen-page-container>
 
 <ng-template #formAddTemplate>
-  <zen-add-category-form id="form-add-category" (changeData)="changeData()"/>
+  <zen-add-category-form id="form-add-category" [options]="categoryOptions" (changeData)="changeData()"/>
 </ng-template>
 
 <ng-template #formEditTemplate>
-  <zen-edit-category-form id="form-edit-category" [dataCategory]="dataCategory" (changeData)="changeData()"/>
+  <zen-edit-category-form id="form-edit-category" [dataCategory]="dataCategory" [options]="categoryOptions" (changeData)="changeData()"/>
 </ng-template>
 
 <ng-template #deleteTemplate>

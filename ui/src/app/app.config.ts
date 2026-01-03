@@ -33,7 +33,7 @@ export const CustomCurrencyMaskConfig = {
   suffix: '',
   thousands: '.',
   nullable: false,
-  min: 0.01,
+  min: 0.0,
   max: undefined,
 };
 

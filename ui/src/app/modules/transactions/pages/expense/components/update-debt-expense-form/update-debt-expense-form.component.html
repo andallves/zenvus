@@ -8,7 +8,7 @@
     placeholder="1"
     formControlName="number"
     [inputId]="'input-number'"
-    [showMandatory]="true"
+    [readonly]="true"
   />
 
   <zen-money-input
@@ -17,7 +17,7 @@
     placeholder="0,00"
     formControlName="amount"
     [inputId]="'input-amount'"
-    [showMandatory]="true"
+    [readonly]="true"
   />
 
 
@@ -28,7 +28,7 @@
     formControlName="status"
     [options]="statusOptions"
     [dropdownId]="'select-status'"
-    [showMandatory]="true"
+    [isDisabled]="true"
   />
 
   <zen-date-input
@@ -37,7 +37,7 @@
     placeholder="Informe a data da vencimento"
     formControlName="dueDate"
     [inputId]="'input-due-date'"
-    [showMandatory]="false"
+
   />
 
   <zen-date-input
@@ -46,7 +46,6 @@
     placeholder="Informe a data de pagamento"
     formControlName="paymentDate"
     [inputId]="'input-first-due-date'"
-    [showMandatory]="false"
   />
 
   <div class="footer-modal">

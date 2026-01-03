@@ -22,10 +22,18 @@ export class ViewExpenseTemplateComponent {
   formEditTemplate!: TemplateRef<HTMLElement>;
 
   showActions = true;
-  columns: (keyof IDebtInstallment)[] = ['number', 'amount', 'dueDate', 'paymentDate', 'status'];
+  columns: (keyof IDebtInstallment)[] = [
+    'number',
+    'amount',
+    'amountPaid',
+    'dueDate',
+    'paymentDate',
+    'status',
+  ];
   columnsLabel: Record<string, string> = {
     number: 'Parcela',
-    amount: 'Valor da Parcela',
+    amount: 'Valor à Pagar',
+    amountPaid: 'Valor Pago',
     dueDate: 'Data de Vencimento',
     paymentDate: 'Data de Pagamento',
     status: 'Status',

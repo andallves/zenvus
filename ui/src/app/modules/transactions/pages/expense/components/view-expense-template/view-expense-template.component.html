@@ -26,7 +26,7 @@
                 <span>
                   {{ (getDateValue(installment[column]) | date: 'shortDate') || '-'}}
                 </span>
-              } @else if(column === 'amount') {
+              } @else if(column === 'amount' || column === 'amountPaid') {
                 <span>
                   {{ installment[column] | currency: 'BRL' }}
                 </span>
@@ -38,7 +38,7 @@
 
       }
           <td class="actions-container">
-            <div class="d-flex justify-content-center flex-row">
+            <div class="d-flex justify-content-center flex-row gap-2">
                 <button
                   id="btn-edit"
                   data-testid="btn-edit"
@@ -49,6 +49,15 @@
                   <i class="bi bi-pencil-fill" aria-hidden="true"> </i>
                 </button>
 
+              <button
+                id="btn-pay"
+                data-testid="btn-pay"
+                aria-label="Botão de botão de pagar"
+                class="btn btn-success"
+                (click)="openEditModal(installment)"
+              >
+                <i class="bi bi-coin" aria-hidden="true"> </i>
+              </button>
             </div>
           </td>
         </tr>

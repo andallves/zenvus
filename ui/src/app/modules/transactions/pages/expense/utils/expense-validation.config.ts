@@ -1,4 +1,3 @@
-import { Validators } from '@angular/forms';
 import { IFieldConfig } from '@shared/interfaces/validation.interface';
 import { ValidationHelperService } from '@shared/validators/validation-helper.service';
 
@@ -73,7 +72,14 @@ export const DEBT_INSTALLMENT_VALIDATION_CONFIG: IFieldConfig[] = [
   },
   {
     key: 'amount',
-    label: 'Valor',
+    label: 'Valor à Pagar',
+    validation: {
+      required: true,
+    },
+  },
+  {
+    key: 'amount',
+    label: 'Valor Pago',
     validation: {
       required: true,
     },
@@ -95,7 +101,7 @@ export const DEBT_INSTALLMENT_VALIDATION_CONFIG: IFieldConfig[] = [
   },
   {
     key: 'paymentDate',
-    label: 'Data de Vencimento',
+    label: 'Data de Pagamento',
     validation: {
       required: true,
       customValidators: [ValidationHelperService.dateValidator],
