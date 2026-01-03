@@ -1,5 +1,5 @@
+using Zenvus.Application.DTO.Debts;
 using Zenvus.Application.DTO.Expenses;
-using Zenvus.Domain.Entities.Enums;
 
 namespace Zenvus.Application.Commands.Expenses;
 

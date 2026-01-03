@@ -11,7 +11,7 @@ public class Expense : Transaction
     public Debt? Debt { get; set; }
     public bool HasDebt => Debt != null && !Debt.Disabled;
     public bool HasActiveDebt => HasDebt && Debt!.IsInstallment;
-    public bool IsPaid => !HasDebt || Debt!.Installments.All(i => i.Status == EPaymentStatus.Paid);
+    public bool IsPaid => !HasDebt || Debt!.IsFullyPaid;
     
     public static Expense Create(
         string description, 
@@ -123,21 +123,13 @@ public class Expense : Transaction
         return DomainResult.Success();
     }
     
-    public DomainResult PayInstallment(int installmentNumber, decimal amountPaid, DateTime paymentDate)
-    {
-        if (!HasActiveDebt)
-            return DomainResult.Failure("Esta despesa não possui dívida ativa.");
-        
-        return Debt!.PayInstallment(installmentNumber, amountPaid, paymentDate);
-    }
-    
     public decimal GetRemainingAmount()
     {
         if (!HasActiveDebt)
             return 0;
         
         return Debt!.Installments
-            .Where(i => i.Status != EPaymentStatus.Paid)
+            .Where(i => !i.IsPaid)
             .Sum(i => i.Amount);
     }
     
@@ -146,7 +138,7 @@ public class Expense : Transaction
         if (!HasActiveDebt)
             return 0;
         
-        return Debt!.Installments.Count(i => i.Status == EPaymentStatus.Paid);
+        return Debt!.Installments.Count(i => i.IsPaid);
     }
     
     public int GetPendingInstallmentsCount()
@@ -154,9 +146,7 @@ public class Expense : Transaction
         if (!HasActiveDebt)
             return 0;
         
-        return Debt!.Installments.Count(i => 
-            i.Status == EPaymentStatus.Active || 
-            i.Status == EPaymentStatus.Pending);
+        return Debt!.Installments.Count(i => i.IsActive || i.IsPending);
     }
     
     private void CreateDebt(int installments, DateTime firstDueDate)
@@ -193,14 +183,10 @@ public class Expense : Transaction
             Amount = amount;
         }
         
-        if (Debt is not null)
-        {
-            var removeResult = RemoveDebt();
-            if (!removeResult.IsValid)
-                return removeResult;
-        }
+        if (Debt is null) return DomainResult.Success();
         
-        return DomainResult.Success();
+        var removeResult = RemoveDebt();
+        return removeResult;
     }
     
     private DomainResult CreateNewDebt(

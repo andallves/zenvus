@@ -6,14 +6,14 @@ namespace Zenvus.Domain.Entities;
 
 public class Debt : SoftDeleteEntity
 {
-    public Guid ExpenseId { get; set; }
-    public Expense Expense { get; set; } = null!;
-    public bool IsInstallment { get; set; }
+    public Guid ExpenseId { get; init; }
+    public Expense Expense { get; init; } = null!;
+    public bool IsInstallment { get; init; }
     public int? TotalInstallments { get; set; }
     public decimal? InstallmentAmount { get; set; }
     public DateTime? FirstDueDate { get; set; }
 
-    public List<DebtInstallment> Installments { get; set; }
+    public List<DebtInstallment> Installments { get; init; }
         = new List<DebtInstallment>();
     
     public void Enable() => Disabled = false;
@@ -25,6 +25,7 @@ public class Debt : SoftDeleteEntity
         
         Disabled = true;
     }
+    public bool IsFullyPaid => Installments.All(i => i.IsPaid);
     
     private Debt() {}
 
@@ -64,9 +65,10 @@ public class Debt : SoftDeleteEntity
             return validationResult;
         
         Disable();
-        CancelAllInstallments();
-        
-        return DomainResult.Success();
+        var cancelAllResult = CancelAllInstallments();
+        return cancelAllResult.IsValid 
+            ? DomainResult.Success() 
+            : cancelAllResult;
     }
     
     public bool CanBeRecalculated()
@@ -98,7 +100,7 @@ public class Debt : SoftDeleteEntity
                !HasPendingInstallments();
     }
 
-    public DomainResult RecreateInstallments(
+    private DomainResult RecreateInstallments(
         int totalInstallments,
         DateTime firstDueDate,
         decimal expenseAmount)
@@ -122,24 +124,27 @@ public class Debt : SoftDeleteEntity
             : RecreateInstallments(totalInstallments, firstDueDate, expenseAmount);
     }
     
-    public bool CanModifyInstallment(int installmentNumber)
+    public bool CanModifyInstallment(Guid id)
     {
-        var installment = GetInstallment(installmentNumber);
+        var installment = GetInstallmentById(id);
         return installment?.Status == EPaymentStatus.Active;
     }
     
-    public DebtInstallment? GetInstallment(int number)
+    private DebtInstallment? GetInstallmentById(Guid id)
     {
-        return Installments.FirstOrDefault(i => i.Number == number);
+        return Installments.FirstOrDefault(i => i.Id == id);
     }
     
-    public DomainResult PayInstallment(int installmentNumber, decimal amountPaid, DateTime paymentDate)
+    public DomainResult PayInstallment(Guid id, int installmentNumber, decimal amountPaid, DateTime paymentDate)
     {
-        var installment = GetInstallment(installmentNumber);
+        var installment = GetInstallmentById(id);
+
         if (installment == null)
             return DomainResult.Failure($"Parcela {installmentNumber} não encontrada.");
-
-        return installment.Pay(amountPaid, paymentDate);
+            
+        return InstallmentAmount >= amountPaid 
+            ? installment.PayFull(paymentDate)
+            : installment.PayPartial(amountPaid, paymentDate);
     }
     
     private static void ValidateCreationParameters(
@@ -247,12 +252,15 @@ public class Debt : SoftDeleteEntity
     }
 
     
-    private void CancelAllInstallments()
+    private DomainResult CancelAllInstallments()
     {
         foreach (var installment in Installments)
         {
-            installment.Cancel();
+            var cancelResult = installment.Cancel();
+            if (!cancelResult.IsValid) return cancelResult;
         }
+
+        return DomainResult.Success();
     }
 
     private DomainResult ReplaceInstallments(
@@ -262,7 +270,8 @@ public class Debt : SoftDeleteEntity
     {
         foreach (var installment in Installments)
         {
-            installment.Cancel();
+            var cancelResult = installment.Cancel();
+            if (!cancelResult.IsValid) return cancelResult;
         }
         
         TotalInstallments = totalInstallments;
@@ -293,19 +302,16 @@ public class Debt : SoftDeleteEntity
             FirstDueDate = firstDueDate.Date;
             UpdateInstallmentsDueDates();
         }
+
+        if (Expense.Amount == expenseAmount) return DomainResult.Success();
         
-        if (Expense.Amount != expenseAmount)
-        {
-            Expense!.Amount = expenseAmount;
-            Console.WriteLine(Expense.Amount);
-            Console.WriteLine(expenseAmount);
-            var (baseAmount, lastAmount) = 
-                CalculateInstallmentDistribution(expenseAmount, totalInstallments);
+        Expense.Amount = expenseAmount;
+        var (baseAmount, lastAmount) = 
+            CalculateInstallmentDistribution(expenseAmount, totalInstallments);
             
-            InstallmentAmount = baseAmount;
-            UpdateInstallmentsAmounts(baseAmount, lastAmount);
-        }
-        
+        InstallmentAmount = baseAmount;
+        UpdateInstallmentsAmounts(baseAmount, lastAmount);
+
         return DomainResult.Success();
     }
 

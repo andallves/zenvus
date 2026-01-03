@@ -1,9 +1,9 @@
 using Zenvus.Domain.Entities;
 using Zenvus.Domain.Entities.Enums;
 
-namespace Zenvus.Application.DTO.Expenses;
+namespace Zenvus.Application.DTO.Installments;
 
-public class DebtInstallmentDto
+public class InstallmentDto
 {
     public Guid Id { get; set; }
 
@@ -13,9 +13,9 @@ public class DebtInstallmentDto
     public EPaymentStatus Status { get; set; }
     public DateTime? PaymentDate { get; set; }  
     
-    public static DebtInstallmentDto From(DebtInstallment debtInstallment)
+    public static InstallmentDto From(DebtInstallment debtInstallment)
     {
-        return new DebtInstallmentDto
+        return new InstallmentDto
         {
             Id = debtInstallment.Id,
             Number = debtInstallment.Number,
@@ -26,9 +26,9 @@ public class DebtInstallmentDto
         };
     }
     
-    public static List<DebtInstallmentDto> From(List<DebtInstallment> debtInstallments)
+    public static List<InstallmentDto> From(List<DebtInstallment> debtInstallments)
     {
-        var listaIdentificacoes = new List<DebtInstallmentDto>();
+        var listaIdentificacoes = new List<InstallmentDto>();
 
         foreach (var debtInstallment in debtInstallments)
         {

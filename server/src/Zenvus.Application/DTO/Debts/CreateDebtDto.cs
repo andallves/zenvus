@@ -1,24 +1,20 @@
 using Zenvus.Domain.Entities;
 
-namespace Zenvus.Application.DTO.Expenses;
+namespace Zenvus.Application.DTO.Debts;
 
-public class DebtDto
+public class CreateDebtDto
 {
-    public Guid Id { get; set; }
     public bool IsInstallment { get; set; }
     public int? TotalInstallments { get; set; }
     public DateTime? FirstDueDate { get; set; }
-    public List<DebtInstallmentDto> Installments { get; set; } = [];
     
-    public static DebtDto From(Debt debt)
+    public static CreateDebtDto From(Debt debt)
     {
-        return new DebtDto
+        return new CreateDebtDto
         {
-            Id = debt.Id,
             IsInstallment = debt.IsInstallment,
             TotalInstallments = debt.TotalInstallments,
             FirstDueDate = debt.FirstDueDate,
-            Installments = DebtInstallmentDto.From(debt.Installments)
         };
     }
 }

@@ -1,6 +1,6 @@
 using Zenvus.Domain.Entities;
 
-namespace Zenvus.Application.DTO.Expenses;
+namespace Zenvus.Application.DTO.Debts;
 
 public class UpdateDebtDto
 {

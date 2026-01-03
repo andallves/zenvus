@@ -1,8 +1,8 @@
 using Zenvus.Domain.Entities.Enums;
 
-namespace Zenvus.Application.DTO.Expenses;
+namespace Zenvus.Application.DTO.Installments;
 
-public class CreateDebtInstallmentDto
+public class CreateInstallmentDto
 {
     public int Number { get; set; }
     public DateTime DueDate { get; set; }

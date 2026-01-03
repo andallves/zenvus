@@ -1,4 +1,5 @@
 using Zenvus.Application.DTO.Categories;
+using Zenvus.Application.DTO.Debts;
 using Zenvus.Core.Utils;
 using Zenvus.Domain.Entities;
 using Zenvus.Domain.Entities.Enums;
