@@ -1,6 +1,6 @@
 @use "sass:color";
 
-$color: #fc8585;
+$color: #ff0000;
 
 .box-input {
   width: 100%;
@@ -51,7 +51,7 @@ $color: #fc8585;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        color: var(--text-primary-color);
+        color: var(--text-secondary-color);
         background: transparent;
         border: 1px solid var(--border-color);
 
@@ -85,7 +85,6 @@ $color: #fc8585;
 
         &:focus {
           border-color: var(--positive-color);
-          box-shadow: 0 0 0 1px var(--positive-color);
         }
       }
 
@@ -95,7 +94,7 @@ $color: #fc8585;
         overflow-y: auto;
         max-width: 1050px;
         max-height: 200px;
-        z-index: 2000 !important;
+        background: var(--background-primary-color);
 
         &.show {
           z-index: 120;
@@ -132,9 +131,18 @@ $color: #fc8585;
         }
       }
 
-      .dropdown-item.active {
-        background-color: var(--primary-color);
-        color: var(--white-color);
+      .dropdown-item {
+        color: var(--text-primary-color);
+
+        &:hover {
+          background-color: var(--active-background-color);
+          color: var(--text-primary-color);
+        }
+
+        &.active {
+          background-color: var(--primary-color);
+          color: var(--white-color);
+        }
       }
     }
 

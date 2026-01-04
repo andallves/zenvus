@@ -35,6 +35,9 @@ defineLocale('pt-br', ptBrLocale);
   ],
   templateUrl: './date-input.component.html',
   styleUrls: ['./date-input.component.scss'],
+  host: {
+    role: 'fieldset',
+  },
 })
 export class DateInputComponent implements ControlValueAccessor {
   readonly #geradorIdUnico = inject(IdGeneratorService);

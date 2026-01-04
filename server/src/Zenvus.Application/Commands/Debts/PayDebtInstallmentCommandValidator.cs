@@ -22,7 +22,7 @@ public class PayDebtInstallmentCommandValidator : AbstractValidator<PayDebtInsta
             .GreaterThan(DateTime.UtcNow.AddYears(-1))
             .WithMessage("Data de pagamento inválida.");
 
-        RuleFor(x => x.PaidAmount)
+        RuleFor(x => x.AmountPaid)
             .GreaterThan(0)
             .WithMessage("Valor pago deve ser maior que zero.");
         

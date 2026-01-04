@@ -54,9 +54,9 @@
       background: var(--border-color);
     }
 
-    &.is-focused:not(&:read-only) {
-      border: 2px solid var(--positive-color);
-      box-shadow: 0 0 0 3px rgba(102, 16, 242, 0.15);
+    &.is-focused:not(&.is-read-only) {
+      border: 1px solid var(--positive-color);
+      box-shadow: 0 0 0 2px rgba(102, 16, 242, 0.15);
       outline: none;
     }
 
@@ -66,7 +66,7 @@
 
     &.is-invalid:not(&:read-only) {
       border-color: var(--danger-color);
-      box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.20);
+      box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.20);
     }
 
     .clear-input {
@@ -85,11 +85,12 @@
 
   .input {
     display: flex;
-    width: 100%;
+    width: calc(100% - 1.875rem);
     align-items: center;
     gap: 8px;
     align-self: stretch;
-    background: #FFF;
+    background: var(--background-secondary-color);
+    color: var(--text-primary-color);
     border: none;
 
     font: {
@@ -105,7 +106,7 @@
       align-items: center;
       gap: 4px;
       flex: 1 0 0;
-      color: var(--text-gray-color);
+      color: var(--text-secondary-color);
 
       font: {
         size: 14px;

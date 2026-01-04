@@ -51,7 +51,7 @@
             class="dropdown-item"
             role="option"
             aria-selected="{{ i === focusedOptionIndex }}"
-            [ngClass]="{ active: i === focusedOptionIndex }"
+            [class.active]="i === focusedOptionIndex"
             (mousedown)="selectOption(option, $event)"
             (focus)="onFocus()"
           >
