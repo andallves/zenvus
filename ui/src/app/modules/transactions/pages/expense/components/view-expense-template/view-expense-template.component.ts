@@ -1,21 +1,12 @@
 import { CurrencyPipe, DatePipe } from '@angular/common';
-import {
-  Component,
-  inject,
-  input,
-  OnInit,
-  output,
-  signal,
-  TemplateRef,
-  ViewChild,
-} from '@angular/core';
+import { Component, inject, input, TemplateRef, ViewChild } from '@angular/core';
 import { PayDebtInstallmentFormComponent } from '@modules/transactions/pages/expense/components/pay-debt-installment-form/pay-debt-installment-form.component';
 import { RefundTemplateComponent } from '@modules/transactions/pages/expense/components/refund-template/refund-template.component';
 import { UpdateDebtInstallmentFormComponent } from '@modules/transactions/pages/expense/components/update-debt-installment-form/update-debt-installment-form.component';
 import { ModalComponent } from '@shared/components/modal/modal.component';
 import { ExpenseTypeLabel } from '@shared/enums/expense-type.enum';
 import { EPaymentStatus, StatusTypeLabel } from '@shared/enums/payment-status.enum';
-import { IDebt, IDebtInstallment } from '@shared/interfaces/debt.interface';
+import { IDebtInstallment } from '@shared/interfaces/debt.interface';
 import { IExpense } from '@shared/interfaces/expense.interface';
 import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
 
@@ -31,12 +22,10 @@ import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
   templateUrl: './view-expense-template.component.html',
   styleUrl: './view-expense-template.component.scss',
 })
-export class ViewExpenseTemplateComponent implements OnInit {
+export class ViewExpenseTemplateComponent {
   dataExpense = input.required<IExpense>();
-  expense = signal({} as IExpense);
-  expenseUpdated = output<IExpense>();
   installment: IDebtInstallment = {} as IDebtInstallment;
-  bsModalRef!: BsModalRef;
+  bsModalRef?: BsModalRef;
 
   @ViewChild('formEditTemplate', { static: true })
   formEditTemplate!: TemplateRef<HTMLElement>;
@@ -71,21 +60,16 @@ export class ViewExpenseTemplateComponent implements OnInit {
 
   private readonly modalService = inject(BsModalService);
 
-  ngOnInit() {
-    this.expense.set(this.dataExpense());
-    console.log(this.expense());
-  }
-
   get installments() {
     return (
-      this.expense()
+      this.dataExpense()
         .debt?.installments.filter(i => i.status !== EPaymentStatus.Cancelled)
         .sort((a, b) => a.number - b.number) ?? []
     );
   }
 
   get type(): string {
-    return this.getValueLabel('type', this.expense().type);
+    return this.getValueLabel('type', this.dataExpense().type);
   }
 
   getValueLabel(column: string, value: unknown): string {
@@ -151,20 +135,5 @@ export class ViewExpenseTemplateComponent implements OnInit {
     };
     this.bsModalRef = this.modalService.show(ModalComponent, initialState);
     this.bsModalRef.content.closeBtnName = 'Close';
-  }
-
-  onInstallmentUpdated(updated: IDebtInstallment) {
-    const expense = this.expense();
-    if (expense.debt === null) return;
-    const updatedInstallments: IDebtInstallment[] = expense.debt.installments.map(i =>
-      i.id === updated.id ? updated : i
-    );
-
-    this.expense.update(expense => ({
-      ...expense,
-      debt: { ...expense.debt, installments: updatedInstallments } as IDebt,
-    }));
-
-    this.expenseUpdated.emit(this.expense());
   }
 }

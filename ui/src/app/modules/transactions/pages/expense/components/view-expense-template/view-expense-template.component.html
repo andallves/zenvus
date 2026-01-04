@@ -1,9 +1,9 @@
 <div class="expense-view-wrapper">
-  <p class="expense-view-wrapper__text">Categoria: <span class="expense-view-wrapper__text--answer">{{ expense().categoryName }}</span></p>
+  <p class="expense-view-wrapper__text">Categoria: <span class="expense-view-wrapper__text--answer">{{ dataExpense().categoryName }}</span></p>
   <p class="expense-view-wrapper__text">Tipo: <span class="expense-view-wrapper__text--answer">{{ type }}</span></p>
-  <p class="expense-view-wrapper__text">Data de Registro: <span class="expense-view-wrapper__text--answer">{{ expense().date | date: 'longDate' }}</span></p>
-  <p class="expense-view-wrapper__text">Valor total: <span class="expense-view-wrapper__text--answer total-amount">{{ expense().amount | currency: 'BRL' }}</span></p>
-  @if (expense().hasDebt) {
+  <p class="expense-view-wrapper__text">Data de Registro: <span class="expense-view-wrapper__text--answer">{{ dataExpense().date | date: 'longDate' }}</span></p>
+  <p class="expense-view-wrapper__text">Valor total: <span class="expense-view-wrapper__text--answer total-amount">{{ dataExpense().amount | currency: 'BRL' }}</span></p>
+  @if (dataExpense().hasDebt) {
     <table class="table">
       <thead class="table__head">
         <tr class="table__row">
@@ -83,25 +83,13 @@
 </div>
 
 <ng-template #formEditTemplate>
-  <zen-update-debt-installment-form
-    id="form-edit-debt-installment"
-    [dataDebtInstallment]="installment"
-    [modalRef]="bsModalRef"
-    (changeData)="onInstallmentUpdated($event)"/>
+  <zen-update-debt-installment-form id="form-edit-debt-installment" [dataDebtInstallment]="installment" />
 </ng-template>
 
 <ng-template #refundTemplate>
-  <zen-refund-template
-    id="form-refund-debt-installment"
-    [dataInstallment]="installment"
-    [modalRef]="bsModalRef"
-    (changeData)="onInstallmentUpdated($event)" />
+  <zen-refund-template id="form-refund-debt-installment" />
 </ng-template>
 
 <ng-template #formPayTemplate>
-  <zen-pay-debt-installment-form
-    id="form-pay-debt-installment"
-    [dataDebtInstallment]="installment"
-    [modalRef]="bsModalRef"
-    (changeData)="onInstallmentUpdated($event)" />
+  <zen-pay-debt-installment-form id="form-pay-debt-installment" [dataDebtInstallment]="installment" />
 </ng-template>
