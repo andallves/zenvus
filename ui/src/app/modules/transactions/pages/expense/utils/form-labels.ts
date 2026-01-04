@@ -21,6 +21,17 @@ export const debtInstallmentLabels = (): Record<string, string> => {
   };
 };
 
+export const debtInstallmentPayLabels = (): Record<string, string> => {
+  return {
+    number: 'Parcela',
+    amount: 'Valor à Pagar',
+    amountPaid: 'Valor Pago',
+    status: 'Status',
+    dueDate: 'Data de Vencimento',
+    paymentDate: 'Data de Pagamento',
+  };
+};
+
 export const categoryLabels = (): Record<string, string> => {
   return {
     name: 'Nome',

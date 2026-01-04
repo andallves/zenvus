@@ -6,11 +6,11 @@ import { BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
 import { of, throwError } from 'rxjs';
 import { CursosService } from '../../services/cursos.service';
-import { UpdateExpenseFormComponent } from './update-expense-form.component';
+import { PayDebtInstallmentFormComponent } from './pay-debt-installment-form.component';
 
 describe('PayDebtInstallmentFormComponent', () => {
-  let component: UpdateExpenseFormComponent;
-  let fixture: ComponentFixture<UpdateExpenseFormComponent>;
+  let component: PayDebtInstallmentFormComponent;
+  let fixture: ComponentFixture<PayDebtInstallmentFormComponent>;
   let cursosService: jasmine.SpyObj<CursosService>;
   let modalAlertService: jasmine.SpyObj<ModalAlertService>;
   let toastr: jasmine.SpyObj<ToastrService>;
@@ -23,7 +23,7 @@ describe('PayDebtInstallmentFormComponent', () => {
     const modalServiceSpy = jasmine.createSpyObj('BsModalService', ['hide']);
 
     await TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, FormsModule, UpdateExpenseFormComponent],
+      imports: [ReactiveFormsModule, FormsModule, PayDebtInstallmentFormComponent],
       providers: [
         ValidationService,
         { provide: CursosService, useValue: cursosServiceSpy },
@@ -33,7 +33,7 @@ describe('PayDebtInstallmentFormComponent', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(UpdateExpenseFormComponent);
+    fixture = TestBed.createComponent(PayDebtInstallmentFormComponent);
     component = fixture.componentInstance;
     cursosService = TestBed.inject(CursosService) as jasmine.SpyObj<CursosService>;
     modalAlertService = TestBed.inject(ModalAlertService) as jasmine.SpyObj<ModalAlertService>;
@@ -47,16 +47,16 @@ describe('PayDebtInstallmentFormComponent', () => {
   });
 
   it('should initialize the form', () => {
-    expect(component.addCursoForm).toBeDefined();
-    expect(component.addCursoForm.get('nome')).toBeDefined();
-    expect(component.addCursoForm.get('tipo')).toBeDefined();
+    expect(component.updateDebtInstallmentForm).toBeDefined();
+    expect(component.updateDebtInstallmentForm.get('nome')).toBeDefined();
+    expect(component.updateDebtInstallmentForm.get('tipo')).toBeDefined();
   });
 
   it('should call addCurso on form submit', () => {
-    component.addCursoForm.setValue({ nome: 'Test Curso', tipo: '1' });
+    component.updateDebtInstallmentForm.setValue({ nome: 'Test Curso', tipo: '1' });
     cursosService.addCurso.and.returnValue(of({}));
 
-    component.addCurso();
+    component.updateDebtInstallment();
 
     expect(cursosService.addCurso).toHaveBeenCalled();
     expect(toastr.success).toHaveBeenCalledWith('Curso cadastrado com sucesso!', 'Sucesso!');
@@ -76,10 +76,10 @@ describe('PayDebtInstallmentFormComponent', () => {
   // });
 
   it('should show error modal on service error', () => {
-    component.addCursoForm.setValue({ nome: 'Test Curso', tipo: '1' });
+    component.updateDebtInstallmentForm.setValue({ nome: 'Test Curso', tipo: '1' });
     cursosService.addCurso.and.returnValue(throwError({ error: { erros: 'Erro ao criar curso' } }));
 
-    component.addCurso();
+    component.updateDebtInstallment();
 
     expect(modalAlertService.open).toHaveBeenCalledWith({
       icon: 'error',

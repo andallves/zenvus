@@ -5,6 +5,7 @@ using Zenvus.Application.DTO.Expenses;
 using Zenvus.Core.Auth;
 using Zenvus.Core.ValueObjects;
 using Zenvus.Domain.Entities;
+using Zenvus.Domain.Entities.Enums;
 using Zenvus.Infra.Abstractions;
 using Zenvus.Infra.Database;
 using Zenvus.Infra.Extensionsss;
@@ -19,7 +20,8 @@ public class GetExpensesQueryHandler(IRepository<ZenvusDbContext> repository, IA
             .GetQueryable<Expense>()
             .Include(e => e.Category)
             .Include(e => e.Debt)
-                .ThenInclude(d => d!.Installments)
+                .ThenInclude(d => d!.Installments
+                    .Where(i => i.Status  != EPaymentStatus.Cancelled))
             .ApplyFilter(request)
             .ApplyOrdering(request)
             .Select(e => ExpenseDto.From(e))

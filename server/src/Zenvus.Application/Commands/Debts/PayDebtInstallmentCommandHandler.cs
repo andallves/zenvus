@@ -23,7 +23,7 @@
                     .ErrorResult("Dívida não encontrada.", errorType: IsResultErrorType.NotFound);
             }
             
-            var paymentResult = debt.PayInstallment(command.InstallmentId, command.PaidAmount, command.PaymentDate);
+            var paymentResult = debt.PayInstallment(command.InstallmentId, command.AmountPaid, command.PaymentDate);
             
             if (!paymentResult.IsValid)
             {

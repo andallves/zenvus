@@ -83,7 +83,7 @@
 
   .actions-header,
   .actions-container {
-    width: 14%;
+    width: 20%;
     text-align: center;
     white-space: nowrap;
 
@@ -111,7 +111,6 @@
 
     .btn-danger {
       background-color: var(--danger-color);
-      margin-left: 0.5rem;
     }
 
     .btn-send {
@@ -144,7 +143,7 @@
       margin-left: 0.5rem;
     }
 
-    .desativado {
+    .disabled {
       background-color: var(--text-gray-color) !important;
       opacity: 0.5;
     }

@@ -11,7 +11,7 @@ public class InstallmentDto
     public int Number { get; init; }
     public DateTime DueDate { get; init; }
     public decimal Amount { get; init; }
-    public decimal? AmountPaid { get; init; }
+    public decimal? PaidAmount { get; init; }
     public EPaymentStatus Status { get; init; }
     public DateTime? PaymentDate { get; init; }  
     

@@ -34,7 +34,14 @@ export interface IDebtInstallmentUpdate {
 
 export interface IDebtInstallmentPay {
   debtId: string;
-  installment: string;
+  installmentId: string;
+  paymentDate: Date;
+  paidAmount: number;
+}
+
+export interface IDebtInstallmentRefund {
+  debtId: string;
+  installmentId: string;
   paymentDate: Date;
   amountPaid: number;
 }

@@ -1,6 +1,11 @@
 import { Injectable } from '@angular/core';
 import { BaseService } from '@core/services/base.service';
-import { IDebtInstallment, IDebtInstallmentUpdate } from '@shared/interfaces/debt.interface';
+import {
+  IDebtInstallment,
+  IDebtInstallmentPay,
+  IDebtInstallmentRefund,
+  IDebtInstallmentUpdate,
+} from '@shared/interfaces/debt.interface';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -9,5 +14,19 @@ import { Observable } from 'rxjs';
 export class DebtInstallmentService extends BaseService {
   updateInstallment(data: IDebtInstallmentUpdate, id: string): Observable<IDebtInstallment> {
     return this.httpClient.put<IDebtInstallment>(`${this.apiUrl}/v1/debt/installment/${id}`, data);
+  }
+
+  payInstallment(data: IDebtInstallmentPay, id: string): Observable<IDebtInstallment> {
+    return this.httpClient.put<IDebtInstallment>(
+      `${this.apiUrl}/v1/debt/installment/pay/${id}`,
+      data
+    );
+  }
+
+  refundInstallmentAmount(data: IDebtInstallmentRefund, id: string): Observable<IDebtInstallment> {
+    return this.httpClient.put<IDebtInstallment>(
+      `${this.apiUrl}/v1/debt/installment/refund/${id}`,
+      data
+    );
   }
 }

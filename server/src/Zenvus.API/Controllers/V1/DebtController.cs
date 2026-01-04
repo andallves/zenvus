@@ -19,7 +19,7 @@ public class DebtController(IMediator mediator) : BaseController(mediator)
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async ValueTask<IActionResult> Pay([FromRoute] Guid id, [FromBody] PayDebtInstallmentCommand command, CancellationToken cancellationToken)
     {
-        if (id != command.InstallmentId)
+        if (id != command.DebtId)
         {
             return BadRequest("Os ids informados não coincidem.");
         }

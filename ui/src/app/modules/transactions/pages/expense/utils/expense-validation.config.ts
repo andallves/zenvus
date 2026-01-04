@@ -78,7 +78,7 @@ export const DEBT_INSTALLMENT_VALIDATION_CONFIG: IFieldConfig[] = [
     },
   },
   {
-    key: 'amount',
+    key: 'paidAmount',
     label: 'Valor Pago',
     validation: {
       required: true,
@@ -87,6 +87,46 @@ export const DEBT_INSTALLMENT_VALIDATION_CONFIG: IFieldConfig[] = [
   {
     key: 'status',
     label: 'Status',
+    validation: {
+      required: true,
+    },
+  },
+  {
+    key: 'dueDate',
+    label: 'Data de Vencimento',
+    validation: {
+      required: true,
+      customValidators: [ValidationHelperService.dateValidator],
+    },
+  },
+  {
+    key: 'paymentDate',
+    label: 'Data de Pagamento',
+    validation: {
+      required: true,
+      customValidators: [ValidationHelperService.dateValidator],
+    },
+  },
+];
+
+export const DEBT_INSTALLMENT_PAY_VALIDATION_CONFIG: IFieldConfig[] = [
+  {
+    key: 'number',
+    label: 'Parcela',
+    validation: {
+      required: true,
+    },
+  },
+  {
+    key: 'amount',
+    label: 'Valor à Pagar',
+    validation: {
+      required: true,
+    },
+  },
+  {
+    key: 'paidAmount',
+    label: 'Valor Pago',
     validation: {
       required: true,
     },

@@ -1,6 +1,8 @@
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { Component, inject, input, TemplateRef, ViewChild } from '@angular/core';
-import { UpdateDebtExpenseFormComponent } from '@modules/transactions/pages/expense/components/update-debt-expense-form/update-debt-expense-form.component';
+import { PayDebtInstallmentFormComponent } from '@modules/transactions/pages/expense/components/pay-debt-installment-form/pay-debt-installment-form.component';
+import { RefundTemplateComponent } from '@modules/transactions/pages/expense/components/refund-template/refund-template.component';
+import { UpdateDebtInstallmentFormComponent } from '@modules/transactions/pages/expense/components/update-debt-installment-form/update-debt-installment-form.component';
 import { ModalComponent } from '@shared/components/modal/modal.component';
 import { ExpenseTypeLabel } from '@shared/enums/expense-type.enum';
 import { EPaymentStatus, StatusTypeLabel } from '@shared/enums/payment-status.enum';
@@ -10,7 +12,13 @@ import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'zen-view-expense-template',
-  imports: [CurrencyPipe, DatePipe, UpdateDebtExpenseFormComponent],
+  imports: [
+    CurrencyPipe,
+    DatePipe,
+    UpdateDebtInstallmentFormComponent,
+    PayDebtInstallmentFormComponent,
+    RefundTemplateComponent,
+  ],
   templateUrl: './view-expense-template.component.html',
   styleUrl: './view-expense-template.component.scss',
 })
@@ -18,8 +26,15 @@ export class ViewExpenseTemplateComponent {
   dataExpense = input.required<IExpense>();
   installment: IDebtInstallment = {} as IDebtInstallment;
   bsModalRef?: BsModalRef;
+
   @ViewChild('formEditTemplate', { static: true })
   formEditTemplate!: TemplateRef<HTMLElement>;
+
+  @ViewChild('formPayTemplate', { static: true })
+  formPayTemplate!: TemplateRef<HTMLElement>;
+
+  @ViewChild('refundTemplate', { static: true })
+  refundTemplate!: TemplateRef<HTMLElement>;
 
   showActions = true;
   columns: (keyof IDebtInstallment)[] = [
@@ -87,6 +102,34 @@ export class ViewExpenseTemplateComponent {
         iconTemplate: 'bi bi-pencil-fill',
         title: 'Editar Parcela',
         formTemplate: this.formEditTemplate,
+      },
+      class: 'modal-dialog-centered',
+    };
+    this.bsModalRef = this.modalService.show(ModalComponent, initialState);
+    this.bsModalRef.content.closeBtnName = 'Close';
+  }
+
+  openPayModal(event: IDebtInstallment) {
+    this.installment = event;
+    const initialState: ModalOptions = {
+      initialState: {
+        iconTemplate: 'bi bi-coin',
+        title: 'Pagar Parcela',
+        formTemplate: this.formPayTemplate,
+      },
+      class: 'modal-dialog-centered',
+    };
+    this.bsModalRef = this.modalService.show(ModalComponent, initialState);
+    this.bsModalRef.content.closeBtnName = 'Close';
+  }
+
+  openRefundModal(event: IDebtInstallment) {
+    this.installment = event;
+    const initialState: ModalOptions = {
+      initialState: {
+        iconTemplate: 'bi bi-arrow-counterclockwise',
+        title: 'Estornar Parcela',
+        formTemplate: this.refundTemplate,
       },
       class: 'modal-dialog-centered',
     };

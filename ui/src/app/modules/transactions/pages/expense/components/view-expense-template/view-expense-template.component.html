@@ -39,22 +39,35 @@
       }
           <td class="actions-container">
             <div class="d-flex justify-content-center flex-row gap-2">
-                <button
-                  id="btn-edit"
-                  data-testid="btn-edit"
-                  aria-label="Botão de editar"
-                  class="btn btn-warning"
-                  (click)="openEditModal(installment)"
-                >
-                  <i class="bi bi-pencil-fill" aria-hidden="true"> </i>
-                </button>
+              <button
+                id="btn-edit"
+                data-testid="btn-edit"
+                aria-label="Botão de editar"
+                class="btn btn-warning"
+                title="Editar"
+                (click)="openEditModal(installment)"
+              >
+                <i class="bi bi-pencil-fill" aria-hidden="true"> </i>
+              </button>
+
+              <button
+                id="btn-refund"
+                data-testid="btn-refund"
+                aria-label="Botão de botão de estornar parcela"
+                class="btn btn-danger"
+                title="Estornar"
+                (click)="openRefundModal(installment)"
+              >
+                <i class="bi bi-arrow-counterclockwise" aria-hidden="true"> </i>
+              </button>
 
               <button
                 id="btn-pay"
                 data-testid="btn-pay"
                 aria-label="Botão de botão de pagar"
-                class="btn btn-success"
-                (click)="openEditModal(installment)"
+                class="btn btn-send"
+                title="Pagar"
+                (click)="openPayModal(installment)"
               >
                 <i class="bi bi-coin" aria-hidden="true"> </i>
               </button>
@@ -70,5 +83,13 @@
 </div>
 
 <ng-template #formEditTemplate>
-  <zen-update-debt-expense-form id="form-edit-expense" [dataDebtInstallment]="installment" />
+  <zen-update-debt-installment-form id="form-edit-debt-installment" [dataDebtInstallment]="installment" />
+</ng-template>
+
+<ng-template #refundTemplate>
+  <zen-refund-template id="form-refund-debt-installment" />
+</ng-template>
+
+<ng-template #formPayTemplate>
+  <zen-pay-debt-installment-form id="form-pay-debt-installment" [dataDebtInstallment]="installment" />
 </ng-template>
