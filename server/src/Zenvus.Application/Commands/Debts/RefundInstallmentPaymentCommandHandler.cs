@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Zenvus.Application.DTO.Installments;
 using Zenvus.Core.ValueObjects;
+using Zenvus.Domain.Entities;
 using Zenvus.Infra.Abstractions;
 using Zenvus.Infra.Database;
 
@@ -11,9 +12,7 @@ public class RefundInstallmentPaymentCommandHandler(IRepository<ZenvusDbContext>
 {
     public async Task<CustomResult<InstallmentDto>> Handle(RefundInstallmentPaymentCommand request, CancellationToken cancellationToken)
     {
-        var debt = await repository
-            .GetDbContext()
-            .Debts
+        var debt = await repository.DbSet<Debt>()
             .Include(d => d.Installments)
             .FirstOrDefaultAsync(d => d.Id == request.DebtId, cancellationToken);
         
@@ -31,12 +30,11 @@ public class RefundInstallmentPaymentCommandHandler(IRepository<ZenvusDbContext>
         var refundResult = installment.Refund();
         if (!refundResult.IsValid)
         {
-            return CustomResult<InstallmentDto>.ErrorResult(refundResult.Message);
+            return CustomResult<InstallmentDto>.ErrorResult(refundResult.Message, errorType: IsResultErrorType.BusinessRuleViolation);
         }
 
         return await repository.SaveChangesAsync(cancellationToken) > 0 
             ? CustomResult<InstallmentDto>.SuccessResult(InstallmentDto.From(installment), "Pagamento estornado com sucesso.")
             : CustomResult<InstallmentDto>.ErrorResult("Não foi possível estornar o pagamento.", errorType: IsResultErrorType.ServerError);
-        
     }
 }
