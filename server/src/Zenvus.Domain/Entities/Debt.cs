@@ -300,7 +300,8 @@ public class Debt : SoftDeleteEntity
         if (FirstDueDate?.Date != firstDueDate.Date)
         {
             FirstDueDate = firstDueDate.Date;
-            UpdateInstallmentsDueDates();
+             var installmentsDueDates = UpdateInstallmentsDueDates();
+            if (!installmentsDueDates.IsValid) return installmentsDueDates;
         }
 
         if (Expense.Amount == expenseAmount) return DomainResult.Success();
@@ -310,31 +311,36 @@ public class Debt : SoftDeleteEntity
             CalculateInstallmentDistribution(expenseAmount, totalInstallments);
             
         InstallmentAmount = baseAmount;
-        UpdateInstallmentsAmounts(baseAmount, lastAmount);
+        var installmentsAmounts = UpdateInstallmentsAmounts(baseAmount, lastAmount);
+        if (!installmentsAmounts.IsValid) return installmentsAmounts;
 
         return DomainResult.Success();
     }
 
-    private void UpdateInstallmentsDueDates()
+    private DomainResult UpdateInstallmentsDueDates()
     {
         var orderedInstallments = Installments.OrderBy(i => i.Number).ToList();
         
-        for (int i = 0; i < orderedInstallments.Count; i++)
+        for (var i = 0; i < orderedInstallments.Count; i++)
         {
             var newDueDate = CalculateSafeDueDate(FirstDueDate!.Value, i);
-            orderedInstallments[i].UpdateDueDate(newDueDate);
+            var dueDateResult = orderedInstallments[i].UpdateDueDate(newDueDate);
+            if (!dueDateResult.IsValid) return dueDateResult;
         }
+        return DomainResult.Success();
     }
 
-    private void UpdateInstallmentsAmounts(decimal baseAmount, decimal lastAmount)
+    private DomainResult UpdateInstallmentsAmounts(decimal baseAmount, decimal lastAmount)
     {
         var orderedInstallments = Installments.OrderBy(i => i.Number).ToList();
         
-        for (int i = 0; i < orderedInstallments.Count; i++)
+        for (var i = 0; i < orderedInstallments.Count; i++)
         {
             var amount = (i == orderedInstallments.Count - 1) ? lastAmount : baseAmount;
-            orderedInstallments[i].UpdateAmount(amount);
+            var amountResult = orderedInstallments[i].UpdateAmount(amount);
+            if (amountResult.IsValid) return amountResult;
         }
+        return DomainResult.Success();
     }
   
     

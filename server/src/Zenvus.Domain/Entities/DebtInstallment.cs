@@ -84,7 +84,9 @@
             if (!validationResult.IsValid)
                 return validationResult;
 
-            ProcessPayment(amountPaid, paymentDate);
+            var paymentResult = ProcessPayment(amountPaid, paymentDate);
+            if (!paymentResult.IsValid) return paymentResult;
+            
             return DomainResult.Success();
         }
         
@@ -159,9 +161,8 @@
             var roundedCurrent = Math.Round(Amount, 2);
             var roundedNew = Math.Round(newAmount, 2);
             if (Math.Abs(roundedCurrent - roundedNew) < 0.01M)
-                return DomainResult.Success(); // Valor não mudou significativamente
-
-            // Se já houve pagamento parcial, verifica se o novo valor não é menor que o já pago
+                return DomainResult.Success();
+            
             if (HasPartialPayment && newAmount < AmountPaid)
                 return DomainResult.Failure("O novo valor não pode ser menor que o valor já pago.");
             
@@ -240,7 +241,7 @@
 
         public DomainResult Refund()
         {
-            if (!IsPaid)
+            if (!IsPaid && !HasPartialPayment)
                 return DomainResult.Failure("Só é possível estornar parcelas já pagas.");
                 
             Status = EPaymentStatus.Active;
@@ -300,7 +301,7 @@
                 if (DueDate == DateTime.MinValue || DueDate == DateTime.MaxValue)
                     errors.Add("Data de vencimento inválida.");
                 
-                var minDate = DateTime.UtcNow.Date.AddYears(-50); // 50 anos no passado é razoável
+                var minDate = DateTime.UtcNow.Date.AddYears(-50); 
                 if (DueDate < minDate && DueDate != DateTime.MinValue)
                     errors.Add("A data de vencimento não pode ser muito antiga.");
             }
@@ -336,7 +337,7 @@
             return DomainResult.Success();
         }
 
-        private void ProcessPayment(decimal amountPaid, DateTime paymentDate)
+        private DomainResult ProcessPayment(decimal amountPaid, DateTime paymentDate)
         {
             AmountPaid = (AmountPaid ?? 0) + amountPaid;
             PaymentDate = paymentDate;
@@ -348,10 +349,12 @@
             }
             else
             {
-                Status = EPaymentStatus.Pending;
+                var pendingResult = MarkAsPending();
+                if (!pendingResult.IsValid) return pendingResult;
             }
             
             UpdatedAt = DateTime.UtcNow;
+            return DomainResult.Success();
         }
         
         public bool CanBePaid()
