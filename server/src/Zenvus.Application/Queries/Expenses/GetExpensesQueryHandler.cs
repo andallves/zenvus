@@ -22,6 +22,7 @@ public class GetExpensesQueryHandler(IRepository<ZenvusDbContext> repository, IA
             .Include(e => e.Debt)
                 .ThenInclude(d => d!.Installments
                     .Where(i => i.Status  != EPaymentStatus.Cancelled))
+            .Where(e => !e.Disabled && e.UserId == authenticatedUser.Id)
             .ApplyFilter(request)
             .ApplyOrdering(request)
             .Select(e => ExpenseDto.From(e))

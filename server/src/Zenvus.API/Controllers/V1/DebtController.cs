@@ -43,4 +43,21 @@ public class DebtController(IMediator mediator) : BaseController(mediator)
         
         return await SendCommandAsync(command, cancellationToken);
     }
+    
+    [HttpPut("installment/refund/{id:Guid}")]
+    [MapToApiVersion("1.0")]
+    [SwaggerOperation(Summary = "Estorna um pagamento de parcela existente por ID da dívida.", Tags = ["Transações - Parcelas"])]
+    [ProducesResponseType(typeof(InstallmentDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async ValueTask<IActionResult> Refund([FromRoute] Guid id, [FromBody] RefundInstallmentPaymentCommand command, CancellationToken cancellationToken)
+    {
+        if (id != command.DebtId)
+        {
+            return BadRequest("Os ids da dívida informados não coincidem.");
+        }
+        
+        return await SendCommandAsync(command, cancellationToken);
+    }
 }
