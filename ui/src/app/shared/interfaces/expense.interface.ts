@@ -16,7 +16,7 @@ export interface IExpense {
   amount: number;
   date: Date | string;
   hasDebt: boolean;
-  debt?: IDebt;
+  debt: IDebt | null;
   disabled: boolean;
 }
 
@@ -52,7 +52,7 @@ export interface IExpenseUpdate {
   categoryId: string;
   amount: number;
   date: Date | string;
-  debt?: IDebt | IDebtCreate | null;
+  debt: IDebt | IDebtCreate | null;
   disabled: boolean;
 }
 

@@ -37,7 +37,7 @@ export class DeleteTemplateComponent {
     return value;
   }
 
-  deleteCategory() {
+  deleteExpense() {
     this.isLoading = true;
 
     this.expenseService.deleteExpense(this.dataExpense.id).subscribe({

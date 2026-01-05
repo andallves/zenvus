@@ -19,10 +19,10 @@ export interface IDebtInstallment {
   debtId: string;
   number: number;
   amount: number;
-  amountPaid: number;
+  amountPaid: number | null;
   status: EPaymentStatus;
   dueDate: Date;
-  paymentDate: Date;
+  paymentDate: Date | null;
 }
 
 export interface IDebtInstallmentUpdate {
@@ -35,13 +35,11 @@ export interface IDebtInstallmentUpdate {
 export interface IDebtInstallmentPay {
   debtId: string;
   installmentId: string;
-  paymentDate: Date;
-  paidAmount: number;
+  paymentDate: Date | null;
+  amountPaid: number;
 }
 
 export interface IDebtInstallmentRefund {
   debtId: string;
   installmentId: string;
-  paymentDate: Date;
-  amountPaid: number;
 }

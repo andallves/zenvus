@@ -75,17 +75,34 @@
 </zen-page-container>
 
 <ng-template #formAddExpenseTemplate>
-  <zen-add-expense-form id="form-add-expense" (changeData)="changeData()" [options]="formFieldOptions"/>
+  <zen-add-expense-form
+    id="form-add-expense"
+    [options]="formFieldOptions"
+    (changeData)="changeData()"
+  />
 </ng-template>
 
 <ng-template #formEditExpenseTemplate>
-  <zen-update-expense-form id="form-edit-expense" [dataExpense]="dataExpense" [options]="formFieldOptions" (changeData)="changeData()"/>
+  <zen-update-expense-form
+    id="form-edit-expense"
+    [dataExpense]="dataExpense"
+    [options]="formFieldOptions"
+    (changeData)="changeData()"
+  />
 </ng-template>
 
 <ng-template #deleteExpenseTemplate>
-  <zen-delete-template id="template-delete-expense" [dataExpense]="dataExpense" (changeData)="changeData()"/>
+  <zen-delete-template
+    id="template-delete-expense"
+    [dataExpense]="dataExpense"
+    (changeData)="changeData()"
+  />
 </ng-template>
 
 <ng-template #viewExpenseTemplate>
-  <zen-view-expense-template id="template-view-expense" [dataExpense]="dataExpense" />
+  <zen-view-expense-template
+    id="template-view-expense"
+    [dataExpense]="dataExpense"
+    (expenseUpdated)="onExpenseUpdated($event)"
+  />
 </ng-template>

@@ -1,8 +1,8 @@
 <div>
   <div class="body-pop-up">
     <p>
-      Deseja realmente excluir o despesa:
-      <span id="expense-name">{{ truncateText(dataExpense.description) }}</span> ?
+      Deseja realmente estornar a parcela:
+      <span id="installment-name">{{ dataInstallment().number }}</span> ?
     </p>
   </div>
 
@@ -20,7 +20,7 @@
       id="button-confirmar"
       width="100px"
       [isLoading]="isLoading"
-      (click)="deleteExpense()"
+      (click)="refundInstallmentAmount()"
       [buttonId]="'button-salvar'"
 
     >

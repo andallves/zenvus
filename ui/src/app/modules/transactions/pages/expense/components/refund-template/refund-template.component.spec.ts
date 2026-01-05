@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { DeleteTemplateComponent } from './delete-template.component';
+import { RefundTemplateComponent } from './refund-template.component';
 import { CursosService } from '../../services/cursos.service';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { of, throwError } from 'rxjs';
@@ -9,8 +9,8 @@ import { ModalAlertService } from '@shared/components/swall/modal-alert/service/
 import { ToastrService } from 'ngx-toastr';
 
 describe('RefundTemplateComponent', () => {
-  let component: DeleteTemplateComponent;
-  let fixture: ComponentFixture<DeleteTemplateComponent>;
+  let component: RefundTemplateComponent;
+  let fixture: ComponentFixture<RefundTemplateComponent>;
   let cursosServiceMock: any;
   let modalServiceMock: any;
   let modalAlertServiceMock: any;
@@ -34,7 +34,7 @@ describe('RefundTemplateComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [DeleteTemplateComponent, ButtonComponent],
+      imports: [RefundTemplateComponent, ButtonComponent],
       providers: [
         { provide: CursosService, useValue: cursosServiceMock },
         { provide: BsModalService, useValue: modalServiceMock },
@@ -43,7 +43,7 @@ describe('RefundTemplateComponent', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(DeleteTemplateComponent);
+    fixture = TestBed.createComponent(RefundTemplateComponent);
     component = fixture.componentInstance;
     component.dataCurso = { id: 1, nome: 'Curso Teste' };
     fixture.detectChanges();

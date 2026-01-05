@@ -51,7 +51,6 @@ export class ExpenseComponent implements OnInit {
   isLoadingClearFilter = false;
   activeBadges: IBadge[] = [];
   bsModalRef?: BsModalRef;
-  imgExpenses = './header.svg';
   page = 1;
   itemsPerPage = 10;
   totalItems = 0;
@@ -256,5 +255,10 @@ export class ExpenseComponent implements OnInit {
   onPageChange(event: number) {
     this.page = event;
     this.loaderExpenses();
+  }
+
+  onExpenseUpdated(updated: IExpense) {
+    this.expensesData = this.expensesData.map(exp => (exp.id === updated.id ? updated : exp));
+    this.dataExpense = updated;
   }
 }
