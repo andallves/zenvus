@@ -24,7 +24,7 @@ public class RegisterIncomeCommandHandler(IRepository<ZenvusDbContext> repositor
             description: request.Description,
             amount: request.Amount,
             date:request.Date,
-            type: (EIncome)request.Type,
+            type: (EIncome)request.TypeId,
             categoryId: request.CategoryId,
             userId: authenticatedUser.Id);
         

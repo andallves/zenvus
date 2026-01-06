@@ -9,13 +9,13 @@ import { BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
-  selector: 'zen-delete-template',
+  selector: 'zen-delete-expense-template',
   standalone: true,
   imports: [CommonModule, ButtonComponent],
-  templateUrl: './delete-template.component.html',
-  styleUrl: './delete-template.component.scss',
+  templateUrl: './delete-expense-template.component.html',
+  styleUrl: './delete-expense-template.component.scss',
 })
-export class DeleteTemplateComponent {
+export class DeleteExpenseTemplateComponent {
   @Input() dataExpense: IExpense = {} as IExpense;
   @Input() isLoading = false;
   @Output() changeData = new EventEmitter<void>();

@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AddExpenseFormComponent } from '@modules/transactions/pages/expense/components/add-expense-form/add-expense-form.component';
-import { DeleteTemplateComponent } from '@modules/transactions/pages/expense/components/delete-template/delete-template.component';
+import { DeleteExpenseTemplateComponent } from '@modules/transactions/pages/expense/components/delete-expense-template/delete-expense-template.component';
 import { UpdateExpenseFormComponent } from '@modules/transactions/pages/expense/components/update-expense-form/update-expense-form.component';
 import { ViewExpenseTemplateComponent } from '@modules/transactions/pages/expense/components/view-expense-template/view-expense-template.component';
 import CategoryService from '@modules/transactions/services/category.service';
@@ -40,7 +40,7 @@ import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
     DateInputComponent,
     AddExpenseFormComponent,
     UpdateExpenseFormComponent,
-    DeleteTemplateComponent,
+    DeleteExpenseTemplateComponent,
     ViewExpenseTemplateComponent,
   ],
 })

@@ -1,0 +1,83 @@
+<form class="add-form" id="form-register-income" action="javascript:void(0)" [formGroup]="registerIncomeForm"
+      aria-labelledby="form-register-income-title">
+  <h2 id="form-register-income-title" class="visually-hidden">Registrar Receita</h2>
+
+  <zen-input
+    id="input-description"
+    label="Descrição:"
+    placeholder="Digite a descrição"
+    formControlName="description"
+    [inputId]="'input-description'"
+    [showMandatory]="true"
+    [errorMessages]="getErrorMessages('description')"
+  />
+
+  <zen-date-input
+    id="input-date"
+    label="Data:"
+    placeholder="Informe uma data"
+    formControlName="date"
+    [inputId]="'input-date'"
+    [showMandatory]="true"
+    [errorMessages]="getErrorMessages('date')"
+  />
+
+  <zen-select-input
+    id="input-category"
+    label="Categoria:"
+    placeholder="Selecione uma categoria"
+    formControlName="categoryId"
+    [options]="options().categoriesOptions"
+    [dropdownId]="'select-category'"
+    [showMandatory]="true"
+    [errorMessages]="getErrorMessages('categoryId')"
+  />
+
+  <zen-select-input
+    id="select-type"
+    label="Tipo:"
+    placeholder="Selecione um tipo"
+    formControlName="typeId"
+    [options]="options().typesOptions"
+    [dropdownId]="'select-type'"
+    [showMandatory]="true"
+    [errorMessages]="getErrorMessages('typeId')"
+  />
+
+  <zen-money-input
+    id="input-amount"
+    label="Valor:"
+    placeholder="0,00"
+    formControlName="amount"
+    [inputId]="'input-amount'"
+    [showMandatory]="true"
+    [errorMessages]="getErrorMessages('amount')"
+    (valueChange)="handleCurrencyChange($event)"
+  />
+
+  <div class="footer-modal">
+    <zen-button
+      id="button-fechar"
+      variant="danger"
+      width="100px"
+      (click)="onCloseModal()"
+      (keyup)="onCloseModal()"
+      aria-label="Fechar o formulário"
+      [buttonId]="'button-fechar'"
+    >
+      Fechar
+    </zen-button>
+    <zen-button
+      id="button-salvar"
+      width="100px"
+
+      [isLoading]="isLoading"
+      (click)="registerIncome()"
+      (keyup)="registerIncome()"
+      aria-label="Salvar a despesa"
+      [buttonId]="'button-salvar'"
+    >
+      Salvar
+    </zen-button>
+  </div>
+</form>

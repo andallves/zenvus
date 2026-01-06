@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AddCategoryFormComponent } from '@modules/transactions/pages/category/components/add-category-form/add-category-form.component';
-import { DeleteTemplateComponent } from '@modules/transactions/pages/category/components/delete-template/delete-template.component';
+import { DeleteCategoryTemplateComponent } from '@modules/transactions/pages/category/components/delete-category-template/delete-category-template.component';
 import { EditCategoryFormComponent } from '@modules/transactions/pages/category/components/edit-category-form/edit-category-form.component';
 import CategoryService from '@modules/transactions/services/category.service';
 import { FilterComponent } from '@shared/components/filter/filter.component';
@@ -35,7 +35,7 @@ import { NgxColorsModule, validColorValidator } from 'ngx-colors';
     FilterComponent,
     TableComponent,
     AddCategoryFormComponent,
-    DeleteTemplateComponent,
+    DeleteCategoryTemplateComponent,
     EditCategoryFormComponent,
     ReactiveFormsModule,
     NgxColorsModule,

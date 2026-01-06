@@ -42,7 +42,7 @@ public class RegisterIncomeCommandValidator : AbstractValidator<RegisterIncomeCo
             .NotNull()
             .WithMessage("A descrição da receita é obrigatória.");
 
-        RuleFor(c => c.Type)
+        RuleFor(c => c.TypeId)
             .Must(BeAValidIncomeType)
             .WithMessage("O tipo da receita informado é inválido.");
 

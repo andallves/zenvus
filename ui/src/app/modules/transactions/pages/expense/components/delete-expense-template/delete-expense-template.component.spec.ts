@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { DeleteTemplateComponent } from './delete-template.component';
+import { DeleteExpenseTemplateComponent } from './delete-expense-template.component';
 import { CursosService } from '../../services/cursos.service';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { of, throwError } from 'rxjs';
@@ -8,9 +8,9 @@ import { ButtonComponent } from '@shared/button/button.component';
 import { ModalAlertService } from '@shared/components/swall/modal-alert/service/modal-alert.service';
 import { ToastrService } from 'ngx-toastr';
 
-describe('DeleteTemplateComponent', () => {
-  let component: DeleteTemplateComponent;
-  let fixture: ComponentFixture<DeleteTemplateComponent>;
+describe('DeleteIncomeTemplateComponent', () => {
+  let component: DeleteExpenseTemplateComponent;
+  let fixture: ComponentFixture<DeleteExpenseTemplateComponent>;
   let cursosServiceMock: any;
   let modalServiceMock: any;
   let modalAlertServiceMock: any;
@@ -18,32 +18,32 @@ describe('DeleteTemplateComponent', () => {
 
   beforeEach(async () => {
     cursosServiceMock = {
-      deleteCurso: jasmine.createSpy('deleteCurso').and.returnValue(of({}))
+      deleteCurso: jasmine.createSpy('deleteCurso').and.returnValue(of({})),
     };
 
     modalServiceMock = {
-      hide: jasmine.createSpy('hide')
+      hide: jasmine.createSpy('hide'),
     };
 
     modalAlertServiceMock = {
-      open: jasmine.createSpy('open')
+      open: jasmine.createSpy('open'),
     };
 
     toastrMock = {
-      success: jasmine.createSpy('success')
+      success: jasmine.createSpy('success'),
     };
 
     await TestBed.configureTestingModule({
-      imports: [DeleteTemplateComponent, ButtonComponent],
+      imports: [DeleteExpenseTemplateComponent, ButtonComponent],
       providers: [
         { provide: CursosService, useValue: cursosServiceMock },
         { provide: BsModalService, useValue: modalServiceMock },
         { provide: ModalAlertService, useValue: modalAlertServiceMock },
-        { provide: ToastrService, useValue: toastrMock }
-      ]
+        { provide: ToastrService, useValue: toastrMock },
+      ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(DeleteTemplateComponent);
+    fixture = TestBed.createComponent(DeleteExpenseTemplateComponent);
     component = fixture.componentInstance;
     component.dataCurso = { id: 1, nome: 'Curso Teste' };
     fixture.detectChanges();
@@ -70,7 +70,7 @@ describe('DeleteTemplateComponent', () => {
       icon: 'error',
       title: 'Error',
       message: 'Erro ao deletar curso',
-      confirmButtonText: 'Ok'
+      confirmButtonText: 'Ok',
     });
   });
 });

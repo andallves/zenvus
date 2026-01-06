@@ -9,13 +9,13 @@ import { BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
-  selector: 'zen-delete-template',
+  selector: 'zen-delete-category-template',
   standalone: true,
   imports: [CommonModule, ButtonComponent],
-  templateUrl: './delete-template.component.html',
-  styleUrl: './delete-template.component.scss',
+  templateUrl: './delete-category-template.component.html',
+  styleUrl: './delete-category-template.component.scss',
 })
-export class DeleteTemplateComponent {
+export class DeleteCategoryTemplateComponent {
   @Input() dataCategory: ICategory = {} as ICategory;
   @Input() isLoading = false;
   @Output() changeData = new EventEmitter<void>();
