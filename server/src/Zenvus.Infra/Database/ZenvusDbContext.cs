@@ -13,7 +13,7 @@ public class ZenvusDbContext : BaseDbContext
     public DbSet<Expense> Expenses { get; set; }
     public DbSet<Debt> Debts { get; set; }
     public DbSet<DebtInstallment> DebtInstallments { get; set; }
-
+    public DbSet<Budget> Budgets { get; set; }
 
     public ZenvusDbContext(DbContextOptions<ZenvusDbContext> options) : base(options)
     {
