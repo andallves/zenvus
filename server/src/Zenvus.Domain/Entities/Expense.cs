@@ -9,7 +9,7 @@ public class Expense : Transaction
     private Expense() { }
     public EExpense Type { get; set; } 
     public Debt? Debt { get; set; }
-    public bool HasDebt => Debt != null && !Debt.Disabled;
+    public bool HasDebt => Debt is { Disabled: false };
     public bool HasActiveDebt => HasDebt && Debt!.IsInstallment;
     public bool IsPaid => !HasDebt || Debt!.IsFullyPaid;
     

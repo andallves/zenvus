@@ -22,7 +22,7 @@ public class CategoryConfiguration: IEntityTypeConfiguration<Category>
             .IsRequired();
 
         builder.Property(x => x.Type)
-            .HasDefaultValue(ECategory.Expense)
+            .HasDefaultValue(ETransactionType.Expense)
             .IsRequired();
 
 

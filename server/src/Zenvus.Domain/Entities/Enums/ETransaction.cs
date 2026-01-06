@@ -2,7 +2,7 @@ using System.ComponentModel;
 
 namespace Zenvus.Domain.Entities.Enums;
 
-public enum ECategory
+public enum ETransactionType
 {
     [Description("Entrada")]
     Income = 1,

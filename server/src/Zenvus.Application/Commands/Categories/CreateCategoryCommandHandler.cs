@@ -26,7 +26,7 @@ public class CreateCategoryCommandHandler(IMapper mapper, IRepository<ZenvusDbCo
         if (category is null) {
             category = mapper.Map<Category>(request);
             category.UserId = authenticatedUser.Id;
-            category.Type = (ECategory)request.Type;
+            category.Type = (ETransactionType)request.Type;
             repository.DbSet<Category>().Add(category);
         }
         else if (category.Disabled)
