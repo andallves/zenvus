@@ -36,6 +36,10 @@ public abstract class BaseController(IMediator mediator) : ControllerBase
         return result.ErrorType switch
         {
             IsResultErrorType.NotFound => Problem(title: result.Message, statusCode: StatusCodes.Status404NotFound),
+            IsResultErrorType.Conflict => Problem(title: result.Message, detail: string.Join('\n', result.Errors),
+                statusCode: StatusCodes.Status409Conflict),
+            IsResultErrorType.BusinessRuleViolation => Problem(title: result.Message, detail: string.Join('\n', result.Errors),
+                statusCode: StatusCodes.Status422UnprocessableEntity),
             IsResultErrorType.ServerError => Problem(title: result.Message, detail: string.Join('\n', result.Errors),
                 statusCode: StatusCodes.Status500InternalServerError),
             IsResultErrorType.ServiceError => Problem(title: result.Message, detail: string.Join('\n', result.Errors),
