@@ -37,7 +37,7 @@
                 if (await repository.SaveChangesAsync(cancellationToken) > 0)
                 {
                     var installment = debt.Installments.FirstOrDefault(i => i.Id == command.InstallmentId);
-                    return CustomResult<InstallmentDto>.SuccessResult(InstallmentDto.From(installment));
+                    return CustomResult<InstallmentDto>.SuccessResult(InstallmentDto.From(installment!));
                 }
                 
                 return CustomResult<InstallmentDto>

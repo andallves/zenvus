@@ -10,7 +10,10 @@ using Zenvus.Infra.Database;
 
 namespace Zenvus.Application.Queries.Expenses;
 
-public class GetExpenseByIdQueryHandler(IRepository<ZenvusDbContext> repository, IAuthenticatedUser authenticatedUser) : IRequestHandler<GetExpenseByIdQuery, CustomResult<ExpenseDto>>
+public class GetExpenseByIdQueryHandler(
+    IRepository<ZenvusDbContext> repository, 
+    IAuthenticatedUser authenticatedUser
+    ) : IRequestHandler<GetExpenseByIdQuery, CustomResult<ExpenseDto>>
 {
     public async Task<CustomResult<ExpenseDto>> Handle(GetExpenseByIdQuery query, CancellationToken cancellationToken)
     {

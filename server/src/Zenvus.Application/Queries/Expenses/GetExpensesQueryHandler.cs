@@ -12,7 +12,10 @@ using Zenvus.Infra.Extensionsss;
 
 namespace Zenvus.Application.Queries.Expenses;
 
-public class GetExpensesQueryHandler(IRepository<ZenvusDbContext> repository, IAuthenticatedUser authenticatedUser) : IRequestHandler<GetExpensesQuery, PagedResult<ExpenseDto>>
+public class GetExpensesQueryHandler(
+    IRepository<ZenvusDbContext> repository, 
+    IAuthenticatedUser authenticatedUser
+    ) : IRequestHandler<GetExpensesQuery, PagedResult<ExpenseDto>>
 {
     public async Task<PagedResult<ExpenseDto>> Handle(GetExpensesQuery request, CancellationToken cancellationToken)
     {

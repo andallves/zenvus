@@ -131,7 +131,7 @@ public class UpdateExpenseCommandValidator : AbstractValidator<UpdateExpenseComm
     {
         var expense = await _repository.GetDbContext().Expenses
             .Include(e => e.Debt)
-            .ThenInclude(d => d.Installments)
+                .ThenInclude(d => d!.Installments)
             .FirstOrDefaultAsync(
                 e => e.Id == expenseId && e.UserId == _authenticatedUser.Id,
                 cancellationToken);

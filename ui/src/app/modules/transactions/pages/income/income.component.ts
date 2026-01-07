@@ -101,8 +101,9 @@ export class IncomeComponent implements OnInit {
 
   initializeForm() {
     this.filterForm = this.fb.group({
-      category: ['', []],
-      date: ['', []],
+      categoryId: ['', []],
+      month: ['', []],
+      year: ['', []],
       description: ['', []],
       type: ['', []],
     });
@@ -119,26 +120,25 @@ export class IncomeComponent implements OnInit {
 
   loaderIncomes() {
     console.log('Carregando categorias para a página:', this.page);
+    const filterFormValues = this.filterForm.value;
     const filter: IIncomeFilter = {
-      description: this.filterForm.get('description')?.value,
-      type: this.filterForm.get('type')?.value,
-      categoryName: this.filterForm.get('categoryName')?.value,
-      date: this.filterForm.get('date')?.value,
-      disabled: this.filterForm.get('disabled')?.value,
+      description: filterFormValues.description,
+      type: filterFormValues.type,
+      categoryId: filterFormValues.categoryId,
+      month: filterFormValues.month,
+      year: filterFormValues.year,
+      disabled: false,
       page: this.page,
       itemsPerPage: this.itemsPerPage,
       orderAsc: this.filterForm.get('orderAsc')?.value || true,
       orderBy: this.filterForm.get('orderBy')?.value || 'createdAt',
     };
+    console.log(filter);
     this.loadingService.onActiveLoading();
     this.incomeService.getIncomes(filter).subscribe({
       next: response => {
         this.totalItems = response.totalResults;
-        this.incomesData = response.result.map((income: IIncome) => ({
-          ...income,
-          date: income.date,
-          type: income.type,
-        }));
+        this.incomesData = response.result;
         console.log(this.incomesData);
         this.activeBadges = [];
       },

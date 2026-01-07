@@ -22,9 +22,10 @@ export interface IIncomeOrderBy {
 
 export interface IIncomeFilter extends IFilter<IIncomeOrderBy> {
   description?: string;
-  categoryName?: string;
+  categoryId?: string;
+  month: number;
+  year: number;
   type?: EIncomeType;
-  date?: Date;
   disabled?: boolean;
 }
 

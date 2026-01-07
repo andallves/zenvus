@@ -16,7 +16,7 @@ public class DisableExpenseCommandHandler(IRepository<ZenvusDbContext> repositor
         var expense = await repository.DbSet<Expense>()
             .Include(e => e.Category)
             .Include(e => e.Debt)
-                .ThenInclude(d => d.Installments)
+                .ThenInclude(d => d!.Installments)
             .FirstOrDefaultAsync(e => 
                 e.Id == command.ExpenseId && 
                 authenticatedUser.Id == e.UserId, 

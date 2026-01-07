@@ -1,45 +1,65 @@
 using System.ComponentModel;
 using Zenvus.API.Configurations.Swagger;
-using Zenvus.Application.DTO.Expenses;
+using Zenvus.Application.DTO.Incomes;
 using Zenvus.Core.ValueObjects;
 using Zenvus.Domain.Entities;
 
-namespace Zenvus.Application.Queries.Expenses;
+namespace Zenvus.Application.Queries.Incomes;
 
-public class GetExpensesQuery : BasePagedQuery<Expense, ExpenseDto>
+public class GetIncomesQuery : BasePagedQuery<Income, IncomeDto>
 {
-    [Description("Nome da Categoria")]
-    public string? CategoryName { get; set; }
-    public DateTime? Date { get; set; }
     public string? Description { get; set; }
-    public bool? Disabled { get; set; }
+    [Description("ID da Categoria")]
+    public Guid? CategoryId { get; set; }
+
     [SwaggerParameterExample("Nulo", "")]
-    [SwaggerParameterExample("Fixed", "1")]
-    [SwaggerParameterExample("Variable", "2")]
-    [SwaggerParameterExample("Subscription", "3")]
-    [SwaggerParameterExample("Loan", "4")]
-    [SwaggerParameterExample("Other", "5")]
+    [SwaggerParameterExample("Janeiro", "1")]
+    [SwaggerParameterExample("Fevereiro", "2")]
+    [SwaggerParameterExample("Março", "3")]
+    [SwaggerParameterExample("Abril", "4")]
+    [SwaggerParameterExample("Maio", "5")]
+    [SwaggerParameterExample("Junho", "6")]
+    [SwaggerParameterExample("Julho", "7")]
+    [SwaggerParameterExample("Agosto", "8")]
+    [SwaggerParameterExample("Setembro", "9")]
+    [SwaggerParameterExample("Outubro", "10")]
+    [SwaggerParameterExample("Novembro", "11")]
+    [SwaggerParameterExample("Dezembro", "12")]
+    public int? Month { get; set; }
+
+    public int? Year { get; set; }
+    
+    [SwaggerParameterExample("Nulo", "")]
+    [SwaggerParameterExample("Salario", "1")]
+    [SwaggerParameterExample("Bônus", "2")]
+    [SwaggerParameterExample("Presente", "3")]
+    [SwaggerParameterExample("Other", "4")]
     public int? Type { get; set; }
-    public bool? HasDebt { get; set; }
+    public bool? Disabled { get; set; }
     
     [SwaggerParameterExample("Id", "Id")] 
     [SwaggerParameterExample("Description", "Description")]
     [SwaggerParameterExample("Category", "Category")]
-    [SwaggerParameterExample("Color", "Color")]
+    [SwaggerParameterExample("Date", "Date")]
     [SwaggerParameterExample("Type", "Type")]
     [SwaggerParameterExample("Disabled", "Disabled")]
     public new string OrderBy { get; set; } = "Id";
-
-    public override void ApplyFilter(ref IQueryable<Expense> query)
+    
+    public override void ApplyFilter(ref IQueryable<Income> query)
     {
-        if (!string.IsNullOrEmpty(CategoryName))
+        if (CategoryId.HasValue)
         {
-            query = query.Where(e => e.Category.Name.Contains(CategoryName));
+            query = query.Where(e => e.Category.Id == CategoryId);
         }
         
-        if (Date != null)
+        if (Month.HasValue)
         {
-            query = query.Where(e => e.Date.Equals(Date));
+            query = query.Where(e => e.Date.Month.Equals(Month));
+        }
+        
+        if (Year.HasValue)
+        {
+            query = query.Where(e => e.Date.Year.Equals(Year));
         }
         
         if (!string.IsNullOrEmpty(Description))
@@ -47,23 +67,18 @@ public class GetExpensesQuery : BasePagedQuery<Expense, ExpenseDto>
             query = query.Where(e => e.Description.Contains(Description));
         }
 
-        if (Disabled is not null)
+        if (Disabled.HasValue)
         {
             query = query.Where(e => e.Disabled == Disabled);
         }
         
-        if (Type is not null)
+        if (Type.HasValue)
         {
             query = query.Where(e => (int)e.Type == Type);
         }
-        
-        if (HasDebt is not null)
-        {
-            query = query.Where(e => e.HasDebt == HasDebt);
-        }
     }
 
-    public override void ApplyOrdering(ref IQueryable<Expense> query)
+    public override void ApplyOrdering(ref IQueryable<Income> query)
     {
         if (OrderAsc)
         {
@@ -73,8 +88,7 @@ public class GetExpensesQuery : BasePagedQuery<Expense, ExpenseDto>
                 "date" => query.OrderBy(e => e.Date),
                 "description" => query.OrderBy(e => e.Description),
                 "disabled" => query.OrderBy(e => e.Disabled),
-                "isExpense" => query.OrderBy(e => e.Type),
-                "hasDebt" => query.OrderBy(e => e.HasDebt),
+                "type" => query.OrderBy(e => e.Type),
                 "createdAt" => query.OrderBy(e => e.CreatedAt),
                 _ => query.OrderBy(x => x.Id)
             };
@@ -87,8 +101,7 @@ public class GetExpensesQuery : BasePagedQuery<Expense, ExpenseDto>
             "date" => query.OrderByDescending(e => e.Date),
             "description" => query.OrderByDescending(e => e.Description),
             "disabled" => query.OrderByDescending(e => e.Disabled),
-            "isExpense" => query.OrderByDescending(e => e.Type),
-            "hasDebt" => query.OrderByDescending(e => e.HasDebt),
+            "type" => query.OrderByDescending(e => e.Type),
             "createdAt" => query.OrderBy(e => e.CreatedAt),
             _ => query.OrderByDescending(e => e.Id)
         };

@@ -7,5 +7,5 @@ public abstract class PagedSearch
     public int Page { get; set; } = 1;
 
     public string OrderBy { get; set; } = "Id";
-    public bool OrderAsc { get; set; } = true;
+    protected bool OrderAsc { get; set; } = true;
 }

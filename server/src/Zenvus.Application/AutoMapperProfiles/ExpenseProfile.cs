@@ -6,7 +6,7 @@ using Zenvus.Domain.Entities;
 
 namespace Zenvus.Application.AutoMapperProfiles;
 
-public class ExpenseProfile: Profile
+public class ExpenseProfile : Profile
 { 
     public ExpenseProfile()  
     {
