@@ -4,7 +4,7 @@ import { AddExpenseFormComponent } from '@modules/transactions/pages/expense/com
 import { DeleteExpenseTemplateComponent } from '@modules/transactions/pages/expense/components/delete-expense-template/delete-expense-template.component';
 import { UpdateExpenseFormComponent } from '@modules/transactions/pages/expense/components/update-expense-form/update-expense-form.component';
 import { ViewExpenseTemplateComponent } from '@modules/transactions/pages/expense/components/view-expense-template/view-expense-template.component';
-import CategoryService from '@modules/transactions/services/category.service';
+import { CategoryService } from '@modules/transactions/services/category.service';
 import { ExpenseService } from '@modules/transactions/services/expense.service';
 import { FilterComponent } from '@shared/components/filter/filter.component';
 import { HeaderTableComponent } from '@shared/components/header-table/header-table.component';

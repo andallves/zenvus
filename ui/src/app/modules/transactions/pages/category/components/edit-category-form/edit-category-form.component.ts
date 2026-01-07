@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, input, OnInit, output, signal } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { categoryLabels } from '@modules/transactions/pages/expense/utils/form-labels';
-import CategoryService from '@modules/transactions/services/category.service';
+import { CategoryService } from '@modules/transactions/services/category.service';
 import { CATEGORY_VALIDATION_CONFIG } from '@modules/transactions/utils/transaction-validation.config';
 import { ButtonComponent } from '@shared/components/button/button.component';
 import { ColorPickerInputComponent } from '@shared/components/inputs/color-picker-input/color-picker-input.component';

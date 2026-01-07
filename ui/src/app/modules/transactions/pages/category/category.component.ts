@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { AddCategoryFormComponent } from '@modules/transactions/pages/category/components/add-category-form/add-category-form.component';
 import { DeleteCategoryTemplateComponent } from '@modules/transactions/pages/category/components/delete-category-template/delete-category-template.component';
 import { EditCategoryFormComponent } from '@modules/transactions/pages/category/components/edit-category-form/edit-category-form.component';
-import CategoryService from '@modules/transactions/services/category.service';
+import { CategoryService } from '@modules/transactions/services/category.service';
 import { FilterComponent } from '@shared/components/filter/filter.component';
 import { HeaderTableComponent } from '@shared/components/header-table/header-table.component';
 import { ColorPickerInputComponent } from '@shared/components/inputs/color-picker-input/color-picker-input.component';
