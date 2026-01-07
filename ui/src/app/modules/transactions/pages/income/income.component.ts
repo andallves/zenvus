@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angul
 import { DeleteIncomeTemplateComponent } from '@modules/transactions/pages/income/components/delete-income-template/delete-income-template.component';
 import { RegisterIncomeFormComponent } from '@modules/transactions/pages/income/components/register-income-form/register-income-form.component';
 import { UpdateIncomeFormComponent } from '@modules/transactions/pages/income/components/update-income-form/update-income-form.component';
-import CategoryService from '@modules/transactions/services/category.service';
+import { CategoryService } from '@modules/transactions/services/category.service';
 import { IncomeService } from '@modules/transactions/services/income.service';
 import { FilterComponent } from '@shared/components/filter/filter.component';
 import { HeaderTableComponent } from '@shared/components/header-table/header-table.component';
@@ -54,14 +54,12 @@ export class IncomeComponent implements OnInit {
   totalItems = 0;
   enumLabels = { type: IncomeTypeLabel };
   incomesData: IIncome[] = [];
-  incomesColumn: string[] = ['description', 'categoryName', 'amount', 'date', 'type', 'hasDebt'];
+  incomesColumn: string[] = ['description', 'type', 'amount', 'date'];
   incomesColumnsLabel: ColumnLabel = {
     description: 'Descrição',
     type: 'Tipo',
-    categoryName: 'Categoria',
     amount: 'Valor',
     date: 'Data',
-    hasDebt: 'Parcelado',
   };
   typesOptions: IOptions[] = [
     { label: 'Salário', value: EIncomeType.Salary },

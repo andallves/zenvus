@@ -7,15 +7,15 @@ using Zenvus.Application.Queries.Dashboard;
 
 namespace Zenvus.API.Controllers.V1;
 
-[ApiController]
-[Route("api/[controller]")]
+[ApiVersion("1.0")]
+[Route("v{version:apiVersion}/[controller]")]
 public class DashboardController(IMediator mediator) : BaseController(mediator)
 {
-
     [HttpGet("summary")]
     [MapToApiVersion("1.0")]
     [SwaggerOperation(Summary = "Obtem resumo", Tags = ["Dashboard"])]
     [ProducesResponseType(typeof(DashboardSummaryDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async ValueTask<IActionResult> GetSummary(
         [FromQuery] GetDashboardSummaryQuery query,
         CancellationToken cancellationToken)

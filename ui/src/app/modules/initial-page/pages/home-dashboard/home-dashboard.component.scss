@@ -1,0 +1,148 @@
+.financial-summary {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+
+  .card {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 20px;
+    font-family: "Open Sans", sans-serif;
+
+    &__title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-primary-color);
+      letter-spacing: 0.1px;
+    }
+
+    &__value-wrapper {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    &__value {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-primary-color);
+    }
+
+    &__icon {
+      width: 45px;
+      height: 45px;
+      padding: 10px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      &.danger {
+        color: var(--danger-color);
+        background-color: #ffe9e9;
+      }
+
+      &.success {
+        color: var(--success-color);
+        background-color: #e3fbee;
+      }
+
+      &.info {
+        color: var(--positive-color);
+        background-color: #dfeffa;
+      }
+
+      i {
+        font-size: 20px;
+      }
+    }
+
+    &__comparison {
+      font-size: 12px;
+      font-weight: 300;
+
+      &.danger {
+        color: var(--danger-color);
+      }
+
+      &.success {
+        color: var(--success-color);
+      }
+    }
+  }
+}
+
+.details {
+  margin-top: 30px;
+}
+
+.charts-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  margin-bottom: 32px;
+
+
+}
+
+.summary-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+
+  .summary-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease;
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header {
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      .card-color {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        display: inline-block;
+      }
+
+      .text {
+        margin: 0;
+        color: #2d3436;
+        font-size: 16px;
+        font-weight: 600;
+      }
+    }
+
+    .card-body {
+      padding: 20px 16px;
+      text-align: center;
+
+      .card-value {
+        font-size: 24px;
+        font-weight: 800;
+        color: #2d3436;
+        margin-bottom: 4px;
+      }
+
+      .card-percentage {
+        font-size: 14px;
+        color: #667eea;
+        font-weight: 600;
+      }
+    }
+  }
+}

@@ -1,0 +1,30 @@
+<!-- simple-chart.component.html -->
+<div class="dashboard-container">
+  <div class="header">
+    <h2>📊 Análise de Gastos por Categoria</h2>
+    <div class="total-box">
+      <span class="total-label">Total do Mês:</span>
+      <span class="total-value">{{ formatCurrency(total) }}</span>
+    </div>
+  </div>
+
+
+  <!-- Tabela de Dados -->
+
+
+  <!-- Cards Resumo -->
+  <div class="summary-cards">
+    @for (category of categories; track $index) {
+      <div class="summary-card">
+        <div class="card-header" [style.background-color]="category.color + '20'">
+          <span class="card-color" [style.background-color]="category.color"></span>
+          <h4>{{ category.name }}</h4>
+        </div>
+        <div class="card-body">
+          <div class="card-value">{{ formatCurrency(category.value) }}</div>
+          <div class="card-percentage">{{ formatPercentage(category.percentage) }}</div>
+        </div>
+      </div>
+    }
+  </div>
+</div>
