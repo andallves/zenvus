@@ -12,15 +12,18 @@ export interface IExpenseCategory {
 }
 
 export interface IDashboardFilter {
-  month: string | null;
+  month: number | null;
   year: number | null;
 }
 
 export interface IFinancialMetric {
   actual: number;
   estimated: number;
+  previousMonth: number;
   difference: number;
+  differenceFromPrevious: number;
   progress: number;
+  changePercentage: number;
 }
 
 export interface IInstallment {
@@ -46,6 +49,18 @@ export interface IFinancialSummary {
   expense: IFinancialMetric;
   balance: IFinancialMetric;
   debt: IDebtSummary;
+  comparison: {
+    previousMonth: {
+      income: number;
+      expense: number;
+      balance: number;
+    };
+    sameMonthLastYear: {
+      income: number;
+      expense: number;
+      balance: number;
+    };
+  };
 }
 
 export interface ICategoryItem {
@@ -56,6 +71,11 @@ export interface ICategoryItem {
   estimated: number;
   percentage: number;
   transactionCount: number;
+  previousMonth?: {
+    actual: number;
+    percentage: number;
+    transactionCount: number;
+  };
 }
 
 export interface ICategoriesByType {
@@ -109,4 +129,51 @@ export interface IDashboard {
   recentTransactions: ITransaction[];
   periodComparison: IPeriodComparison;
   cashFlow: ICashFlowData;
+  previousMonth?: {
+    period: string;
+    summary: {
+      income: number;
+      expense: number;
+      balance: number;
+    };
+    categories: {
+      income: {
+        id: string;
+        name: string;
+        actual: number;
+        percentage: number;
+        transactionCount: number;
+      }[];
+      expense: {
+        id: string;
+        name: string;
+        actual: number;
+        percentage: number;
+        transactionCount: number;
+      }[];
+    };
+  };
+}
+
+export interface IFinancialSummaryCard {
+  title: string;
+  value: number;
+  icon: string;
+  iconColor: 'danger' | 'success' | 'info';
+  percentage: string;
+  percentageColor: 'danger' | 'success' | 'info';
+}
+
+export interface IChartData {
+  labels: string[];
+  datasets: IDataset[];
+}
+
+export interface IDataset {
+  label?: string;
+  data: number[];
+  backgroundColor: string | string[];
+  borderColor?: string | string[];
+  borderWidth?: number | number[];
+  borderDash?: number | number[];
 }

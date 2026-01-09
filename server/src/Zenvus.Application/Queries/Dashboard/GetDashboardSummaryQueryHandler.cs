@@ -37,6 +37,10 @@ public class GetDashboardSummaryQueryHandler(
         var recentTransactions = await GetRecentTransactionsAsync(userId, startDate, endDate, 10, cancellationToken);
         var categories = await GetCategoriesSummaryAsync(userId, startDate, endDate, cancellationToken);
         
+        var previousStartDate = startDate.AddMonths(-1);
+        var previousEndDate = endDate.AddMonths(-1);
+        var previousMonthData = await GetPreviousMonthDataAsync(userId, previousStartDate, previousEndDate, cancellationToken);
+        
         var previousMonthComparison = await GetPeriodComparisonAsync(
             userId, startDate.AddMonths(-1), endDate.AddMonths(-1), 
             startDate, endDate, cancellationToken);
@@ -47,21 +51,64 @@ public class GetDashboardSummaryQueryHandler(
             Period = period,
             Summary = new SummaryDto
             {
-                Income = incomeSummary,
-                Expense = expenseSummary,
+                Income = new FinancialSummaryDto
+                {
+                    Actual = incomeSummary.Actual,
+                    Estimated = incomeSummary.Estimated,
+                    PreviousMonth = previousMonthData?.Summary?.Income ?? 0,
+                    DifferenceFromPrevious = incomeSummary.Actual - (previousMonthData?.Summary?.Income ?? 0),
+                    Progress = incomeSummary.Estimated > 0 ? (incomeSummary.Actual / incomeSummary.Estimated) * 100 : 0,
+                    ChangePercentage = (previousMonthData?.Summary?.Income ?? 0) > 0 ?
+                        ((incomeSummary.Actual - (previousMonthData.Summary.Income)) / (previousMonthData.Summary.Income)) * 100 : 0
+                },
+                Expense = new FinancialSummaryDto
+                {
+                    Actual = expenseSummary.Actual,
+                    Estimated = expenseSummary.Estimated,
+                    PreviousMonth = previousMonthData?.Summary?.Expense ?? 0,
+                    DifferenceFromPrevious = expenseSummary.Actual - (previousMonthData?.Summary?.Expense ?? 0),
+                    Progress = expenseSummary.Estimated > 0 ? (expenseSummary.Actual / expenseSummary.Estimated) * 100 : 0,
+                    ChangePercentage = (previousMonthData?.Summary?.Expense ?? 0) > 0 ?
+                        ((expenseSummary.Actual - (previousMonthData.Summary.Expense)) / (previousMonthData.Summary.Expense)) * 100 : 0
+                },
                 Balance = new FinancialSummaryDto
                 {
                     Actual = incomeSummary.Actual - expenseSummary.Actual,
-                    Estimated = incomeSummary.Estimated - expenseSummary.Estimated
+                    Estimated = incomeSummary.Estimated - expenseSummary.Estimated,
+                    PreviousMonth = (previousMonthData?.Summary?.Income ?? 0) - (previousMonthData?.Summary?.Expense ?? 0),
+                    DifferenceFromPrevious = (incomeSummary.Actual - expenseSummary.Actual) -
+                                           ((previousMonthData?.Summary?.Income ?? 0) - (previousMonthData?.Summary?.Expense ?? 0)),
+                    Progress = (incomeSummary.Estimated - expenseSummary.Estimated) > 0 ?
+                        ((incomeSummary.Actual - expenseSummary.Actual) / (incomeSummary.Estimated - expenseSummary.Estimated)) * 100 : 0,
+                    ChangePercentage = ((previousMonthData?.Summary?.Income ?? 0) - (previousMonthData?.Summary?.Expense ?? 0)) > 0 ?
+                        (((incomeSummary.Actual - expenseSummary.Actual) -
+                          ((previousMonthData.Summary.Income) - (previousMonthData.Summary.Expense))) /
+                         ((previousMonthData.Summary.Income) - (previousMonthData.Summary.Expense))) * 100 : 0
                 },
-                Debt = debtSummary
+                Debt = debtSummary,
+                Comparison = new ComparisonSummaryDto
+                {
+                    PreviousMonth = new MonthComparisonDto
+                    {
+                        Income = previousMonthData?.Summary?.Income ?? 0,
+                        Expense = previousMonthData?.Summary?.Expense ?? 0,
+                        Balance = (previousMonthData?.Summary?.Income ?? 0) - (previousMonthData?.Summary?.Expense ?? 0)
+                    },
+                    SameMonthLastYear = new MonthComparisonDto
+                    {
+                        Income = 0, // Implementar se necessário
+                        Expense = 0,
+                        Balance = 0
+                    }
+                }
             },
             Categories = categories,
             RecentTransactions = recentTransactions,
             PeriodComparison = new PeriodComparisonDto
             {
                 PreviousMonth = previousMonthComparison
-            }
+            },
+            PreviousMonthData = previousMonthData
         };
 
         return CustomResult<DashboardSummaryDto>.SuccessResult(dashboard);
@@ -83,6 +130,72 @@ public class GetDashboardSummaryQueryHandler(
             Actual = actual,
             Estimated = estimated
         };
+    }
+    
+    private async Task<PreviousMonthDataDto?> GetPreviousMonthDataAsync(
+        Guid userId, DateTime startDate, DateTime endDate,
+        CancellationToken cancellationToken)
+    {
+        // Verificar se o período anterior é válido (não antes da criação da conta)
+        // Pode adicionar uma verificação de data mínima aqui
+
+        var previousIncome = await GetIncomeActualAsync(userId, startDate, endDate, cancellationToken);
+        var previousExpense = await GetExpenseActualAsync(userId, startDate, endDate, cancellationToken);
+
+        var previousIncomeCategories = await GetIncomeCategoriesAsync(userId, startDate, endDate, cancellationToken);
+        var previousExpenseCategories = await GetExpenseCategoriesAsync(userId, startDate, endDate, cancellationToken);
+
+        var periodString = $"{startDate:yyyy-MM}";
+
+        return new PreviousMonthDataDto
+        {
+            Period = periodString,
+            Summary = new PreviousMonthSummaryDto
+            {
+                Income = previousIncome,
+                Expense = previousExpense,
+                Balance = previousIncome - previousExpense
+            },
+            Categories = new PreviousMonthCategoriesSummaryDto
+            {
+                Income = previousIncomeCategories.Select(c => new PreviousMonthCategoryDto
+                {
+                    Id = c.CategoryId,
+                    Name = c.Name,
+                    Actual = c.Actual,
+                    TransactionCount = c.TransactionCount
+                }).ToList(),
+                Expense = previousExpenseCategories.Select(c => new PreviousMonthCategoryDto
+                {
+                    Id = c.CategoryId,
+                    Name = c.Name,
+                    Actual = c.Actual,
+                    TransactionCount = c.TransactionCount
+                }).ToList()
+            }
+        };
+    }
+    
+    private async Task<List<CategoryDataDto>> GetIncomeCategoriesAsync(
+        Guid userId, DateTime startDate, DateTime endDate,
+        CancellationToken cancellationToken)
+    {
+        return await repository.GetDbContext().Incomes
+            .AsNoTracking()
+            .Include(i => i.Category)
+            .Where(i => i.UserId == userId &&
+                        i.Date >= startDate &&
+                        i.Date <= endDate &&
+                        !i.Disabled)
+            .GroupBy(i => new { i.CategoryId, i.Category.Name })
+            .Select(g => new CategoryDataDto
+            {
+                CategoryId = g.Key.CategoryId,
+                Name = g.Key.Name,
+                Actual = g.Sum(i => i.Amount),
+                TransactionCount = g.Count()
+            })
+            .ToListAsync(cancellationToken);
     }
 
     private async Task<decimal> GetIncomeActualAsync(
@@ -272,6 +385,28 @@ public class GetDashboardSummaryQueryHandler(
             .OrderByDescending(t => t.Date)
             .Take(limit)
             .ToList();
+    }
+    
+    private async Task<List<CategoryDataDto>> GetExpenseCategoriesAsync(
+        Guid userId, DateTime startDate, DateTime endDate,
+        CancellationToken cancellationToken)
+    {
+        return await repository.GetDbContext().Expenses
+            .AsNoTracking()
+            .Include(e => e.Category)
+            .Where(e => e.UserId == userId &&
+                        e.Date >= startDate &&
+                        e.Date <= endDate &&
+                        !e.Disabled)
+            .GroupBy(e => new { e.CategoryId, e.Category.Name })
+            .Select(g => new CategoryDataDto
+            {
+                CategoryId = g.Key.CategoryId,
+                Name = g.Key.Name,
+                Actual = g.Sum(e => e.Amount),
+                TransactionCount = g.Count()
+            })
+            .ToListAsync(cancellationToken);
     }
 
     private async Task<CategoriesSummaryDto> GetCategoriesSummaryAsync(

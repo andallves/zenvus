@@ -1,4 +1,21 @@
 <zen-page-container id="page-container-expenses">
+  <div class="period-navigation">
+    <button (click)="goToPreviousMonth()" class="nav-btn">
+      <i class="bi bi-caret-left-fill"></i>
+      {{ previousPeriodDisplay }}
+    </button>
+    <div class="current-period">
+      <h2>{{ currentPeriodDisplay }}</h2>
+      <span class="comparison-label">
+          vs {{ previousPeriodDisplay }}
+        </span>
+    </div>
+    <button (click)="goToNextMonth()" class="nav-btn">
+      {{ nextPeriodDisplay }}
+      <i class="bi bi-caret-right-fill"></i>
+    </button>
+  </div>
+
   <div class="financial-summary">
     @for (summary of financialSummary; track $index) {
       <div class="card">
@@ -13,27 +30,26 @@
       </div>
     }
   </div>
+
+  @if (comparisonChartData()) {
+    <div class="comparison-chart-section">
+      <h3>Comparativo Mensal</h3>
+      <div class="chart-container">
+        <canvas
+          baseChart
+          [data]="comparisonChartData()"
+          [type]="'bar'"
+          [options]="chartOptions()">
+        </canvas>
+      </div>
+    </div>
+  }
+
   <div class="details">
-    <div class="charts-row">
-      <zen-pie-chart [categories]="categories" />
-      <zen-bar-chart [categories]="categories" />
+    <div>
+      <zen-bar-chart [currentCategories]="currentCategories" [previousCategories]="previousCategories" />
     </div>
 
     <zen-category-details [categories]="categories" />
-
-    <div class="summary-cards">
-      @for (category of categories; track $index) {
-        <div class="summary-card">
-          <div class="card-header" [style.background-color]="category.color + '20'">
-            <span class="card-color" [style.background-color]="category.color"></span>
-            <h4 class="text">{{ category.name }}</h4>
-          </div>
-          <div class="card-body">
-            <div class="card-value">{{ category.actual | currency: 'BRL' }}</div>
-            <div class="card-percentage">{{ category.percentage | number:'1.2-2' }}%</div>
-          </div>
-        </div>
-      }
-    </div>
   </div>
 </zen-page-container>

@@ -24,7 +24,6 @@ public class ExpenseDto
     
     public bool HasDebt { get; set; }
     public DebtDto? Debt { get; set; }
-    public string TypeDescription => Type.GetDescriptionString();
     
     public static ExpenseDto From(Expense expense)
     {

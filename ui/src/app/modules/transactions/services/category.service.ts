@@ -19,7 +19,7 @@ export class CategoryService extends BaseService {
     return this.httpClient.get<ApiResponse<ICategory>>(`${this.apiUrl}/v1/category`).pipe(
       map(response =>
         response.result
-          .filter(category => !category.disabled && category.type === type)
+          .filter(category => category.type === type)
           .map(cat => ({
             label: cat.name,
             value: isIdValue ? cat.id : cat.name,

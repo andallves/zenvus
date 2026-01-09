@@ -1,3 +1,25 @@
+:host {
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.period-navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+
+  .nav-btn {
+    font-size: 14px;
+    color: var(--primary-color);
+    transition: all .3s ease-in-out;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+}
+
 .financial-summary {
   display: flex;
   justify-content: space-between;
@@ -76,18 +98,24 @@
   }
 }
 
+.comparison-chart-section {
+  width: 100%;
+  padding: 40px 0;
+  text-align: center;
+
+  .chart-container {
+    canvas {
+      width: 100% !important;
+      height: 100% !important;
+    }
+  }
+}
+
 .details {
   margin-top: 30px;
 }
 
-.charts-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 32px;
-  margin-bottom: 32px;
 
-
-}
 
 .summary-cards {
   display: grid;
