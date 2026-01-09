@@ -1,3 +1,5 @@
+using Zenvus.Domain.Entities.Enums;
+
 namespace Zenvus.Application.DTO.Dashboard;
 
 public class DashboardSummaryDto
@@ -109,6 +111,20 @@ public class CategorySummaryDto
     public decimal Estimated { get; set; }
     public decimal Percentage { get; set; }
     public int TransactionCount { get; set; }
+    public List<TransactionDto> Transactions { get; set; }
+}
+
+public class TransactionDto
+{
+    public Guid Id { get; set; }
+    public string Description { get; set; } = string.Empty;
+    public decimal Amount { get; set; }
+    public DateTime Date { get; set; }
+    public ETransactionType Type { get; set; } 
+    public string Category { get; set; } = string.Empty;
+    public string Status { get; set; } = string.Empty;
+    public bool HasDebt { get; set; }
+    public bool IsInstallment { get; set; }
 }
 
 public class RecentTransactionDto

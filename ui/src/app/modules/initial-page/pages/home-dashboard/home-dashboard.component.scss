@@ -9,6 +9,15 @@
   align-items: center;
   margin-bottom: 20px;
 
+  font-family: "Anton", sans-serif;
+
+  .current-period {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
   .nav-btn {
     font-size: 14px;
     color: var(--primary-color);
@@ -112,7 +121,9 @@
 }
 
 .details {
-  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 

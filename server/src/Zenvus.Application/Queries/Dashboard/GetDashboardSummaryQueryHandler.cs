@@ -205,8 +205,9 @@ public class GetDashboardSummaryQueryHandler(
         return await repository.GetDbContext().Incomes
             .AsNoTracking()
             .Where(t => t.UserId == userId &&
-                       t.Date >= startDate &&
-                       t.Date <= endDate &&
+                       (t.Date >= startDate &&
+                       t.Date <= endDate) ||
+                       (t.Type == EIncome.Salary) &&
                        !t.Disabled)
             .SumAsync(t => t.Amount, cancellationToken);
     }
@@ -220,8 +221,9 @@ public class GetDashboardSummaryQueryHandler(
             .Include(e => e.Debt)
                 .ThenInclude(d => d.Installments)
             .Where(e => e.UserId == userId &&
-                       e.Date >= startDate &&
-                       e.Date <= endDate &&
+                       (e.Date >= startDate &&
+                       e.Date <= endDate) ||
+                       (e.Type == EExpense.Fixed) &&
                        !e.Disabled)
             .ToListAsync(cancellationToken);
 
@@ -434,6 +436,8 @@ public class GetDashboardSummaryQueryHandler(
         var expenseCategories = await repository.GetDbContext().Expenses
             .AsNoTracking()
             .Include(e => e.Category)
+            .Include(e => e.Debt)
+                .ThenInclude(d => d.Installments)
             .Where(e => e.UserId == userId &&
                        e.Date >= startDate &&
                        e.Date <= endDate &&
@@ -445,10 +449,24 @@ public class GetDashboardSummaryQueryHandler(
                 Name = g.Key.Name,
                 Color = g.Key.Color,
                 Actual = g.Sum(e => e.Amount),
-                TransactionCount = g.Count()
+                TransactionCount = g.Count(),
+                Transactions = g.Select(e => new TransactionDto
+                {
+                    Id = e.Id,
+                    Description = e.Description,
+                    Amount = e.Amount,
+                    Date = e.Date,
+                    Type = ETransactionType.Expense,
+                    Category = g.Key.Name,
+                    Status = e.IsPaid ? "completed" : "pending",
+                    HasDebt = e.HasDebt,
+                    IsInstallment = e.HasActiveDebt,
+                }).ToList()
             })
             .ToListAsync(cancellationToken);
 
+        await CalculateEstimatedForCategoriesAsync(userId, startDate, incomeCategories, expenseCategories, cancellationToken);
+        
         // Calcular percentuais
         var incomeTotal = incomeCategories.Sum(c => c.Actual);
         var expenseTotal = expenseCategories.Sum(c => c.Actual);
@@ -464,6 +482,87 @@ public class GetDashboardSummaryQueryHandler(
             Income = incomeCategories.OrderByDescending(c => c.Actual).ToList(),
             Expense = expenseCategories.OrderByDescending(c => c.Actual).ToList()
         };
+    }
+    
+    private async Task CalculateEstimatedForCategoriesAsync(
+        Guid userId, 
+        DateTime startDate, 
+        List<CategorySummaryDto> incomeCategories, 
+        List<CategorySummaryDto> expenseCategories,
+        CancellationToken cancellationToken)
+    {
+        var month = startDate.Month;
+        var year = startDate.Year;
+    
+        // Buscar orçamentos das categorias de receita
+        var incomeBudgets = await repository.GetDbContext().Budgets
+            .AsNoTracking()
+            .Where(b => b.UserId == userId &&
+                       b.Month == month &&
+                       b.Year == year &&
+                       b.Type == ETransactionType.Income &&
+                       !b.Disabled)
+            .ToListAsync(cancellationToken);
+    
+        // Buscar orçamentos das categorias de despesa
+        var expenseBudgets = await repository.GetDbContext().Budgets
+            .AsNoTracking()
+            .Where(b => b.UserId == userId &&
+                       b.Month == month &&
+                       b.Year == year &&
+                       b.Type == ETransactionType.Expense &&
+                       !b.Disabled)
+            .ToListAsync(cancellationToken);
+    
+        // Atribuir valores estimados para categorias de receita
+        foreach (var category in incomeCategories)
+        {
+            var budget = incomeBudgets.FirstOrDefault(b => b.CategoryId == category.Id);
+            if (budget != null)
+            {
+                category.Estimated = budget.Amount;
+            }
+            else
+            {
+                // Calcular média histórica como fallback
+                var lastThreeMonths = startDate.AddMonths(-3);
+                var historicalAvg = await repository.GetDbContext().Incomes
+                    .AsNoTracking()
+                    .Where(i => i.UserId == userId &&
+                               i.CategoryId == category.Id &&
+                               i.Date >= lastThreeMonths &&
+                               i.Date < startDate &&
+                               !i.Disabled)
+                    .AverageAsync(i => (double?)i.Amount, cancellationToken);
+                
+                category.Estimated = (decimal)(historicalAvg ?? 0);
+            }
+        }
+    
+        // Atribuir valores estimados para categorias de despesa
+        foreach (var category in expenseCategories)
+        {
+            var budget = expenseBudgets.FirstOrDefault(b => b.CategoryId == category.Id);
+            if (budget != null)
+            {
+                category.Estimated = budget.Amount;
+            }
+            else
+            {
+                // Calcular média histórica como fallback
+                var lastThreeMonths = startDate.AddMonths(-3);
+                var historicalAvg = await repository.GetDbContext().Expenses
+                    .AsNoTracking()
+                    .Where(e => e.UserId == userId &&
+                               e.CategoryId == category.Id &&
+                               e.Date >= lastThreeMonths &&
+                               e.Date < startDate &&
+                               !e.Disabled)
+                    .AverageAsync(e => (double?)e.Amount, cancellationToken);
+                
+                category.Estimated = (decimal)(historicalAvg ?? 0);
+            }
+        }
     }
 
     private async Task<ComparisonDto> GetPeriodComparisonAsync(

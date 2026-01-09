@@ -9,6 +9,7 @@ export interface IExpenseCategory {
   color: string;
   percentage: number;
   transactionCount: number;
+  transactions: ITransaction[];
 }
 
 export interface IDashboardFilter {
@@ -71,6 +72,7 @@ export interface ICategoryItem {
   estimated: number;
   percentage: number;
   transactionCount: number;
+  transactions: ITransaction[];
   previousMonth?: {
     actual: number;
     percentage: number;
@@ -89,6 +91,7 @@ export interface ITransaction {
   amount: number;
   type: ECategoryType;
   category: string;
+  categoryId: string;
   date: string;
   status: EPaymentStatus;
   hasDebt: boolean;

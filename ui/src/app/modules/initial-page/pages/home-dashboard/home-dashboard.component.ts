@@ -33,7 +33,6 @@ import { forkJoin, Subscription } from 'rxjs';
     NgOptimizedImage,
     BarChartComponent,
     CategoryDetailsComponent,
-    DecimalPipe,
     BaseChartDirective,
   ],
   styleUrl: './home-dashboard.component.scss',
@@ -130,6 +129,7 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
 
   loaderDashboard() {
     this.hasError = false;
+    this.loadingService.onActiveLoading();
 
     const loadSub = forkJoin({
       comparative: this.dashboardService.getComparativeDashboards(),
@@ -314,10 +314,11 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
       id: category.id,
       name: category.name,
       color: category.color,
-      actual: category.actual, // ou category.estimated dependendo do que você quer
+      actual: category.actual,
       percentage: category.percentage,
       estimated: category.estimated,
       transactionCount: category.transactionCount,
+      transactions: category.transactions,
     }));
   }
 
