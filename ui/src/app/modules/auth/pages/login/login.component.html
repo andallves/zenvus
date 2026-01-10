@@ -6,20 +6,22 @@
   (submitBtn)="loginSubmit()"
 >
   <div class="form-content" form-content>
-    <zen-input-text
-      [ariaLabel]="'Campo para inserir o email'"
+    <zen-input
+      id="input-email"
+      label="Email"
+      placeholder="'Digite seu email"
+      type="email"
+      formControlName="email"
       [label]="'Email'"
       [placeholder]="'Insira seu email'"
       [required]="true"
       [errorMessages]="getErrorMessages('email')"
-      [isValid]="isValid('email')"
-      [isInvalid]="isInvalid('email')"
-      formControlName="email"
-      role="textbox"
-      type="email"
-    ></zen-input-text>
+
+    ></zen-input>
 
     <zen-input-password
+      id="input-password"
+      formControlName="password"
       [ariaLabel]="'Campo para inserir a senha'"
       [label]="'Senha'"
       [placeholder]="'********'"
@@ -27,14 +29,12 @@
       [errorMessages]="getErrorMessages('password')"
       [isValid]="isValid('password')"
       [isInvalid]="isInvalid('password')"
-      formControlName="password"
-      role="textbox"
     ></zen-input-password>
 
     <div class="extras">
       <div class="connected">
-        <input type="checkbox" id="connected" (click)="keepConnected()" (keydown)="keepConnected()"/>
-        <label for="connected">Manter Conectado</label>
+        <input class="connected__input" type="checkbox" id="keep-connected" (click)="keepConnected()" (keydown)="keepConnected()"/>
+        <label class="connected__label" for="keep-connected">Manter Conectado</label>
       </div>
       <a routerLink="/auth/recuperar-senha" class="forget-password">Esqueceu sua senha?</a>
     </div>

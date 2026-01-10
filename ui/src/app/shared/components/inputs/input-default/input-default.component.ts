@@ -12,13 +12,14 @@ import {
   signal,
 } from '@angular/core';
 import { FormsModule, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
+import { PhoneFormatDirective } from '@shared/directives/phone-format.directive';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { IdGeneratorService } from '../utils/id-generator.service';
 
 @Component({
   selector: 'zen-input',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, NgxMaskDirective],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, NgxMaskDirective, PhoneFormatDirective],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -58,7 +59,8 @@ export class InputDefaultComponent {
   @Input() showMandatory = false;
   @Input() icon = false;
   @Input() fixedSize = false;
-
+  isPhone = input(false);
+  ariaLabel = input<string>();
   errorMessages = input<string[] | null>(null);
   isValid = input(false);
   isInvalid = computed(() => !this.isValid());

@@ -1,6 +1,14 @@
-import {Component, forwardRef, input, signal} from '@angular/core';
-import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
-import {NgClass} from '@angular/common';
+import {
+  Component,
+  ElementRef,
+  forwardRef,
+  HostListener,
+  inject,
+  input,
+  signal,
+} from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'zen-input-password',
@@ -10,27 +18,25 @@ import {NgClass} from '@angular/common';
     class: 'fieldset-input',
     role: 'fieldset',
   },
-  imports: [
-    NgClass
-  ],
+  imports: [NgClass],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => InputPasswordComponent),
       multi: true,
-    }
-  ]
+    },
+  ],
 })
 export class InputPasswordComponent implements ControlValueAccessor {
   label = input.required<string>();
   placeholder = input('');
-  ariaLabel = input('')
+  ariaLabel = input('');
   readonly required = input(false);
   errorMessages = input<string[] | null>(null);
-  role = input.required<string>();
   isValid = input<boolean | undefined>(undefined);
   isInvalid = input<boolean | undefined>(undefined);
   touched = false;
+  focus = false;
 
   private static idCounter = 1000;
   readonly inputId = `input-${InputPasswordComponent.idCounter++}`;
@@ -39,9 +45,26 @@ export class InputPasswordComponent implements ControlValueAccessor {
   value = '';
   isPasswordVisible = false;
   isDisabled = signal(false);
+  private readonly elementRef = inject(ElementRef);
 
-  private onChange: (value: string) => void = () => {};
-  private onTouched: () => void = () => {}
+  @HostListener('document:click', ['$event'])
+  onFocus(event: MouseEvent) {
+    const clickedInside = this.elementRef.nativeElement.contains(event.target);
+    if (clickedInside) {
+      if (!this.focus) {
+        this.focus = true;
+      }
+    } else {
+      this.focus = false;
+    }
+  }
+
+  private onChange: (value: string) => void = () => {
+    /* empty */
+  };
+  private onTouched: () => void = () => {
+    /* empty */
+  };
 
   writeValue(value: string): void {
     this.value = value || '';

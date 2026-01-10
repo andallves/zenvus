@@ -6,8 +6,8 @@ import { Authenticate, AuthenticateForm } from '@modules/auth/interfaces/authent
 import { AuthService } from '@modules/auth/services/auth.service';
 import { LOGIN_VALIDATION_CONFIG } from '@modules/auth/utils/auth-validation.config';
 import { loginLabels } from '@modules/auth/utils/form-labels';
-import { InputPasswordComponent } from '@shared/components/form/input-password/input-password.component';
-import { InputTextComponent } from '@shared/components/form/input-text/input-text.component';
+import { InputPasswordComponent } from '@shared/components/inputs/input-password/input-password.component';
+import { InputDefaultComponent } from '@shared/components/inputs/input-default/input-default.component';
 import {
   ModalConfig,
   ModalIconType,
@@ -29,7 +29,7 @@ import { ValidationHelperService } from '@shared/validators/validation-helper.se
     CommonModule,
     FormsModule,
     InputPasswordComponent,
-    InputTextComponent,
+    InputDefaultComponent,
     ReactiveFormsModule,
     UnauthenticatedCommonLayoutComponent,
     RouterLink,
