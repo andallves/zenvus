@@ -1,16 +1,17 @@
 .data-table {
-  background: white;
+  background: var(--background-primary-color);
   border-radius: 16px;
   padding: 32px;
   margin-bottom: 32px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--border-color);
 }
 
 .data-table h3 {
-  color: #2d3436;
+  color: var(--text-primary-color);
   margin: 0 0 24px 0;
   font-size: 20px;
   font-weight: 600;
+  letter-spacing: 1px;
 }
 
 .table-controls {
@@ -19,7 +20,7 @@
   align-items: center;
   margin-bottom: 24px;
   padding: 16px;
-  background: #f8f9fa;
+  background: var(--active-background-color);
   border-radius: 12px;
 }
 
@@ -30,14 +31,14 @@
 }
 
 .total-label {
-  color: #495057;
+  color: var(--text-primary-color);
   font-weight: 500;
 }
 
 .total-value {
   font-size: 18px;
   font-weight: 700;
-  color: #2d3436;
+  color: var(--text-primary-color);
 }
 
 .sort-options {
@@ -47,20 +48,32 @@
 }
 
 .sort-label {
-  color: #495057;
+  color: var(--text-primary-color);
   font-size: 14px;
 }
 
 select {
-  padding: 8px 12px;
-  border: 1px solid #dee2e6;
+  padding: 8px ;
+  border: 1px solid var(--border-color);
   border-radius: 8px;
-  background: white;
+  background: var(--background-primary-color);
   font-size: 14px;
+  outline: none;
+  cursor: pointer;
+}
+
+option {
+  &:hover {
+    background: var(--active-background-color);
+  }
+
+  &::selection {
+    background: var(--primary-color);
+  }
 }
 
 .sort-direction {
-  background: #6c757d;
+  background: var(--primary-color);
   color: white;
   border: none;
   border-radius: 6px;
@@ -73,13 +86,13 @@ select {
 }
 
 .categories-accordion {
-  border: 1px solid #e9ecef;
+  border: 1px solid var(--border-color);
   border-radius: 12px;
   overflow: hidden;
 }
 
 .category-section {
-  border-bottom: 1px solid #e9ecef;
+  border-bottom: 1px solid var(--border-color);
 
   &:last-child {
     border-bottom: none;
@@ -87,13 +100,13 @@ select {
 }
 
 .category-header {
-  background: #f8f9fa;
+  background: var(--active-background-color);
   padding: 16px 24px;
   cursor: pointer;
   transition: background-color 0.2s;
 
   &:hover {
-    background: #e9ecef;
+    background: var(--active-background-color);
   }
 }
 
@@ -118,12 +131,12 @@ select {
 
 .category-name {
   font-weight: 600;
-  color: #2d3436;
+  color: var(--text-primary-color);
   font-size: 16px;
 }
 
 .transaction-count {
-  color: #6c757d;
+  color: var(--text-secondary-color);
   font-size: 14px;
 }
 
@@ -135,7 +148,7 @@ select {
 
 .category-amount {
   font-weight: 700;
-  color: #2d3436;
+  color: var(--text-primary-color);
   font-size: 16px;
 }
 
@@ -156,7 +169,7 @@ select {
 }
 
 .transactions-table-container {
-  background: white;
+  background: var(--background-secondary-color);
   padding: 0 24px 24px 24px;
   animation: slideDown 0.3s ease;
 }
@@ -181,11 +194,11 @@ select {
 .transactions-table th {
   padding: 12px 16px;
   text-align: left;
-  color: #495057;
+  color: var(--text-primary-color);
   font-weight: 600;
   font-size: 13px;
   text-transform: uppercase;
-  border-bottom: 2px solid #dee2e6;
+  border-bottom: 2px solid var(--border-color);
   cursor: pointer;
   user-select: none;
 
@@ -194,13 +207,13 @@ select {
   }
 
   &.active {
-    color: #4361ee;
+    color: var(--positive-color);
   }
 }
 
 .transactions-table td {
   padding: 12px 16px;
-  border-bottom: 1px solid #f1f3f5;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .transactions-table tbody tr:hover {
@@ -209,7 +222,6 @@ select {
 
 .date-cell {
   color: #6c757d;
-  font-family: 'Courier New', monospace;
 }
 
 .description-cell {

@@ -117,6 +117,10 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
   private readonly loadingService = inject(LoadingService);
   private readonly modalAlertService = inject(ModalAlertService);
 
+  constructor() {
+    this.loadingService.onActiveLoading();
+  }
+
   ngOnInit() {
     Chart.register(...registerables);
     this.loaderDashboard();

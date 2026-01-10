@@ -1,6 +1,9 @@
-:host {
+.container-t {
   overflow: hidden;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .period-navigation {
@@ -14,13 +17,18 @@
   .current-period {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: flex-end;
+    align-items: flex-end;
+    justify-content: center;
+    color: var(--primary-color);
+
+    .comparison-label {
+      color: var(--text-secondary-color)
+    }
   }
 
   .nav-btn {
     font-size: 14px;
-    color: var(--primary-color);
+    color: var(--text-primary-color);
     transition: all .3s ease-in-out;
 
     &:hover {
@@ -43,6 +51,7 @@
     border-radius: 10px;
     padding: 20px;
     font-family: "Open Sans", sans-serif;
+    background-color: var(--background-primary-color);
 
     &__title {
       font-size: 12px;
@@ -109,12 +118,26 @@
 
 .comparison-chart-section {
   width: 100%;
-  padding: 40px 0;
+  padding: 20px;
   text-align: center;
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  background: var(--background-primary-color);
+
+  &__title {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text-primary-color);
+    font-family: 'Open Sans', sans-serif;
+    margin-bottom: 10px;
+  }
+
 
   .chart-container {
+    margin: 0 auto;
     canvas {
-      width: 100% !important;
+      margin: 0 auto;
+      width: 80% !important;
       height: 100% !important;
     }
   }

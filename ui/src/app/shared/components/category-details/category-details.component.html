@@ -16,7 +16,11 @@
         <option value="category">Categoria</option>
       </select>
       <button class="sort-direction" (click)="sortDirection = sortDirection === 'asc' ? 'desc' : 'asc'">
-        {{ sortDirection === 'asc' ? '↑' : '↓' }}
+        @if (sortDirection === 'asc') {
+          <i class="bi bi-arrow-up"></i>
+        } @else {
+          <i class="bi bi-arrow-down"></i>
+        }
       </button>
     </div>
   </div>
@@ -52,22 +56,34 @@
                 <th (click)="sortTransactions('date')" [class.active]="sortColumn === 'date'">
                   Data
                   @if (sortColumn === 'date') {
-                    <span>{{ sortDirection === 'asc' ? '↑' : '↓' }}</span>
+                    <span>@if (sortDirection === 'asc') {
+                      <i class="bi bi-arrow-up"></i>
+                    } @else {
+                      <i class="bi bi-arrow-down"></i>
+                    }</span>
                   }
                 </th>
                 <th (click)="sortTransactions('description')" [class.active]="sortColumn === 'description'">
                   Descrição
                   @if (sortColumn === 'description') {
-                    <span>{{ sortDirection === 'asc' ? '↑' : '↓' }}</span>
+                    <span>@if (sortDirection === 'asc') {
+                      <i class="bi bi-arrow-up"></i>
+                    } @else {
+                      <i class="bi bi-arrow-down"></i>
+                    }</span>
                   }
                 </th>
                 <th (click)="sortTransactions('amount')" [class.active]="sortColumn === 'amount'">
                   Valor
                   @if (sortColumn === 'amount') {
-                    <span>{{ sortDirection === 'asc' ? '↑' : '↓' }}</span>
+                    <span>@if (sortDirection === 'asc') {
+                      <i class="bi bi-arrow-up"></i>
+                    } @else {
+                      <i class="bi bi-arrow-down"></i>
+                    }</span>
                   }
                 </th>
-                <th>Método de Pagamento</th>
+                <th>Status</th>
                 <th>Tags</th>
               </tr>
               </thead>
@@ -82,6 +98,9 @@
                     </td>
                     <td class="amount-cell" [class.expense]="transaction.type === ECategoryType.Expense">
                       {{ transaction.amount | currency:'BRL' }}
+                    </td>
+                    <td class="status-cell">
+                      {{ transaction.status }}
                     </td>
                   </tr>
                 }
