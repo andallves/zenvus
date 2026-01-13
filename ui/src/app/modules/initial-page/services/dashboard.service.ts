@@ -1,13 +1,19 @@
 import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BaseService } from '@core/services/base.service';
+import { EPaymentStatus } from '@shared/enums/payment-status.enum';
 import { format, getMonth, getYear, subMonths } from 'date-fns';
 import {
-  IChartData,
   IDashboard,
   IDashboardFilter,
-  IFinancialMetric,
-  IFinancialSummaryCard,
+  ICategoriesSummary,
+  IDashboardCategory,
+  IDebtSummary,
+  IUpcomingInstallment,
+  IMetric,
+  IDashboardTotals,
+  IChartData,
+  IDashboardTransaction,
 } from '@shared/interfaces/dashboard.interface';
 import { catchError, forkJoin, map, Observable, of, shareReplay } from 'rxjs';
 
@@ -22,8 +28,8 @@ export class DashboardService extends BaseService {
     return `${year}-${monthStr}`;
   }
 
-  parseYearMonth(year: string): { month: number; year: number } {
-    const [yearStr, monthStr] = year.toString().split('-');
+  parseYearMonth(yearMonth: string): { month: number; year: number } {
+    const [yearStr, monthStr] = yearMonth.split('-');
     return {
       year: parseInt(yearStr, 10),
       month: parseInt(monthStr, 10),
@@ -40,14 +46,12 @@ export class DashboardService extends BaseService {
       return this.cache.get(cacheKey)!;
     }
 
-    const params = new HttpParams()
-      .set('Month', this.formatYearMonth(targetMonth, targetYear))
-      .set('Year', targetYear.toString());
+    const params = new HttpParams().set('Month', cacheKey).set('Year', targetYear);
 
     const request = this.httpClient
       .get<IDashboard>(`${this.apiUrl}/v1/dashboard/summary`, { params })
       .pipe(
-        map(dashboard => this.enrichDashboardData(dashboard, targetMonth, targetYear)),
+        map(apiResponse => this.mapApiResponseToDashboard(apiResponse, targetMonth, targetYear)),
         catchError(error => {
           console.error('Erro ao carregar dashboard:', error);
           return of(this.getEmptyDashboard(targetMonth, targetYear));
@@ -57,6 +61,122 @@ export class DashboardService extends BaseService {
 
     this.cache.set(cacheKey, request);
     return request;
+  }
+
+  private mapApiResponseToDashboard(
+    apiResponse: IDashboard,
+    month: number,
+    year: number
+  ): IDashboard {
+    return {
+      period: this.formatYearMonth(month, year),
+      totals: this.mapTotals(apiResponse.totals),
+      categories: this.mapCategories(apiResponse.categories),
+      debt: this.mapDebt(apiResponse.debt),
+    };
+  }
+
+  private mapTotals(apiTotals?: IDashboardTotals): IDashboardTotals {
+    if (!apiTotals) {
+      return {
+        income: this.getEmptyMetric(),
+        expense: this.getEmptyMetric(),
+        balance: this.getEmptyMetric(),
+      };
+    }
+
+    return {
+      income: this.mapMetric(apiTotals.income),
+      expense: this.mapMetric(apiTotals.expense),
+      balance: this.mapMetric(apiTotals.balance),
+    };
+  }
+
+  private mapMetric(apiMetric?: IMetric): IMetric {
+    if (!apiMetric) {
+      return this.getEmptyMetric();
+    }
+
+    return {
+      actual: apiMetric.actual || 0,
+      estimated: apiMetric.estimated || 0,
+      previous: apiMetric.previous || 0,
+      difference:
+        apiMetric.difference ||
+        (apiMetric.estimated > 0 ? apiMetric.actual - apiMetric.estimated : 0),
+      differenceFromPrevious: apiMetric.differenceFromPrevious || 0,
+      progress: apiMetric.progress || 0,
+      changePercentage: apiMetric.changePercentage || 0,
+    };
+  }
+
+  private mapCategories(apiCategories?: ICategoriesSummary): ICategoriesSummary {
+    if (!apiCategories) {
+      return {
+        income: [],
+        expense: [],
+      };
+    }
+
+    return {
+      income: apiCategories.income?.map(c => this.mapCategory(c)) || [],
+      expense: apiCategories.expense?.map(c => this.mapCategory(c)) || [],
+    };
+  }
+
+  private mapCategory(apiCategory: IDashboardCategory): IDashboardCategory {
+    return {
+      id: apiCategory.id,
+      name: apiCategory.name,
+      color: apiCategory.color,
+      actual: apiCategory.actual || 0,
+      estimated: apiCategory.estimated || 0,
+      percentage: apiCategory.percentage || 0,
+      transactionCount: apiCategory.transactionCount || 0,
+      transactions: apiCategory.transactions?.map(t => this.mapTransaction(t)) || [],
+    };
+  }
+
+  private mapTransaction(apiTransaction: IDashboardTransaction): IDashboardTransaction {
+    return {
+      id: apiTransaction.id,
+      description: apiTransaction.description,
+      amount: apiTransaction.amount,
+      date: apiTransaction.date,
+      status: apiTransaction.status,
+      type: apiTransaction.type,
+      hasDebt: apiTransaction.hasDebt || false,
+      isInstallment: apiTransaction.isInstallment || false,
+      installmentNumber: apiTransaction.installmentNumber,
+    };
+  }
+
+  private mapDebt(apiDebt?: IDebtSummary): IDebtSummary {
+    if (!apiDebt) {
+      return this.getEmptyDebtSummary();
+    }
+
+    return {
+      totalDebt: apiDebt.totalDebt || 0,
+      paidAmount: apiDebt.paidAmount || 0,
+      remainingAmount: apiDebt.remainingAmount || 0,
+      totalInstallments: apiDebt.totalInstallments || 0,
+      paidInstallments: apiDebt.paidInstallments || 0,
+      overdueInstallments: apiDebt.overdueInstallments || 0,
+      upcomingInstallments:
+        apiDebt.upcomingInstallments?.map(i => this.mapUpcomingInstallment(i)) || [],
+    };
+  }
+
+  private mapUpcomingInstallment(apiInstallment: IUpcomingInstallment): IUpcomingInstallment {
+    return {
+      id: apiInstallment.id,
+      number: apiInstallment.number,
+      dueDate: new Date(apiInstallment.dueDate),
+      amount: apiInstallment.amount,
+      isOverdue: apiInstallment.isOverdue || false,
+      description: apiInstallment.description,
+    };
   }
 
   getCurrentMonthDashboard(): Observable<IDashboard> {
@@ -124,119 +244,28 @@ export class DashboardService extends BaseService {
     return result;
   }
 
-  private enrichDashboardData(dashboard: IDashboard, month: number, year: number): IDashboard {
-    dashboard.period = this.formatYearMonth(month, year);
-
-    // Se a API já retornou os dados do mês anterior, enriqueça as categorias
-    if (dashboard.previousMonth && dashboard.categories) {
-      this.enrichCategoriesWithPreviousData(dashboard);
-    }
-
-    if (dashboard.summary.income.progress === 0) {
-      dashboard.summary.income.progress = this.calculateProgress(
-        dashboard.summary.income.actual,
-        dashboard.summary.income.estimated
-      );
-    }
-
-    if (dashboard.summary.expense.progress === 0) {
-      dashboard.summary.expense.progress = this.calculateProgress(
-        dashboard.summary.expense.actual,
-        dashboard.summary.expense.estimated
-      );
-    }
-
-    if (dashboard.summary.balance.progress === 0) {
-      dashboard.summary.balance.progress = this.calculateProgress(
-        dashboard.summary.balance.actual,
-        dashboard.summary.balance.estimated
-      );
-    }
-
-    // Calcula changePercentage se não estiver calculado
-    if (
-      dashboard.summary.income.changePercentage === 0 &&
-      dashboard.summary.comparison?.previousMonth?.income
-    ) {
-      dashboard.summary.income.changePercentage = this.calculatePercentageChange(
-        dashboard.summary.income.actual,
-        dashboard.summary.comparison.previousMonth.income
-      );
-    }
-
-    if (
-      dashboard.summary.expense.changePercentage === 0 &&
-      dashboard.summary.comparison?.previousMonth?.expense
-    ) {
-      dashboard.summary.expense.changePercentage = this.calculatePercentageChange(
-        dashboard.summary.expense.actual,
-        dashboard.summary.comparison.previousMonth.expense
-      );
-    }
-
-    if (
-      dashboard.summary.balance.changePercentage === 0 &&
-      dashboard.summary.comparison?.previousMonth?.balance
-    ) {
-      dashboard.summary.balance.changePercentage = this.calculatePercentageChange(
-        dashboard.summary.balance.actual,
-        dashboard.summary.comparison.previousMonth.balance
-      );
-    }
-
-    return dashboard;
+  private getEmptyMetric(): IMetric {
+    return {
+      actual: 0,
+      estimated: 0,
+      previous: 0,
+      difference: 0,
+      differenceFromPrevious: 0,
+      progress: 0,
+      changePercentage: 0,
+    };
   }
 
-  private enrichCategoriesWithPreviousData(dashboard: IDashboard): void {
-    // Enriquecer categorias de renda
-    if (dashboard.previousMonth?.categories?.income) {
-      dashboard.categories.income.forEach(currentCategory => {
-        const previousCategory = dashboard.previousMonth!.categories.income.find(
-          pc => pc.id === currentCategory.id
-        );
-        if (previousCategory) {
-          currentCategory.previousMonth = {
-            actual: previousCategory.actual,
-            percentage: previousCategory.percentage || 0,
-            transactionCount: previousCategory.transactionCount,
-          };
-        }
-      });
-    }
-
-    // Enriquecer categorias de despesa
-    if (dashboard.previousMonth?.categories?.expense) {
-      dashboard.categories.expense.forEach(currentCategory => {
-        const previousCategory = dashboard.previousMonth!.categories.expense.find(
-          pc => pc.id === currentCategory.id
-        );
-        if (previousCategory) {
-          currentCategory.previousMonth = {
-            actual: previousCategory.actual,
-            percentage: previousCategory.percentage || 0,
-            transactionCount: previousCategory.transactionCount,
-          };
-        }
-      });
-    }
-  }
-
-  calculateProgress(actual: number, estimated: number): number {
-    if (!estimated || estimated === 0) {
-      return actual > 0 ? 100 : 0;
-    }
-
-    const progress = (actual / estimated) * 100;
-    return Math.round(progress * 100) / 100; // 2 casas decimais
-  }
-
-  calculatePercentageChange(current: number, previous: number): number {
-    if (!previous || previous === 0) {
-      return current > 0 ? 100 : 0;
-    }
-
-    const change = ((current - previous) / Math.abs(previous)) * 100;
-    return Math.round(change * 100) / 100; // 2 casas decimais
+  private getEmptyDebtSummary(): IDebtSummary {
+    return {
+      totalDebt: 0,
+      paidAmount: 0,
+      remainingAmount: 0,
+      totalInstallments: 0,
+      paidInstallments: 0,
+      overdueInstallments: 0,
+      upcomingInstallments: [],
+    };
   }
 
   private getEmptyDashboard(month?: number, year?: number): IDashboard {
@@ -244,65 +273,18 @@ export class DashboardService extends BaseService {
     const targetMonth = month || getMonth(currentDate) + 1;
     const targetYear = year || getYear(currentDate);
 
-    const emptyMetric: IFinancialMetric = {
-      actual: 0,
-      estimated: 0,
-      previousMonth: 0,
-      difference: 0,
-      differenceFromPrevious: 0,
-      progress: 0,
-      changePercentage: 0,
-    };
-
     return {
-      period: this.formatPeriodDisplay(targetMonth, targetYear),
-      summary: {
-        income: { ...emptyMetric },
-        expense: { ...emptyMetric },
-        balance: { ...emptyMetric },
-        debt: {
-          totalDebt: 0,
-          paidAmount: 0,
-          remainingAmount: 0,
-          totalInstallments: 0,
-          overdueInstallments: 0,
-          upcomingInstallments: [],
-        },
-        comparison: {
-          previousMonth: {
-            income: 0,
-            expense: 0,
-            balance: 0,
-          },
-          sameMonthLastYear: {
-            income: 0,
-            expense: 0,
-            balance: 0,
-          },
-        },
+      period: this.formatYearMonth(targetMonth, targetYear),
+      totals: {
+        income: this.getEmptyMetric(),
+        expense: this.getEmptyMetric(),
+        balance: this.getEmptyMetric(),
       },
       categories: {
         income: [],
         expense: [],
       },
-      recentTransactions: [],
-      periodComparison: {
-        previousMonth: {
-          incomeChange: 0,
-          expenseChange: 0,
-          balanceChange: 0,
-        },
-        sameMonthLastYear: {
-          incomeChange: 0,
-          expenseChange: 0,
-          balanceChange: 0,
-        },
-      },
-      cashFlow: {
-        dailyFlow: [],
-        currentBalance: 0,
-        projectedBalance: 0,
-      },
+      debt: this.getEmptyDebtSummary(),
     };
   }
 
@@ -310,7 +292,6 @@ export class DashboardService extends BaseService {
     currentDashboard: IDashboard,
     previousDashboard?: IDashboard
   ): IChartData {
-    // Se não tiver dados do mês anterior, usa apenas o atual
     if (!previousDashboard) {
       return {
         labels: ['Renda', 'Despesas', 'Saldo'],
@@ -318,9 +299,9 @@ export class DashboardService extends BaseService {
           {
             label: 'Mês Atual',
             data: [
-              currentDashboard.summary.income.actual,
-              currentDashboard.summary.expense.actual,
-              currentDashboard.summary.balance.actual,
+              currentDashboard.totals.income.actual,
+              currentDashboard.totals.expense.actual,
+              currentDashboard.totals.balance.actual,
             ],
             backgroundColor: ['#B90504'],
           },
@@ -334,9 +315,9 @@ export class DashboardService extends BaseService {
         {
           label: 'Mês Anterior',
           data: [
-            previousDashboard.summary.income.actual,
-            previousDashboard.summary.expense.actual,
-            previousDashboard.summary.balance.actual,
+            previousDashboard.totals.income.actual,
+            previousDashboard.totals.expense.actual,
+            previousDashboard.totals.balance.actual,
           ],
           backgroundColor: ['#ffae00'],
           borderColor: '#cc840a',
@@ -345,9 +326,9 @@ export class DashboardService extends BaseService {
         {
           label: 'Mês Atual',
           data: [
-            currentDashboard.summary.income.actual,
-            currentDashboard.summary.expense.actual,
-            currentDashboard.summary.balance.actual,
+            currentDashboard.totals.income.actual,
+            currentDashboard.totals.expense.actual,
+            currentDashboard.totals.balance.actual,
           ],
           backgroundColor: ['#B90504'],
           borderColor: '#970100',
@@ -357,44 +338,119 @@ export class DashboardService extends BaseService {
     };
   }
 
-  prepareFinancialSummaryCards(dashboard: IDashboard): IFinancialSummaryCard[] {
+  prepareFinancialSummaryCards(dashboard: IDashboard): {
+    title: string;
+    value: number;
+    icon: string;
+    iconColor: 'danger' | 'success' | 'info';
+    percentage: string;
+    percentageColor: 'danger' | 'success' | 'info';
+  }[] {
     return [
       {
         title: 'Renda Total',
-        value: dashboard.summary.income.actual,
+        value: dashboard.totals.income.actual,
         icon: 'trending-up',
-        iconColor: this.getIconColor(dashboard.summary.income.changePercentage),
-        percentage: `${dashboard.summary.income.changePercentage > 0 ? '+' : ''}${dashboard.summary.income.changePercentage.toFixed(1)}%`,
-        percentageColor: this.getPercentageColor(dashboard.summary.income.changePercentage),
+        iconColor: this.getIconColor(dashboard.totals.income.changePercentage),
+        percentage: `${dashboard.totals.income.changePercentage > 0 ? '+' : ''}${dashboard.totals.income.changePercentage.toFixed(1)}%`,
+        percentageColor: this.getPercentageColor(dashboard.totals.income.changePercentage),
       },
       {
         title: 'Despesas Totais',
-        value: dashboard.summary.expense.actual,
+        value: dashboard.totals.expense.actual,
         icon: 'trending-down',
-        iconColor: this.getIconColor(dashboard.summary.expense.changePercentage, true),
-        percentage: `${dashboard.summary.expense.changePercentage > 0 ? '+' : ''}${dashboard.summary.expense.changePercentage.toFixed(1)}%`,
-        percentageColor: this.getPercentageColor(dashboard.summary.expense.changePercentage, true),
+        iconColor: this.getIconColor(dashboard.totals.expense.changePercentage, true),
+        percentage: `${dashboard.totals.expense.changePercentage > 0 ? '+' : ''}${dashboard.totals.expense.changePercentage.toFixed(1)}%`,
+        percentageColor: this.getPercentageColor(dashboard.totals.expense.changePercentage, true),
       },
       {
         title: 'Saldo',
-        value: dashboard.summary.balance.actual,
+        value: dashboard.totals.balance.actual,
         icon: 'dollar-sign',
-        iconColor: this.getIconColor(dashboard.summary.balance.changePercentage),
-        percentage: `${dashboard.summary.balance.changePercentage > 0 ? '+' : ''}${dashboard.summary.balance.changePercentage.toFixed(1)}%`,
-        percentageColor: this.getPercentageColor(dashboard.summary.balance.changePercentage),
+        iconColor: this.getIconColor(dashboard.totals.balance.changePercentage),
+        percentage: `${dashboard.totals.balance.changePercentage > 0 ? '+' : ''}${dashboard.totals.balance.changePercentage.toFixed(1)}%`,
+        percentageColor: this.getPercentageColor(dashboard.totals.balance.changePercentage),
       },
     ];
   }
 
-  /**
-   * Determina a cor do ícone baseada na mudança percentual
-   */
+  prepareCategoryChartData(
+    categories: IDashboardCategory[],
+    type: 'income' | 'expense'
+  ): IChartData {
+    const filteredCategories = categories.filter(c => c.actual > 0);
+
+    if (filteredCategories.length === 0) {
+      return {
+        labels: ['Sem dados'],
+        datasets: [
+          {
+            label: type === 'income' ? 'Receitas' : 'Despesas',
+            data: [100],
+            backgroundColor: ['#e0e0e0'],
+          },
+        ],
+      };
+    }
+
+    return {
+      labels: filteredCategories.map(c => c.name),
+      datasets: [
+        {
+          label: type === 'income' ? 'Receitas' : 'Despesas',
+          data: filteredCategories.map(c => c.actual),
+          backgroundColor: filteredCategories.map(c => c.color || this.getRandomColor()),
+          borderWidth: 1,
+        },
+      ],
+    };
+  }
+
+  prepareDebtChartData(debtSummary: IDebtSummary): IChartData {
+    const paidPercentage =
+      debtSummary.totalDebt > 0 ? (debtSummary.paidAmount / debtSummary.totalDebt) * 100 : 0;
+    const remainingPercentage = 100 - paidPercentage;
+
+    return {
+      labels: ['Pago', 'Pendente'],
+      datasets: [
+        {
+          data: [paidPercentage, remainingPercentage],
+          backgroundColor: ['#4CAF50', '#f44336'],
+          borderWidth: 1,
+        },
+      ],
+    };
+  }
+
+  getTransactionTypeIcon(transaction: IDashboardTransaction): string {
+    if (transaction.status === EPaymentStatus.PAID) {
+      return 'check-circle';
+    } else if (transaction.status === EPaymentStatus.OVERDUE) {
+      return 'alert-circle';
+    } else if (transaction.hasDebt || transaction.isInstallment) {
+      return 'repeat';
+    } else {
+      return 'calendar';
+    }
+  }
+
+  getTransactionTypeColor(transaction: IDashboardTransaction): string {
+    if (transaction.status === EPaymentStatus.PAID) {
+      return 'success';
+    } else if (transaction.status === EPaymentStatus.OVERDUE) {
+      return 'danger';
+    } else if (transaction.hasDebt || transaction.isInstallment) {
+      return 'warning';
+    } else {
+      return 'primary';
+    }
+  }
+
   private getIconColor(changePercentage: number, isExpense = false): 'danger' | 'success' | 'info' {
     if (isExpense) {
-      // Para despesas: aumento é ruim (danger), redução é bom (success)
       return changePercentage > 0 ? 'danger' : changePercentage < 0 ? 'success' : 'info';
     } else {
-      // Para renda/saldo: aumento é bom (success), redução é ruim (danger)
       return changePercentage > 0 ? 'success' : changePercentage < 0 ? 'danger' : 'info';
     }
   }
@@ -406,13 +462,26 @@ export class DashboardService extends BaseService {
     return this.getIconColor(changePercentage, isExpense);
   }
 
+  private getRandomColor(): string {
+    const colors = [
+      '#B90504',
+      '#ffae00',
+      '#4CAF50',
+      '#2196F3',
+      '#9C27B0',
+      '#FF9800',
+      '#795548',
+      '#607D8B',
+      '#E91E63',
+      '#00BCD4',
+    ];
+    return colors[Math.floor(Math.random() * colors.length)];
+  }
+
   clearCache(): void {
     this.cache.clear();
   }
 
-  /**
-   * Método para navegar entre meses
-   */
   navigateMonth(yearMonth: string, direction: 'prev' | 'next'): string {
     const { month, year } = this.parseYearMonth(yearMonth);
     const date = new Date(year, month - 1, 1);
@@ -422,9 +491,6 @@ export class DashboardService extends BaseService {
     return this.formatYearMonth(getMonth(newDate) + 1, getYear(newDate));
   }
 
-  /**
-   * Verifica se um ano-mês é válido
-   */
   isValidYearMonth(yearMonth: string): boolean {
     try {
       const { month, year } = this.parseYearMonth(yearMonth);
@@ -434,9 +500,6 @@ export class DashboardService extends BaseService {
     }
   }
 
-  /**
-   * Obtém a diferença em meses entre dois períodos AAAA-MM
-   */
   getMonthsDifference(startYearMonth: string, endYearMonth: string): number {
     const start = this.parseYearMonth(startYearMonth);
     const end = this.parseYearMonth(endYearMonth);
@@ -450,9 +513,6 @@ export class DashboardService extends BaseService {
     );
   }
 
-  /**
-   * Obtém todos os meses entre dois períodos (inclusive)
-   */
   getMonthsBetween(startYearMonth: string, endYearMonth: string): string[] {
     const months: string[] = [];
     let current = startYearMonth;

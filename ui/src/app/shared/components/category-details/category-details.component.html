@@ -83,7 +83,17 @@
                     }</span>
                   }
                 </th>
-                <th>Status</th>
+                <th (click)="sortTransactions('installmentNumber')" [class.active]="sortColumn === 'installmentNumber'">
+                  Parcela
+                  @if (sortColumn === 'installmentNumber') {
+                    <span>@if (sortDirection === 'asc') {
+                      <i class="bi bi-arrow-up"></i>
+                    } @else {
+                      <i class="bi bi-arrow-down"></i>
+                    }</span>
+                  }
+                </th>
+                <th (click)="sortTransactions('status')" [class.active]="sortColumn === 'status'">Status</th>
                 <th>Tags</th>
               </tr>
               </thead>
@@ -99,8 +109,17 @@
                     <td class="amount-cell" [class.expense]="transaction.type === ECategoryType.Expense">
                       {{ transaction.amount | currency:'BRL' }}
                     </td>
+                    @if (transaction.installmentNumber) {
+                      <td class="installment-number-cell">
+                        {{ transaction.installmentNumber }}
+                      </td>
+                    } @else {
+                      <td class="installment-number-cell">
+                        {{ getValueLabel('installmentNumber', transaction.installmentNumber) }}
+                      </td>
+                    }
                     <td class="status-cell">
-                      {{ transaction.status }}
+                      {{ getValueLabel('status', transaction.status) }}
                     </td>
                   </tr>
                 }

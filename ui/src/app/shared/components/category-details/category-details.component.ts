@@ -2,7 +2,9 @@ import { CurrencyPipe, DecimalPipe, DatePipe } from '@angular/common';
 import { Component, input, computed, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ECategoryType } from '@shared/enums/category-type.enum';
-import { IExpenseCategory, ITransaction } from '@shared/interfaces/dashboard.interface';
+import { IExpenseCategory, IDashboardTransaction } from '@shared/interfaces/dashboard.interface';
+
+type EnumLabel = Record<string, Record<string, string>>;
 
 @Component({
   selector: 'zen-category-details',
@@ -12,17 +14,18 @@ import { IExpenseCategory, ITransaction } from '@shared/interfaces/dashboard.int
 })
 export class CategoryDetailsComponent implements OnInit {
   categories = input.required<IExpenseCategory[]>();
+  enumLabels = input.required<EnumLabel>();
 
   // Expande ou recolhe as transações de cada categoria
   expandedCategories = new Set<string>();
 
   // Ordenação
-  sortColumn: keyof ITransaction = 'date';
+  sortColumn: keyof IDashboardTransaction = 'date';
   sortDirection: 'asc' | 'desc' = 'desc';
 
   // Computa todas as transações agrupadas por categoria
   allTransactions = computed(() => {
-    const transactions: ITransaction[] = [];
+    const transactions: IDashboardTransaction[] = [];
     this.categories().forEach(category => {
       if (category.transactions) {
         transactions.push(...category.transactions);
@@ -50,7 +53,7 @@ export class CategoryDetailsComponent implements OnInit {
     return this.expandedCategories.has(categoryId);
   }
 
-  sortTransactions(column: keyof ITransaction) {
+  sortTransactions(column: keyof IDashboardTransaction) {
     if (this.sortColumn === column) {
       this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
     } else {
@@ -59,12 +62,12 @@ export class CategoryDetailsComponent implements OnInit {
     }
   }
 
-  getCategoryTransactions(categoryId: string): ITransaction[] {
+  getCategoryTransactions(categoryId: string): IDashboardTransaction[] {
     const category = this.categories().find(c => c.id === categoryId);
     return category?.transactions || [];
   }
 
-  getSortedTransactions(categoryId: string): ITransaction[] {
+  getSortedTransactions(categoryId: string): IDashboardTransaction[] {
     const transactions = this.getCategoryTransactions(categoryId);
     return [...transactions].sort((a, b) => {
       const aValue = a[this.sortColumn];
@@ -89,4 +92,21 @@ export class CategoryDetailsComponent implements OnInit {
   }
 
   protected readonly ECategoryType = ECategoryType;
+
+  getValueLabel(column: string, value: unknown): string {
+    if (this.enumLabels()?.[column] !== undefined) {
+      const mapping = this.enumLabels()[column];
+
+      const lookupValue =
+        typeof value === 'number' || typeof value === 'string' ? value : String(value);
+
+      return mapping[lookupValue] ?? String(value);
+    }
+
+    if (typeof value === 'boolean') {
+      return value ? 'Sim' : 'Não';
+    }
+
+    return value?.toString() ?? '-';
+  }
 }

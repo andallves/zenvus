@@ -1,18 +1,19 @@
-import { CurrencyPipe, DecimalPipe, NgOptimizedImage } from '@angular/common';
+import { CurrencyPipe, NgOptimizedImage } from '@angular/common';
 import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
 import { DashboardService } from '@modules/initial-page/services/dashboard.service';
-import { CategoryService } from '@modules/transactions/services/category.service';
 import { BarChartComponent } from '@shared/components/charts/bar-chart/bar-chart.component';
 import { CategoryDetailsComponent } from '@shared/components/category-details/category-details.component';
 import { PageContainerComponent } from '@shared/components/page-container/page-container.component';
+import { SkeletonComponent } from '@shared/components/skeleton/skeleton.component';
+import { ModalIconType } from '@shared/components/swall/modal-alert/domain-types/modal-types.interface';
 import { ModalAlertService } from '@shared/components/swall/modal-alert/service/modal-alert.service';
+import { ExpenseTypeLabel } from '@shared/enums/expense-type.enum';
+import { EPaymentStatus, StatusTypeLabel } from '@shared/enums/payment-status.enum';
 import {
-  ICategoryItem,
   IChartData,
   IDashboard,
+  IDashboardCategory,
   IExpenseCategory,
-  IFinancialSummary,
   IFinancialSummaryCard,
 } from '@shared/interfaces/dashboard.interface';
 import { LoadingService } from '@shared/layouts/default-layout/loading.service';
@@ -20,7 +21,6 @@ import { Chart, ChartOptions, registerables } from 'chart.js';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale/pt-BR';
 import { BaseChartDirective } from 'ng2-charts';
-import { BsModalService } from 'ngx-bootstrap/modal';
 import { forkJoin, Subscription } from 'rxjs';
 
 @Component({
@@ -34,6 +34,7 @@ import { forkJoin, Subscription } from 'rxjs';
     BarChartComponent,
     CategoryDetailsComponent,
     BaseChartDirective,
+    SkeletonComponent,
   ],
   styleUrl: './home-dashboard.component.scss',
 })
@@ -41,7 +42,7 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
   categories: IExpenseCategory[] = [];
   currentCategories: IExpenseCategory[] = [];
   previousCategories: IExpenseCategory[] = [];
-
+  enumLabels = { status: StatusTypeLabel, type: ExpenseTypeLabel };
   financialSummary: IFinancialSummaryCard[] = [];
 
   dashboard: IDashboard = {} as IDashboard;
@@ -90,8 +91,12 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
       },
     },
   });
-  isLoading = true;
+
   hasError = false;
+
+  get isLoading(): boolean {
+    return this.loadingService.isLoading;
+  }
 
   get currentPeriodDisplay() {
     const currentPeriod = this.dashboardService.getCurrentYearMonth(this.currentPeriod);
@@ -109,11 +114,7 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
   }
 
   private subscriptions = new Subscription();
-
-  private readonly fb = inject(FormBuilder);
-  private readonly modalService = inject(BsModalService);
   protected readonly dashboardService = inject(DashboardService);
-  private readonly categoryService = inject(CategoryService);
   private readonly loadingService = inject(LoadingService);
   private readonly modalAlertService = inject(ModalAlertService);
 
@@ -143,17 +144,26 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
         this.currentDashboard = comparative.current;
         this.previousDashboard = comparative.previous;
         this.currentPeriod = comparative.current.period;
-
         this.processDashboardData(current);
-
         this.prepareComparisonData(comparative.current, comparative.previous);
-        this.isLoading = false;
-        this.loadingService.onInactiveLoading();
+        console.log(comparative);
       },
       error: error => {
         console.error('Erro ao carregar dashboard:', error);
         this.hasError = true;
-        this.isLoading = false;
+        const errors = error.error.errors?.join('<br>') || error.error.message || error.message;
+        this.modalAlertService
+          .open({
+            icon: ModalIconType.Error,
+            title: 'Ops!',
+            message: errors,
+            confirmButtonText: 'Ok',
+            showCancelButton: false,
+            cancelButtonText: '',
+          })
+          .finally(() => this.loadingService.onInactiveLoading());
+      },
+      complete: () => {
         this.loadingService.onInactiveLoading();
       },
     });
@@ -161,16 +171,16 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
     this.subscriptions.add(loadSub);
   }
 
-  private processDashboardData(dashboard: IDashboard) {
-    this.categories = this.convertToExpenseCategory(dashboard.categories.expense);
-    this.financialSummary = this.prepareFinancialSummaryCards(dashboard.summary);
-
-    this.prepareChartData(dashboard);
+  private processDashboardData(current: IDashboard) {
+    this.categories = this.convertToExpenseCategory(current.categories.expense);
+    this.financialSummary = this.prepareFinancialSummaryCards(current);
+    this.prepareChartData(current);
   }
 
-  private prepareCategoryComparison(current: IDashboard, previous: IDashboard) {
+  private prepareCategoryComparison(current: IDashboard, previous?: IDashboard) {
     this.currentCategories = this.convertToExpenseCategory(current.categories.expense);
-    this.previousCategories = this.convertToExpenseCategory(previous.categories.expense);
+    if (previous)
+      this.previousCategories = this.convertToExpenseCategory(previous.categories.expense);
     this.normalizeCategories();
   }
 
@@ -180,10 +190,7 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
       ...this.previousCategories.map(c => c.id),
     ]);
 
-    // Para cada categoria que existe em um mês mas não no outro,
-    // adiciona com valor 0
     allCategoryIds.forEach(categoryId => {
-      // Verifica se existe no mês atual
       if (!this.currentCategories.find(c => c.id === categoryId)) {
         const prevCategory = this.previousCategories.find(c => c.id === categoryId);
         if (prevCategory) {
@@ -197,7 +204,6 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
         }
       }
 
-      // Verifica se existe no mês anterior
       if (!this.previousCategories.find(c => c.id === categoryId)) {
         const currentCategory = this.currentCategories.find(c => c.id === categoryId);
         if (currentCategory) {
@@ -212,7 +218,6 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
       }
     });
 
-    // Ordena por valor atual (decrescente)
     this.currentCategories.sort((a, b) => b.actual - a.actual);
     this.previousCategories.sort((a, b) => {
       const aIndex = this.currentCategories.findIndex(c => c.id === a.id);
@@ -221,11 +226,11 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
     });
   }
 
-  private prepareComparisonData(current: IDashboard, previous: IDashboard) {
+  private prepareComparisonData(current: IDashboard, previous?: IDashboard) {
     this.comparisonChartData.set(
       this.dashboardService.prepareComparisonChartData(current, previous)
     );
-    this.updateFinancialSummaryWithComparison(current, previous);
+    this.updateFinancialSummaryWithComparison(current);
     this.prepareCategoryComparison(current, previous);
   }
 
@@ -263,49 +268,49 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
     };
   }
 
-  private updateFinancialSummaryWithComparison(current: IDashboard, previous: IDashboard) {
+  private updateFinancialSummaryWithComparison(current: IDashboard) {
     this.financialSummary = [
       {
         title: 'Saldo Total',
-        value: current.summary.balance.actual,
+        value: current.totals.balance.actual,
         icon: 'icons/coin.png',
-        iconColor: this.getIconColor(current.summary.balance.changePercentage, false, 'info'),
+        iconColor: this.getIconColor(current.totals.balance.changePercentage, false, 'info'),
         percentage: this.formatChangePercentage(
-          current.summary.balance.changePercentage,
-          current.summary.balance.progress
+          current.totals.balance.changePercentage,
+          current.totals.balance.progress
         ),
         percentageColor: this.getPercentageColor(
-          current.summary.balance.changePercentage,
+          current.totals.balance.changePercentage,
           false,
           'info'
         ),
       },
       {
         title: 'Renda Mensal',
-        value: current.summary.income.actual,
+        value: current.totals.income.actual,
         icon: 'icons/arrow-up.png',
-        iconColor: this.getIconColor(current.summary.income.changePercentage, false, 'success'),
+        iconColor: this.getIconColor(current.totals.income.changePercentage, false, 'success'),
         percentage: this.formatChangePercentage(
-          current.summary.income.changePercentage,
-          current.summary.income.progress
+          current.totals.income.changePercentage,
+          current.totals.income.progress
         ),
         percentageColor: this.getPercentageColor(
-          current.summary.income.changePercentage,
+          current.totals.income.changePercentage,
           false,
           'success'
         ),
       },
       {
         title: 'Despesas Mensal',
-        value: current.summary.expense.actual,
+        value: current.totals.expense.actual,
         icon: 'icons/arrow-down.png',
-        iconColor: this.getIconColor(current.summary.expense.changePercentage, true, 'danger'),
+        iconColor: this.getIconColor(current.totals.expense.changePercentage, true, 'danger'),
         percentage: this.formatChangePercentage(
-          current.summary.expense.changePercentage,
-          current.summary.expense.progress
+          current.totals.expense.changePercentage,
+          current.totals.expense.progress
         ),
         percentageColor: this.getPercentageColor(
-          current.summary.expense.changePercentage,
+          current.totals.expense.changePercentage,
           true,
           'danger'
         ),
@@ -313,7 +318,7 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
     ];
   }
 
-  private convertToExpenseCategory(categories: ICategoryItem[]): IExpenseCategory[] {
+  private convertToExpenseCategory(categories: IDashboardCategory[]): IExpenseCategory[] {
     return categories.map(category => ({
       id: category.id,
       name: category.name,
@@ -326,8 +331,8 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
     }));
   }
 
-  private prepareFinancialSummaryCards(summary: IFinancialSummary): IFinancialSummaryCard[] {
-    return this.dashboardService.prepareFinancialSummaryCards({ summary } as IDashboard);
+  private prepareFinancialSummaryCards(summary: IDashboard): IFinancialSummaryCard[] {
+    return this.dashboardService.prepareFinancialSummaryCards(summary);
   }
 
   private formatChangePercentage(changePercentage: number, progress: number): string {
@@ -398,15 +403,15 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
    * Carrega dashboard para um período específico
    */
   loadDashboardForPeriod(yearMonth: string): void {
-    //this.isLoading = true;
-    //this.loadingService.onActiveLoading();
+    this.loadingService.onActiveLoading();
     const { month, year } = this.dashboardService.parseYearMonth(yearMonth);
 
     const sub = this.dashboardService.getDashboard({ month, year }).subscribe({
-      next: dashboard => {
-        this.currentDashboard = dashboard;
-        this.currentPeriod = dashboard.period;
-        this.processDashboardData(dashboard);
+      next: current => {
+        this.currentDashboard = current;
+        this.currentPeriod = current.period;
+        this.processDashboardData(current);
+        console.log(current);
 
         // Carrega mês anterior para comparação
         const previousPeriod = this.dashboardService.navigateMonth(yearMonth, 'prev');
@@ -414,14 +419,13 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
 
         this.dashboardService.getDashboard({ month, year }).subscribe(prev => {
           this.previousDashboard = prev;
-          this.prepareComparisonData(dashboard, prev);
-          this.isLoading = false;
+          this.prepareComparisonData(current, prev);
           this.loadingService.onInactiveLoading();
+          console.log(current);
         });
       },
       error: error => {
         console.error('Erro ao carregar dashboard:', error);
-        this.isLoading = false;
         this.loadingService.onInactiveLoading();
       },
     });

@@ -138,7 +138,7 @@ export class CategoryComponent implements OnInit {
             showCancelButton: false,
             cancelButtonText: '',
           })
-          .then(() => this.loadingService.onInactiveLoading());
+          .finally(() => this.loadingService.onInactiveLoading());
       },
       complete: () => {
         this.isLoadingFilter = false;
