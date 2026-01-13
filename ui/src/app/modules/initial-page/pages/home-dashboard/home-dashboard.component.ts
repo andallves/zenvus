@@ -8,7 +8,7 @@ import { SkeletonComponent } from '@shared/components/skeleton/skeleton.componen
 import { ModalIconType } from '@shared/components/swall/modal-alert/domain-types/modal-types.interface';
 import { ModalAlertService } from '@shared/components/swall/modal-alert/service/modal-alert.service';
 import { ExpenseTypeLabel } from '@shared/enums/expense-type.enum';
-import { EPaymentStatus, StatusTypeLabel } from '@shared/enums/payment-status.enum';
+import { StatusTypeLabel } from '@shared/enums/payment-status.enum';
 import {
   IChartData,
   IDashboard,
@@ -324,6 +324,7 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
       name: category.name,
       color: category.color,
       actual: category.actual,
+      actualPaid: category.actualPaid,
       percentage: category.percentage,
       estimated: category.estimated,
       transactionCount: category.transactionCount,

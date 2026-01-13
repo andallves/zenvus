@@ -7,7 +7,10 @@ public record ExpenseDashboardRowDto (
     DateTime Date,
     string Description,
     decimal Amount,
+    decimal? AmountPaid,
+    EExpense? Type,
     EPaymentStatus Status,
+    
     bool HasDebt,
     bool IsInstallment,
     Guid CategoryId,

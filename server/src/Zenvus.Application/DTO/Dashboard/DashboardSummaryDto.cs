@@ -99,6 +99,7 @@ public class DashboardCategoryDto
     public string Color { get; set; } = string.Empty;
 
     public decimal Actual { get; set; }
+    public decimal ActualPaid { get; set; }
     public decimal Estimated { get; set; }
     public decimal Percentage { get; set; }
     public int TransactionCount { get; set; }
@@ -111,6 +112,8 @@ public class DashboardTransactionDto
     public DateTime Date { get; set; }
     public string Description { get; set; } = string.Empty;
     public decimal Amount { get; set; }
+    public decimal? AmountPaid { get; set; }
+    public EExpense? Type { get; set; }
     public EPaymentStatus Status { get; set; }
     public bool HasDebt { get; set; }
     public bool IsInstallment { get; set; }

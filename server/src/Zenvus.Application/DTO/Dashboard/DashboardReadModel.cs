@@ -218,6 +218,7 @@ public class DashboardReadModel(IRepository<ZenvusDbContext> repository, ILogger
                 Name = g.Key.CategoryName,
                 Color = g.Key.CategoryColor,
                 Actual = g.Sum(x => x.Amount),
+                ActualPaid = g.Sum(x => x.AmountPaid ?? 0),
                 TransactionCount = g.Count(),
                 Transactions = g
                     .OrderByDescending(x => x.Date)
@@ -227,6 +228,8 @@ public class DashboardReadModel(IRepository<ZenvusDbContext> repository, ILogger
                         Date = x.Date,
                         Description = x.Description,
                         Amount = x.Amount,
+                        AmountPaid = x.AmountPaid,
+                        Type = x.Type,
                         Status = x.Status,
                         HasDebt = x.HasDebt,
                         IsInstallment = x.IsInstallment,
@@ -248,23 +251,26 @@ public class DashboardReadModel(IRepository<ZenvusDbContext> repository, ILogger
         return await repository.GetDbContext().DebtInstallments
             .AsNoTracking()
             .Include(i => i.Debt)
+            .ThenInclude(d => d.Expense)
             .Where(i =>
                 i.Debt.Expense.UserId == userId &&
-                i.DueDate >= startDate &&
+                (i.DueDate >= startDate || i.Status != EPaymentStatus.Paid) && 
                 i.DueDate <= endDate &&
                 !i.Disabled && i.Status != EPaymentStatus.Cancelled)
             .Select(i => new ExpenseDashboardRowDto(
                 i.Id,
                 i.DueDate,
                 $"{i.Debt.Expense.Description}",
-                i.AmountPaid ?? i.Amount,
+                i.Amount,
+                i.AmountPaid,
+                i.Debt.Expense.Type,
                 i.Status,
                 true,
                 true,
                 i.Debt.Expense.CategoryId,
                 i.Debt.Expense.Category.Name,
                 i.Debt.Expense.Category.Color,
-                $"{i.Number}/{i.Debt.TotalInstallments}"
+                $"{i.Number} / {i.Debt.TotalInstallments}"
             ))
             .ToListAsync(ct);
     }
@@ -292,6 +298,8 @@ public class DashboardReadModel(IRepository<ZenvusDbContext> repository, ILogger
                 e.Date,
                 e.Description,
                 e.Amount,
+                e.AmountPaid,
+                e.Type,
                 e.IsPaid ? EPaymentStatus.Paid : EPaymentStatus.Pending,
                 e.HasDebt,
                 false,

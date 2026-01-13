@@ -1,10 +1,11 @@
-import { ECategoryType } from '@shared/enums/category-type.enum';
+import { EExpenseType } from '@shared/enums/expense-type.enum';
 import { EPaymentStatus } from '@shared/enums/payment-status.enum';
 
 export interface IExpenseCategory {
   id: string;
   name: string;
   actual: number;
+  actualPaid: number;
   estimated: number;
   color: string;
   percentage: number;
@@ -22,6 +23,7 @@ export interface IDashboardCategory {
   name: string;
   color: string;
   actual: number;
+  actualPaid: number;
   estimated: number;
   percentage: number;
   transactionCount: number;
@@ -32,9 +34,10 @@ export interface IDashboardTransaction {
   id: string;
   description: string;
   amount: number;
+  amountPaid: number;
   date: string;
   status: EPaymentStatus;
-  type: ECategoryType;
+  type: EExpenseType | null;
   hasDebt: boolean;
   isInstallment: boolean;
   installmentNumber: string;

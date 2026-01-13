@@ -8,6 +8,7 @@ public class Expense : Transaction
 {
     private Expense() { }
     public EExpense Type { get; set; } 
+    public decimal? AmountPaid { get; set; }
     public Debt? Debt { get; set; }
     public bool HasDebt => Debt is { Disabled: false };
     public bool HasActiveDebt => HasDebt && Debt!.IsInstallment;
