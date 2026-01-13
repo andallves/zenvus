@@ -60,21 +60,22 @@ select {
   font-size: 14px;
   outline: none;
   cursor: pointer;
-}
+  color: var(--text-primary-color);
 
-option {
-  &:hover {
-    background: var(--active-background-color);
-  }
+  option {
+    &:hover {
+      background: var(--active-background-color);
+    }
 
-  &::selection {
-    background: var(--primary-color);
+    &[selected] {
+      background: var(--primary-color);
+    }
   }
 }
 
 .sort-direction {
   background: var(--primary-color);
-  color: white;
+  color: var(--white-color);
   border: none;
   border-radius: 6px;
   width: 32px;
@@ -103,10 +104,11 @@ option {
   background: var(--active-background-color);
   padding: 16px 24px;
   cursor: pointer;
+  letter-spacing: 1px;
   transition: background-color 0.2s;
 
   &:hover {
-    background: var(--active-background-color);
+    background: #ffcbcb;
   }
 }
 
@@ -153,17 +155,17 @@ option {
 }
 
 .category-percentage {
-  background: #e9ecef;
+  background: var(--secondary-color);
   padding: 4px 12px;
   border-radius: 20px;
   font-size: 14px;
-  color: #495057;
+  color: var(--white-color);
 }
 
 .expand-icon {
   font-size: 20px;
   font-weight: bold;
-  color: #495057;
+  color: var(--text-primary-color);
   width: 24px;
   text-align: center;
 }
@@ -189,11 +191,16 @@ option {
   width: 100%;
   border-collapse: collapse;
   font-size: 14px;
+  letter-spacing: 1.1px;
+}
+
+.transactions-table .head {
+  width: 100%;
 }
 
 .transactions-table th {
   padding: 12px 16px;
-  text-align: left;
+  text-align: center;
   color: var(--text-primary-color);
   font-weight: 600;
   font-size: 13px;
@@ -203,7 +210,7 @@ option {
   user-select: none;
 
   &:hover {
-    background: #f8f9fa;
+    background: var(--text-secondary-color);
   }
 
   &.active {
@@ -216,12 +223,18 @@ option {
   border-bottom: 1px solid var(--border-color);
 }
 
-.transactions-table tbody tr:hover {
-  background: #f8f9fa;
+.transactions-table .tbody tr:hover {
+  background: var(--text-secondary-color);
+  color: var(--text-primary-hover-color);
+}
+
+.tbody {
+  font-family: 'Inter', sans-serif;
+  color: var(--text-primary-color);
 }
 
 .date-cell {
-  color: #6c757d;
+  text-align: center;
 }
 
 .description-cell {
@@ -232,46 +245,72 @@ option {
 }
 
 .amount-cell {
-  font-weight: 600;
-  color: #2d3436;
+  font-weight: 500;
+  text-align: right;
+}
 
-  &.expense {
-    color: #e63946;
+.type-cell {
+  text-align: center;
+}
+
+.status-cell {
+  text-align: center;
+
+  &__text {
+    padding: 6px 8px;
+    border-radius: 16px;
+
+    &.paid {
+      color: var(--success-color);
+      background-color: #e3fbee;
+      border: 1px solid var(--success-color);
+    }
+
+    &.pending {
+      color: var(--warning-color);
+      background-color: #faefd9;
+      border: 1px solid var(--warning-color);
+    }
+
+    &.active {
+      color: var(--positive-color);
+      background-color: #dfeffa;
+      border: 1px solid var(--positive-color);
+    }
+
+    &.overdue {
+      color: var(--danger-color);
+      background-color: #ffe9e9;
+      border: 1px solid var(--danger-color);
+    }
   }
 }
 
-.payment-method {
-  color: #495057;
+.installment-number-cell {
+  text-align: center;
 }
 
-.tags-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-}
-
-.tag {
-  background: #e9ecef;
-  color: #495057;
-  padding: 2px 8px;
-  border-radius: 12px;
-  font-size: 12px;
+.tfoot {
+  width: 100%;
 }
 
 .category-total {
-  background: #f8f9fa;
+  background: var(--active-background-color);
+  width: auto;
   font-weight: 600;
+  color: var(--text-primary-color);
 
   td {
     padding: 16px;
-    border-top: 2px solid #dee2e6;
+    border-top: 2px solid var(--border-color);
     border-bottom: none;
   }
 }
 
 .total-amount {
-  color: #2d3436;
+  color: var(--text-primary-color);
   font-size: 15px;
+  text-align: right;
 }
 
 // Responsividade
@@ -299,5 +338,6 @@ option {
   .category-totals {
     width: 100%;
     justify-content: space-between;
+    background: var(--active-background-color);
   }
 }

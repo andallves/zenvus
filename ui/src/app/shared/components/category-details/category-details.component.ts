@@ -2,6 +2,7 @@ import { CurrencyPipe, DecimalPipe, DatePipe } from '@angular/common';
 import { Component, input, computed, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ECategoryType } from '@shared/enums/category-type.enum';
+import { EPaymentStatus } from '@shared/enums/payment-status.enum';
 import { IExpenseCategory, IDashboardTransaction } from '@shared/interfaces/dashboard.interface';
 
 type EnumLabel = Record<string, Record<string, string>>;
@@ -109,4 +110,6 @@ export class CategoryDetailsComponent implements OnInit {
 
     return value?.toString() ?? '-';
   }
+
+  protected readonly EPaymentStatus = EPaymentStatus;
 }
