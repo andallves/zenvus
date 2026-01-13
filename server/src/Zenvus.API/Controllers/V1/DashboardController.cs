@@ -1,5 +1,4 @@
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using Zenvus.Application.DTO.Dashboard;
@@ -23,18 +22,7 @@ public class DashboardController(IMediator mediator) : BaseController(mediator)
         return await SendQueryAsync(query, cancellationToken);
     }
     
-
-    [HttpGet("transactions/recent")]
-    [ProducesResponseType(typeof(List<RecentTransactionDto>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetRecentTransactions(
-        [FromQuery] string? month,
-        [FromQuery] int? year,
-        [FromQuery] int limit = 10,
-        CancellationToken cancellationToken = default)
-    {
-        var query = new GetRecentTransactionsQuery(month, year, limit);
-        return await SendQueryAsync(query, cancellationToken);
-    }
+    
 
     [HttpGet("debt/summary")]
     [ProducesResponseType(typeof(DebtSummaryDto), StatusCodes.Status200OK)]
@@ -46,15 +34,5 @@ public class DashboardController(IMediator mediator) : BaseController(mediator)
         var query = new GetDebtSummaryQuery(month, year);
         return await SendQueryAsync(query, cancellationToken);
     }
-
-    [HttpGet("cash-flow")]
-    [ProducesResponseType(typeof(CashFlowDto), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetCashFlow(
-        [FromQuery] string? month,
-        [FromQuery] int? year,
-        CancellationToken cancellationToken)
-    {
-        var query = new GetCashFlowQuery(month, year);
-        return await SendQueryAsync(query, cancellationToken);
-    }
+    
 }

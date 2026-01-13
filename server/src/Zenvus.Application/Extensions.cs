@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using ScottBrady91.AspNetCore.Identity;
 using SixLabors.Fonts;
 using Zenvus.Application.Commands;
+using Zenvus.Application.DTO.Dashboard;
 using Zenvus.Application.Services.Auth;
 using Zenvus.Core.Settings;
 using Zenvus.Infra;
@@ -43,6 +44,8 @@ public static class Extensions
             .AddScoped<IPasswordHasher<IdentityUser>, Argon2PasswordHasher<IdentityUser>>();
         services
             .AddScoped<ITokenService, TokenService>();
+        services
+            .AddScoped<IDashboardReadModel, DashboardReadModel>();
         
         services
             .AddAutoMapper(Assembly.GetExecutingAssembly());
