@@ -1,9 +1,14 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
 .data-table {
   background: var(--background-primary-color);
   border-radius: 16px;
-  padding: 32px;
-  margin-bottom: 32px;
   border: 1px solid var(--border-color);
+
+  @include up($bp-medium) {
+    padding: 32px;
+  }
 }
 
 .data-table h3 {
@@ -210,11 +215,11 @@ select {
   user-select: none;
 
   &:hover {
-    background: var(--text-secondary-color);
+    background: var(--active-background-color);
   }
 
   &.active {
-    color: var(--positive-color);
+    color: var(--secondary-color);
   }
 }
 
@@ -224,8 +229,7 @@ select {
 }
 
 .transactions-table .tbody tr:hover {
-  background: var(--text-secondary-color);
-  color: var(--text-primary-hover-color);
+  background: var(--active-background-color);
 }
 
 .tbody {
@@ -262,25 +266,25 @@ select {
 
     &.paid {
       color: var(--success-color);
-      background-color: #e3fbee;
+      background-color: var(--background-success-color);
       border: 1px solid var(--success-color);
     }
 
     &.pending {
       color: var(--warning-color);
-      background-color: #faefd9;
+      background-color: var(--background-warning-color);
       border: 1px solid var(--warning-color);
     }
 
     &.active {
-      color: var(--positive-color);
-      background-color: #dfeffa;
-      border: 1px solid var(--positive-color);
+      color: var(--info-color);
+      background-color: var(--background-info-color);
+      border: 1px solid var(--info-color);
     }
 
     &.overdue {
       color: var(--danger-color);
-      background-color: #ffe9e9;
+      background-color: var(--background-danger-color);
       border: 1px solid var(--danger-color);
     }
   }

@@ -76,7 +76,7 @@
       transition: background-color 0.2s;
 
       &:hover {
-        background: #f3f4f6;
+        background: var(--active-background-color);
       }
 
       .legend-color {
@@ -114,7 +114,7 @@
 
           .previous-value {
             font-size: 11px;
-            color: var(--text-secondary-color);
+            color: var(--text-primary-color);
             text-decoration: line-through;
           }
 
@@ -125,13 +125,15 @@
             border-radius: 4px;
 
             &.positive {
-              background: #dcfce7;
+              background: var(--background-success-color);
               color: var(--success-color);
+              border: 1px solid var(--success-color);
             }
 
             &.negative {
-              background: #fee2e2;
+              background: var(--background-danger-color);
               color: var(--danger-color);
+              border: 1px solid var(--danger-color);
             }
           }
         }

@@ -21,6 +21,10 @@
     justify-content: center;
     color: var(--primary-color);
 
+    &__title {
+      margin-bottom: 0;
+    }
+
     .comparison-label {
       color: var(--text-secondary-color)
     }
@@ -83,17 +87,17 @@
 
       &.danger {
         color: var(--danger-color);
-        background-color: #ffe9e9;
+        background-color: var(--background-danger-color);
       }
 
       &.success {
         color: var(--success-color);
-        background-color: #e3fbee;
+        background-color: var(--background-success-color);
       }
 
       &.info {
-        color: var(--positive-color);
-        background-color: #dfeffa;
+        color: var(--info-color);
+        background-color: var(--background-info-color);
       }
 
       i {
@@ -104,6 +108,7 @@
     &__comparison {
       font-size: 12px;
       font-weight: 300;
+      color: var(--info-color);
 
       &.danger {
         color: var(--danger-color);
@@ -183,7 +188,7 @@
 
       .text {
         margin: 0;
-        color: #2d3436;
+        color: var(--text-primary-color);
         font-size: 16px;
         font-weight: 600;
       }

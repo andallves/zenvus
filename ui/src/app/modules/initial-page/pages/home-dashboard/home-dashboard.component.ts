@@ -274,7 +274,7 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
         title: 'Saldo Total',
         value: current.totals.balance.actual,
         icon: 'icons/coin.png',
-        iconColor: this.getIconColor(current.totals.balance.changePercentage, false, 'info'),
+        iconColor: 'info',
         percentage: this.formatChangePercentage(
           current.totals.balance.changePercentage,
           current.totals.balance.progress
@@ -289,7 +289,7 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
         title: 'Renda Mensal',
         value: current.totals.income.actual,
         icon: 'icons/arrow-up.png',
-        iconColor: this.getIconColor(current.totals.income.changePercentage, false, 'success'),
+        iconColor: 'success',
         percentage: this.formatChangePercentage(
           current.totals.income.changePercentage,
           current.totals.income.progress
@@ -304,7 +304,7 @@ export class HomeDashboardComponent implements OnInit, OnDestroy {
         title: 'Despesas Mensal',
         value: current.totals.expense.actual,
         icon: 'icons/arrow-down.png',
-        iconColor: this.getIconColor(current.totals.expense.changePercentage, true, 'danger'),
+        iconColor: 'danger',
         percentage: this.formatChangePercentage(
           current.totals.expense.changePercentage,
           current.totals.expense.progress

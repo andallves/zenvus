@@ -46,7 +46,7 @@ export class ButtonComponent {
       case 'danger':
         return 'var(--danger-color)';
       case 'info':
-        return 'var(--positive-color)';
+        return 'var(--info-color)';
       case 'warning':
         return 'var(--warning-color)';
       case 'white':
