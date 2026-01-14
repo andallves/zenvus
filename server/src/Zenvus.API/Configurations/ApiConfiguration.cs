@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Newtonsoft.Json;
+using Zenvus.Infra;
 
 namespace Zenvus.API.Configurations;
 
@@ -68,6 +69,22 @@ public static class ApiConfiguration
                 });
             });
     }
+    
+    public static void UseApiConfiguration(this IApplicationBuilder app, IServiceProvider services, IHostEnvironment env)
+        {
+            if (!env.IsDevelopment())
+            {
+                app.UseMigrations(services);
+            }
+    
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
+            
+            app.UseCors("default");
+        }
+
 
     private sealed class SlugifyParameterTransformer : IOutboundParameterTransformer
     {

@@ -75,8 +75,10 @@ public static class Extension
             .PersistKeysToFileSystem(new DirectoryInfo("./DataProtectionKeys"));
     }
         
-    public static IApplicationBuilder UseApiLayer(this IApplicationBuilder app)
+    public static IApplicationBuilder UseApiLayer(this IApplicationBuilder app, IServiceProvider serviceProvider, IHostEnvironment environment)
     {
+        app.UseApiConfiguration(serviceProvider, environment);
+        
         app.UseSerilogRequestLogging();
         
         app.UseSwaggerConfig();

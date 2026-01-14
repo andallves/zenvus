@@ -35,15 +35,7 @@ builder
 
 var app = builder.Build();
 
-app.UseCors("default");
-
-app.UseForwardedHeaders(new ForwardedHeadersOptions
-{
-    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-});
-
-
-app.UseApiLayer();
+app.UseApiLayer(app.Services, app.Environment);
 
 app.MapControllers();
 app.MapGet("/", ctx => ctx.Response.WriteAsync("Zenvus API"));

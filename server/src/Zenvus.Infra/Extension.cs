@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -53,4 +54,12 @@ public static class Extension
         services.AddMySql<ZenvusDbContext>();
         return services;
     }
+    
+    public static void UseMigrations(this IApplicationBuilder app, IServiceProvider services)
+        {
+            using var scope = services.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<ZenvusDbContext>();
+            db.Database.Migrate();
+        }
+
 }
