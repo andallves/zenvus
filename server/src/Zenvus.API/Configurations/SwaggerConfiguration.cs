@@ -36,7 +36,7 @@ public static class SwaggerConfiguration
             options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
             {
                 Name = "Authorization",
-                Type = SecuritySchemeType.ApiKey,
+                Type = SecuritySchemeType.Http,
                 Scheme = "Bearer",
                 BearerFormat = "JWT",
                 In = ParameterLocation.Header,
@@ -57,6 +57,8 @@ public static class SwaggerConfiguration
                 }
             });
         });
+        
+        services.ConfigureOptions<ConfigureSwaggerOptions>();
     }
 
     public static void UseSwaggerConfig(this IApplicationBuilder app)

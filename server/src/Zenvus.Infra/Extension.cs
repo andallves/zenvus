@@ -20,10 +20,10 @@ public static class Extension
         return services;
     }
     
-    public static IServiceCollection AddMySql<T>(this IServiceCollection services, IConfiguration configuration) where T : DbContext
+    public static IServiceCollection AddMySql<T>(this IServiceCollection services) where T : DbContext
     {
-        // Use the configured ConnectionStrings:Default value (appsettings.json)
-        var connectionString = configuration.GetConnectionString("Default")!;
+        var configuration = services.BuildServiceProvider().GetRequiredService<IConfiguration>();
+        var connectionString = configuration.GetConnectionString("MYSQL")!;
         if (string.IsNullOrWhiteSpace(connectionString))
             throw new InvalidOperationException("Connection string 'Default' is not configured.");
         var version = ServerVersion.AutoDetect(connectionString);
@@ -50,8 +50,7 @@ public static class Extension
     
     public static IServiceCollection AddInfraLayer(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddMySql<ZenvusDbContext>(configuration);
-        
+        services.AddMySql<ZenvusDbContext>();
         return services;
     }
 }

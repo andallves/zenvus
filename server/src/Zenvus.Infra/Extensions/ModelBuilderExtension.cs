@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Zenvus.Domain.Entities;
 
-namespace Zenvus.Infra.Extensionsss;
+namespace Zenvus.Infra.Extensions;
 
 [ExcludeFromCodeCoverage]
 public static class ModelBuilderExtension

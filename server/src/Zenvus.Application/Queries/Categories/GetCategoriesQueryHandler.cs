@@ -4,7 +4,7 @@ using Zenvus.Core.ValueObjects;
 using Zenvus.Domain.Entities;
 using Zenvus.Infra.Abstractions;
 using Zenvus.Infra.Database;
-using Zenvus.Infra.Extensionsss;
+using Zenvus.Infra.Extensions;
 
 namespace Zenvus.Application.Queries.Categories;
 

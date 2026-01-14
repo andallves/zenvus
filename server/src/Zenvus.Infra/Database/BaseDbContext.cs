@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Zenvus.Domain.Entities;
 using Zenvus.Infra.Configurations;
-using Zenvus.Infra.Extensionsss;
+using Zenvus.Infra.Extensions;
 
 namespace Zenvus.Infra.Database;
 

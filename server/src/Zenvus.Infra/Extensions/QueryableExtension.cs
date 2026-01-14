@@ -1,9 +1,8 @@
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Zenvus.Core.ValueObjects;
-using Zenvus.Infra.Configurations;
 
-namespace Zenvus.Infra.Extensionsss;
+namespace Zenvus.Infra.Extensions;
 
 [ExcludeFromCodeCoverage]
 public static class QueryableExtensions

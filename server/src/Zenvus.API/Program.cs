@@ -1,10 +1,7 @@
 using System.Globalization;
 using System.Reflection;
 using Microsoft.AspNetCore.HttpOverrides;
-using Serilog;
-using Microsoft.IdentityModel.Logging;
 using Microsoft.AspNetCore.Localization;
-using Microsoft.AspNetCore.Mvc;
 using Zenvus.API;
 
 var builder = WebApplication.CreateBuilder(args);
