@@ -5,5 +5,5 @@ namespace Zenvus.Infra.Configurations;
 [ExcludeFromCodeCoverage]
 internal sealed class ConnectionStrings
 {
-    public string Default { get; set; } = null!;
+    public string MYSQL { get; set; } = null!;
 }

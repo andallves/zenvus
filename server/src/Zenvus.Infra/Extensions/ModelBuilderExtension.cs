@@ -13,7 +13,7 @@ public static class ModelBuilderExtension
         var entities = modelBuilder.GetEntities<Entity>();
         var props = entities.SelectMany(c => c.GetProperties()).ToList();
 
-        foreach (var property in props.Where(c => c.ClrType == typeof(int) && c.Name == "Id"))
+        foreach (var property in props.Where(c => c.ClrType == typeof(Guid) && c.Name == "Id"))
         {
             property.IsKey();
         }
@@ -21,7 +21,7 @@ public static class ModelBuilderExtension
     
     public static void ApplyTrackingConfiguration(this ModelBuilder modelBuilder)
     {
-        var propDatas = new[] { "CriadoEm", "AtualizadoEm" };
+        var propDatas = new[] { "CreatedAt", "UpdatedAt" };
         
         var entidades = modelBuilder.GetEntities<ITracking>();
 
@@ -43,7 +43,7 @@ public static class ModelBuilderExtension
         var props = entidades
             .SelectMany(c => c.GetProperties().Where(p => p.ClrType == typeof(bool))).ToList();
 
-        foreach (var prop in props.Where(c => c.Name == "Desativado"))
+        foreach (var prop in props.Where(c => c.Name == "Disabled"))
         {
             prop.IsNullable = false;
             prop.SetDefaultValue(false);
