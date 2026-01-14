@@ -1,11 +1,20 @@
 @use "sass:color";
 
-$color: gray;
+$color: #ff0000;
 
 .box-input {
   width: 100%;
   display: flex;
   flex-direction: column;
+
+  &.is-valid {
+    border-color: var(--success-color);
+  }
+
+  &.is-invalid:not(&.is-focused){
+    border: 1px solid var(--danger-color);
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.20);
+  }
 
   .label-select {
     color: var(--text-primary-color);
@@ -42,9 +51,9 @@ $color: gray;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        color: var(--text-primary-color);
+        color: var(--text-secondary-color);
         background: transparent;
-        border: var(--bs-border-width) solid var(--bs-border-color);
+        border: 1px solid var(--border-color);
 
         .text-truncate {
           display: block;
@@ -61,17 +70,21 @@ $color: gray;
           }
         }
 
+        &.is-read-only {
+          background: var(--border-color) !important;
+        }
+
+        &.is-valid {
+          border-color: var(--success-color);
+        }
+
+        &.is-invalid:not(&.is-focused){
+          border: 1px solid var(--danger-color);
+          box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.20);
+        }
+
         &:focus {
-          border-color: var(--primary);
-          box-shadow: 0 0 0 0.2rem rgb(13, 109, 251);
-        }
-
-        &.is-invalid {
-          border-color: #ff0000 !important;
-        }
-
-        &.is-invalid:focus {
-          box-shadow: 0 0 0 0.2rem rgba(255, 0, 0, 0.25) !important;
+          border-color: var(--positive-color);
         }
       }
 
@@ -81,6 +94,11 @@ $color: gray;
         overflow-y: auto;
         max-width: 1050px;
         max-height: 200px;
+        background: var(--background-primary-color);
+
+        &.show {
+          z-index: 120;
+        }
 
         @media (max-width: 1000px) {
           max-width: 75vw;
@@ -113,9 +131,18 @@ $color: gray;
         }
       }
 
-      .dropdown-item.active {
-        background-color: var(--primary-color);
-        color: var(--white-color);
+      .dropdown-item {
+        color: var(--text-primary-color);
+
+        &:hover {
+          background-color: var(--active-background-color);
+          color: var(--text-primary-color);
+        }
+
+        &.active {
+          background-color: var(--primary-color);
+          color: var(--white-color);
+        }
       }
     }
 

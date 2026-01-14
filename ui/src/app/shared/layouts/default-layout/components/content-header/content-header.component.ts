@@ -61,10 +61,13 @@ export class ContentHeaderComponent implements OnInit {
   }
 
   updateHeader() {
-    const snapshot = this.activatedRoute.firstChild?.snapshot;
-    if (snapshot?.['title'] && snapshot.data?.['description']) {
-      this.headerTitle = snapshot?.['title'];
-      this.headerDescription = snapshot.data['description'];
+    const deepestRoute = this.getDeepestChild(this.activatedRoute);
+    const snapshot = deepestRoute.snapshot;
+
+    console.log('snap: ' + snapshot);
+    if (snapshot.title && snapshot.data?.['description']) {
+      this.headerTitle = snapshot.title;
+      this.headerDescription = snapshot.data?.['description'];
     } else {
       this.headerTitle = this.saudacaoComBaseNaHora();
       this.headerDescription = this.name ? '' : 'Bem-vindo ao Zenvus!';
@@ -115,5 +118,12 @@ export class ContentHeaderComponent implements OnInit {
     if (!clickedInside && this.isDropdownOpen) {
       this.dropdownMenu(event);
     }
+  }
+
+  private getDeepestChild(route: ActivatedRoute): ActivatedRoute {
+    while (route.firstChild) {
+      route = route.firstChild;
+    }
+    return route;
   }
 }

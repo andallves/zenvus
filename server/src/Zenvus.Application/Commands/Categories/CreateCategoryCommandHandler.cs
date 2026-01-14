@@ -7,6 +7,7 @@ using Zenvus.Core.ValueObjects;
 using Zenvus.Infra.Abstractions;
 using Zenvus.Infra.Database;
 using Zenvus.Domain.Entities;
+using Zenvus.Domain.Entities.Enums;
 
 namespace Zenvus.Application.Commands.Categories;
 
@@ -17,13 +18,15 @@ public class CreateCategoryCommandHandler(IMapper mapper, IRepository<ZenvusDbCo
         CancellationToken cancellationToken)
     {
         var category = await repository.DbSet<Category>()
-            .FirstOrDefaultAsync(c => c.Name.ToLower() == request.Name.ToLower() && c.UserId == authenticatedUser.Id,
+            .FirstOrDefaultAsync(c => 
+                c.Name.ToLower().Equals(request.Name.ToLower()) && 
+                c.UserId == authenticatedUser.Id,
                 cancellationToken);
         
         if (category is null) {
             category = mapper.Map<Category>(request);
             category.UserId = authenticatedUser.Id;
-            category.Type = request.Type;
+            category.Type = (ETransactionType)request.Type;
             repository.DbSet<Category>().Add(category);
         }
         else if (category.Disabled)

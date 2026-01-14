@@ -9,7 +9,7 @@ public class CategoryDto
     public Guid UserId { get; set; }
     public string Name { get; set; } = string.Empty;
     public string Color { get; set; } = string.Empty;
-    public IsCategory Type { get; set; }
+    public ETransactionType Type { get; set; }
     public bool Disabled { get; set; }
     
     public static CategoryDto From(Category category)

@@ -1,0 +1,46 @@
+<div class="box-input col-md-6" [class.fixedSize]="fixedSize">
+  <label [for]="inputId">
+    {{ labelSignal() }}
+    <span *ngIf="showMandatory" class="mandatory">*</span>
+  </label>
+
+  <div class="input-wrapper" [ngClass]="{ 'is-invalid': hasError }">
+    <input
+      #dp="bsDatepicker"
+      id="{{ inputId }}"
+      type="text"
+      placeholder="{{ placeholder }}"
+      class="input form-control"
+      bsDatepicker
+      [triggers]="''"
+      useUtc="false"
+      [disabled]="isDisable"
+      (bsValueChange)="onValueChange($event)"
+      (input)="onInputChange($event)"
+      (focus)="openDatepicker(dp)"
+      [(ngModel)]="value"
+      (click)="openDatepicker(dp)"
+      [bsConfig]="datePickerConfig"
+    />
+
+    <i
+      id="{{ inputId }}-calendar-icon"
+      class="calendar-icon bi bi-calendar2-check"
+      (click)="openDatepicker(dp)"
+      onkeyup=""
+    ></i>
+  </div>
+
+  @if (errorMessages()?.length) {
+    <ul class="error-messages">
+      @for (msg of errorMessages(); track $index) {
+        <li
+          class="error-message"
+        >
+          <i class="bi bi-x-circle-fill"></i>
+          <p [innerHTML]="msg"></p>
+        </li>
+      }
+    </ul>
+  }
+</div>

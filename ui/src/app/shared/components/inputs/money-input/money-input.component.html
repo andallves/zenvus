@@ -1,0 +1,61 @@
+<div [class.fixedSize]="fixedSize" [ngClass]="variant">
+  <label [for]="inputId" class="form-label">
+    {{ labelSignal() }}
+    @if (showMandatory) {
+      <span class="mandatory">*</span>
+    }
+  </label>
+  <div
+    class="input-wrapper"
+    [class]="{
+      'custom-input': icon,
+      'is-focused': focus,
+      'is-valid': isValid(),
+      'is-invalid': isInvalid() && focus,
+      'is-read-only': readonly
+    }"
+  >
+    <span
+      class="input-group-text icon"
+      id="{{ inputId }}-icon-addon"
+      *ngIf="icon"
+    >
+      <i class="bi bi-person-fill custom-person"></i>
+    </span>
+    <input
+      currencyMask
+      id="{{ inputId }}"
+      class="input clear"
+      [type]="type"
+      (blur)="onInputBlur()"
+      (ngModelChange)="onCurrencyChange($event)"
+      [(ngModel)]="value"
+      [placeholder]="placeholder"
+      [disabled]="isDisable"
+      [readOnly]="readonly"
+      [class.is-read-only]="readonly"
+    />
+    @if (showX && value) {
+      <button
+        type="button"
+        id="{{ inputId }}-clear"
+        class="clear-input"
+        (click)="clearInput($event)"
+      >&#x2715;</button
+      >
+    }
+  </div>
+  @if (errorMessages()?.length) {
+    <ul class="error-messages">
+      @for (msg of errorMessages(); track $index) {
+        <li
+          class="error-message"
+          [class]="{ 'is-valid': isValid(), 'is-invalid': isInvalid()}"
+        >
+          <i class="bi bi-x-circle-fill"></i>
+          <p [innerHTML]="msg"></p>
+        </li>
+      }
+    </ul>
+  }
+</div>

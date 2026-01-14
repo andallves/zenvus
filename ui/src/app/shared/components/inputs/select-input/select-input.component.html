@@ -1,4 +1,6 @@
-<div class="box-input" [class.fixedSize]="fixedSize">
+<div class="box-input" [class.fixedSize]="fixedSize" [class]="{
+  'is-valid': isValid(), 'is-invalid': isInvalid() && isFocused
+}">
   <label [for]="dropdownId" class="label-select">
     {{ labelSignal() }}
     @if (showMandatory) {
@@ -8,14 +10,23 @@
   <div class="input-wrapper">
     <div
       class="dropdown"
-      [ngClass]="{ 'is-invalid': hasError, 'is-focused': isFocused }"
-    >
+      [class]="{
+        'is-focused': isFocused,
+        'is-valid': isValid(),
+        'is-invalid': isInvalid() && isFocused,
+      }" >
       <button
-        class="btn btn-secondary dropdown-toggle form-control"
-        [class.show-x]="showX && value"
+        class="btn btn-secondary dropdown-toggle"
+        [class]="{
+          'show-x': showX && value,
+          'is-focused': isFocused,
+          'is-valid': isValid(),
+          'is-invalid': isInvalid() && isFocused,
+          'is-read-only': isDisabled(),
+        }"
         type="button"
         id="{{ dropdownId }}"
-        [disabled]="isDisable"
+        [disabled]="isDisabled()"
         (click)="toggleDropdown()"
         (blur)="onBlur()"
         (focus)="onFocus()"
@@ -40,7 +51,7 @@
             class="dropdown-item"
             role="option"
             aria-selected="{{ i === focusedOptionIndex }}"
-            [ngClass]="{ active: i === focusedOptionIndex }"
+            [class.active]="i === focusedOptionIndex"
             (mousedown)="selectOption(option, $event)"
             (focus)="onFocus()"
           >
@@ -61,9 +72,17 @@
     }
   </div>
 
-  @if (hasError) {
-    <div id="{{ dropdownId }}-error" class="invalid-feedback">
-      {{ errorMsg }}
-    </div>
+  @if (errorMessages()?.length) {
+    <ul class="error-messages">
+      @for (msg of errorMessages(); track $index) {
+        <li
+          class="error-message"
+          [class]="{ 'is-valid': isValid(), 'is-invalid': isInvalid()}"
+        >
+          <i class="bi bi-x-circle-fill"></i>
+          <p [innerHTML]="msg"></p>
+        </li>
+      }
+    </ul>
   }
 </div>

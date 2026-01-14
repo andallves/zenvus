@@ -1,0 +1,108 @@
+<zen-page-container id="page-container-expenses">
+  <zen-header-table
+    title="Filtros"
+    [mobileTitle]="'Despesas'"
+    (add)="openAddModal()"
+    [uniqueId]="'expenses'"
+  />
+
+  <zen-filter
+    [filterId]="'filter-expensesId'"
+    [isLoadingFilter]="isLoadingFilter"
+    [isLoadingClearFilter]="isLoadingClearFilter"
+    (filter)="onSearch()"
+    (clearFilter)="onClearFilter()"
+  >
+    <form id="form-filter-expenses" action="javascript:void(0)" [formGroup]="filterForm">
+      <zen-input
+        id="input-description"
+        label="Descrição:"
+        placeholder="Digite a descrição"
+        formControlName="description"
+        [inputId]="'input-description'"
+      />
+
+      <zen-select-input
+        id="input-category"
+        label="Categoria:"
+        placeholder="Selecione uma categoria"
+        formControlName="category"
+        [options]="categoriesOptions"
+        [dropdownId]="'select-category'"/>
+
+      <zen-select-input
+        id="select-type"
+        label="Tipo:"
+        placeholder="Selecione um tipo"
+        formControlName="type"
+        [options]="typesOptions"
+        [dropdownId]="'select-type'"
+      />
+
+
+      <zen-select-input
+        id="select-has-debt"
+        label="Parcelado:"
+        placeholder="Selecione um valor"
+        formControlName="hasDebt"
+        [options]="isInstallmentsOptions"
+        [dropdownId]="'select-has-debt'"
+      />
+
+      <zen-date-input
+        id="input-date"
+        label="Data:"
+        placeholder="Informe uma data"
+        formControlName="date"
+        [inputId]="'input-date'"
+      />
+    </form>
+  </zen-filter>
+
+  <zen-table
+    id="table-expenses"
+    [columns]="expenseColumn"
+    [columnLabels]="expenseColumnsLabel"
+    [enumLabels]="enumLabels"
+    [data]="expensesData"
+    [totalItems]="totalItems"
+    [showView]="true"
+    (edit)="openEditModal($event)"
+    (delete)="openDeleteModal($event)"
+    (pageChange)="onPageChange($event)"
+    (view)="openViewModal($event)"
+  />
+</zen-page-container>
+
+<ng-template #formAddExpenseTemplate>
+  <zen-add-expense-form
+    id="form-add-expense"
+    [options]="formFieldOptions"
+    (changeData)="changeData()"
+  />
+</ng-template>
+
+<ng-template #formEditExpenseTemplate>
+  <zen-update-expense-form
+    id="form-edit-expense"
+    [dataExpense]="dataExpense"
+    [options]="formFieldOptions"
+    (changeData)="changeData()"
+  />
+</ng-template>
+
+<ng-template #deleteExpenseTemplate>
+  <zen-delete-expense-template
+    id="template-delete-expense"
+    [dataExpense]="dataExpense"
+    (changeData)="changeData()"
+  />
+</ng-template>
+
+<ng-template #viewExpenseTemplate>
+  <zen-view-expense-template
+    id="template-view-expense"
+    [dataExpense]="dataExpense"
+    (expenseUpdated)="onExpenseUpdated($event)"
+  />
+</ng-template>

@@ -31,11 +31,11 @@ public class DebtConfiguration : IEntityTypeConfiguration<Debt>
             .HasOne(d => d.Expense)
             .WithOne(e => e.Debt)
             .HasForeignKey<Debt>(d => d.ExpenseId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasMany(d => d.Installments)
             .WithOne(i => i.Debt)
             .HasForeignKey(i => i.DebtId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

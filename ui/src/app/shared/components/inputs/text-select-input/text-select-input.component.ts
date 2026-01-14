@@ -6,6 +6,7 @@ import {
   forwardRef,
   HostListener,
   inject,
+  input,
   Input,
   Output,
   signal,
@@ -52,7 +53,7 @@ export class TextSelectInputComponent {
   @Input() fixedSize = false;
   @Input() mask = '';
   @Input() showLabelInsteadOfValue = false;
-
+  errorMessages = input<string[] | null>(null);
   @ViewChild('selectedValue', { static: false }) selectedValueRef!: ElementRef;
   @ViewChild('dropdownMenu', { static: false }) dropdownMenuRef!: ElementRef;
 

@@ -4,7 +4,7 @@ import { By } from '@angular/platform-browser';
 import { InputDefaultComponent } from './input-default.component';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 
-describe('InputDefaultComponent', () => {
+describe('CheckInputComponent', () => {
   let component: InputDefaultComponent;
   let fixture: ComponentFixture<InputDefaultComponent>;
 
@@ -35,14 +35,14 @@ describe('InputDefaultComponent', () => {
     expect(component.onTouched).toHaveBeenCalled();
   });
 
-
-
   it('deve exibir a mensagem de erro quando hasError for verdadeiro', () => {
     component.hasError = true;
     component.errorMsg = 'Test error message';
     fixture.detectChanges();
 
-    const errorElement: HTMLElement = fixture.debugElement.query(By.css('.invalid-feedback')).nativeElement;
+    const errorElement: HTMLElement = fixture.debugElement.query(
+      By.css('.invalid-feedback')
+    ).nativeElement;
     expect(errorElement.textContent).toContain('Test error message');
   });
 

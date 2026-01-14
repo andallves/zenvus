@@ -1,13 +1,14 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
+  computed,
   ElementRef,
-  EventEmitter,
   forwardRef,
   HostListener,
   inject,
+  input,
   Input,
-  Output,
+  output,
   signal,
   ViewChild,
 } from '@angular/core';
@@ -28,6 +29,10 @@ import { IdGeneratorService } from '../utils/id-generator.service';
   ],
   templateUrl: './select-input.component.html',
   styleUrls: ['./select-input.component.scss'],
+  host: {
+    role: 'fieldset',
+    '[ngClass]': 'borderClass',
+  },
 })
 export class SelectInputComponent {
   readonly #geradorIdUnique = inject(IdGeneratorService);
@@ -43,12 +48,17 @@ export class SelectInputComponent {
   @Input() options: IOptions[] = [];
   @Input() hasError = false;
   @Input() errorMsg = '';
-  @Input() isDisable = false;
   @Input() placeholder = 'Selecione uma opção';
   @Input() showMandatory = false;
   @Input() showX = false;
   @Input() fixedSize = false;
-  @Output() valueChange = new EventEmitter<IValueOptions>();
+
+  isDisabled = input(false);
+  errorMessages = input<string[] | null>(null);
+  isValid = input(false);
+  isInvalid = computed(() => !this.isValid);
+
+  valueChange = output<IValueOptions>();
 
   @ViewChild('selectedValue', { static: false }) selectedValueRef!: ElementRef;
 
@@ -56,19 +66,38 @@ export class SelectInputComponent {
   isOpen = false;
   isFocused = false;
   focusedOptionIndex = -1;
+  touched = false;
+  isDisable = false;
 
-  onChange: any = () => {};
-  onTouched: any = () => {};
+  get borderClass() {
+    if (!this.touched) {
+      return 'default';
+    }
+    if (this.isValid()) {
+      return 'is-valid';
+    }
+    if (this.isInvalid()) {
+      return 'is-invalid';
+    }
+    return 'default';
+  }
 
-  writeValue(value: any): void {
+  onChange: (value: IValueOptions) => void = () => {
+    /*Empty*/
+  };
+  onTouched: () => void = () => {
+    /*Empty*/
+  };
+
+  writeValue(value: IValueOptions): void {
     this.value = value !== null ? value : '';
   }
 
-  registerOnChange(fn: any): void {
+  registerOnChange(fn: (value: IValueOptions) => void): void {
     this.onChange = fn;
   }
 
-  registerOnTouched(fn: any): void {
+  registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
   }
 
@@ -102,7 +131,7 @@ export class SelectInputComponent {
   clearSelection(event: Event) {
     event.stopPropagation();
     this.value = '';
-    this.onChange();
+    this.onChange('');
     this.onTouched();
   }
 

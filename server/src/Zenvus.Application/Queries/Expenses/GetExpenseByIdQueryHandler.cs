@@ -10,7 +10,10 @@ using Zenvus.Infra.Database;
 
 namespace Zenvus.Application.Queries.Expenses;
 
-public class GetExpenseByIdQueryHandler(IRepository<ZenvusDbContext> repository, IAuthenticatedUser authenticatedUser) : IRequestHandler<GetExpenseByIdQuery, CustomResult<ExpenseDto>>
+public class GetExpenseByIdQueryHandler(
+    IRepository<ZenvusDbContext> repository, 
+    IAuthenticatedUser authenticatedUser
+    ) : IRequestHandler<GetExpenseByIdQuery, CustomResult<ExpenseDto>>
 {
     public async Task<CustomResult<ExpenseDto>> Handle(GetExpenseByIdQuery query, CancellationToken cancellationToken)
     {
@@ -18,9 +21,12 @@ public class GetExpenseByIdQueryHandler(IRepository<ZenvusDbContext> repository,
             .GetQueryable<Expense>()
             .Include(e => e.Category)
             .Include(e => e.Debt)
-            .ThenInclude(d => d.Installments)
+                .ThenInclude(d => d.Installments)
             .AsNoTrackingWithIdentityResolution()
-            .FirstOrDefaultAsync(e => e.Id == query.ExpenseId && e.UserId == authenticatedUser.Id, cancellationToken);
+            .FirstOrDefaultAsync(e => 
+                e.Id == query.ExpenseId && 
+                e.UserId == authenticatedUser.Id,
+                cancellationToken);
         
         return expense == null
             ? CustomResult<ExpenseDto>.ErrorResult("Despesa não encontrada.", errorType: IsResultErrorType.NotFound)

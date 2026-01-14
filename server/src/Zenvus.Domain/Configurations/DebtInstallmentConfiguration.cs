@@ -28,6 +28,6 @@ public class DebtInstallmentConfiguration : IEntityTypeConfiguration<DebtInstall
         builder.HasOne(i => i.Debt)
             .WithMany(d => d.Installments)
             .HasForeignKey(i => i.DebtId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

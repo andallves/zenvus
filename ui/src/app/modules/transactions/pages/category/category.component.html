@@ -2,7 +2,7 @@
   <zen-header-table
     title="Filtros"
     [mobileTitle]="'Categorias'"
-    [mobileTitleIcon]="imgCursos"
+    [mobileTitleIcon]="imgCategory"
     (add)="openAddModal()"
     [uniqueId]="'categories'"
   />
@@ -35,7 +35,7 @@
         label="Tipo:"
         placeholder="Selecione um tipo"
         formControlName="type"
-        [options]="optionsInput"
+        [options]="categoryOptions.typesOptions"
         [dropdownId]="'select-type'"
       />
     </form>
@@ -45,22 +45,23 @@
     id="table-categories"
     [columns]="categoryColumn"
     [columnLabels]="categoryColumnsLabel"
+    [enumLabels]="tableEnumLabels"
     [data]="categoriesData"
     (edit)="openEditModal($event)"
     (delete)="openDeleteModal($event)"
     (pageChange)="onPageChange($event)"
-    [totalItens]="totalItens"
+    [totalItems]="totalItems"
   />
 </zen-page-container>
 
 <ng-template #formAddTemplate>
-  <zen-add-category-form id="form-add-category" (changeData)="changeData()"/>
+  <zen-add-category-form id="form-add-category" [options]="categoryOptions" (changeData)="changeData()"/>
 </ng-template>
 
 <ng-template #formEditTemplate>
-  <zen-edit-category-form id="form-edit-category" [dataCategory]="dataCategory" (changeData)="changeData()"/>
+  <zen-edit-category-form id="form-edit-category" [dataCategory]="dataCategory" [options]="categoryOptions" (changeData)="changeData()"/>
 </ng-template>
 
 <ng-template #deleteTemplate>
-  <zen-delete-template id="template-delete-category" [dataCategory]="dataCategory" (changeData)="changeData()"/>
+  <zen-delete-category-template id="template-delete-category" [dataCategory]="dataCategory" (changeData)="changeData()"/>
 </ng-template>

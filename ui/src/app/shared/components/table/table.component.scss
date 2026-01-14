@@ -267,14 +267,14 @@ body.dark-theme {
       justify-content: space-between;
       align-items: center;
       padding: 20px 25px;
-      background-color: var(--white-color);
+      background-color: var(--background-primary-color);
 
       .field-item {
         display: flex;
         gap: 10px;
 
         &__label {
-          color: var(--text-color, #3A3A3A);
+          color: var(--text-primary-color);
           font-family: "Open Sans", sans-serif;
           font-size: 14px;
           font-style: normal;
@@ -283,7 +283,7 @@ body.dark-theme {
         }
 
         &__value {
-          color: var(--text-color, #3A3A3A);
+          color: var(--text-primary-color);
           font-family: "Open Sans", sans-serif;
           font-size: 14px;
           font-style: normal;
@@ -436,7 +436,7 @@ pagination::ng-deep {
 
       a {
         text-decoration: none;
-        color: #000;
+        color: var(--text-primary-color);
         padding: 0.3125rem 0.625rem;
         border-radius: 0.1875rem;
         transition: 0.3s ease;

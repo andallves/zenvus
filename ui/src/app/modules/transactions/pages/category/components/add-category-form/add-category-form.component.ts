@@ -1,26 +1,21 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, inject, Output } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
-import { GetCategoryTypeLabelPayload } from '@modules/transactions/pages/category/components/edit-category-form/edit-category-form.component';
+import { Component, inject, input, OnInit, output, signal } from '@angular/core';
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { categoryLabels } from '@modules/transactions/pages/expense/utils/form-labels';
 import { CategoryService } from '@modules/transactions/services/category.service';
+import { CATEGORY_VALIDATION_CONFIG } from '@modules/transactions/utils/transaction-validation.config';
 import { ButtonComponent } from '@shared/components/button/button.component';
 import { ColorPickerInputComponent } from '@shared/components/inputs/color-picker-input/color-picker-input.component';
 import { InputDefaultComponent } from '@shared/components/inputs/input-default/input-default.component';
 import { SelectInputComponent } from '@shared/components/inputs/select-input/select-input.component';
 import { ModalIconType } from '@shared/components/swall/modal-alert/domain-types/modal-types.interface';
 import { ModalAlertService } from '@shared/components/swall/modal-alert/service/modal-alert.service';
-import { IOptions } from '@shared/domain-types/options';
 import { ECategoryType } from '@shared/enums/category-type.enum';
-import { ICategoryCreate } from '@shared/interfaces/category.interface';
-import { InputValidationService } from '@shared/validators/input-validator/input-validator.service';
+import { ICategoryCreate, ICategoryOptions } from '@shared/interfaces/category.interface';
+import { IFieldConfig } from '@shared/interfaces/validation.interface';
+import { ValidationBuilderService } from '@shared/validators/validation-builder.service';
+import { ValidationHelperService } from '@shared/validators/validation-helper.service';
 import { BsModalService } from 'ngx-bootstrap/modal';
-import { validColorValidator } from 'ngx-colors';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -38,75 +33,50 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './add-category-form.component.html',
   styleUrl: './add-category-form.component.scss',
 })
-export class AddCategoryFormComponent {
+export class AddCategoryFormComponent implements OnInit {
   addCategoryForm!: FormGroup;
   isLoading = false;
-  @Output() changeData = new EventEmitter<void>();
 
-  private readonly fb = inject(FormBuilder);
-  private readonly validatorsService = inject(InputValidationService);
+  options = input.required<ICategoryOptions>();
+  changeData = output();
+
+  fieldConfigs = signal<IFieldConfig[]>([]);
+
   private readonly categoryService = inject(CategoryService);
   private readonly modalService = inject(BsModalService);
   private readonly modalAlertService = inject(ModalAlertService);
   private readonly toastr = inject(ToastrService);
+  private readonly validationHelper = inject(ValidationHelperService);
+  private readonly validationBuilder = inject(ValidationBuilderService);
 
-  optionsInput: IOptions[] = [
-    { label: 'Entrada', value: ECategoryType.Income },
-    { label: 'Saída', value: ECategoryType.Expense },
-  ];
-
-  constructor() {
+  ngOnInit() {
+    this.initializeFieldConfig();
     this.initializeForm();
   }
 
+  initializeFieldConfig() {
+    this.fieldConfigs.set(CATEGORY_VALIDATION_CONFIG);
+  }
   initializeForm() {
-    this.addCategoryForm = this.fb.group({
-      name: [
-        '',
-        [
-          Validators.required,
-          Validators.maxLength(256),
-          Validators.minLength(3),
-          Validators.pattern('.*[a-zA-ZÀ-ÿ].*'),
-        ],
-      ],
-      color: [
-        '',
-        [
-          Validators.required,
-          Validators.maxLength(7),
-          Validators.minLength(4),
-          validColorValidator(),
-        ],
-      ],
-      type: [ECategoryType, [Validators.required]],
-    });
+    this.addCategoryForm = this.validationBuilder.buildFormGroup(this.fieldConfigs());
   }
 
-  onCloseModal() {
-    this.modalService.hide();
+  getErrorMessages(controlName: string): string[] {
+    const control = this.addCategoryForm.get(controlName);
+    const fieldConfig = this.fieldConfigs().find(f => f.key === controlName);
+
+    if (!fieldConfig) {
+      const defaultConfig: IFieldConfig = {
+        key: controlName,
+        label: this.getFieldLabel(controlName),
+      };
+      return this.validationHelper.getErrorMessages(control, defaultConfig, categoryLabels());
+    }
+    return this.validationHelper.getErrorMessages(control, fieldConfig, categoryLabels());
   }
 
-  hasMaxLengthAndRequiredError(input: string): boolean {
-    return this.validatorsService.hasMaxLengthAndRequiredError(this.addCategoryForm, input);
-  }
-
-  getMaxLengthAndRequiredErrorMsg(input: string): string {
-    const control = this.addCategoryForm.get(input);
-
-    if (control?.hasError('required')) {
-      return 'Este campo é obrigatório.';
-    }
-
-    if (control?.hasError('maxlength')) {
-      return 'O nome não pode ter mais de 30 caracteres.';
-    }
-
-    if (control?.hasError('pattern')) {
-      return 'O nome deve conter pelo menos uma letra.';
-    }
-
-    return '';
+  isValid(controlName: string): boolean {
+    return !!this.addCategoryForm.get(controlName)?.valid;
   }
 
   addCategory() {
@@ -115,7 +85,7 @@ export class AddCategoryFormComponent {
     if (this.addCategoryForm.valid) {
       const payload: ICategoryCreate = {
         ...this.addCategoryForm.value,
-        type: GetCategoryTypeLabelPayload[this.addCategoryForm.get('type')?.value as ECategoryType],
+        type: this.addCategoryForm.get('type')?.value as ECategoryType,
       };
 
       this.categoryService.addCategory(payload).subscribe({
@@ -127,7 +97,7 @@ export class AddCategoryFormComponent {
           this.toastr.success('Categoria cadastrada com sucesso!', 'Sucesso!');
         },
         error: error => {
-          const erros = error.error.errors?.join('<br>') || error.message;
+          const erros = error.error.errors?.join('<br>') || error.error.message || error.message;
           this.modalAlertService
             .open({
               icon: ModalIconType.Error,
@@ -137,10 +107,19 @@ export class AddCategoryFormComponent {
               showCancelButton: false,
               cancelButtonText: '',
             })
-            .then();
+            .finally(() => (this.isLoading = false));
         },
         complete: () => (this.isLoading = false),
       });
     }
+  }
+
+  onCloseModal() {
+    this.modalService.hide();
+  }
+
+  private getFieldLabel(controlName: string): string {
+    const labelsMap: Record<string, string> = categoryLabels();
+    return labelsMap[controlName] || controlName;
   }
 }

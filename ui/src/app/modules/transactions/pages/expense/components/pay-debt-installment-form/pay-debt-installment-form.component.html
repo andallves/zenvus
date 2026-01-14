@@ -1,0 +1,73 @@
+<form class="update-form" id="form-update-expense" action="javascript:void(0)"
+      [formGroup]="payDebtInstallmentForm"  aria-labelledby="form-update-expense-title">
+  <h2 id="form-update-expense-title" class="visually-hidden">Pagar Parcela</h2>
+
+  <zen-input
+    id="input-number"
+    label="Nº da Parcela:"
+    placeholder="1"
+    formControlName="number"
+    [inputId]="'input-number'"
+    [readonly]="true"
+  />
+
+  <zen-money-input
+    id="input-amount"
+    label="Valor à Pagar:"
+    placeholder="0,00"
+    formControlName="amount"
+    [inputId]="'input-amount'"
+    [readonly]="true"
+  />
+
+  <zen-money-input
+    id="input-amount-paid"
+    label="Valor Pago:"
+    placeholder="0,00"
+    formControlName="amountPaid"
+    [inputId]="'input-amount-paid'"
+  />
+
+  <zen-date-input
+    id="input-due-date"
+    label="Data de Vencimento:"
+    placeholder="Informe a data da vencimento"
+    formControlName="dueDate"
+    [inputId]="'input-due-date'"
+    [disabled]="true"
+  />
+
+  <zen-date-input
+    id="input-first-due-date"
+    label="Data de Pagamento:"
+    placeholder="Informe a data de pagamento"
+    formControlName="paymentDate"
+    [inputId]="'input-first-due-date'"
+  />
+
+  <div class="footer-modal">
+    <zen-button
+      id="button-fechar"
+      variant="danger"
+      width="100px"
+      (click)="onCloseModal()"
+      (keyup)="onCloseModal()"
+      aria-label="Fechar o formulário"
+      [buttonId]="'button-fechar'"
+    >
+      Fechar
+    </zen-button>
+    <zen-button
+      id="button-salvar"
+      width="100px"
+      [disabled]="payDebtInstallmentForm.invalid"
+      [isLoading]="isLoading"
+      (click)="updateDebtInstallment()"
+      (keyup)="updateDebtInstallment()"
+      aria-label="Salvar a despesa"
+      [buttonId]="'button-salvar'"
+    >
+      Salvar
+    </zen-button>
+  </div>
+</form>

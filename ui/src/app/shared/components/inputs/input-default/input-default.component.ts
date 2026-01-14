@@ -1,13 +1,14 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
+  computed,
   ElementRef,
-  EventEmitter,
   forwardRef,
   HostListener,
   inject,
+  input,
   Input,
-  Output,
+  output,
   signal,
 } from '@angular/core';
 import { FormsModule, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
@@ -28,6 +29,11 @@ import { IdGeneratorService } from '../utils/id-generator.service';
   ],
   templateUrl: './input-default.component.html',
   styleUrls: ['./input-default.component.scss'],
+  host: {
+    class: 'fieldset-input',
+    role: 'fieldset',
+    '[ngClass]': 'borderClass',
+  },
 })
 export class InputDefaultComponent {
   #geradorIdUnico = inject(IdGeneratorService);
@@ -52,12 +58,30 @@ export class InputDefaultComponent {
   @Input() showMandatory = false;
   @Input() icon = false;
   @Input() fixedSize = false;
-  @Output() valueChange: any = new EventEmitter<number>();
 
-  value: any;
+  errorMessages = input<string[] | null>(null);
+  isValid = input(false);
+  isInvalid = computed(() => !this.isValid());
+  valueChange = output<string>();
+
+  value = '';
   focus = false;
+  touched = false;
 
-  constructor(private readonly elementRef: ElementRef) {}
+  private readonly elementRef = inject(ElementRef);
+
+  get borderClass() {
+    if (!this.touched) {
+      return 'default';
+    }
+    if (this.isValid()) {
+      return 'is-valid';
+    }
+    if (this.isInvalid()) {
+      return 'is-invalid';
+    }
+    return 'default';
+  }
 
   @HostListener('document:click', ['$event'])
   onFocus(event: MouseEvent) {
@@ -74,7 +98,7 @@ export class InputDefaultComponent {
   onInputChange(event: any) {
     let inputValue = event.target.value;
     const emojiRegex =
-      /([\u2700-\u27BF]|[\uE000-\uF8FF]|[\uD83C-\uDFFF]|[\u2600-\u26FF]|[\uD83D\uDC00-\uDFFF])/g;
+      /([\u2700-\u27BF]|[\uE000-\uF8FF]|[\uD83C-\uDFFF]|[\u2600-\u26FF]|[\uD83D-\uDC00-\uDFFF])/g;
     inputValue = inputValue.replace(emojiRegex, '');
     event.target.value = inputValue;
     this.value = inputValue;
@@ -95,14 +119,18 @@ export class InputDefaultComponent {
     this.valueChange.emit(this.value);
   }
 
-  onChange: (value: any) => void = () => {};
-  onTouched: () => void = () => {};
+  onChange: (value: string) => void = () => {
+    /* empty */
+  };
+  onTouched: () => void = () => {
+    /* empty */
+  };
 
-  writeValue(value: any): void {
+  writeValue(value: string): void {
     this.value = value;
   }
 
-  registerOnChange(fn: (value: any) => void): void {
+  registerOnChange(fn: (value: string) => void): void {
     this.onChange = fn;
   }
 

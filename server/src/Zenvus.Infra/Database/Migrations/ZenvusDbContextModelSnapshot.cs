@@ -26,6 +26,57 @@ namespace Zenvus.Infra.Database.Migrations
             MySqlModelBuilderExtensions.UseGuidCollation(modelBuilder, "");
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
+            modelBuilder.Entity("Zenvus.Domain.Entities.Budget", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<Guid>("CategoryId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<bool>("Disabled")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<int>("Month")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Spent")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("UserId", "CategoryId", "Year", "Month")
+                        .IsUnique();
+
+                    b.HasIndex("UserId", "Year", "Month", "Type");
+
+                    b.ToTable("Budgets", "Zenvus");
+                });
+
             modelBuilder.Entity("Zenvus.Domain.Entities.Category", b =>
                 {
                     b.Property<Guid>("Id")
@@ -109,6 +160,9 @@ namespace Zenvus.Infra.Database.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(10,2)");
 
+                    b.Property<decimal?>("AmountPaid")
+                        .HasColumnType("decimal(65,30)");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
 
@@ -188,7 +242,7 @@ namespace Zenvus.Infra.Database.Migrations
                     b.Property<DateTime>("Date")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime(6)")
-                        .HasDefaultValue(new DateTime(2025, 12, 16, 2, 3, 4, 705, DateTimeKind.Utc).AddTicks(1000));
+                        .HasDefaultValue(new DateTime(2026, 1, 6, 19, 49, 38, 887, DateTimeKind.Utc).AddTicks(3953));
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -278,7 +332,7 @@ namespace Zenvus.Infra.Database.Migrations
                 {
                     b.HasBaseType("Zenvus.Domain.Entities.Transaction");
 
-                    b.Property<int>("IsExpense")
+                    b.Property<int>("Type")
                         .HasColumnType("int");
 
                     b.ToTable("Expenses", "Zenvus");
@@ -294,12 +348,23 @@ namespace Zenvus.Infra.Database.Migrations
                     b.ToTable("Incomes", "Zenvus");
                 });
 
+            modelBuilder.Entity("Zenvus.Domain.Entities.Budget", b =>
+                {
+                    b.HasOne("Zenvus.Domain.Entities.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+                });
+
             modelBuilder.Entity("Zenvus.Domain.Entities.Debt", b =>
                 {
                     b.HasOne("Zenvus.Domain.Entities.Expense", "Expense")
                         .WithOne("Debt")
                         .HasForeignKey("Zenvus.Domain.Entities.Debt", "ExpenseId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Expense");
@@ -310,7 +375,7 @@ namespace Zenvus.Infra.Database.Migrations
                     b.HasOne("Zenvus.Domain.Entities.Debt", "Debt")
                         .WithMany("Installments")
                         .HasForeignKey("DebtId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Debt");

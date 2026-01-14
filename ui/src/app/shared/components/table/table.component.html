@@ -19,34 +19,30 @@
           @for (column of columns; track $index) {
             <td>
               @if (column === 'name') {
-                <ng-container>
                   <div class="titulo-wrapper">
                     @if (!item['disabled']) {
                       <span class="badge badge-class badge-ativo">
                         Ativo
                       </span>
                     }
-                    <span class="titulo-texto">{{ item["name"] }}</span>
+                    <span class="titulo-texto">{{ item[column] }}</span>
                   </div>
-                </ng-container>
               } @else if (column === 'color') {
-                <ng-container>
-                  <span [style]="{ color: item['color'] }">{{ item["color"] }}</span>
-                </ng-container>
-              } @else if (column === 'type') {
-                {{ getTypeLabel(item) }}
+                  <span [style]="{ color: item[column] }">{{ item[column] }}</span>
+              } @else if (column === 'amount') {
+                {{ getValueLabel(column, item[column]) | currency: 'BRL' }}
+              } @else if (column === 'date') {
+                {{ getDateValue(item[column]) | date:'short' }}
               } @else if (columnTemplates[column]) {
-                <ng-container>
                   <ng-container
                     *ngTemplateOutlet="
                   columnTemplates[column];
                   context: { value: item[column], item: item }
                 "></ng-container>
-                </ng-container>
               } @else if (notTruncateText(column, item) | foto) {
                 <span [innerHTML]="notTruncateText(column, item) | foto"></span>
               } @else {
-                {{ notTruncateText(column, item) }}
+                {{ getValueLabel(column, item[column]) }}
               }
             </td>
           }
@@ -94,8 +90,8 @@
                   <button
                     (click)="onView(item)"
                     class="btn btn-info"
-                    [ngClass]="{ desativado: !getDesativadoProperty(item) }"
-                    [disabled]="!getDesativadoProperty(item)"
+                    [ngClass]="{ desativado: getDesativadoProperty(item) }"
+                    [disabled]="getDesativadoProperty(item)"
                   >
                     <i class="bi bi-eye-fill"></i>
                   </button>
@@ -123,7 +119,10 @@
 <div class="cards-container d-block d-md-none">
   @for (item of data; track $index; let i = $index) {
     <div class="card-item mb-3">
-      <div class="card" [style]="{ backgroundColor: item['color'], outlineColor: item['color'], borderColor: item['color'] }">
+      <div class="card" [style]="{
+      backgroundColor: item['color'],
+      outlineColor: item['color'],
+      borderColor: item['color'] }">
         <div class="card__header">
           @if (item['name']) {
             <div class="d-flex align-items-center justify-content-between">
@@ -138,7 +137,7 @@
             </div>
           }
 
-          @if (!item['name'] && columns.length > 0) {
+          @if (!item['name'] || !item['description'] && columns.length > 0) {
             <div class="d-flex align-items-center justify-content-between">
               <h6 class="mb-0 header-title">Nome: <span class="header-title--value">{{ item[columns[0]] }}</span></h6>
             </div>
@@ -158,7 +157,7 @@
                       @if (column === 'color') {
                         <span [style]="{ color: item['color'] }">{{ item["color"] }}</span>
                       } @else if (column === 'type') {
-                        {{ getTypeLabel(item) }}
+                        {{ getValueLabel(column, item[column]) }}
                       } @else if (notTruncateText(column, item) | foto) {
                         <span [innerHTML]="notTruncateText(column, item) | foto"></span>
                       } @else {
@@ -269,7 +268,7 @@
 
 <div class="pagination-container">
   <pagination
-    [totalItems]="totalItens"
+    [totalItems]="totalItems"
     [(ngModel)]="currentPage"
     [itemsPerPage]="itemsPerPage"
     [boundaryLinks]="true"

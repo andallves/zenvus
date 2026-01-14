@@ -13,16 +13,17 @@ public class GetExpensesQuery : BasePagedQuery<Expense, ExpenseDto>
     public DateTime? Date { get; set; }
     public string? Description { get; set; }
     public bool? Disabled { get; set; }
-    [SwaggerParameterExample("Nulo", null)]
+    [SwaggerParameterExample("Nulo", "")]
     [SwaggerParameterExample("Fixed", "1")]
     [SwaggerParameterExample("Variable", "2")]
     [SwaggerParameterExample("Subscription", "3")]
     [SwaggerParameterExample("Loan", "4")]
     [SwaggerParameterExample("Other", "5")]
-    public int? IsExpense { get; set; }
+    public int? Type { get; set; }
     public bool? HasDebt { get; set; }
     
-    [SwaggerParameterExample("Id", "Id")]
+    [SwaggerParameterExample("Id", "Id")] 
+    [SwaggerParameterExample("Description", "Description")]
     [SwaggerParameterExample("Category", "Category")]
     [SwaggerParameterExample("Color", "Color")]
     [SwaggerParameterExample("Type", "Type")]
@@ -51,9 +52,9 @@ public class GetExpensesQuery : BasePagedQuery<Expense, ExpenseDto>
             query = query.Where(e => e.Disabled == Disabled);
         }
         
-        if (IsExpense is not null)
+        if (Type is not null)
         {
-            query = query.Where(e => (int)e.IsExpense == IsExpense);
+            query = query.Where(e => (int)e.Type == Type);
         }
         
         if (HasDebt is not null)
@@ -72,8 +73,9 @@ public class GetExpensesQuery : BasePagedQuery<Expense, ExpenseDto>
                 "date" => query.OrderBy(e => e.Date),
                 "description" => query.OrderBy(e => e.Description),
                 "disabled" => query.OrderBy(e => e.Disabled),
-                "isExpense" => query.OrderBy(e => e.IsExpense),
+                "isExpense" => query.OrderBy(e => e.Type),
                 "hasDebt" => query.OrderBy(e => e.HasDebt),
+                "createdAt" => query.OrderBy(e => e.CreatedAt),
                 _ => query.OrderBy(x => x.Id)
             };
             return;
@@ -85,8 +87,9 @@ public class GetExpensesQuery : BasePagedQuery<Expense, ExpenseDto>
             "date" => query.OrderByDescending(e => e.Date),
             "description" => query.OrderByDescending(e => e.Description),
             "disabled" => query.OrderByDescending(e => e.Disabled),
-            "isExpense" => query.OrderByDescending(e => e.IsExpense),
+            "isExpense" => query.OrderByDescending(e => e.Type),
             "hasDebt" => query.OrderByDescending(e => e.HasDebt),
+            "createdAt" => query.OrderBy(e => e.CreatedAt),
             _ => query.OrderByDescending(e => e.Id)
         };
     }

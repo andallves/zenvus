@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AddCategoryFormComponent } from '@modules/transactions/pages/category/components/add-category-form/add-category-form.component';
-import { DeleteTemplateComponent } from '@modules/transactions/pages/category/components/delete-template/delete-template.component';
+import { DeleteCategoryTemplateComponent } from '@modules/transactions/pages/category/components/delete-category-template/delete-category-template.component';
 import { EditCategoryFormComponent } from '@modules/transactions/pages/category/components/edit-category-form/edit-category-form.component';
 import { CategoryService } from '@modules/transactions/services/category.service';
 import { FilterComponent } from '@shared/components/filter/filter.component';
@@ -15,21 +15,18 @@ import { ModalIconType } from '@shared/components/swall/modal-alert/domain-types
 import { ModalAlertService } from '@shared/components/swall/modal-alert/service/modal-alert.service';
 import { ColumnLabel, TableComponent } from '@shared/components/table/table.component';
 import { IBadge } from '@shared/domain-types/badges';
-import { IOptions } from '@shared/domain-types/options';
-import { ECategoryType } from '@shared/enums/category-type.enum';
-import { ICategory, IFilterCategory } from '@shared/interfaces/category.interface';
+import { CategoryTypeLabel, ECategoryType } from '@shared/enums/category-type.enum';
+import {
+  ICategory,
+  ICategoryFilter,
+  ICategoryOptions,
+} from '@shared/interfaces/category.interface';
 import { LoadingService } from '@shared/layouts/default-layout/loading.service';
 import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
 import { NgxColorsModule, validColorValidator } from 'ngx-colors';
 
-export const CategoryTypeLabel: Record<ECategoryType, string> = {
-  [ECategoryType.Income]: 'Entrada',
-  [ECategoryType.Expense]: 'Saída',
-};
-
 @Component({
   selector: 'zen-category',
-  standalone: true,
   templateUrl: './category.component.html',
   styleUrl: './category.component.scss',
   imports: [
@@ -38,7 +35,7 @@ export const CategoryTypeLabel: Record<ECategoryType, string> = {
     FilterComponent,
     TableComponent,
     AddCategoryFormComponent,
-    DeleteTemplateComponent,
+    DeleteCategoryTemplateComponent,
     EditCategoryFormComponent,
     ReactiveFormsModule,
     NgxColorsModule,
@@ -55,9 +52,9 @@ export class CategoryComponent implements OnInit {
   activeBadges: IBadge[] = [];
   bsModalRef?: BsModalRef;
   page = 1;
-  itensPorPagina = 10;
-  totalItens = 0;
-  filters: IFilterCategory = {} as IFilterCategory;
+  itemsPerPage = 10;
+  totalItems = 0;
+  filters: ICategoryFilter = {} as ICategoryFilter;
 
   private readonly fb = inject(FormBuilder);
   private readonly modalService = inject(BsModalService);
@@ -69,7 +66,7 @@ export class CategoryComponent implements OnInit {
     this.initializeForm();
   }
 
-  imgCursos = './header.svg';
+  imgCategory = './header.svg';
 
   ngOnInit(): void {
     this.loaderCategories();
@@ -78,11 +75,16 @@ export class CategoryComponent implements OnInit {
   categoriesData: ICategory[] = [];
   categoryColumn: string[] = ['name', 'type', 'color'];
   categoryColumnsLabel: ColumnLabel = { name: 'nome', color: 'cor', type: 'tipo' };
-  optionsInput: IOptions[] = [
-    { label: 'Entrada', value: ECategoryType.Income },
-    { label: 'Saída', value: ECategoryType.Expense },
-  ];
+  categoryOptions: ICategoryOptions = {
+    typesOptions: [
+      { label: 'Entrada', value: ECategoryType.Income },
+      { label: 'Saída', value: ECategoryType.Expense },
+    ],
+  };
 
+  public tableEnumLabels = {
+    type: CategoryTypeLabel,
+  };
   @ViewChild('formAddTemplate', { static: true })
   formAddTemplate!: TemplateRef<HTMLElement>;
   @ViewChild('formEditTemplate', { static: true })
@@ -108,11 +110,15 @@ export class CategoryComponent implements OnInit {
 
   loaderCategories() {
     console.log('Carregando categorias para a página:', this.page);
-    const payload = this.filterForm.value;
     this.loadingService.onActiveLoading();
-    this.categoryService.getCategories(this.page, this.itensPorPagina, payload).subscribe({
+    this.filters = {
+      ...this.filterForm.value,
+      page: this.page,
+      itemsPerPage: this.itemsPerPage,
+    };
+    this.categoryService.getCategories(this.filters).subscribe({
       next: response => {
-        this.totalItens = response.totalResults;
+        this.totalItems = response.totalResults;
         this.categoriesData = response.result
           .filter((category: ICategory) => !category.disabled)
           .map((category: ICategory) => ({

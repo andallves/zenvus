@@ -1,0 +1,90 @@
+<zen-page-container id="page-container-expenses">
+  <zen-header-table
+    title="Filtros"
+    [mobileTitle]="'Receitas'"
+    (add)="openAddModal()"
+    [uniqueId]="'incomes'"
+  />
+
+  <zen-filter
+    [filterId]="'filter-incomesId'"
+    [isLoadingFilter]="isLoadingFilter"
+    [isLoadingClearFilter]="isLoadingClearFilter"
+    (filter)="onSearch()"
+    (clearFilter)="onClearFilter()"
+  >
+    <form id="form-filter-expenses" action="javascript:void(0)" [formGroup]="filterForm">
+      <zen-input
+        id="input-description"
+        label="Descrição:"
+        placeholder="Digite a descrição"
+        formControlName="description"
+        [inputId]="'input-description'"
+      />
+
+      <zen-select-input
+        id="input-category"
+        label="Categoria:"
+        placeholder="Selecione uma categoria"
+        formControlName="category"
+        [options]="categoriesOptions"
+        [dropdownId]="'select-category'"/>
+
+      <zen-select-input
+        id="select-type"
+        label="Tipo:"
+        placeholder="Selecione um tipo"
+        formControlName="type"
+        [options]="typesOptions"
+        [dropdownId]="'select-type'"
+      />
+
+
+      <zen-date-input
+        id="input-date"
+        label="Data:"
+        placeholder="Informe uma data"
+        formControlName="date"
+        [inputId]="'input-date'"
+      />
+    </form>
+  </zen-filter>
+
+  <zen-table
+    id="table-expenses"
+    [columns]="incomesColumn"
+    [columnLabels]="incomesColumnsLabel"
+    [enumLabels]="enumLabels"
+    [data]="incomesData"
+    [totalItems]="totalItems"
+    (edit)="openEditModal($event)"
+    (delete)="openDeleteModal($event)"
+    (pageChange)="onPageChange($event)"
+  />
+</zen-page-container>
+
+<ng-template #formRegisterIncomeTemplate>
+  <zen-register-income-form
+    id="form-register-income"
+    [options]="formFieldOptions"
+    (changeData)="changeData()"
+  />
+</ng-template>
+
+<ng-template #formUpdateIncomeTemplate>
+  <zen-update-income-form
+    id="form-update-income"
+    [income]="income"
+    [options]="formFieldOptions"
+    (changeData)="changeData()"
+  />
+</ng-template>
+
+<ng-template #deleteIncomeTemplate>
+  <zen-delete-income-template
+    id="template-delete-income"
+    [income]="income"
+    (changeData)="changeData()"
+  />
+</ng-template>
+

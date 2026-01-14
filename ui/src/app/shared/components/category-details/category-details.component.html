@@ -1,0 +1,35 @@
+<div class="data-table">
+  <h3>Detalhamento</h3>
+  <table>
+    <thead>
+    <tr>
+      <th>Categoria</th>
+      <th>Valor</th>
+      <th>Porcentagem</th>
+      <th>Barra</th>
+    </tr>
+    </thead>
+    <tbody>
+      @for (category of categories(); track $index) {
+        <tr>
+          <td>
+            <div class="category-cell">
+              <span class="color-badge" [style.background-color]="category.color"></span>
+              {{ category.name }}
+            </div>
+          </td>
+          <td class="value-cell">{{ category.actual | currency: 'BRL' }}</td>
+          <td>{{ category.percentage | number:'1.2-2' }}%</td>
+          <td>
+            <div class="progress-bar">
+              <div class="progress-fill"
+                   [style.background-color]="category.color"
+                   [style.width.%]="category.percentage">
+              </div>
+            </div>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

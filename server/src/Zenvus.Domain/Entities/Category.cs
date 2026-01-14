@@ -7,7 +7,7 @@ public class Category : SoftDeleteEntity
     public Guid UserId { get; set; }
     public string Name { get; set; } = string.Empty;
     public string Color { get; set; } = string.Empty;
-    public IsCategory Type { get; set; }
+    public ETransactionType Type { get; set; }
     public void Enable() => Disabled = false;
     public void Disable() => Disabled = true;
 }

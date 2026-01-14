@@ -1,0 +1,116 @@
+<form class="add-form" id="form-add-expense" action="javascript:void(0)" [formGroup]="addExpenseForm"
+      aria-labelledby="form-add-expense-title">
+  <h2 id="form-add-expense-title" class="visually-hidden">Adicionar Despesa</h2>
+
+  <zen-input
+    id="input-description"
+    label="Descrição:"
+    placeholder="Digite a descrição"
+    formControlName="description"
+    [inputId]="'input-description'"
+    [showMandatory]="true"
+    [errorMessages]="getErrorMessages('description')"
+  />
+
+  <zen-date-input
+    id="input-date"
+    label="Data:"
+    placeholder="Informe uma data"
+    formControlName="date"
+    [inputId]="'input-date'"
+    [showMandatory]="true"
+    [errorMessages]="getErrorMessages('date')"
+  />
+
+  <zen-select-input
+    id="input-category"
+    label="Categoria:"
+    placeholder="Selecione uma categoria"
+    formControlName="categoryId"
+    [options]="options().categoriesOptions"
+    [dropdownId]="'select-category'"
+    [showMandatory]="true"
+    [errorMessages]="getErrorMessages('categoryId')"
+  />
+
+  <zen-select-input
+    id="select-type"
+    label="Tipo:"
+    placeholder="Selecione um tipo"
+    formControlName="typeId"
+    [options]="options().typesOptions"
+    [dropdownId]="'select-type'"
+    [showMandatory]="true"
+    [errorMessages]="getErrorMessages('typeId')"
+  />
+
+  <zen-money-input
+    id="input-amount"
+    label="Valor:"
+    placeholder="0,00"
+    formControlName="amount"
+    [inputId]="'input-amount'"
+    [showMandatory]="true"
+    [errorMessages]="getErrorMessages('amount')"
+    (valueChange)="handleCurrencyChange($event)"
+  />
+
+  <zen-select-input
+    id="select-is-installments"
+    label="Parcelado:"
+    placeholder="Selecione um valor"
+    formControlName="isInstallment"
+    [options]="options().isInstallmentsOptions"
+    [dropdownId]="'select-is-installments'"
+    [showMandatory]="true"
+    [errorMessages]="getErrorMessages('isInstallment')"
+    (valueChange)="isInstallmentsChange($event)"
+  />
+  @if (isInstallments()) {
+    <zen-input
+      id="input-total-installments"
+      label="Quantidade de parcela:"
+      placeholder="Número de parcelas"
+      formControlName="totalInstallments"
+      [inputId]="'input-total-installments'"
+      [showMandatory]="false"
+      [errorMessages]="getErrorMessages('totalInstallments')"
+    />
+
+    <zen-date-input
+      id="input-first-due-date"
+      label="Data da 1ª parcela:"
+      placeholder="Informe a data da primeira parcela"
+      formControlName="firstDueDate"
+      [inputId]="'input-first-due-date'"
+      [showMandatory]="false"
+      [errorMessages]="getErrorMessages('firstDueDate')"
+    />
+  }
+
+  <div class="footer-modal">
+    <zen-button
+      id="button-fechar"
+      variant="danger"
+      width="100px"
+      (click)="onCloseModal()"
+      (keyup)="onCloseModal()"
+      aria-label="Fechar o formulário"
+      [buttonId]="'button-fechar'"
+    >
+      Fechar
+    </zen-button>
+    <zen-button
+      id="button-salvar"
+      width="100px"
+
+      [isLoading]="isLoading"
+      (click)="addExpense()"
+      (keyup)="addExpense()"
+      aria-label="Salvar a despesa"
+      [buttonId]="'button-salvar'"
+    >
+      Salvar
+    </zen-button>
+  </div>
+</form>

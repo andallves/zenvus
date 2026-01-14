@@ -1,5 +1,8 @@
 using Zenvus.Application.DTO.Categories;
+using Zenvus.Application.DTO.Debts;
+using Zenvus.Core.Utils;
 using Zenvus.Domain.Entities;
+using Zenvus.Domain.Entities.Enums;
 
 namespace Zenvus.Application.DTO.Expenses;
 
@@ -17,10 +20,11 @@ public class ExpenseDto
 
     public bool Disabled { get; set; }
     
-    public int IsExpense { get; set; }
+    public EExpense Type { get; set; }
     
     public bool HasDebt { get; set; }
     public DebtDto? Debt { get; set; }
+    public string TypeDescription => Type.GetDescriptionString();
     
     public static ExpenseDto From(Expense expense)
     {
@@ -33,9 +37,9 @@ public class ExpenseDto
             Amount = expense.Amount,
             Date = expense.Date,
             Description = expense.Description,
-            IsExpense = (int)expense.IsExpense,
+            Type = expense.Type,
             HasDebt = expense.HasDebt,
-            Debt = DebtDto.From(expense.Debt),
+            Debt = expense.Debt != null ? DebtDto.From(expense.Debt) : null,
             Disabled = expense.Disabled
         };
     }

@@ -1,22 +1,31 @@
-<div class="box-input" [class.fixedSize]="fixedSize" [ngClass]="variant">
-  <label [for]="inputId" class="form-label">
+<div [class.fixedSize]="fixedSize" [class]="variant">
+  <label [attr.for]="inputId" class="input-label" [class]="borderClass">
     {{ labelSignal() }}
-    <span *ngIf="showMandatory" class="mandatory">*</span>
+    @if (showMandatory) {
+      <span class="mandatory">*</span>
+    }
   </label>
   <div
     class="input-wrapper"
-    [ngClass]="{ 'is-invalid': hasError, 'custom-input': icon, focused: focus }"
+    [class]="{
+      'custom-input': icon,
+      'is-focused': focus,
+      'is-valid': isValid(),
+      'is-invalid': isInvalid() && focus,
+      'is-read-only': readonly
+    }"
   >
-    <span
-      class="input-group-text"
-      id="{{ inputId }}-icon-addon"
-      *ngIf="icon"
-      class="icone"
-    >
-      <i class="bi bi-person-fill custom-person"></i>
-    </span>
+    @if (icon) {
+      <span
+        class="input-group-text icon"
+        id="{{ inputId }}-icon-addon"
+      >
+        <i class="bi bi-person-fill custom-person"></i>
+      </span>
+    }
     <input
       id="{{ inputId }}"
+      class="input clear"
       [type]="type"
       (input)="onInputChange($event)"
       (blur)="onInputBlur()"
@@ -24,18 +33,30 @@
       [placeholder]="placeholder"
       [disabled]="isDisable"
       [readOnly]="readonly"
-      class="clear"
       [mask]="mask"
+      [class.is-read-only]="readonly"
     />
-    <span
-      *ngIf="showX && value"
-      id="{{ inputId }}-clear"
-      class="clear-input"
-      (click)="clearInput($event)"
-      >&#x2715;</span
-    >
+    @if (showX && value) {
+      <button
+        type="button"
+        id="{{ inputId }}-clear"
+        class="clear-input"
+        (click)="clearInput($event)"
+      >&#x2715;</button
+      >
+    }
   </div>
-  <div *ngIf="hasError" id="{{ inputId }}-error" class="invalid-feedback">
-    {{ errorMsg }}
-  </div>
+  @if (errorMessages()?.length) {
+    <ul class="error-messages">
+      @for (msg of errorMessages(); track $index) {
+        <li
+          class="error-message"
+          [class]="{ 'is-valid': isValid(), 'is-invalid': isInvalid()}"
+        >
+          <i class="bi bi-x-circle-fill"></i>
+          <p [innerHTML]="msg"></p>
+        </li>
+      }
+    </ul>
+  }
 </div>

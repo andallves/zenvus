@@ -1,1 +1,39 @@
-<p>home-dashboard works!</p>
+<zen-page-container id="page-container-expenses">
+  <div class="financial-summary">
+    @for (summary of financialSummary; track $index) {
+      <div class="card">
+        <span class="card__title">{{ summary.title }}</span>
+        <div class="card__value-wrapper">
+          <span class="card__value">{{ summary.value | currency: 'BRL' }}</span>
+          <div class="card__icon" [class]="summary.iconColor">
+            <img [ngSrc]="summary.icon" [alt]="'resumo de ' + summary.title " width="25" height="25"/>
+          </div>
+        </div>
+        <span class="card__comparison" [class]="summary.percentageColor">{{ summary.percentage }}</span>
+      </div>
+    }
+  </div>
+  <div class="details">
+    <div class="charts-row">
+      <zen-pie-chart [categories]="categories" />
+      <zen-bar-chart [categories]="categories" />
+    </div>
+
+    <zen-category-details [categories]="categories" />
+
+    <div class="summary-cards">
+      @for (category of categories; track $index) {
+        <div class="summary-card">
+          <div class="card-header" [style.background-color]="category.color + '20'">
+            <span class="card-color" [style.background-color]="category.color"></span>
+            <h4 class="text">{{ category.name }}</h4>
+          </div>
+          <div class="card-body">
+            <div class="card-value">{{ category.actual | currency: 'BRL' }}</div>
+            <div class="card-percentage">{{ category.percentage | number:'1.2-2' }}%</div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</zen-page-container>
