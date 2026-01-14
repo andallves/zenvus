@@ -14,6 +14,7 @@ public class ZenvusDbContext : BaseDbContext
     public DbSet<Debt> Debts { get; set; }
     public DbSet<DebtInstallment> DebtInstallments { get; set; }
     public DbSet<Budget> Budgets { get; set; }
+    public DbSet<ExpenseOccurrence> ExpenseOccurrences { get; set; }
 
     public ZenvusDbContext(DbContextOptions<ZenvusDbContext> options) : base(options)
     {

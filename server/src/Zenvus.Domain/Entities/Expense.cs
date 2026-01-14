@@ -14,6 +14,8 @@ public class Expense : Transaction
     public bool HasActiveDebt => HasDebt && Debt!.IsInstallment;
     public bool IsPaid => !HasDebt || Debt!.IsFullyPaid;
     
+    public List<ExpenseOccurrence> Occurrences { get; private set; } = new();
+    
     public static Expense Create(
         string description, 
         decimal amount, 
@@ -49,10 +51,66 @@ public class Expense : Transaction
             
             expense.CreateDebt(totalInstallments.Value, firstDueDate.Value);
         }
+        else
+        {
+            expense.GenerateOccurrences(firstDueDate ?? date, 1);
+        }
         
         return expense;
     }   
     
+    public void GenerateOccurrences(DateTime start, int months)
+    {
+        for (var i = 0; i < months; i++)
+        {
+            var reference = start.AddMonths(i);
+
+            Occurrences.Add(ExpenseOccurrence.Create(
+                expenseId: Id,
+                referenceDate: new DateTime(reference.Year, reference.Month, 1),
+                dueDate: reference,
+                amount: Amount
+            ));
+        }
+    }
+
+    public DomainResult RecalculateOccurrences(
+        decimal newAmount,
+        DateTime newDueDate)
+    {
+        var pendingOccurrences = Occurrences
+            .Where(o => o.IsPending)
+            .ToList();
+
+        if (!pendingOccurrences.Any())
+            return DomainResult.Success();
+
+        foreach (var occurrence in pendingOccurrences)
+        {
+            var amountResult = occurrence.UpdateAmount(newAmount);
+            if (!amountResult.IsValid)
+                return amountResult;
+
+            var dateResult = occurrence.UpdateDueDate(newDueDate);
+            if (!dateResult.IsValid)
+                return dateResult;
+        }
+
+        return DomainResult.Success();
+    }
+
+    public void CancelFutureOccurrences(DateTime from)
+    {
+        var future = Occurrences
+            .Where(o => o.ReferenceDate >= from && o.CanBeCancelled())
+            .ToList();
+
+        foreach (var occurrence in future)
+        {
+            occurrence.Cancel();
+        }
+    }
+
     
     public DomainResult RemoveDebt()
     {
@@ -66,6 +124,7 @@ public class Expense : Transaction
         if (!cancelResult.IsValid)
             return cancelResult;
 
+        CancelFutureOccurrences(DateTime.UtcNow);
         Debt = null;
         return DomainResult.Success();
     }
@@ -108,9 +167,16 @@ public class Expense : Transaction
             changes.Add("categoria");
         }
         
-        return hasDebt
+        DomainResult result = hasDebt
             ? HandleDebtUpdate(amount, firstDueDate ?? DateTime.UtcNow, totalInstallments ?? 1)
             : HandleNoDebtUpdate(amount);
+        
+        if (!result.IsValid)
+            return result;
+        
+        RecalculateOccurrences(amount, firstDueDate ?? date);
+
+        return DomainResult.Success();
     }
     
     public DomainResult AddDebt(int totalInstallments, DateTime firstDueDate)

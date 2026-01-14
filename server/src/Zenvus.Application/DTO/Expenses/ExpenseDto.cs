@@ -15,6 +15,9 @@ public class ExpenseDto
     public CategoryDto Category { get; set; } = null!;
     
     public decimal Amount { get; set; }
+    public decimal AmountPaid => Debt?.Installments
+        .Where(i => i.Status == EPaymentStatus.Paid)
+        .Sum(i => i.AmountPaid) ?? 0m;
     public DateTime Date { get; set; }
     public string Description { get; set; } = string.Empty;
 
