@@ -60,5 +60,5 @@ jobs:
           --port 8080
           --allow-unauthenticated \
           --add-cloudsql-instances ${{ secrets.CLOUD_INSTANCE }} \
-          --set-env-vars ASPNETCORE_ENVIRONMENT=${{ secrets.ENVIRONMENT }} \
+          --set-env-vars ASPNETCORE_ENVIRONMENT=Staging,ENVIRONMENT=staging \
           --set-env-vars ConnectionStrings__MYSQL=${{ secrets.DB_CONNECTION_STRING }}
