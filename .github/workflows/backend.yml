@@ -42,7 +42,8 @@ jobs:
       run: gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
 
     - name: Build Docker Image
-      run: docker build -t $IMAGE_NAME server
+      run: docker build -t $IMAGE_NAME -f server/deployment/Dockerfile server
+
     
     - name: Push Docker Image
       run: docker push $IMAGE_NAME
