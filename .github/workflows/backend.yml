@@ -57,6 +57,7 @@ jobs:
           --min-instances 0 \
           --max-instances 1 \
           --platform managed \
+          --service-account cloudrun-zenvus@${PROJECT_ID}.iam.gserviceaccount.com \
           --allow-unauthenticated \
           --add-cloudsql-instances ${{ secrets.CLOUDSQL_INSTANCE }} \
           --update-env-vars ASPNETCORE_ENVIRONMENT=Staging,ConnectionStrings__MYSQL="${{ secrets.DB_CONNECTION_STRING }}",AuthSettings__Audience="*",AuthSettings__DurationTokenInMinutes=60 \
