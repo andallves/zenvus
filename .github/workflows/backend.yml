@@ -59,5 +59,16 @@ jobs:
           --platform managed \
           --allow-unauthenticated \
           --add-cloudsql-instances ${{ secrets.CLOUDSQL_INSTANCE }} \
-          --set-env-vars ASPNETCORE_ENVIRONMENT=Staging,ENVIRONMENT=staging \
-          --set-env-vars ConnectionStrings__MYSQL=${{ secrets.DB_CONNECTION_STRING }}
+          --update-env-vars="^;^
+            ASPNETCORE_ENVIRONMENT=Staging;
+            PORT=8080;
+            ASPNETCORE_URLS=http://*:8080;
+            ConnectionStrings__MYSQL=${{ secrets.DB_CONNECTION_STRING }};
+            AuthSettings__Audience=*;
+            AuthSettings__Issuer=$SERVICE_URL;
+            AuthSettings__DurationTokenInMinutes=60" \
+          --quiet
+      
+        SERVICE_URL=$(gcloud run services describe $SERVICE_NAME --region $REGION --format="value(status.url)")
+        
+        echo "Deployed to: $SERVICE_URL"
