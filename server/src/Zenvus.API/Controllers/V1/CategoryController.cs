@@ -74,7 +74,7 @@ public class CategoryController(IMediator mediator) : BaseController(mediator)
     
     [HttpPatch("{id:Guid}/enable")]
     [MapToApiVersion("1.0")]
-    [SwaggerOperation(Summary = "Habilita uma categoria existente", Tags = ["Categoria"])]
+    [SwaggerOperation(Summary = "Habilita uma categoria existente.", Tags = ["Categoria"])]
     [ProducesResponseType(typeof(CategoryDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
