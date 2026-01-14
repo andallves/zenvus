@@ -53,6 +53,6 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
 app.UseApiLayer();
 
 app.MapControllers();
-app.MapGet("/", ctx => ctx.Response.WriteAsync("Zenvus API."));
+app.MapGet("/", ctx => ctx.Response.WriteAsync("Zenvus API"));
 
 await app.RunAsync();
