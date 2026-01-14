@@ -20,6 +20,11 @@ public static class OpenTelemetryConfiguration
             return;
         }
         
+        if (string.IsNullOrWhiteSpace(settings.OtlpEndpoint))
+        {
+            return;
+        }
+        
         Sdk.SetDefaultTextMapPropagator(new CompositeTextMapPropagator(new TextMapPropagator[]
         {
             new B3Propagator(),
