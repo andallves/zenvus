@@ -50,7 +50,7 @@ jobs:
       
     - name: Deploy to Cloud Run
       run: |
-        gcloud run deploy zenvus-api \
+        gcloud run deploy $SERVICE_NAME \
           --image $IMAGE_NAME \
           --region $REGION \
           --memory 512Mi \
@@ -59,16 +59,16 @@ jobs:
           --platform managed \
           --allow-unauthenticated \
           --add-cloudsql-instances ${{ secrets.CLOUDSQL_INSTANCE }} \
-          --update-env-vars="^;^
-            ASPNETCORE_ENVIRONMENT=Staging;
-            PORT=8080;
-            ASPNETCORE_URLS=http://*:8080;
-            ConnectionStrings__MYSQL=${{ secrets.DB_CONNECTION_STRING }};
-            AuthSettings__Audience=*;
-            AuthSettings__Issuer=$SERVICE_URL;
-            AuthSettings__DurationTokenInMinutes=60" \
+          --update-env-vars ASPNETCORE_ENVIRONMENT=Staging,PORT=8080,ConnectionStrings__MYSQL="${{ secrets.DB_CONNECTION_STRING }}",AuthSettings__Audience="*",AuthSettings__DurationTokenInMinutes=60 \
           --quiet
-      
-        SERVICE_URL=$(gcloud run services describe $SERVICE_NAME --region $REGION --format="value(status.url)")
-        
+    
+        SERVICE_URL=$(gcloud run services describe $SERVICE_NAME \
+          --region $REGION \
+          --format="value(status.url)")
+    
+        gcloud run services update $SERVICE_NAME \
+          --region $REGION \
+          --update-env-vars AuthSettings__Issuer="$SERVICE_URL" \
+          --quiet
+    
         echo "Deployed to: $SERVICE_URL"
