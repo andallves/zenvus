@@ -95,8 +95,6 @@ public static class Extension
         
         app.UseAuthenticationAndAuthorization();
         
-        app.UseMigrations(serviceProvider, environment);
-        
         return app;
     }
 

@@ -80,14 +80,6 @@ public static class ApiConfiguration
         
         app.UseCors("default");
     }
-    
-    public static void UseMigrations(this IApplicationBuilder app, IServiceProvider services, IHostEnvironment env)
-    {
-        if (!env.IsDevelopment())
-        {
-            app.UseMigrations(services);
-        }
-    }
 
 
     private sealed class SlugifyParameterTransformer : IOutboundParameterTransformer

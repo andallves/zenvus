@@ -51,15 +51,8 @@ public static class Extension
     
     public static IServiceCollection AddInfraLayer(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddMySql(configuration);
         services.AddMySql<ZenvusDbContext>();
         return services;
     }
-    
-    public static void UseMigrations(this IApplicationBuilder app, IServiceProvider services)
-    {
-        using var scope = services.CreateScope();
-        var db = scope.ServiceProvider.GetRequiredService<ZenvusDbContext>();
-        db.Database.Migrate();
-    }
-
 }
