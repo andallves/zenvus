@@ -4,16 +4,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Localization;
 using Zenvus.API;
 
-var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
-
-
 var builder = WebApplication.CreateBuilder(args);
-
-builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
-builder.WebHost.ConfigureKestrel(options =>
-{
-    options.ListenAnyIP(int.Parse(port));
-});
 
 builder
     .Services
