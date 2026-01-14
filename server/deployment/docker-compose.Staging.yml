@@ -6,8 +6,7 @@ services:
         image: us-central1-docker.pkg.dev/zenvus-484311/zenvus-api/zenvus-api:staging
         ports:
             - "${APP_PORT}:8080"
-        env_file:
-            - .env.staging
+    
         environment:
             ENVIRONMENT: staging
             ASPNETCORE_ENVIRONMENT: Staging
