@@ -57,8 +57,6 @@ public static class SwaggerConfiguration
                 }
             });
         });
-        
-        services.ConfigureOptions<ConfigureSwaggerOptions>();
     }
 
     public static void UseSwaggerConfig(this IApplicationBuilder app)
