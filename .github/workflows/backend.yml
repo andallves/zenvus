@@ -18,11 +18,18 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
+    - name: Authenticate to GCP
+      uses: google-github-actions/auth@v2
+      with:
+        credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+    
     - name: Setup gcloud
       uses: google-github-actions/setup-gcloud@v2
       with:
-        service_account_key: ${{ secrets.GCP_CREDENTIALS }}
         project_id: ${{ secrets.GCP_PROJECT_ID }}
+    
+    - name: Verify auth
+      run: gcloud auth list
 
     - name: Configure Docker
       run: gcloud auth configure-docker --quiet
