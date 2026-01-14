@@ -5,7 +5,7 @@ services:
         container_name: zenvus-api-staging
         image: us-central1-docker.pkg.dev/zenvus-484311/zenvus-api/zenvus-api:staging
         ports:
-            - "${APP_PORT}:80810"
+            - "${APP_PORT}:8081"
     
         environment:
             ENVIRONMENT: staging
