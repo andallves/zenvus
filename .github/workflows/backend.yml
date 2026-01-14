@@ -8,7 +8,7 @@ on:
 
 jobs:
   deploy:
-    name: Setup Gcloud Account
+    name: Setup GCloud Account
     runs-on: ubuntu-latest
     environment: gcp-staging
     
@@ -59,7 +59,7 @@ jobs:
           --platform managed \
           --allow-unauthenticated \
           --add-cloudsql-instances ${{ secrets.CLOUDSQL_INSTANCE }} \
-          --update-env-vars ASPNETCORE_ENVIRONMENT=Staging,PORT=8080,ConnectionStrings__MYSQL="${{ secrets.DB_CONNECTION_STRING }}",AuthSettings__Audience="*",AuthSettings__DurationTokenInMinutes=60 \
+          --update-env-vars ASPNETCORE_ENVIRONMENT=Staging,ConnectionStrings__MYSQL="${{ secrets.DB_CONNECTION_STRING }}",AuthSettings__Audience="*",AuthSettings__DurationTokenInMinutes=60 \
           --quiet
     
         SERVICE_URL=$(gcloud run services describe $SERVICE_NAME \
