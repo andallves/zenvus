@@ -132,6 +132,23 @@
             return DomainResult.Success();
         }
         
+        public DomainResult MarkAsOverdue()
+        {
+
+            if (IsOverdue) return DomainResult.Success();
+            
+            if (IsPaid)
+                return DomainResult.Failure("Não é possível marcar como vencida uma parcela já paga.");
+                
+            if (IsCancelled)
+                return DomainResult.Failure("Não é possível marcar como vencida uma parcela cancelada.");
+                
+            Status = EPaymentStatus.Overdue;
+            UpdatedAt = DateTime.UtcNow;
+            
+            return DomainResult.Success();
+        }
+        
         public DomainResult Reactivate()
         {
             if (!IsCancelled)

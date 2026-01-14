@@ -11,5 +11,7 @@ public enum EPaymentStatus
     [Description("Cancelled")]
     Cancelled = 3,
     [Description("Paid")]
-    Paid = 4
+    Paid = 4,
+    [Description("Overdue")]
+    Overdue = 5
 }

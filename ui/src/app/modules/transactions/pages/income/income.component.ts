@@ -117,7 +117,8 @@ export class IncomeComponent implements OnInit {
   }
 
   loaderIncomes() {
-    console.log('Carregando categorias para a página:', this.page);
+    this.loadingService.onActiveLoading();
+
     const filterFormValues = this.filterForm.value;
     const filter: IIncomeFilter = {
       description: filterFormValues.description,
@@ -131,13 +132,11 @@ export class IncomeComponent implements OnInit {
       orderAsc: this.filterForm.get('orderAsc')?.value || true,
       orderBy: this.filterForm.get('orderBy')?.value || 'createdAt',
     };
-    console.log(filter);
-    this.loadingService.onActiveLoading();
+
     this.incomeService.getIncomes(filter).subscribe({
       next: response => {
         this.totalItems = response.totalResults;
         this.incomesData = response.result;
-        console.log(this.incomesData);
         this.activeBadges = [];
       },
       error: error => {

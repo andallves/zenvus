@@ -1,39 +1,176 @@
+<!-- Skeleton para a navegação de período -->
+@if (isLoading) {
+  <div class="period-navigation skeleton-container">
+    <div class="skeleton-nav">
+      <zen-skeleton
+        width="120px"
+        height="24px"
+        className="skeleton-text" />
+    </div>
+    <div class="skeleton-current">
+      <zen-skeleton
+        width="180px"
+        height="32px"
+        className="skeleton-text"
+        style="margin-bottom: 8px;" >
+      </zen-skeleton>
+      <zen-skeleton
+        width="140px"
+        height="16px"
+        className="skeleton-text">
+      </zen-skeleton>
+    </div>
+    <div class="skeleton-nav">
+      <zen-skeleton
+        width="120px"
+        height="24px"
+        className="skeleton-text">
+      </zen-skeleton>
+    </div>
+  </div>
+} @else {
+  <div class="period-navigation">
+    <button (click)="goToPreviousMonth()" class="nav-btn">
+      <i class="bi bi-caret-left-fill"></i>
+      {{ previousPeriodDisplay }}
+    </button>
+    <div class="current-period">
+      <h2 class="current-period__title">{{ currentPeriodDisplay }}</h2>
+      <span class="comparison-label">
+        vs {{ previousPeriodDisplay }}
+      </span>
+    </div>
+    <button (click)="goToNextMonth()" class="nav-btn">
+      {{ nextPeriodDisplay }}
+      <i class="bi bi-caret-right-fill"></i>
+    </button>
+  </div>
+}
+
 <zen-page-container id="page-container-expenses">
-  <div class="financial-summary">
-    @for (summary of financialSummary; track $index) {
-      <div class="card">
-        <span class="card__title">{{ summary.title }}</span>
-        <div class="card__value-wrapper">
-          <span class="card__value">{{ summary.value | currency: 'BRL' }}</span>
-          <div class="card__icon" [class]="summary.iconColor">
-            <img [ngSrc]="summary.icon" [alt]="'resumo de ' + summary.title " width="25" height="25"/>
+  <div class="container-t">
+    <!-- Skeleton para o resumo financeiro -->
+    @if (isLoading) {
+      <div class="financial-summary skeleton-container">
+        @for (item of [1,2,3]; track $index) {
+          <div class="card skeleton-card">
+            <zen-skeleton
+              width="80px"
+              height="20px"
+              className="skeleton-text"
+              style="margin-bottom: 12px;">
+            </zen-skeleton>
+            <div class="card__value-wrapper skeleton-value-wrapper">
+              <zen-skeleton
+                width="120px"
+                height="28px"
+                className="skeleton-text">
+              </zen-skeleton>
+              <zen-skeleton
+                width="25px"
+                height="25px"
+                className="skeleton-circle">
+              </zen-skeleton>
+            </div>
+            <zen-skeleton
+              width="60px"
+              height="18px"
+              className="skeleton-text"
+              style="margin-top: 8px;">
+            </zen-skeleton>
           </div>
-        </div>
-        <span class="card__comparison" [class]="summary.percentageColor">{{ summary.percentage }}</span>
+        }
+      </div>
+    } @else {
+      <div class="financial-summary">
+        @for (summary of financialSummary; track $index) {
+          <div class="card">
+            <span class="card__title">{{ summary.title }}</span>
+            <div class="card__value-wrapper">
+              <span class="card__value">{{ summary.value | currency: 'BRL' }}</span>
+              <div class="card__icon" [class]="summary.iconColor">
+                <img [ngSrc]="summary.icon" [alt]="'resumo de ' + summary.title" width="25" height="25"/>
+              </div>
+            </div>
+            <span class="card__comparison" [class]="summary.percentageColor">{{ summary.percentage }}</span>
+          </div>
+        }
       </div>
     }
-  </div>
-  <div class="details">
-    <div class="charts-row">
-      <zen-pie-chart [categories]="categories" />
-      <zen-bar-chart [categories]="categories" />
-    </div>
 
-    <zen-category-details [categories]="categories" />
-
-    <div class="summary-cards">
-      @for (category of categories; track $index) {
-        <div class="summary-card">
-          <div class="card-header" [style.background-color]="category.color + '20'">
-            <span class="card-color" [style.background-color]="category.color"></span>
-            <h4 class="text">{{ category.name }}</h4>
-          </div>
-          <div class="card-body">
-            <div class="card-value">{{ category.actual | currency: 'BRL' }}</div>
-            <div class="card-percentage">{{ category.percentage | number:'1.2-2' }}%</div>
+    <!-- Skeleton para o gráfico comparativo -->
+    @if (isLoading) {
+      <div class="comparison-chart-section skeleton-container">
+        <zen-skeleton
+          width="200px"
+          height="24px"
+          className="skeleton-text"
+          style="margin-bottom: 20px;">
+        </zen-skeleton>
+        <div class="chart-container skeleton-chart">
+          <zen-skeleton
+            width="100%"
+            height="300px"
+            className="skeleton-rect">
+          </zen-skeleton>
+        </div>
+      </div>
+    } @else {
+      @if (comparisonChartData()) {
+        <div class="comparison-chart-section">
+          <h3 class="comparison-chart-section__title">Comparativo Mensal</h3>
+          <div class="chart-container">
+            <canvas
+              baseChart
+              [data]="comparisonChartData()"
+              [type]="'bar'"
+              [options]="chartOptions()">
+            </canvas>
           </div>
         </div>
       }
-    </div>
+    }
+
+    <!-- Skeleton para os detalhes -->
+    @if (isLoading) {
+      <div class="details skeleton-container">
+        <div class="skeleton-detail-section">
+          <zen-skeleton
+            width="200px"
+            height="24px"
+            className="skeleton-text"
+            style="margin-bottom: 20px;">
+          </zen-skeleton>
+          <zen-skeleton
+            width="100%"
+            height="300px"
+            className="skeleton-rect">
+          </zen-skeleton>
+        </div>
+        <div class="skeleton-detail-section">
+          <zen-skeleton
+            width="200px"
+            height="24px"
+            className="skeleton-text"
+            style="margin-bottom: 20px;">
+          </zen-skeleton>
+          @for (item of [1,2,3,4,5]; track $index) {
+            <zen-skeleton
+              width="100%"
+              height="40px"
+              className="skeleton-text"
+              style="margin-bottom: 10px;">
+            </zen-skeleton>
+          }
+        </div>
+      </div>
+    } @else {
+      <div class="details">
+        <div>
+          <zen-bar-chart [currentCategories]="currentCategories" [previousCategories]="previousCategories" />
+        </div>
+        <zen-category-details [categories]="categories" [enumLabels]="enumLabels" />
+      </div>
+    }
   </div>
 </zen-page-container>

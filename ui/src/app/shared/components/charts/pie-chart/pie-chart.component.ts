@@ -9,15 +9,20 @@ import { IExpenseCategory } from '@shared/interfaces/dashboard.interface';
 })
 export class PieChartComponent implements AfterViewInit {
   @ViewChild('pieCanvas') pieCanvas!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('legendContainer') legendContainer!: ElementRef<HTMLDivElement>;
+
   categories = input.required<IExpenseCategory[]>();
   total = 0;
 
   constructor() {
     // Observa mudanças nos dados
     effect(() => {
-      if (this.categories().length > 0 && this.pieCanvas) {
+      if (this.categories().length > 0) {
         this.calculateTotal();
-        setTimeout(() => this.drawPieChart(), 0);
+        setTimeout(() => {
+          this.drawPieChart();
+          this.drawLegend();
+        }, 0);
       }
     });
   }
@@ -26,15 +31,15 @@ export class PieChartComponent implements AfterViewInit {
     // Inicialização
     if (this.categories().length > 0) {
       this.calculateTotal();
-      setTimeout(() => this.drawPieChart(), 100);
+      setTimeout(() => {
+        this.drawPieChart();
+        this.drawLegend();
+      }, 100);
     }
   }
 
   private calculateTotal(): void {
-    // Usa 'actual' em vez de 'valueActual'
     this.total = this.categories().reduce((sum, item) => sum + item.actual, 0);
-    console.log('💰 Total calculado:', this.total);
-    console.log('📊 Categorias:', this.categories());
   }
 
   drawPieChart(): void {
@@ -50,31 +55,23 @@ export class PieChartComponent implements AfterViewInit {
       return;
     }
 
-    console.log('🎨 Desenhando gráfico...');
-    console.log('📐 Dimensões do canvas:', canvas.width, 'x', canvas.height);
-
     // Limpa canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     // Verifica dados
     if (this.total === 0 || this.categories().length === 0) {
-      console.warn('⚠️ Sem dados para exibir');
       this.drawNoDataMessage(ctx, canvas);
       return;
     }
 
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
-    const radius = Math.min(centerX, centerY) - 20; // Margem maior
-
-    console.log('📏 Centro:', centerX, centerY, 'Raio:', radius);
+    const radius = Math.min(centerX, centerY) - 20;
 
     let startAngle = 0;
 
     this.categories().forEach((category, index) => {
       const sliceAngle = (category.actual / this.total) * 2 * Math.PI;
-
-      console.log(`🍰 Fatia ${index}: ${category.name}, Ângulo: ${sliceAngle.toFixed(3)} rad`);
 
       // Desenhar fatia
       ctx.beginPath();
@@ -101,11 +98,8 @@ export class PieChartComponent implements AfterViewInit {
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
 
-        // Formata com duas casas decimais
         const percentageText = `${category.percentage.toFixed(2)}%`;
         ctx.fillText(percentageText, textX, textY);
-
-        console.log(`📝 Texto em ${category.name}: ${percentageText}`);
       }
 
       startAngle += sliceAngle;
@@ -116,8 +110,57 @@ export class PieChartComponent implements AfterViewInit {
     ctx.fillStyle = '#fff';
     ctx.arc(centerX, centerY, radius * 0.4, 0, 2 * Math.PI);
     ctx.fill();
+  }
 
-    console.log('✅ Gráfico desenhado com sucesso');
+  private drawLegend(): void {
+    const container = this.legendContainer?.nativeElement;
+    if (!container) return;
+
+    // Limpa a legenda anterior
+    container.innerHTML = '';
+
+    // Cria itens da legenda
+    this.categories().forEach(category => {
+      const percentage = (category.actual / this.total) * 100;
+      const valueFormatted = this.formatCurrency(category.actual);
+      const percentageFormatted = percentage.toFixed(2);
+
+      const legendItem = document.createElement('div');
+      legendItem.className = 'legend-item';
+
+      legendItem.innerHTML = `
+        <div class="color-box" style="background-color: ${category.color || this.getDefaultColor(0)}"></div>
+        <div class="legend-content">
+          <div class="legend-name">${category.name}</div>
+          <div class="legend-details">
+            <span class="legend-value">${valueFormatted}</span>
+            <span class="legend-percentage">${percentageFormatted}%</span>
+          </div>
+        </div>
+      `;
+
+      container.appendChild(legendItem);
+    });
+
+    // Adiciona total
+    const totalDiv = document.createElement('div');
+    totalDiv.className = 'legend-total';
+
+    totalDiv.innerHTML = `
+      <div class="total-row">
+        <span>Total:</span>
+        <span>${this.formatCurrency(this.total)}</span>
+      </div>
+    `;
+
+    container.appendChild(totalDiv);
+  }
+
+  private formatCurrency(value: number): string {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL',
+    }).format(value);
   }
 
   private drawNoDataMessage(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement): void {
@@ -138,21 +181,14 @@ export class PieChartComponent implements AfterViewInit {
 
   private getContrastColor(hexColor: string): string {
     try {
-      // Remove o # se existir
       const hex = hexColor.replace('#', '');
-
-      // Converte para RGB
       const r = parseInt(hex.substring(0, 2), 16);
       const g = parseInt(hex.substring(2, 4), 16);
       const b = parseInt(hex.substring(4, 6), 16);
-
-      // Calcula luminosidade
       const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-
-      // Retorna preto para cores claras, branco para cores escuras
       return luminance > 0.5 ? '#000000' : '#FFFFFF';
     } catch {
-      return '#000000'; // Fallback para preto
+      return '#000000';
     }
   }
 }

@@ -8,6 +8,8 @@ using Microsoft.Extensions.DependencyInjection;
 using ScottBrady91.AspNetCore.Identity;
 using SixLabors.Fonts;
 using Zenvus.Application.Commands;
+using Zenvus.Application.DTO.Dashboard;
+using Zenvus.Application.Jobs;
 using Zenvus.Application.Services.Auth;
 using Zenvus.Core.Settings;
 using Zenvus.Infra;
@@ -43,11 +45,14 @@ public static class Extensions
             .AddScoped<IPasswordHasher<IdentityUser>, Argon2PasswordHasher<IdentityUser>>();
         services
             .AddScoped<ITokenService, TokenService>();
+        services
+            .AddScoped<IDashboardReadModel, DashboardReadModel>();
+        
+        services.AddBackgroundJobs();
         
         services
             .AddAutoMapper(Assembly.GetExecutingAssembly());
         
-        // Pass configuration to infra layer so it can register the DbContext properly
         services
             .AddInfraLayer(configuration);
 

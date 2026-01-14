@@ -5,7 +5,7 @@ import { ComponentFixture, fakeAsync, flushMicrotasks, TestBed, tick } from '@an
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '@modules/auth/services/auth.service';
-import { InputPasswordComponent } from '@shared/components/form/input-password/input-password.component';
+import { InputPasswordComponent } from '@shared/components/inputs/input-password/input-password.component';
 import { InputTextComponent } from '@shared/components/form/input-text/input-text.component';
 import { PrimaryButtonComponent } from '@shared/components/primary-button/primary-button.component';
 import { SecondaryButtonComponent } from '@shared/components/secondary-button/secondary-button.component';

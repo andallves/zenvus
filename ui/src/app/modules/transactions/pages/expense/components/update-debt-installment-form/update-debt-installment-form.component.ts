@@ -54,10 +54,11 @@ export class UpdateDebtInstallmentFormComponent implements OnInit {
   fieldConfigs = signal<IFieldConfig[]>([]);
 
   statusOptions: IOptions[] = [
-    { label: 'Pendente', value: EPaymentStatus.Pending },
-    { label: 'Ativo', value: EPaymentStatus.Active },
-    { label: 'Cancelado', value: EPaymentStatus.Cancelled },
-    { label: 'Pago', value: EPaymentStatus.Paid },
+    { label: 'Pendente', value: EPaymentStatus.PENDING },
+    { label: 'Ativo', value: EPaymentStatus.ACTIVE },
+    { label: 'Cancelado', value: EPaymentStatus.CANCELLED },
+    { label: 'Pago', value: EPaymentStatus.PAID },
+    { label: 'Atrasado', value: EPaymentStatus.OVERDUE },
   ];
 
   ngOnInit() {

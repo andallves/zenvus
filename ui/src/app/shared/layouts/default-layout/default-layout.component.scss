@@ -3,12 +3,14 @@
 
 .main-layout {
   display: flex;
+  width: 100%;
+  max-width: 100vw;
   height: auto;
 
   .backdrop {
     display: none;
     width: 100%;
-    height: 100dvh;
+    height: 100%;
     background-color: rgba(0, 0, 0, 0.185);
     position: fixed;
     top: 0;

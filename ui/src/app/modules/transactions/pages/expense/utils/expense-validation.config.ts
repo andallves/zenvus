@@ -78,7 +78,7 @@ export const DEBT_INSTALLMENT_VALIDATION_CONFIG: IFieldConfig[] = [
     },
   },
   {
-    key: 'amountPaid',
+    key: 'paidAmount',
     label: 'Valor Pago',
     validation: {
       required: true,
@@ -125,7 +125,7 @@ export const DEBT_INSTALLMENT_PAY_VALIDATION_CONFIG: IFieldConfig[] = [
     },
   },
   {
-    key: 'amountPaid',
+    key: 'paidAmount',
     label: 'Valor Pago',
     validation: {
       required: true,

@@ -194,6 +194,40 @@ namespace Zenvus.Infra.Database.Migrations
                     b.ToTable("DebtInstallments", "Zenvus");
                 });
 
+            modelBuilder.Entity("Zenvus.Domain.Entities.ExpenseOccurrence", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("AmountPaid")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<bool>("Disabled")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTime>("DueDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid>("ExpenseId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("ReferenceDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ExpenseId", "ReferenceDate");
+
+                    b.ToTable("ExpenseOccurrences", "Zenvus");
+                });
+
             modelBuilder.Entity("Zenvus.Domain.Entities.LoginAttempts", b =>
                 {
                     b.Property<Guid>("Id")
@@ -242,7 +276,7 @@ namespace Zenvus.Infra.Database.Migrations
                     b.Property<DateTime>("Date")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime(6)")
-                        .HasDefaultValue(new DateTime(2026, 1, 6, 19, 49, 38, 887, DateTimeKind.Utc).AddTicks(3953));
+                        .HasDefaultValue(new DateTime(2026, 1, 13, 18, 47, 52, 695, DateTimeKind.Utc).AddTicks(9556));
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -332,6 +366,9 @@ namespace Zenvus.Infra.Database.Migrations
                 {
                     b.HasBaseType("Zenvus.Domain.Entities.Transaction");
 
+                    b.Property<decimal?>("AmountPaid")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<int>("Type")
                         .HasColumnType("int");
 
@@ -381,6 +418,17 @@ namespace Zenvus.Infra.Database.Migrations
                     b.Navigation("Debt");
                 });
 
+            modelBuilder.Entity("Zenvus.Domain.Entities.ExpenseOccurrence", b =>
+                {
+                    b.HasOne("Zenvus.Domain.Entities.Expense", "Expense")
+                        .WithMany("Occurrences")
+                        .HasForeignKey("ExpenseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Expense");
+                });
+
             modelBuilder.Entity("Zenvus.Domain.Entities.Transaction", b =>
                 {
                     b.HasOne("Zenvus.Domain.Entities.Category", "Category")
@@ -400,6 +448,8 @@ namespace Zenvus.Infra.Database.Migrations
             modelBuilder.Entity("Zenvus.Domain.Entities.Expense", b =>
                 {
                     b.Navigation("Debt");
+
+                    b.Navigation("Occurrences");
                 });
 #pragma warning restore 612, 618
         }

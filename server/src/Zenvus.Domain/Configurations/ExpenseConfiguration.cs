@@ -12,5 +12,8 @@ public class ExpenseConfiguration : IEntityTypeConfiguration<Expense>
 
         builder.Property(x => x.Type)
             .IsRequired();
+        
+        builder.Property(x => x.AmountPaid)
+            .HasColumnType("decimal(18,2)");
     }
 }

@@ -1,35 +1,69 @@
-import { ECategoryType } from '@shared/enums/category-type.enum';
+import { EExpenseType } from '@shared/enums/expense-type.enum';
 import { EPaymentStatus } from '@shared/enums/payment-status.enum';
 
 export interface IExpenseCategory {
   id: string;
   name: string;
   actual: number;
+  actualPaid: number;
   estimated: number;
   color: string;
   percentage: number;
   transactionCount: number;
+  transactions: IDashboardTransaction[];
 }
 
 export interface IDashboardFilter {
-  month: string | null;
+  month: number | null;
   year: number | null;
 }
 
-export interface IFinancialMetric {
+export interface IDashboardCategory {
+  id: string;
+  name: string;
+  color: string;
   actual: number;
+  actualPaid: number;
   estimated: number;
-  difference: number;
-  progress: number;
+  percentage: number;
+  transactionCount: number;
+  transactions: IDashboardTransaction[];
 }
 
-export interface IInstallment {
+export interface IDashboardTransaction {
   id: string;
-  number: number;
-  dueDate: string;
-  amount: number;
-  isOverdue: boolean;
   description: string;
+  amount: number;
+  amountPaid: number;
+  date: string;
+  status: EPaymentStatus;
+  type: EExpenseType | null;
+  hasDebt: boolean;
+  isInstallment: boolean;
+  installmentNumber: string;
+}
+
+export interface IDashboard {
+  period: string;
+  totals: IDashboardTotals;
+  categories: ICategoriesSummary;
+  debt: IDebtSummary;
+}
+
+export interface IMetric {
+  actual: number;
+  estimated: number;
+  previous: number;
+  difference: number;
+  differenceFromPrevious: number;
+  progress: number;
+  changePercentage: number;
+}
+
+export interface IDashboardTotals {
+  income: IMetric;
+  expense: IMetric;
+  balance: IMetric;
 }
 
 export interface IDebtSummary {
@@ -37,76 +71,44 @@ export interface IDebtSummary {
   paidAmount: number;
   remainingAmount: number;
   totalInstallments: number;
+  paidInstallments: number;
   overdueInstallments: number;
-  upcomingInstallments: IInstallment[];
+  upcomingInstallments: IUpcomingInstallment[];
 }
 
-export interface IFinancialSummary {
-  income: IFinancialMetric;
-  expense: IFinancialMetric;
-  balance: IFinancialMetric;
-  debt: IDebtSummary;
-}
-
-export interface ICategoryItem {
+export interface IUpcomingInstallment {
   id: string;
-  name: string;
-  color: string;
-  actual: number;
-  estimated: number;
-  percentage: number;
-  transactionCount: number;
-}
-
-export interface ICategoriesByType {
-  income: ICategoryItem[];
-  expense: ICategoryItem[];
-}
-
-export interface ITransaction {
-  id: string;
-  description: string;
+  number: number;
+  dueDate: Date;
   amount: number;
-  type: ECategoryType;
-  category: string;
-  date: string;
-  status: EPaymentStatus;
-  hasDebt: boolean;
-  isInstallment: boolean;
+  isOverdue: boolean;
+  description: string;
 }
 
-export interface IPeriodComparison {
-  previousMonth: {
-    incomeChange: number;
-    expenseChange: number;
-    balanceChange: number;
-  };
-  sameMonthLastYear: {
-    incomeChange: number;
-    expenseChange: number;
-    balanceChange: number;
-  };
+export interface ICategoriesSummary {
+  income: IDashboardCategory[];
+  expense: IDashboardCategory[];
 }
 
-export interface IDailyCashFlow {
-  date: string;
-  income: number;
-  expense: number;
-  balance: number;
-  accumulatedBalance: number;
+export interface IFinancialSummaryCard {
+  title: string;
+  value: number;
+  icon: string;
+  iconColor: 'danger' | 'success' | 'info';
+  percentage: string;
+  percentageColor: 'danger' | 'success' | 'info';
 }
 
-export interface ICashFlowData {
-  dailyFlow: IDailyCashFlow[];
-  currentBalance: number;
-  projectedBalance: number;
+export interface IChartData {
+  labels: string[];
+  datasets: IDataset[];
 }
 
-export interface IDashboard {
-  period: string;
-  summary: IFinancialSummary;
-  categories: ICategoriesByType;
-  recentTransactions: ITransaction[];
-  periodComparison: IPeriodComparison;
-  cashFlow: ICashFlowData;
+export interface IDataset {
+  label?: string;
+  data: number[];
+  backgroundColor: string | string[];
+  borderColor?: string | string[];
+  borderWidth?: number | number[];
+  borderDash?: number | number[];
 }

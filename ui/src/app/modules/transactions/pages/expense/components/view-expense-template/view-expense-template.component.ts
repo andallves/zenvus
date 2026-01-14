@@ -79,7 +79,7 @@ export class ViewExpenseTemplateComponent implements OnInit {
   get installments() {
     return (
       this.expense()
-        .debt?.installments.filter(i => i.status !== EPaymentStatus.Cancelled)
+        .debt?.installments.filter(i => i.status !== EPaymentStatus.CANCELLED)
         .sort((a, b) => a.number - b.number) ?? []
     );
   }

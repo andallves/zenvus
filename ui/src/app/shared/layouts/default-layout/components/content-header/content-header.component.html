@@ -1,12 +1,6 @@
 <header class="navbar-header">
   <div class="navbar-wrapper">
     <div class="navbar-title">
-      @if (isInitialPage) {
-        <h6 class="navbar-title__title">
-          {{ headerTitle }}
-          <div class="navbar-title__title--description">{{ headerDescription }}</div>
-        </h6>
-      }
       @if (headerTitle && headerDescription && !isInitialPage) {
         <div class="navbar-title__box">
           <h2 class="navbar-title__box--title">{{ headerTitle }}</h2>

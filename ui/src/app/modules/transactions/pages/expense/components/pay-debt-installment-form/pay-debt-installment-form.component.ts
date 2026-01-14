@@ -17,7 +17,7 @@ import { IDebtInstallment, IDebtInstallmentPay } from '@shared/interfaces/debt.i
 import { IFieldConfig } from '@shared/interfaces/validation.interface';
 import { ValidationBuilderService } from '@shared/validators/validation-builder.service';
 import { ValidationHelperService } from '@shared/validators/validation-helper.service';
-import { BsModalRef } from 'ngx-bootstrap/modal';
+import { BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -40,10 +40,10 @@ export class PayDebtInstallmentFormComponent implements OnInit {
   isLoading = false;
 
   dataDebtInstallment = input.required<IDebtInstallment>();
-  modalRef = input.required<BsModalRef>();
   changeData = output<IDebtInstallment>();
 
   private readonly debtInstallmentService = inject(DebtInstallmentService);
+  private readonly modalService = inject(BsModalService);
   private readonly modalAlertService = inject(ModalAlertService);
   private readonly toastr = inject(ToastrService);
   private readonly validationHelper = inject(ValidationHelperService);
@@ -69,9 +69,9 @@ export class PayDebtInstallmentFormComponent implements OnInit {
     this.payDebtInstallmentForm.patchValue({
       number: this.dataDebtInstallment().number,
       amount: this.dataDebtInstallment().amount,
-      amountPaid: this.dataDebtInstallment().amountPaid ?? 0,
+      amountPaid: this.dataDebtInstallment().amountPaid,
       dueDate: new Date(this.dataDebtInstallment().dueDate),
-      paymentDate: new Date(this.dataDebtInstallment().paymentDate ?? Date.now()),
+      paymentDate: new Date(this.dataDebtInstallment().paymentDate),
     });
   }
 
@@ -106,13 +106,13 @@ export class PayDebtInstallmentFormComponent implements OnInit {
     const payload: IDebtInstallmentPay = {
       debtId: this.dataDebtInstallment().debtId,
       installmentId: this.dataDebtInstallment().id,
-      amountPaid: formValues.amountPaid,
+      paidAmount: formValues.paidAmount,
       paymentDate: formValues.paymentDate,
     };
 
     this.debtInstallmentService.payInstallment(payload, payload.debtId).subscribe({
       next: response => {
-        this.modalRef().hide();
+        this.modalService.hide();
         this.isLoading = false;
         this.changeData.emit(response);
 
@@ -136,7 +136,7 @@ export class PayDebtInstallmentFormComponent implements OnInit {
   }
 
   onCloseModal() {
-    this.modalRef().hide();
+    this.modalService.hide();
   }
 
   private getFieldLabel(controlName: string): string {

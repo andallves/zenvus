@@ -1,35 +1,190 @@
 <div class="data-table">
-  <h3>Detalhamento</h3>
-  <table>
-    <thead>
-    <tr>
-      <th>Categoria</th>
-      <th>Valor</th>
-      <th>Porcentagem</th>
-      <th>Barra</th>
-    </tr>
-    </thead>
-    <tbody>
-      @for (category of categories(); track $index) {
-        <tr>
-          <td>
-            <div class="category-cell">
+  <h3>Transações de Saída do Mês</h3>
+
+  <div class="table-controls">
+    <div class="total-summary">
+      <span class="total-label">Total de Saídas:</span>
+      <span class="total-value">{{ getTotalExpenses() | currency:'BRL' }}</span>
+    </div>
+
+    <div class="sort-options">
+      <span class="sort-label">Ordenar por:</span>
+      <select [(ngModel)]="sortColumn" (change)="sortTransactions(sortColumn)">
+        <option value="date" >Data</option>
+        <option value="description">Descrição</option>
+        <option value="amount">Valor</option>
+        <option value="category">Categoria</option>
+      </select>
+      <button class="sort-direction" (click)="sortDirection = sortDirection === 'asc' ? 'desc' : 'asc'">
+        @if (sortDirection === 'asc') {
+          <i class="bi bi-arrow-up"></i>
+        } @else {
+          <i class="bi bi-arrow-down"></i>
+        }
+      </button>
+    </div>
+  </div>
+
+  <div class="categories-accordion">
+    @for (category of categories(); track category.id) {
+      <div class="category-section" [class.expanded]="isCategoryExpanded(category.id)">
+
+        <!-- Cabeçalho da categoria -->
+        <div
+          class="category-header"
+          (click)="toggleCategory(category.id)"
+          (keyup)="toggleCategory(category.id)">
+          <div class="category-summary">
+            <div class="category-info">
               <span class="color-badge" [style.background-color]="category.color"></span>
-              {{ category.name }}
+              <span class="category-name">{{ category.name }}</span>
+              <span class="transaction-count">({{ category.transactions.length || 0 }} transações)</span>
             </div>
-          </td>
-          <td class="value-cell">{{ category.actual | currency: 'BRL' }}</td>
-          <td>{{ category.percentage | number:'1.2-2' }}%</td>
-          <td>
-            <div class="progress-bar">
-              <div class="progress-fill"
-                   [style.background-color]="category.color"
-                   [style.width.%]="category.percentage">
-              </div>
+            <div class="category-totals">
+              <span class="category-amount">{{ category.actual | currency:'BRL' }}</span>
+              <span class="category-percentage">{{ category.percentage | number:'1.2-2' }}%</span>
+              <span class="expand-icon">
+                {{ isCategoryExpanded(category.id) ? '−' : '+' }}
+              </span>
             </div>
-          </td>
-        </tr>
-      }
-    </tbody>
-  </table>
+          </div>
+        </div>
+
+        <!-- Tabela de transações da categoria -->
+        @if (isCategoryExpanded(category.id)) {
+          <div class="transactions-table-container">
+            <table class="transactions-table">
+              <thead class="head">
+                <tr>
+                  <th (click)="sortTransactions('date')" [class.active]="sortColumn === 'date'">
+                    Data
+                    @if (sortColumn === 'date') {
+                      <span>@if (sortDirection === 'asc') {
+                        <i class="bi bi-arrow-up"></i>
+                      } @else {
+                        <i class="bi bi-arrow-down"></i>
+                      }</span>
+                    }
+                  </th>
+                  <th (click)="sortTransactions('description')" [class.active]="sortColumn === 'description'">
+                    Descrição
+                    @if (sortColumn === 'description') {
+                      <span>@if (sortDirection === 'asc') {
+                        <i class="bi bi-arrow-up"></i>
+                      } @else {
+                        <i class="bi bi-arrow-down"></i>
+                      }</span>
+                    }
+                  </th>
+                  <th (click)="sortTransactions('amount')" [class.active]="sortColumn === 'amount'">
+                    Valor à Pagar
+                    @if (sortColumn === 'amount') {
+                      <span>@if (sortDirection === 'asc') {
+                        <i class="bi bi-arrow-up"></i>
+                      } @else {
+                        <i class="bi bi-arrow-down"></i>
+                      }</span>
+                    }
+                  </th>
+                  <th (click)="sortTransactions('amountPaid')" [class.active]="sortColumn === 'amountPaid'">
+                    Valor Pago
+                    @if (sortColumn === 'amountPaid') {
+                      <span>@if (sortDirection === 'asc') {
+                        <i class="bi bi-arrow-up"></i>
+                      } @else {
+                        <i class="bi bi-arrow-down"></i>
+                      }</span>
+                    }
+                  </th>
+                  <th (click)="sortTransactions('type')" [class.active]="sortColumn === 'type'">
+                    Tipo
+                    @if (sortColumn === 'type') {
+                      <span>@if (sortDirection === 'asc') {
+                        <i class="bi bi-arrow-up"></i>
+                      } @else {
+                        <i class="bi bi-arrow-down"></i>
+                      }</span>
+                    }
+                  </th>
+                  <th (click)="sortTransactions('installmentNumber')" [class.active]="sortColumn === 'installmentNumber'">
+                    Parcela
+                    @if (sortColumn === 'installmentNumber') {
+                      <span>@if (sortDirection === 'asc') {
+                        <i class="bi bi-arrow-up"></i>
+                      } @else {
+                        <i class="bi bi-arrow-down"></i>
+                      }</span>
+                    }
+                  </th>
+                  <th (click)="sortTransactions('status')" [class.active]="sortColumn === 'status'">
+                    Status
+                    @if (sortColumn === 'status') {
+                      <span>@if (sortDirection === 'asc') {
+                        <i class="bi bi-arrow-up"></i>
+                      } @else {
+                        <i class="bi bi-arrow-down"></i>
+                      }</span>
+                    }
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="tbody">
+                @for (transaction of getSortedTransactions(category.id); track transaction.id) {
+                  <tr>
+                    <td class="date-cell">
+                      {{ transaction.date | date:'dd/MM/yyyy' }}
+                    </td>
+                    <td class="description-cell">
+                      {{ transaction.description }}
+                    </td>
+                    <td class="amount-cell">
+                      {{ transaction.amount | currency:'BRL' }}
+                    </td>
+                    <td class="amount-cell">
+                      {{ transaction.amountPaid | currency:'BRL' }}
+                    </td>
+                    <td class="type-cell">
+                      {{ getValueLabel('type', transaction.type) }}
+                    </td>
+                    @if (transaction.installmentNumber) {
+                      <td class="installment-number-cell">
+                        {{ transaction.installmentNumber }}
+                      </td>
+                    } @else {
+                      <td class="installment-number-cell">
+                        {{ getValueLabel('installmentNumber', transaction.installmentNumber) }}
+                      </td>
+                    }
+                    <td
+                      class="status-cell"
+                    >
+                      <span
+                        class="status-cell__text"
+                        [class]="{
+                        'paid': transaction.status === EPaymentStatus.PAID,
+                        'pending': transaction.status === EPaymentStatus.PENDING,
+                        'active': transaction.status === EPaymentStatus.ACTIVE,
+                        'overdue': transaction.status === EPaymentStatus.OVERDUE
+                      }"
+                      >
+                        {{ getValueLabel('status', transaction.status) }}
+                      </span>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+              <tfoot class="tfoot">
+              <tr class="category-total">
+                <td colspan="2">Total {{ category.name }}:</td>
+                <td class="total-amount">{{ category.actual | currency:'BRL' }}</td>
+                <td class="total-amount">{{ category.actualPaid | currency:'BRL' }}</td>
+                <td colspan="3"></td>
+              </tr>
+              </tfoot>
+            </table>
+          </div>
+        }
+      </div>
+    }
+  </div>
 </div>

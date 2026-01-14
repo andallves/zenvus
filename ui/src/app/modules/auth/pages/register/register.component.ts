@@ -5,8 +5,8 @@ import { RegisterUserForm } from '@modules/auth/interfaces/register-user.interfa
 import { RegisterService } from '@modules/auth/services/register.service';
 import { REGISTER_VALIDATION_CONFIG } from '@modules/auth/utils/auth-validation.config';
 import { registerLabels } from '@modules/auth/utils/form-labels';
-import { InputPasswordComponent } from '@shared/components/form/input-password/input-password.component';
-import { InputTextComponent } from '@shared/components/form/input-text/input-text.component';
+import { InputDefaultComponent } from '@shared/components/inputs/input-default/input-default.component';
+import { InputPasswordComponent } from '@shared/components/inputs/input-password/input-password.component';
 import {
   ModalConfig,
   ModalIconType,
@@ -27,7 +27,7 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './register.component.html',
   imports: [
     UnauthenticatedCommonLayoutComponent,
-    InputTextComponent,
+    InputDefaultComponent,
     InputPasswordComponent,
     ReactiveFormsModule,
   ],
@@ -41,7 +41,7 @@ export class RegisterComponent implements OnInit {
   readonly primaryBtn: PrimaryButton;
   readonly secondaryBtn: SecondaryButton;
   protected isDisabledButton = computed(
-    () => this.registerForm.invalid || this.isLoading() || !this.submitted
+    () => this.registerForm?.invalid || this.isLoading() || !this.submitted
   );
 
   private readonly registerService = inject(RegisterService);
@@ -56,7 +56,7 @@ export class RegisterComponent implements OnInit {
   constructor() {
     this.primaryBtn = {
       btnText: 'Cadastrar',
-      disabled: this.isDisabledButton(),
+      disabled: this.isDisabledButton() || false,
     };
 
     this.secondaryBtn = {
@@ -127,7 +127,8 @@ export class RegisterComponent implements OnInit {
         this.registerForm.reset();
       },
       error: error => {
-        const errorMessage = error.error?.errors?.join('<br>') || error.message;
+        const errorMessage =
+          error.error?.errors?.join('<br>') || error.error.message || error.message;
         this.modalAlertService
           .open({
             icon: ModalIconType.Error,
@@ -142,12 +143,9 @@ export class RegisterComponent implements OnInit {
   }
 
   protected isValid(nameField: string) {
-    return this.registerForm.get(nameField)?.valid;
+    return this.registerForm.get(nameField)?.valid || false;
   }
 
-  protected isInvalid(nameField: string) {
-    return this.registerForm.get(nameField)?.invalid;
-  }
   private getFieldLabel(controlName: string): string {
     const labelsMap: Record<string, string> = registerLabels();
     return labelsMap[controlName] || controlName;

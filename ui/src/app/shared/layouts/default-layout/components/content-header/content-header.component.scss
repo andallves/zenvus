@@ -361,7 +361,7 @@
           }
 
           input:focus + .slider {
-            box-shadow: 0 0 1px var(--positive-color);
+            box-shadow: 0 0 1px var(--info-color);
           }
 
           input:checked + .slider:before {

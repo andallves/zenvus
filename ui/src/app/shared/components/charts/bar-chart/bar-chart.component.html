@@ -1,0 +1,39 @@
+<div class="bar-chart-container">
+  <div class="charts-row">
+    <zen-pie-chart [categories]="currentCategories()"></zen-pie-chart>
+    <div class="chart-wrapper">
+      <canvas #barCanvas [width]="800" [height]="400"></canvas>
+    </div>
+  </div>
+
+  <!-- Legenda detalhada -->
+  @if (currentCategories().length > 0) {
+    <div class="chart-legend">
+      <h4>Resumo por Categoria</h4>
+      <div class="legend-grid">
+        @for (category of currentCategories(); track category.id) {
+          @let categoryData = getCategoryData(category);
+
+          <div class="legend-item">
+            <div class="legend-color" [style.background-color]="category.color"></div>
+            <div class="legend-info">
+              <span class="category-name">{{ category.name }}</span>
+              <div class="category-values">
+                <span class="current-value">{{ formatCurrency(category.actual) }}</span>
+                @if (categoryData.previousValue > 0) {
+                  <span class="previous-value">{{ formatCurrency(categoryData.previousValue) }}</span>
+                  <span
+                    class="change-value"
+                    [class.positive]="categoryData.change.isPositive"
+                    [class.negative]="!categoryData.change.isPositive">
+                    {{ categoryData.change.text }}
+                  </span>
+                }
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

@@ -1,4 +1,3 @@
-using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Zenvus.Application.DTO.Expenses;
@@ -12,10 +11,7 @@ using Zenvus.Infra.Extensions;
 
 namespace Zenvus.Application.Queries.Expenses;
 
-public class GetExpensesQueryHandler(
-    IRepository<ZenvusDbContext> repository, 
-    IAuthenticatedUser authenticatedUser
-    ) : IRequestHandler<GetExpensesQuery, PagedResult<ExpenseDto>>
+public class GetExpensesQueryHandler(IRepository<ZenvusDbContext> repository, IAuthenticatedUser authenticatedUser) : IRequestHandler<GetExpensesQuery, PagedResult<ExpenseDto>>
 {
     public async Task<PagedResult<ExpenseDto>> Handle(GetExpensesQuery request, CancellationToken cancellationToken)
     {
@@ -25,7 +21,6 @@ public class GetExpensesQueryHandler(
             .Include(e => e.Debt)
                 .ThenInclude(d => d!.Installments
                     .Where(i => i.Status  != EPaymentStatus.Cancelled))
-            .Where(e => !e.Disabled && e.UserId == authenticatedUser.Id)
             .ApplyFilter(request)
             .ApplyOrdering(request)
             .Select(e => ExpenseDto.From(e))

@@ -63,8 +63,10 @@ export class ContentHeaderComponent implements OnInit {
   updateHeader() {
     const deepestRoute = this.getDeepestChild(this.activatedRoute);
     const snapshot = deepestRoute.snapshot;
+    this.isInitialPage = this.router.url.split('?')[0] === '/';
 
-    console.log('snap: ' + snapshot);
+    if (this.isInitialPage) return;
+
     if (snapshot.title && snapshot.data?.['description']) {
       this.headerTitle = snapshot.title;
       this.headerDescription = snapshot.data?.['description'];
@@ -72,7 +74,6 @@ export class ContentHeaderComponent implements OnInit {
       this.headerTitle = this.saudacaoComBaseNaHora();
       this.headerDescription = this.name ? '' : 'Bem-vindo ao Zenvus!';
     }
-    this.isInitialPage = this.router.url.split('?')[0] === '/';
   }
 
   saudacaoComBaseNaHora(): string {

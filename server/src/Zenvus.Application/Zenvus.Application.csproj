@@ -25,6 +25,10 @@
         <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.8" />
         <PackageReference Include="NetDevPack.Security.Jwt.Core" Version="8.2.2" />
         <PackageReference Include="pix-payload-generator.net" Version="1.0.21" />
+        <PackageReference Include="Quartz" Version="3.15.1" />
+        <PackageReference Include="Quartz.AspNetCore" Version="3.15.1" />
+        <PackageReference Include="Quartz.Extensions.DependencyInjection" Version="3.15.1" />
+        <PackageReference Include="Quartz.Jobs" Version="3.15.1" />
         <PackageReference Include="ScottBrady91.AspNetCore.Identity.Argon2PasswordHasher" Version="1.4.0" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.4" />
         <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="9.0.1" />

@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { RegisterService } from '@modules/auth/services/register.service';
-import { InputPasswordComponent } from '@shared/components/form/input-password/input-password.component';
+import { InputPasswordComponent } from '@shared/components/inputs/input-password/input-password.component';
 import { InputTextComponent } from '@shared/components/form/input-text/input-text.component';
 import { ModalAlertService } from '@shared/components/swall/modal-alert/service/modal-alert.service';
 import { ToastrService } from 'ngx-toastr';
