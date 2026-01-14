@@ -53,11 +53,11 @@ jobs:
         gcloud run deploy zenvus-api \
           --image $IMAGE_NAME \
           --region $REGION \
-          --memory 512Mi
-          --min-instances 0
-          --max-instances 1
+          --memory 512Mi \
+          --min-instances 0 \
+          --max-instances 1 \
           --platform managed \
-          --port 8080
+          --port 8080 \
           --allow-unauthenticated \
           --add-cloudsql-instances ${{ secrets.CLOUD_INSTANCE }} \
           --set-env-vars ASPNETCORE_ENVIRONMENT=Staging,ENVIRONMENT=staging \
