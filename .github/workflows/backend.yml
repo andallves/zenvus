@@ -10,7 +10,7 @@ jobs:
   deploy:
     name: Setup Gcloud Account
     runs-on: ubuntu-latest
-    environment: gcp-prod
+    environment: gcp-staging
     env: 
       IMAGE_NAME: gcr.io/${{ secrets.GCP_PROJECT_ID }}/zenvus-api:latest
 
