@@ -56,10 +56,10 @@ public static class Extension
     }
     
     public static void UseMigrations(this IApplicationBuilder app, IServiceProvider services)
-        {
-            using var scope = services.CreateScope();
-            var db = scope.ServiceProvider.GetRequiredService<ZenvusDbContext>();
-            db.Database.Migrate();
-        }
+    {
+        using var scope = services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<ZenvusDbContext>();
+        db.Database.Migrate();
+    }
 
 }

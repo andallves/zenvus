@@ -77,7 +77,7 @@ public static class Extension
         
     public static IApplicationBuilder UseApiLayer(this IApplicationBuilder app, IServiceProvider serviceProvider, IHostEnvironment environment)
     {
-        app.UseApiConfiguration(serviceProvider, environment);
+        app.UseApiConfiguration();
         
         app.UseSerilogRequestLogging();
         
@@ -94,6 +94,8 @@ public static class Extension
         app.UseRouting();
         
         app.UseAuthenticationAndAuthorization();
+        
+        app.UseMigrations(serviceProvider, environment);
         
         return app;
     }

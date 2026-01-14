@@ -70,20 +70,24 @@ public static class ApiConfiguration
             });
     }
     
-    public static void UseApiConfiguration(this IApplicationBuilder app, IServiceProvider services, IHostEnvironment env)
+    public static void UseApiConfiguration(this IApplicationBuilder app)
+    {
+
+        app.UseForwardedHeaders(new ForwardedHeadersOptions
         {
-            if (!env.IsDevelopment())
-            {
-                app.UseMigrations(services);
-            }
+            ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+        });
+        
+        app.UseCors("default");
+    }
     
-            app.UseForwardedHeaders(new ForwardedHeadersOptions
-            {
-                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-            });
-            
-            app.UseCors("default");
+    public static void UseMigrations(this IApplicationBuilder app, IServiceProvider services, IHostEnvironment env)
+    {
+        if (!env.IsDevelopment())
+        {
+            app.UseMigrations(services);
         }
+    }
 
 
     private sealed class SlugifyParameterTransformer : IOutboundParameterTransformer
