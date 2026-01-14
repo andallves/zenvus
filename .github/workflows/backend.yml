@@ -2,7 +2,7 @@ name: Deploy Backend - Cloud Run
 
 on:
   push:
-    branches: [ "main", "development" ]
+    branches: [ "development" ]
     paths:
       - "server/**"
 
@@ -11,18 +11,24 @@ jobs:
     name: Setup Gcloud Account
     runs-on: ubuntu-latest
     environment: gcp-staging
+    
     env: 
-      IMAGE_NAME: gcr.io/${{ secrets.GCP_PROJECT_ID }}/zenvus-api:latest
+      PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+      REGION: us-central1
+      SERVICE_NAME: zenvus-api
+      IMAGE_NAME: us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/zenvus-api/zenvus-api
 
     steps:
     - name: Checkout
       uses: actions/checkout@v4
 
+    # Auth
     - name: Authenticate to GCP
       uses: google-github-actions/auth@v2
       with:
         credentials_json: ${{ secrets.GCP_CREDENTIALS }}
-    
+
+    # Gcloud
     - name: Setup gcloud
       uses: google-github-actions/setup-gcloud@v2
       with:
@@ -31,11 +37,12 @@ jobs:
     - name: Verify auth
       run: gcloud auth list
 
+    # Docker
     - name: Configure Docker
-      run: gcloud auth configure-docker --quiet
-      
+      run: gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
+
     - name: Build Docker Image
-      run: docker build -t $IMAGE_NAME
+      run: docker build -t $IMAGE_NAME server
     
     - name: Push Docker Image
       run: docker push $IMAGE_NAME
@@ -44,11 +51,13 @@ jobs:
       run: |
         gcloud run deploy zenvus-api \
           --image $IMAGE_NAME \
-          --region us-central1 \
-          --memorry 128Mi
+          --region $REGION \
+          --memory 512Mi
           --min-instances 0
           --max-instances 1
           --platform managed \
           --port 80
           --allow-unauthenticated \
-          --set-env-vars ConnectionStrings__Default=${{ secrets.DB_CONNECTION_STRING }}
+          --add-cloudsql-instances ${{ secrets.CLOUD_INSTANCE }} \
+          --set-env-vars ASPNETCORE_ENVIRONMENT=${{ secrets.ENVIRONMENT }} \
+          --set-env-vars ConnectionStrings__MYSQL=${{ secrets.DB_CONNECTION_STRING }}
