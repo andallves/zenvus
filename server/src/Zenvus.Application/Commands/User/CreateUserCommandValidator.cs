@@ -41,7 +41,7 @@ public class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
         RuleFor(x => x.Telephone)
             .NotNull()
             .NotEmpty()
-            .MaximumLength(15);
+            .MaximumLength(12);
         
         RuleFor(x => x.Password)
             .NotEmpty().WithMessage("A senha é obrigatória.")

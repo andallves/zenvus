@@ -71,7 +71,7 @@ export class PayDebtInstallmentFormComponent implements OnInit {
       amount: this.dataDebtInstallment().amount,
       amountPaid: this.dataDebtInstallment().amountPaid,
       dueDate: new Date(this.dataDebtInstallment().dueDate),
-      paymentDate: new Date(this.dataDebtInstallment().paymentDate),
+      paymentDate: new Date(this.dataDebtInstallment().paymentDate ?? Date.now()),
     });
   }
 
@@ -106,7 +106,7 @@ export class PayDebtInstallmentFormComponent implements OnInit {
     const payload: IDebtInstallmentPay = {
       debtId: this.dataDebtInstallment().debtId,
       installmentId: this.dataDebtInstallment().id,
-      paidAmount: formValues.paidAmount,
+      amountPaid: formValues.amountPaid,
       paymentDate: formValues.paymentDate,
     };
 

@@ -100,10 +100,11 @@ export class RegisterComponent implements OnInit {
     if (isValidForm) {
       const formData = new FormData();
       const formValue = this.registerForm.value;
+      const telephone = this.getOnlyPhoneNumber(formValue.phone ?? '');
 
       formData.append('Name', formValue.name || '');
       formData.append('Email', formValue.email || '');
-      formData.append('Telephone', formValue.phone || '');
+      formData.append('Telephone', telephone || '');
       formData.append('Password', formValue.password || '');
       formData.append('ConfirmPassword', formValue.confirmPassword || '');
 
@@ -149,5 +150,11 @@ export class RegisterComponent implements OnInit {
   private getFieldLabel(controlName: string): string {
     const labelsMap: Record<string, string> = registerLabels();
     return labelsMap[controlName] || controlName;
+  }
+
+  private getOnlyPhoneNumber(value: string): string {
+    const phoneNumber = value.replaceAll(/\D/g, '');
+    console.log(phoneNumber);
+    return phoneNumber;
   }
 }

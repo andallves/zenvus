@@ -1,5 +1,5 @@
 export const environment = {
   env: 'local',
   production: false,
-  apiUrl: 'https://localhost:7174',
+  apiUrl: 'https://zenvus-api-ex3maipw6q-uc.a.run.app/',
 };
