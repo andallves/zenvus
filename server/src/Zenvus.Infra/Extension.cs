@@ -24,7 +24,7 @@ public static class Extension
     public static IServiceCollection AddMySql<T>(this IServiceCollection services) where T : DbContext
     {
         var configuration = services.BuildServiceProvider().GetRequiredService<IConfiguration>();
-        var connectionString = configuration.GetConnectionString("MYSQL")!;
+        var connectionString = configuration.GetConnectionString("Default")!;
         if (string.IsNullOrWhiteSpace(connectionString))
             throw new InvalidOperationException("Connection string 'Default' is not configured.");
         var version = ServerVersion.AutoDetect(connectionString);

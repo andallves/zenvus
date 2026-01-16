@@ -75,7 +75,7 @@ public static class Extension
             .PersistKeysToFileSystem(new DirectoryInfo("./DataProtectionKeys"));
     }
         
-    public static IApplicationBuilder UseApiLayer(this IApplicationBuilder app, IServiceProvider serviceProvider, IHostEnvironment environment)
+    public static IApplicationBuilder UseApiLayer(this IApplicationBuilder app)
     {
         app.UseApiConfiguration();
         

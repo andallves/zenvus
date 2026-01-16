@@ -37,7 +37,7 @@ builder
 
 var app = builder.Build();
 
-app.UseApiLayer(app.Services, app.Environment);
+app.UseApiLayer();
 
 app.MapControllers();
 app.MapGet("/", ctx => ctx.Response.WriteAsync("Zenvus API."));

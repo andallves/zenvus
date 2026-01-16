@@ -17,7 +17,7 @@ public static class HealthChecksConfiguration
     public static void ConfigureApplicationHealthChecks(this IHealthChecksBuilder builder, IConfiguration configuration, IServiceCollection services)
     {
         builder
-            .AddMySql(configuration.GetConnectionString("MYSQL")!, "SELECT 1", name: "Database")
+            .AddMySql(configuration.GetConnectionString("Default")!, "SELECT 1", name: "Database")
             .AddDbContextHealthChecksFromAssembly(services);
         
         var regisConnection = configuration.GetConnectionString("Redis");
