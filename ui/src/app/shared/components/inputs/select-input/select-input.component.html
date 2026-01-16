@@ -35,9 +35,15 @@
         [attr.aria-expanded]="isOpen"
         [attr.aria-controls]="dropdownId + '-menu'"
       >
-        <span id="{{ dropdownId }}-selected-label" class="text-truncate">
-          {{ getSelectedLabel() }}
-        </span>
+        @if (!!this.value) {
+          <span id="{{ dropdownId }}-selected-label" class="text-truncate">
+              {{ getSelectedLabel() }}
+          </span>
+        } @else {
+          <span id="{{ dropdownId }}-selected-label" class="text-truncate--empty">
+              {{ this.placeholder }}
+          </span>
+        }
       </button>
       <div
         class="dropdown-menu "
