@@ -11,11 +11,6 @@ namespace Zenvus.Infra.Database.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "Version",
-                schema: "Zenvus",
-                table: "Debts");
-
             migrationBuilder.AlterColumn<DateTime>(
                 name: "Date",
                 schema: "Zenvus",
