@@ -11,37 +11,6 @@ namespace Zenvus.Infra.Database.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.Sql(@"
-                DROP PROCEDURE IF EXISTS DropDebtInstallmentForeignKey;
-                
-                CREATE PROCEDURE DropDebtInstallmentForeignKey()
-                BEGIN
-                    DECLARE v_sql VARCHAR(500);
-                    
-                    -- Procura por qualquer FK que referencia DebtId -> Debts
-                    SELECT CONSTRAINT_NAME INTO v_sql
-                    FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
-                    WHERE TABLE_SCHEMA = DATABASE()
-                    AND TABLE_NAME = 'DebtInstallments'
-                    AND COLUMN_NAME = 'DebtId'
-                    AND REFERENCED_TABLE_NAME = 'Debts'
-                    LIMIT 1;
-                    
-                    IF v_sql IS NOT NULL THEN
-                        SET @drop_sql = CONCAT('ALTER TABLE DebtInstallments DROP FOREIGN KEY `', v_sql, '`');
-                        PREPARE stmt FROM @drop_sql;
-                        EXECUTE stmt;
-                        DEALLOCATE PREPARE stmt;
-                    END IF;
-                END;
-                
-                CALL DropDebtInstallmentForeignKey();
-                
-                DROP PROCEDURE DropDebtInstallmentForeignKey;
-            ");
-
-
-
             migrationBuilder.AlterColumn<DateTime>(
                 name: "Date",
                 schema: "Zenvus",
