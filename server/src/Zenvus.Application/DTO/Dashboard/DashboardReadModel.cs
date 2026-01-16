@@ -300,7 +300,7 @@ public class DashboardReadModel(IRepository<ZenvusDbContext> repository, ILogger
                 e.Amount,
                 e.AmountPaid,
                 e.Type,
-                e.IsPaid ? EPaymentStatus.Paid : EPaymentStatus.Pending,
+                GetPaymentStatus(e.Amount, e.AmountPaid),
                 e.HasDebt,
                 false,
                 e.CategoryId,
@@ -309,6 +309,13 @@ public class DashboardReadModel(IRepository<ZenvusDbContext> repository, ILogger
                 null
             ))
             .ToListAsync(ct);
+    }
+    
+    private static EPaymentStatus GetPaymentStatus(decimal amount, decimal? amountPaid)
+    {
+        if (amountPaid is null or 0)
+            return EPaymentStatus.Active;
+        return amountPaid >= amount ? EPaymentStatus.Paid : EPaymentStatus.Pending;
     }
 
     private async Task<Dictionary<Guid, decimal>> GetBudgetsAsync(
