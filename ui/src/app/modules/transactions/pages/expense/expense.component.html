@@ -20,6 +20,7 @@
         placeholder="Digite a descrição"
         formControlName="description"
         [inputId]="'input-description'"
+        [showX]="true"
       />
 
       <zen-select-input
@@ -28,7 +29,9 @@
         placeholder="Selecione uma categoria"
         formControlName="category"
         [options]="categoriesOptions"
-        [dropdownId]="'select-category'"/>
+        [dropdownId]="'select-category'"
+        [showX]="true"
+      />
 
       <zen-select-input
         id="select-type"
@@ -37,6 +40,7 @@
         formControlName="type"
         [options]="typesOptions"
         [dropdownId]="'select-type'"
+        [showX]="true"
       />
 
 
@@ -47,6 +51,7 @@
         formControlName="hasDebt"
         [options]="isInstallmentsOptions"
         [dropdownId]="'select-has-debt'"
+        [showX]="true"
       />
 
       <zen-date-input
@@ -55,6 +60,7 @@
         placeholder="Informe uma data"
         formControlName="date"
         [inputId]="'input-date'"
+        [showX]="true"
       />
     </form>
   </zen-filter>
