@@ -109,10 +109,10 @@ export class ExpenseComponent implements OnInit {
 
   initializeForm() {
     this.filterForm = this.fb.group({
-      category: ['', []],
+      categoryId: ['', []],
       date: ['', []],
       description: ['', []],
-      type: ['', []],
+      typeId: ['', []],
       hasDebt: ['', []],
     });
   }
@@ -130,10 +130,9 @@ export class ExpenseComponent implements OnInit {
     console.log('Carregando categorias para a página:', this.page);
     const filter: IExpenseFilter = {
       description: this.filterForm.get('description')?.value,
-      type: this.filterForm.get('type')?.value,
-      categoryName: this.filterForm.get('categoryName')?.value,
+      typeId: this.filterForm.get('typeId')?.value,
+      categoryId: this.filterForm.get('categoryId')?.value,
       date: this.filterForm.get('date')?.value,
-      disabled: this.filterForm.get('disabled')?.value,
       page: this.page,
       itemsPerPage: this.itemsPerPage,
       orderAsc: this.filterForm.get('orderAsc')?.value || true,

@@ -29,11 +29,10 @@ export interface IExpenseOrderBy {
 
 export interface IExpenseFilter extends IFilter<IExpenseOrderBy> {
   description?: string;
-  categoryName?: string;
-  type?: EExpenseType;
+  categoryId?: string;
+  typeId?: EExpenseType;
   hasDebt?: boolean;
   date?: Date;
-  disabled?: boolean;
 }
 
 export interface IExpenseCreate {
