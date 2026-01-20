@@ -1,0 +1,194 @@
+# .github/workflows/deploy-angular-gcp-full.yml
+name: Deploy Angular to GCP
+
+on:
+  push:
+    branches: [ main, development ]
+    paths:
+      - 'ui/**'
+  pull_request:
+    branches: [ main, development ]
+    paths:
+      - 'ui/**'
+
+env:
+  PROJECT_ID: ${{ secrets.GCP_PROJECT }}
+  REGION: us-central1
+  NODE_VERSION: '20'
+  
+  # Configuração por branch
+  BRANCH_CONFIG: >
+    ${{ github.ref == 'refs/heads/main' && 'production' || 
+        github.ref == 'refs/heads/development' && 'development' || 
+        'preview' }}
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      environment: ${{ steps.config.outputs.environment }}
+      bucket_name: ${{ steps.config.outputs.bucket_name }}
+      api_url: ${{ steps.config.outputs.api_url }}
+    
+    steps:
+      - name: Determine Environment
+        id: config
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            echo "environment=production" >> $GITHUB_OUTPUT
+            echo "bucket_name=zenvus-app-prod" >> $GITHUB_OUTPUT
+            echo "api_url=https://api.zenvus.com" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.ref }}" == "refs/heads/staging" ]]; then
+            echo "environment=staging" >> $GITHUB_OUTPUT
+            echo "bucket_name=zenvus-app-staging" >> $GITHUB_OUTPUT
+            echo "api_url=https://staging-api.zenvus.com" >> $GITHUB_OUTPUT
+          else
+            echo "environment=preview" >> $GITHUB_OUTPUT
+            echo "bucket_name=zenvus-app-preview-${{ github.sha }}" >> $GITHUB_OUTPUT
+            echo "api_url=https://zenvus-api-uc.a.run.app" >> $GITHUB_OUTPUT
+          fi
+
+  build:
+    needs: setup
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Google Cloud
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ secrets.GCP_PROJECT }}
+          service_account_key: ${{ secrets.GCP_CREDENTIALS }}
+          export_default_credentials: true
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ./ui
+        run: npm ci
+
+      - name: Build Angular
+        working-directory: ./ui
+        run: |
+          npm run build -- --configuration=${{ needs.setup.outputs.environment }}
+          
+          # Cria arquivo de configuração runtime
+          cat > dist/browser/config.js << EOF
+          window.__env = {
+            apiUrl: '${{ needs.setup.outputs.api_url }}',
+            environment: '${{ needs.setup.outputs.environment }}',
+            version: '${{ github.sha }}',
+            buildDate: '$(date -Iseconds)'
+          };
+          EOF
+          
+          # Inclui o config.js no index.html
+          sed -i '/<head>/a <script src="config.js"></script>' dist/browser/index.html
+        env:
+          NG_APP_API_URL: ${{ needs.setup.outputs.api_url }}
+          NG_APP_GA_ID: ${{ secrets.GA_TRACKING_ID }}
+          NG_APP_FIREBASE_CONFIG: ${{ secrets.FIREBASE_CONFIG }}
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: angular-build-${{ needs.setup.outputs.environment }}
+          path: frontend/dist/browser/**
+
+  deploy:
+    needs: [setup, build]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Google Cloud
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ secrets.GCP_PROJECT }}
+          service_account_key: ${{ secrets.GCP_CREDENTIALS }}
+          export_default_credentials: true
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: angular-build-${{ needs.setup.outputs.environment }}
+
+      - name: Configure Cloud Storage Bucket
+        run: |
+          BUCKET="${{ needs.setup.outputs.bucket_name }}"
+          
+          # Cria bucket se não existir
+          if ! gsutil ls gs://$BUCKET 2>/dev/null; then
+            echo "Creating bucket: $BUCKET"
+            gsutil mb -l ${{ env.REGION }} gs://$BUCKET
+          
+            # Configura como website
+            gsutil web set -m index.html -e index.html gs://$BUCKET
+          
+            # Permissão pública (apenas para preview)
+            if [[ "${{ needs.setup.outputs.environment }}" == "preview" ]]; then
+              gsutil iam ch allUsers:objectViewer gs://$BUCKET
+            fi
+          fi
+          
+          # Configura CORS para API
+          cat > cors.json << EOF
+          [
+            {
+              "origin": ["https://$BUCKET.storage.googleapis.com", "http://localhost:4200"],
+              "method": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+              "responseHeader": ["Content-Type", "Authorization"],
+              "maxAgeSeconds": 3600
+            }
+          ]
+          EOF
+          gsutil cors set cors.json gs://$BUCKET
+
+      - name: Deploy to Cloud Storage
+        run: |
+          BUCKET="${{ needs.setup.outputs.bucket_name }}"
+          
+          # Sincroniza arquivos
+          echo "Deploying to gs://$BUCKET"
+          gsutil -m rsync -R . gs://$BUCKET
+          
+          # Configura headers de cache
+          echo "Configuring cache headers..."
+          
+          # HTML - no cache
+          gsutil -m setmeta -h "Cache-Control:no-cache, max-age=0, must-revalidate" \
+            gs://$BUCKET/*.html
+          
+          # JS/CSS - cache longo (com hash no nome)
+          gsutil -m setmeta -h "Cache-Control:public, max-age=31536000, immutable" \
+            gs://$BUCKET/*.js \
+            gs://$BUCKET/*.css
+          
+          # Assets - cache médio
+          gsutil -m setmeta -h "Cache-Control:public, max-age=2592000" \
+            gs://$BUCKET/assets/** \
+            gs://$BUCKET/*.woff2 \
+            gs://$BUCKET/*.ttf \
+            gs://$BUCKET/*.eot
+          
+          # Configura gzip
+          gsutil -m setmeta -h "Content-Encoding:gzip" \
+            gs://$BUCKET/*.js \
+            gs://$BUCKET/*.css \
+            gs://$BUCKET/*.html
+          
+          echo "✅ Deployment complete!"
+          echo "🌐 URL: https://storage.googleapis.com/$BUCKET/index.html"
+          
+          # Para produção, configurar Load Balancer
+          if [[ "${{ needs.setup.outputs.environment }}" == "production" ]]; then
+            echo "🔧 Configure Load Balancer for: https://app.zenvus.com"
+          fi
