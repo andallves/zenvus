@@ -39,8 +39,8 @@ jobs:
             echo "bucket_name=zenvus-app-prod" >> $GITHUB_OUTPUT
             echo "api_url=https://api.zenvus.com" >> $GITHUB_OUTPUT
           elif [[ "${{ github.ref }}" == "refs/heads/staging" ]]; then
-            echo "environment=staging" >> $GITHUB_OUTPUT
-            echo "bucket_name=zenvus-app-staging" >> $GITHUB_OUTPUT
+            echo "environment=development" >> $GITHUB_OUTPUT
+            echo "bucket_name=zenvus-app-dev" >> $GITHUB_OUTPUT
             echo "api_url=https://staging-api.zenvus.com" >> $GITHUB_OUTPUT
           else
             echo "environment=preview" >> $GITHUB_OUTPUT
