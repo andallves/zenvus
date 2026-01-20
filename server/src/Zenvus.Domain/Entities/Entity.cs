@@ -9,5 +9,5 @@ public class Entity : ITracking
 
 public abstract class SoftDeleteEntity : Entity, ISoftDelete
 {
-    public bool Disabled { get; set; } = false;
+    public bool Disabled { get; set; }
 }
