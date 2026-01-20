@@ -29,18 +29,18 @@ jobs:
 
       - name: Install dependencies
         working-directory: ./ui  # CORRIGIDO: Trabalha no diretório ui/
-        run: npm ci
+        run: npm install --legacy-peer-deps
 
       - name: Run lint and tests
         working-directory: ./ui
         run: |
           npm run lint || echo "Lint completed"
-          npm test -- --watch=false --browsers=ChromeHeadless || echo "Tests completed"
+          npm test:ci  || echo "Tests completed"
 
       - name: Build Angular
         working-directory: ./ui
         run: |
-          npm run build -- --configuration=production
+          npm run build:prod
         env:
           NG_APP_API_URL: ${{ github.ref == 'refs/heads/main' && secrets.API_URL_PROD || secrets.API_URL_STAGING }}
           NG_APP_ENVIRONMENT: ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}
