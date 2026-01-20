@@ -158,7 +158,7 @@ public class Debt : SoftDeleteEntity
         if (totalInstallments <= 0)
             throw new DomainException("O número de parcelas deve ser maior que zero.");
         
-        if (firstDueDate < DateTime.UtcNow.Date.AddDays(-1))
+        if (firstDueDate < DateTime.UtcNow.Date.AddYears(-2))
             throw new DomainException("A data de vencimento não pode ser no passado.");
     }
     

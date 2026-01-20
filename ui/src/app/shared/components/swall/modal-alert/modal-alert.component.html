@@ -12,10 +12,10 @@
           <i class="bi bi-info-circle-fill info-icon"></i>
       }
       </div>
-      <h2>{{ title }}</h2>
+      <h2 class="modal-header__title">{{ title }}</h2>
     </div>
     <div class="modal-body">
-      <p [innerHTML]="message"></p>
+      <p class="modal-body__body" [innerHTML]="message"></p>
     </div>
     <div class="modal-footer">
       <button class="confirm-button" (click)="onConfirm()">{{ confirmButtonText }}</button>

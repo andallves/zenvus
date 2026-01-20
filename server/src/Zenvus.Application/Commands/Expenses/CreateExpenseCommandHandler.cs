@@ -29,7 +29,7 @@ public class CreateExpenseCommandHandler(IRepository<ZenvusDbContext> repository
             request.Description ?? string.Empty,
             request.Amount,
             request.Date,
-            (EExpense)request.Type,
+            (EExpense)request.TypeId,
             request.CategoryId,
             authenticatedUser.Id,
             request.Debt?.IsInstallment ?? false,

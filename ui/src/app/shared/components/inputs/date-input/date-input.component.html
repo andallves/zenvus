@@ -1,5 +1,6 @@
 <div class="box-input col-md-6" [class.fixedSize]="fixedSize">
-  <label [for]="inputId">
+  <label
+    class="label-date" [for]="inputId">
     {{ labelSignal() }}
     <span *ngIf="showMandatory" class="mandatory">*</span>
   </label>
@@ -21,13 +22,14 @@
       [(ngModel)]="value"
       (click)="openDatepicker(dp)"
       [bsConfig]="datePickerConfig"
+      autocomplete="off"
     />
 
     <i
       id="{{ inputId }}-calendar-icon"
       class="calendar-icon bi bi-calendar2-check"
       (click)="openDatepicker(dp)"
-      onkeyup=""
+      onkeyup="openDatepicker(dp)"
     ></i>
   </div>
 

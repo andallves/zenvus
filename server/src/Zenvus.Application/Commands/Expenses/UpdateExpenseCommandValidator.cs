@@ -48,8 +48,8 @@ public class UpdateExpenseCommandValidator : AbstractValidator<UpdateExpenseComm
             .WithMessage("O Data da despesa é obrigatório.")
             .LessThanOrEqualTo(DateTime.UtcNow.AddDays(30))
             .WithMessage("A data não pode ser mais que 30 dias no futuro.")
-            .GreaterThanOrEqualTo(new DateTime(2000, 1, 1))
-            .WithMessage("Data inválida.");
+            .GreaterThanOrEqualTo(DateTime.UtcNow.AddYears(-2))
+            .WithMessage("A data não pode ser anterior a 2 anos atrás.");
 
         RuleFor(c => c.Description)
             .NotEmpty()
@@ -91,8 +91,8 @@ public class UpdateExpenseCommandValidator : AbstractValidator<UpdateExpenseComm
                     .WithMessage("A data do primeiro vencimento é obrigatória.")
                     .GreaterThanOrEqualTo(e => e.Date)
                     .WithMessage("A data do primeiro vencimento não pode ser anterior à data da despesa.")
-                    .LessThanOrEqualTo(e => e.Date.AddYears(30))
-                    .WithMessage("A data do primeiro vencimento não pode ser mais que 30 anos no futuro.")
+                    .LessThanOrEqualTo(e => e.Date.AddYears(10))
+                    .WithMessage("A data do primeiro vencimento não pode ser mais que 10 anos no futuro.")
                     .CustomAsync(ValidateFirstDueDateAgainstExistingDebt);
             });
 

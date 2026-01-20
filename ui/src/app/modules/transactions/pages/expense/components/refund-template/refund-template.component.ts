@@ -56,7 +56,8 @@ export class RefundTemplateComponent {
         },
         error: error => {
           console.log(error);
-          const erros = error.error.errors?.join('<br>') || error.error.message || error.message;
+          const erros =
+            error.error.errors?.join('<br>') || error.error.message || error.error.title;
           this.modalAlertService
             .open({
               icon: ModalIconType.Error,

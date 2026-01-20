@@ -19,7 +19,16 @@ public class DisableCategoryCommandHandler(IRepository<ZenvusDbContext> reposito
         {
             return CustomResult<CategoryDto>.ErrorResult("Categoria não encontrada.", errorType: IsResultErrorType.NotFound);
         }
+        
+        var transactionsUsingCategory = await repository.DbSet<Transaction>()
+            .AnyAsync(t => t.CategoryId == category.Id && !t.Disabled, cancellationToken);
 
+        if (transactionsUsingCategory)
+        {
+            return CustomResult<CategoryDto>.ErrorResult("Não é possível desativar a categoria pois existem transações associadas a ela.",
+                errorType: IsResultErrorType.Validation);
+        }
+        
         category.Disable();
         repository.DbSet<Category>().Update(category);
 

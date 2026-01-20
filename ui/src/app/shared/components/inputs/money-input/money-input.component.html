@@ -1,5 +1,5 @@
 <div [class.fixedSize]="fixedSize" [ngClass]="variant">
-  <label [for]="inputId" class="form-label">
+  <label [attr.for]="inputId" class="input-label">
     {{ labelSignal() }}
     @if (showMandatory) {
       <span class="mandatory">*</span>
@@ -25,7 +25,8 @@
     <input
       currencyMask
       id="{{ inputId }}"
-      class="input clear"
+      class="input clear input-money"
+      [class.is-read-only]="readonly"
       [type]="type"
       (blur)="onInputBlur()"
       (ngModelChange)="onCurrencyChange($event)"
@@ -33,17 +34,7 @@
       [placeholder]="placeholder"
       [disabled]="isDisable"
       [readOnly]="readonly"
-      [class.is-read-only]="readonly"
     />
-    @if (showX && value) {
-      <button
-        type="button"
-        id="{{ inputId }}-clear"
-        class="clear-input"
-        (click)="clearInput($event)"
-      >&#x2715;</button
-      >
-    }
   </div>
   @if (errorMessages()?.length) {
     <ul class="error-messages">

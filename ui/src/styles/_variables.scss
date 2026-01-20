@@ -12,6 +12,7 @@ $bp-huge: 1440px;
   --text-primary-color: #3A3A3A;
   --text-primary-hover-color: #3A3A3A;
   --text-secondary-color: #909090;
+  --text-calendar-color: rgba(0, 0, 0, 0.4);
 
   --text-gray-color: #909090;
   --text-light-gray-color: #97a9b0;
@@ -44,6 +45,8 @@ body.dark-theme {
   --text-primary-color: #f1f1f1;
   --text-primary-hover-color: #2a2a3a;
   --text-secondary-color: #bdbdbd;
+  --text-calendar-color: rgba(255, 255, 255, 0.4);
+
   --background-primary-color: #1e1e1e;
   --background-secondary-color: #2a2a2a;
   --border-color: rgba(255, 255, 255, 0.08);

@@ -21,6 +21,7 @@
         placeholder="Digite o nome"
         formControlName="name"
         [inputId]="'input-name'"
+        [showX]="true"
       />
 
       <zen-color-picker-input
@@ -28,7 +29,9 @@
         label="Cor:"
         placeholder="#000000"
         formControlName="color"
-        [inputId]="'input-color-picker'"/>
+        [inputId]="'input-color-picker'"
+        [showX]="true"
+      />
 
       <zen-select-input
         id="select-type"
@@ -37,6 +40,7 @@
         formControlName="type"
         [options]="categoryOptions.typesOptions"
         [dropdownId]="'select-type'"
+        [showX]="true"
       />
     </form>
   </zen-filter>

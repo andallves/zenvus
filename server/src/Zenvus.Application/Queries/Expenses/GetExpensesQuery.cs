@@ -1,4 +1,3 @@
-using System.ComponentModel;
 using Zenvus.API.Configurations.Swagger;
 using Zenvus.Application.DTO.Expenses;
 using Zenvus.Core.ValueObjects;
@@ -8,18 +7,16 @@ namespace Zenvus.Application.Queries.Expenses;
 
 public class GetExpensesQuery : BasePagedQuery<Expense, ExpenseDto>
 {
-    [Description("Nome da Categoria")]
-    public string? CategoryName { get; set; }
+    public Guid? CategoryId { get; set; }
     public DateTime? Date { get; set; }
     public string? Description { get; set; }
-    public bool? Disabled { get; set; }
     [SwaggerParameterExample("Nulo", "")]
     [SwaggerParameterExample("Fixed", "1")]
     [SwaggerParameterExample("Variable", "2")]
     [SwaggerParameterExample("Subscription", "3")]
     [SwaggerParameterExample("Loan", "4")]
     [SwaggerParameterExample("Other", "5")]
-    public int? Type { get; set; }
+    public int? TypeId { get; set; }
     public bool? HasDebt { get; set; }
     
     [SwaggerParameterExample("Id", "Id")] 
@@ -32,12 +29,12 @@ public class GetExpensesQuery : BasePagedQuery<Expense, ExpenseDto>
 
     public override void ApplyFilter(ref IQueryable<Expense> query)
     {
-        if (!string.IsNullOrEmpty(CategoryName))
+        if (CategoryId.HasValue)
         {
-            query = query.Where(e => e.Category.Name.Contains(CategoryName));
+            query = query.Where(e => e.Category.Id == CategoryId);
         }
         
-        if (Date != null)
+        if (Date.HasValue)
         {
             query = query.Where(e => e.Date.Equals(Date));
         }
@@ -46,18 +43,13 @@ public class GetExpensesQuery : BasePagedQuery<Expense, ExpenseDto>
         {
             query = query.Where(e => e.Description.Contains(Description));
         }
-
-        if (Disabled is not null)
+        
+        if (TypeId.HasValue)
         {
-            query = query.Where(e => e.Disabled == Disabled);
+            query = query.Where(e => (int)e.Type == TypeId);
         }
         
-        if (Type is not null)
-        {
-            query = query.Where(e => (int)e.Type == Type);
-        }
-        
-        if (HasDebt is not null)
+        if (HasDebt.HasValue)
         {
             query = query.Where(e => e.HasDebt == HasDebt);
         }
@@ -76,7 +68,7 @@ public class GetExpensesQuery : BasePagedQuery<Expense, ExpenseDto>
                 "isExpense" => query.OrderBy(e => e.Type),
                 "hasDebt" => query.OrderBy(e => e.HasDebt),
                 "createdAt" => query.OrderBy(e => e.CreatedAt),
-                _ => query.OrderBy(x => x.Id)
+                _ => query.OrderBy(x => x.Date)
             };
             return;
         }
@@ -90,7 +82,7 @@ public class GetExpensesQuery : BasePagedQuery<Expense, ExpenseDto>
             "isExpense" => query.OrderByDescending(e => e.Type),
             "hasDebt" => query.OrderByDescending(e => e.HasDebt),
             "createdAt" => query.OrderBy(e => e.CreatedAt),
-            _ => query.OrderByDescending(e => e.Id)
+            _ => query.OrderByDescending(e => e.Date)
         };
     }
 }

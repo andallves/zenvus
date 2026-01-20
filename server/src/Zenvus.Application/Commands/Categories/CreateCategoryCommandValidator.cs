@@ -19,10 +19,10 @@ public class CreateCategoryCommandValidator : AbstractValidator<CreateCategoryCo
             .NotEmpty() 
             .WithMessage("O nome da categoria é obrigatório.")
             .CustomAsync(NameUsed)
-            .MinimumLength(3)
-            .WithMessage("O nome da categoria deve ter no mínimo 3 caracteres.")
-            .MaximumLength(15)
-            .WithMessage("O nome da categoria deve ter no máximo 15 caracteres.");
+            .MinimumLength(2)
+            .WithMessage("O nome da categoria deve ter no mínimo 2 caracteres.")
+            .MaximumLength(30)
+            .WithMessage("O nome da categoria deve ter no máximo 30 caracteres.");
         
         RuleFor(c => c.Color)
             .NotNull()
