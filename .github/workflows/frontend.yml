@@ -57,9 +57,6 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
-    if: |
-      github.event_name == 'pull_request' && 
-      (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/development')
 
     steps:
     - name: Debug - Verificar execução
