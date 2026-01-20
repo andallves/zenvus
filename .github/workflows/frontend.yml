@@ -122,7 +122,7 @@ jobs:
     
         # Faz deploy
         echo "📤 Uploading files..."
-        gsutil -m rsync -d -r ./deploy-files/ gs://$BUCKET/
+        gsutil -m rsync -d -r ./deploy-files/browser/ gs://$BUCKET/
     
         # Configura cache
         echo "⚙️ Configuring cache headers..."
