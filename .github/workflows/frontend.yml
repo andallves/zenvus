@@ -6,7 +6,7 @@ on:
     paths:
       - 'ui/**'  # Monitora mudanças no diretório ui/
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main", "development" ]
 
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT }}
