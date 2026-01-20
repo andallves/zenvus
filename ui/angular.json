@@ -68,7 +68,7 @@
               ],
               "outputHashing": "all"
             },
-            "development": {
+            "dev": {
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true,
@@ -86,10 +86,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "ui:build:production"
+              "buildTarget": "ui:build:prod"
             },
             "development": {
-              "buildTarget": "ui:build:development"
+              "buildTarget": "ui:build:dev"
             }
           },
           "defaultConfiguration": "development"
