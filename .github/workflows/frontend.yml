@@ -1,5 +1,5 @@
 # .github/workflows/deploy-angular-gcp-full.yml
-name: Deploy Angular to GCP
+name: Deploy Frontend to GCP
 
 on:
   push:
@@ -67,7 +67,7 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
-          cache-dependency-path: frontend/package-lock.json
+          cache-dependency-path: ui/package-lock.json
 
       - name: Install dependencies
         working-directory: ./ui
@@ -99,7 +99,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: angular-build-${{ needs.setup.outputs.environment }}
-          path: frontend/dist/browser/**
+          path: ui/dist/browser/**
 
   deploy:
     needs: [setup, build]
