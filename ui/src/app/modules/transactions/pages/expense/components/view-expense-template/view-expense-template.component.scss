@@ -5,10 +5,11 @@
   gap: 6px;
 
   &__text {
-    font-weight: 600;
+    font-weight: 500;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    letter-spacing: 0.6px;
 
     &--answer {
       font-weight: normal;
@@ -24,61 +25,77 @@
   .table-wrapper {
     width: 100%;
     overflow-x: auto;
+    border-radius: 10px;
   }
+
+
 
   .table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
     table-layout: auto; /* 🔥 ESSENCIAL */
+    border-radius: 10px;
 
     /* HEADER */
     &__head {
-      background-color: #f8f9fa;
+      tr th {
+        background-color: var(--primary-color) !important;
+        color: var(--white-color); // Garante legibilidade
+        padding: 12px;
+        font-weight: 500;
+        letter-spacing: 0.8px;
+        border-bottom: 1px solid var(--border-color);
+        text-align: center;
+
+        &.dueDate-cell,
+        &.paymentDate-cell {
+          width: 100px;           /* Ajuste conforme necessário */
+          white-space: normal;    /* Permite que o texto quebre linhas */
+          line-height: 1.2;       /* Melhora o espaçamento entre as linhas */
+          text-align: center;
+          display: table-cell;    /* Garante o comportamento de célula */
+          vertical-align: middle;
+        }
+
+        &.actions-header {
+          vertical-align:middle;
+        }
+      }
     }
 
-    /* LINHAS */
-    &__row {
-      width: 100%;
+    &__body {
+      background-color: var(--background-secondary-color);
+
+      tr td {
+        background: var(--background-secondary-color) !important;
+        padding: 12px;
+        text-align: center;
+        vertical-align: middle;
+        border-bottom: 1px solid var(--border-color);
+        color: var(--text-primary-color); // Use sua variável de cor de texto
+      }
+
+      tr:hover {
+        background-color: var(--active-background-color) !important;
+      }
+
+      // Remove a borda da última linha para ficar mais limpo
+      tr:last-child td {
+        border-bottom: none;
+      }
     }
 
     /* CÉLULAS (th e td) */
-    &__column,
-     &__body td {
-      max-width: 1px;           /* truque clássico */
+    &__column {
       padding: 0.75rem;
       text-align: center;
       vertical-align: middle;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      border-bottom: 1px solid #e0e0e0;
+      border-bottom: 1px solid var(--border-color);
     }
-
-    /* BODY */
-    &__body tr:hover {
-      background-color: #f5f5f5;
-    }
-  }
-
-  /* ============================
-     LARGURAS DAS COLUNAS
-     ============================ */
-
-  .column-number {
-    //width: 15%;
-  }
-  .column-dueDate,
-  .column-paymentDate {
-    // width: 20%;
-  }
-
-  .column-amount {
-    // width: 20%;
-    text-align: right;
-  }
-
-  .column-status {
-  //  width: 20%;
   }
 
   .actions-header,

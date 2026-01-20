@@ -167,4 +167,6 @@ export class ViewExpenseTemplateComponent implements OnInit {
 
     this.expenseUpdated.emit(this.expense());
   }
+
+  protected readonly EPaymentStatus = EPaymentStatus;
 }
