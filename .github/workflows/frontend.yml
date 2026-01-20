@@ -57,74 +57,89 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
-  
-    
+    if: |
+      github.event_name == 'push' && 
+      (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+
     steps:
-      - uses: actions/checkout@v4
+    - name: Debug - Verificar execução
+      run: |
+        echo "🚀 Iniciando deploy..."
+        echo "Event: ${{ github.event_name }}"
+        echo "Ref: ${{ github.ref }}"
+        echo "Branch: ${GITHUB_REF#refs/heads/}"
 
-      - name: Setup Google Cloud
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          project_id: ${{ secrets.GCP_PROJECT }}
-          service_account_key: ${{ secrets.GCP_CREDENTIALS }}
-          export_default_credentials: true
+    - uses: actions/checkout@v4
 
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: angular-build
-          path: ./deploy-files  # Baixa para uma pasta específica
+    - name: Setup Google Cloud
+      uses: google-github-actions/setup-gcloud@v2
+      with:
+        project_id: ${{ secrets.GCP_PROJECT }}
+        service_account_key: ${{ secrets.GCP_CREDENTIALS }}
+        export_default_credentials: true
+        install_components: 'gsutil'
 
-      - name: Debug - Ver estrutura de arquivos
-        run: |
-          echo "📁 Estrutura de arquivos:"
-          find . -name "*.html" -o -name "*.js" -o -name "*.css" | head -20
-          echo ""
-          echo "📦 Conteúdo da pasta deploy-files:"
-          ls -la deploy-files/
-          echo ""
-          echo "📊 Arquivos para deploy:"
-          find deploy-files/ -type f | head -20
+    - name: Configure gcloud auth
+      run: |
+        # Configura autenticação e projeto
+        gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
+        gcloud config set project ${{ secrets.GCP_PROJECT }}
+    
+        # Verifica se está autenticado
+        gcloud auth list
+        gcloud config list project
 
-      - name: Deploy to Cloud Storage
-        run: |
-          # Determina ambiente
-          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
-            BUCKET="zenvus-app-prod"
-            echo "🚀 Deploying to PRODUCTION"
-          else
-            BUCKET="zenvus-app-staging"
-            echo "🧪 Deploying to STAGING"
-          fi
-          
-          # Cria bucket se não existir
-          if ! gsutil ls gs://$BUCKET 2>/dev/null; then
-            echo "Creating bucket: $BUCKET"
-            gsutil mb -l us-central1 gs://$BUCKET
-            gsutil web set -m index.html -e index.html gs://$BUCKET
-            gsutil iam ch allUsers:objectViewer gs://$BUCKET
-          fi
-          
-          # Deploy dos arquivos
-          echo "📤 Deploying files from: $(pwd)/deploy-files"
-          gsutil -m rsync -R ./deploy-files/ gs://$BUCKET/
-          
-          # Configura cache
-          echo "⚙️ Configuring cache headers..."
-          gsutil -m setmeta -h "Cache-Control:no-cache, max-age=0" \
-            gs://$BUCKET/*.html
-          
-          gsutil -m setmeta -h "Cache-Control:public, max-age=31536000, immutable" \
-            gs://$BUCKET/*.js \
-            gs://$BUCKET/*.css \
-            gs://$BUCKET/*.woff2 \
-            gsutil -m setmeta -h "Cache-Control:public, max-age=31536000" \
-            gs://$BUCKET/assets/**
-          
-          # Invalidar cache do CDN (se usando Cloud CDN)
-          echo "🔄 Invalidating cache..."
-          gsutil -m rm "gs://$BUCKET/**"  # Isso força atualização
-          
-          echo "✅ Deployment successful!"
-          echo "🌐 URL: https://storage.googleapis.com/$BUCKET/index.html"
-          echo "🔗 Acesse: https://$BUCKET.web.app (se configurado)"
+    - name: Download build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: angular-build
+        path: ./deploy-files
+
+    - name: Verify downloaded files
+      run: |
+        echo "📁 Arquivos para deploy:"
+        find ./deploy-files -type f -name "*.html" | head -5
+        ls -la ./deploy-files/
+
+    - name: Deploy to Cloud Storage
+      run: |
+        # Determina ambiente
+        if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+          BUCKET="zenvus-app-prod"
+          echo "🚀 Deploying to PRODUCTION"
+        else
+          BUCKET="zenvus-app-staging"
+          echo "🧪 Deploying to STAGING"
+        fi
+    
+        echo "📦 Bucket: $BUCKET"
+        echo "🔧 Projeto: ${{ secrets.GCP_PROJECT }}"
+    
+        # Verifica se bucket existe
+        if ! gsutil ls gs://$BUCKET 2>/dev/null; then
+          echo "📁 Creating bucket: $BUCKET"
+          gsutil mb -l us-central1 gs://$BUCKET
+          gsutil web set -m index.html -e index.html gs://$BUCKET
+          gsutil iam ch allUsers:objectViewer gs://$BUCKET
+          echo "✅ Bucket criado e configurado"
+        else
+          echo "✅ Bucket já existe"
+        fi
+    
+        # Faz deploy
+        echo "📤 Uploading files..."
+        gsutil -m rsync -d -r ./deploy-files/ gs://$BUCKET/
+    
+        # Configura cache
+        echo "⚙️ Configuring cache headers..."
+        gsutil -m setmeta -h "Cache-Control:no-cache, max-age=0" \
+          gs://$BUCKET/*.html 2>/dev/null || true
+    
+        gsutil -m setmeta -h "Cache-Control:public, max-age=31536000, immutable" \
+          gs://$BUCKET/*.js \
+          gs://$BUCKET/*.css \
+          gs://$BUCKET/*.woff2 2>/dev/null || true
+    
+        echo "✅ Deployment successful!"
+        echo "🌐 URL: https://storage.googleapis.com/$BUCKET/index.html"
+        echo "🔗 Ou: http://$BUCKET.storage.googleapis.com"
