@@ -17,7 +17,7 @@ import { IDebtInstallment, IDebtInstallmentUpdate } from '@shared/interfaces/deb
 import { IFieldConfig } from '@shared/interfaces/validation.interface';
 import { ValidationBuilderService } from '@shared/validators/validation-builder.service';
 import { ValidationHelperService } from '@shared/validators/validation-helper.service';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { BsModalRef } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -45,7 +45,6 @@ export class UpdateDebtInstallmentFormComponent implements OnInit {
   changeData = output<IDebtInstallment>();
 
   private readonly debtInstallmentService = inject(DebtInstallmentService);
-  private readonly modalService = inject(BsModalService);
   private readonly modalAlertService = inject(ModalAlertService);
   private readonly toastr = inject(ToastrService);
   private readonly validationHelper = inject(ValidationHelperService);
@@ -129,7 +128,7 @@ export class UpdateDebtInstallmentFormComponent implements OnInit {
         this.toastr.success('Despesa atualizada com sucesso!', 'Sucesso!');
       },
       error: error => {
-        const erros = error.error.errors?.join('<br>') || error.error.message || error.message;
+        const erros = error.error.errors?.join('<br>') || error.error.message || error.error.title;
         this.modalAlertService
           .open({
             icon: ModalIconType.Error,
