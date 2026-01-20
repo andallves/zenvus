@@ -4,7 +4,7 @@
   align-items: center;
   justify-content: space-between;
   background-color: var(--background-secondary-color);
-  border-bottom: 1px solid rgba(128, 128, 128, 0.2);
+  border-bottom: 1px solid var(--border-color);
   padding: 1rem 1.25rem;
   border-radius: 0.4375rem 0.4375rem 0 0;
   transition: background-color 0.3s, color 0.3s, border-color 0.3s;

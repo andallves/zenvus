@@ -45,6 +45,10 @@ $danger-color: #d73443;
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  &__title {
+    color: var(--text-primary-color);
+  }
 }
 
 .icon-container {
@@ -74,6 +78,10 @@ $danger-color: #d73443;
 
 .modal-body {
   margin-bottom: 20px;
+
+  &__body {
+    color: var(--text-primary-color);
+  }
 }
 
 .modal-footer {
