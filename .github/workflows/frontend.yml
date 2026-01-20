@@ -18,6 +18,7 @@ jobs:
     # Só faz deploy se for push (PR apenas testa o build se quiser)
   
     runs-on: ubuntu-latest
+    environment: gcp-staging
 
     steps:
       - uses: actions/checkout@v4
