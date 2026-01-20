@@ -57,6 +57,7 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    environment: gcp-staging
 
     steps:
     - name: Debug - Verificar execução
