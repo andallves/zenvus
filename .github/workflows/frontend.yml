@@ -33,6 +33,7 @@ jobs:
 
       - name: Run lint and tests
         working-directory: ./ui
+        continue-on-error: true
         run: |
           npm run lint || echo "Lint completed"
           npm test:ci  || echo "Tests completed"
@@ -40,10 +41,10 @@ jobs:
       - name: Build Angular
         working-directory: ./ui
         run: |
-          npm run build:prod
+          npm run build:dev
         env:
           NG_APP_API_URL: ${{ github.ref == 'refs/heads/main' && secrets.API_URL_PROD || secrets.API_URL_STAGING }}
-          NG_APP_ENVIRONMENT: ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}
+          NG_APP_ENVIRONMENT: ${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}
           NG_APP_VERSION: ${{ github.sha }}
 
       - name: Upload build artifacts

@@ -1,6 +1,6 @@
 export const environment = {
-  env: 'production',
-  production: false,
+  env: 'prod',
+  production: true,
   apiUrl: 'https://api.zenvus.com.br',
   noticiasApiUrl: 'https://api.zenvus.com.br/v1',
 };
