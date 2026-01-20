@@ -73,6 +73,18 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: angular-build
+          path: ./deploy-files  # Baixa para uma pasta específica
+
+      - name: Debug - Ver estrutura de arquivos
+        run: |
+          echo "📁 Estrutura de arquivos:"
+          find . -name "*.html" -o -name "*.js" -o -name "*.css" | head -20
+          echo ""
+          echo "📦 Conteúdo da pasta deploy-files:"
+          ls -la deploy-files/
+          echo ""
+          echo "📊 Arquivos para deploy:"
+          find deploy-files/ -type f | head -20
 
       - name: Deploy to Cloud Storage
         run: |
@@ -94,17 +106,25 @@ jobs:
           fi
           
           # Deploy dos arquivos
-          echo "Deploying files..."
-          gsutil -m rsync -R . gs://$BUCKET
+          echo "📤 Deploying files from: $(pwd)/deploy-files"
+          gsutil -m rsync -R ./deploy-files/ gs://$BUCKET/
           
           # Configura cache
-          echo "Configuring cache headers..."
+          echo "⚙️ Configuring cache headers..."
           gsutil -m setmeta -h "Cache-Control:no-cache, max-age=0" \
             gs://$BUCKET/*.html
           
           gsutil -m setmeta -h "Cache-Control:public, max-age=31536000, immutable" \
             gs://$BUCKET/*.js \
-            gs://$BUCKET/*.css
+            gs://$BUCKET/*.css \
+            gs://$BUCKET/*.woff2 \
+            gsutil -m setmeta -h "Cache-Control:public, max-age=31536000" \
+            gs://$BUCKET/assets/**
+          
+          # Invalidar cache do CDN (se usando Cloud CDN)
+          echo "🔄 Invalidating cache..."
+          gsutil -m rm "gs://$BUCKET/**"  # Isso força atualização
           
           echo "✅ Deployment successful!"
-          echo "🌐 URL: https://storage.googleapis.com/$BUCKET/index.html"# .github/workflows/deploy-angular.yml
+          echo "🌐 URL: https://storage.googleapis.com/$BUCKET/index.html"
+          echo "🔗 Acesse: https://$BUCKET.web.app (se configurado)"
