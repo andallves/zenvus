@@ -3,11 +3,11 @@ name: Deploy Angular Frontend
 
 on:
   push:
-    branches: [ main, development ]
+    branches: [ "main", "development" ]
     paths:
       - 'ui/**'  # Monitora mudanças no diretório ui/
   pull_request:
-    branches: [ main ]
+    branches: [ "main" ]
 
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT }}
