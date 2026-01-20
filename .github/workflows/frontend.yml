@@ -1,5 +1,4 @@
-# .github/workflows/deploy-angular.yml
-name: Deploy Angular Frontend
+name: Deploy Frontend to GCP
 
 on:
   push:
