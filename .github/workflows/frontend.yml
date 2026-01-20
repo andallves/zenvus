@@ -52,7 +52,7 @@ jobs:
             echo "ENV_TAG=staging" >> $GITHUB_ENV
           fi
           
-          echo "IMAGE_TAG=us-central1-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO_NAME }}/frontend:${SHORT_SHA}" >> $GITHUB_ENV
+          echo "IMAGE_TAG=us-central1-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO_NAME }}/ui:${SHORT_SHA}" >> $GITHUB_ENV
 
       # 5. Build e Push da Imagem
       - name: Build and Push Container
