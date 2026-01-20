@@ -3,7 +3,7 @@ name: Deploy Frontend to GCP
 
 on:
   push:
-    branches: [ main, development ]
+    branches: [ development ]
     paths:
       - 'ui/**'
   pull_request:
