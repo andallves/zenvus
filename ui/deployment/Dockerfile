@@ -6,7 +6,7 @@ WORKDIR /app
 
 # Cache de dependências
 COPY package*.json ./
-RUN npm ci --legacy-peer-deps --omit=dev
+RUN npm ci --legacy-peer-deps
 
 # Copia código e builda
 COPY . .
