@@ -1,109 +1,71 @@
-name: Deploy Frontend to GCP
+name: Deploy Frontend - Cloud Run
 
 on:
   push:
     branches: [ "main", "development" ]
     paths:
-      - 'ui/**'  # Monitora mudanças no diretório ui/
+      - 'ui/**' # Só roda se mexer na pasta UI
   pull_request:
-    branches: [ "main" ]
-
-env:
-  PROJECT_ID: ${{ secrets.GCP_PROJECT }}
-  NODE_VERSION: '20'
-  BUCKET_NAME: 'zenvus-app-${{ github.ref == ''refs/heads/main'' && ''prod'' || ''staging'' }}'
+    branches: [ "main", "development" ]
 
 jobs:
-  build:
+  build-and-deploy:
+    # Só faz deploy se for push (PR apenas testa o build se quiser)
+  
     runs-on: ubuntu-latest
-    
+    environment: gcp-staging
+
+    env:
+      IMAGE_NAME: us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/zenvus-ux/ui
+      PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+      REGION: us-central1
+      REPO_NAME: zenvus-ux  # Nome do repositório criado no Passo 1
+      SERVICE_NAME: zenvus-ux
+
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      # 1. Autenticação Google
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
         with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-          cache-dependency-path: 'ui/package-lock.json'  # CORRIGIDO: ui/ em vez de frontend/
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
 
-      - name: Install dependencies
-        working-directory: ./ui  # CORRIGIDO: Trabalha no diretório ui/
-        run: npm ci
-
-      - name: Run lint and tests
-        working-directory: ./ui
-        run: |
-          npm run lint || echo "Lint completed"
-          npm test -- --watch=false --browsers=ChromeHeadless || echo "Tests completed"
-
-      - name: Build Angular
-        working-directory: ./ui
-        run: |
-          npm run build -- --configuration=production
-        env:
-          NG_APP_API_URL: ${{ github.ref == 'refs/heads/main' && secrets.API_URL_PROD || secrets.API_URL_STAGING }}
-          NG_APP_ENVIRONMENT: ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}
-          NG_APP_VERSION: ${{ github.sha }}
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: angular-build
-          path: ui/dist/**  # CORRIGIDO: ui/dist/
-          retention-days: 7
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push'
-    
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Google Cloud
+      # 2. Setup GCloud SDK
+      - name: Setup Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
         with:
-          project_id: ${{ secrets.GCP_PROJECT }}
-          service_account_key: ${{ secrets.GCP_CREDENTIALS }}
-          export_default_credentials: true
+          project_id: ${{ env.PROJECT_ID }}
 
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: angular-build
+      # 3. Configura Docker
+      - name: Configure Docker Auth
+        run: gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
 
-      - name: Deploy to Cloud Storage
+      - name: Build Docker Image
+        run: docker build -t $IMAGE_NAME -f ui/deployment/Dockerfile ui
+
+
+      - name: Push Docker Image
+        run: docker push $IMAGE_NAME
+
+      # 6. Deploy no Cloud Run
+      - name: Deploy to Cloud Run
         run: |
-          # Determina ambiente
-          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
-            BUCKET="zenvus-app-prod"
-            echo "🚀 Deploying to PRODUCTION"
-          else
-            BUCKET="zenvus-app-staging"
-            echo "🧪 Deploying to STAGING"
-          fi
-          
-          # Cria bucket se não existir
-          if ! gsutil ls gs://$BUCKET 2>/dev/null; then
-            echo "Creating bucket: $BUCKET"
-            gsutil mb -l us-central1 gs://$BUCKET
-            gsutil web set -m index.html -e index.html gs://$BUCKET
-            gsutil iam ch allUsers:objectViewer gs://$BUCKET
-          fi
-          
-          # Deploy dos arquivos
-          echo "Deploying files..."
-          gsutil -m rsync -R . gs://$BUCKET
-          
-          # Configura cache
-          echo "Configuring cache headers..."
-          gsutil -m setmeta -h "Cache-Control:no-cache, max-age=0" \
-            gs://$BUCKET/*.html
-          
-          gsutil -m setmeta -h "Cache-Control:public, max-age=31536000, immutable" \
-            gs://$BUCKET/*.js \
-            gs://$BUCKET/*.css
-          
-          echo "✅ Deployment successful!"
-          echo "🌐 URL: https://storage.googleapis.com/$BUCKET/index.html"# .github/workflows/deploy-angular.yml
+          echo "🚀 Deploying to $SERVICE_NAME..."
+          gcloud run deploy $SERVICE_NAME \
+            --image $IMAGE_NAME \
+            --region $REGION \
+            --port 8080 \
+            --platform managed \
+            --allow-unauthenticated \
+            --service-account cloudrun-zenvus@${PROJECT_ID}.iam.gserviceaccount.com \
+            --memory 256Mi \
+            --min-instances 0 \
+            --max-instances 1 \
+            --quiet
+
+      # 7. Exibe a URL final
+      - name: Show URL
+        run: |
+          URL=$(gcloud run services describe $SERVICE_NAME --region $REGION --format 'value(status.url)')
+          echo "✅ Deployed successfully to: $URL"

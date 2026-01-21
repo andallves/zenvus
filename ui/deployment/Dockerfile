@@ -6,11 +6,11 @@ WORKDIR /app
 
 # Cache de dependências
 COPY package*.json ./
-RUN npm ci --omit=dev
+RUN npm ci --legacy-peer-deps
 
 # Copia código e builda
 COPY . .
-RUN npm run build -- --configuration=production
+RUN npm run build:dev
 
 # Stage 2: Nginx com otimizações GCP
 FROM nginx:alpine
@@ -22,7 +22,7 @@ RUN rm /etc/nginx/conf.d/default.conf
 COPY nginx-gcp.conf /etc/nginx/conf.d/default.conf
 
 # Copia build
-COPY --from=builder /app/dist/browser /usr/share/nginx/html
+COPY --from=builder /app/dist/ui/browser /usr/share/nginx/html
 
 # Health check para Cloud Run
 HEALTHCHECK --interval=30s --timeout=3s --start-period=30s --retries=3 \
@@ -33,6 +33,6 @@ LABEL maintainer="dev@zenvus.com"
 LABEL version="1.0"
 LABEL environment="production"
 
-EXPOSE 8080
+EXPOSE 80
 
 CMD ["nginx", "-g", "daemon off;"]
