@@ -9,7 +9,7 @@ on:
     branches: [ "main", "development" ]
 
 env:
-  PROJECT_ID: ${{ secrets.GCP_PROJECT }}
+  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
   REGION: us-central1
   REPO_NAME: zenvus-ux  # Nome do repositório criado no Passo 1
   SERVICE_NAME: zenvus-ux
