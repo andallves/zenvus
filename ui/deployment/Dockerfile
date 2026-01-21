@@ -33,6 +33,6 @@ LABEL maintainer="dev@zenvus.com"
 LABEL version="1.0"
 LABEL environment="production"
 
-EXPOSE 8080
+EXPOSE 80
 
 CMD ["nginx", "-g", "daemon off;"]
