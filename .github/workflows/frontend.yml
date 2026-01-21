@@ -16,7 +16,7 @@ jobs:
     environment: gcp-staging
 
     env:
-      IMAGE_NAME: us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/zenvus-ux
+      IMAGE_NAME: us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/zenvus-ux/ui
       PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
       REGION: us-central1
       REPO_NAME: zenvus-ux  # Nome do repositório criado no Passo 1
