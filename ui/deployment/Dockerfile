@@ -22,7 +22,7 @@ RUN rm /etc/nginx/conf.d/default.conf
 COPY nginx-gcp.conf /etc/nginx/conf.d/default.conf
 
 # Copia build
-COPY --from=builder /app/dist/ui /usr/share/nginx/html
+COPY --from=builder /app/dist/ui/browser /usr/share/nginx/html
 
 # Health check para Cloud Run
 HEALTHCHECK --interval=30s --timeout=3s --start-period=30s --retries=3 \
