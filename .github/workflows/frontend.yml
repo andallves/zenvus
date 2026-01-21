@@ -55,6 +55,7 @@ jobs:
           gcloud run deploy $SERVICE_NAME \
             --image $IMAGE_NAME \
             --region $REGION \
+            --port 8080 \
             --platform managed \
             --allow-unauthenticated \
             --service-account cloudrun-zenvus@${PROJECT_ID}.iam.gserviceaccount.com \
