@@ -6,11 +6,11 @@ WORKDIR /app
 
 # Cache de dependências
 COPY package*.json ./
-RUN npm ci --omit=dev
+RUN npm ci --legacy-peer-deps --omit=dev
 
 # Copia código e builda
 COPY . .
-RUN npm run build -- --configuration=production
+RUN npm run build:dev
 
 # Stage 2: Nginx com otimizações GCP
 FROM nginx:alpine
