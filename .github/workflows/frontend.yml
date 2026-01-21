@@ -12,6 +12,7 @@ env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT }}
   REGION: us-central1
   REPO_NAME: zenvus-ux  # Nome do repositório criado no Passo 1
+  SERVICE_NAME: zenvus-ux
 
 jobs:
   build-and-deploy:
@@ -19,6 +20,9 @@ jobs:
   
     runs-on: ubuntu-latest
     environment: gcp-staging
+
+    env:
+      IMAGE_NAME: us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/zenvus-ux
 
     steps:
       - uses: actions/checkout@v4
@@ -39,42 +43,24 @@ jobs:
       - name: Configure Docker Auth
         run: gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
 
-      # 4. Define variáveis dinâmicas (Nome do serviço e Tag)
-      - name: Set Environment Variables
-        run: |
-          SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
-          
-          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
-            echo "SERVICE_NAME=zenvus-ux-prod" >> $GITHUB_ENV
-            echo "ENV_TAG=prod" >> $GITHUB_ENV
-          else
-            echo "SERVICE_NAME=zenvus-ux-staging" >> $GITHUB_ENV
-            echo "ENV_TAG=staging" >> $GITHUB_ENV
-          fi
-          
-          echo "IMAGE_TAG=us-central1-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO_NAME }}/ui:${SHORT_SHA}" >> $GITHUB_ENV
+      - name: Build Docker Image
+        run: docker build -t $IMAGE_NAME -f server/deployment/Dockerfile server
 
-      # 5. Build e Push da Imagem
-      - name: Build and Push Container
-        working-directory: ./ui
-        run: |
-          echo "🔨 Building Docker Image..."
-          docker build -t ${{ env.IMAGE_TAG }} .
-          
-          echo "📤 Pushing to Artifact Registry..."
-          docker push ${{ env.IMAGE_TAG }}
+
+      - name: Push Docker Image
+        run: docker push $IMAGE_NAME
 
       # 6. Deploy no Cloud Run
       - name: Deploy to Cloud Run
         run: |
-          echo "🚀 Deploying to ${{ env.SERVICE_NAME }}..."
-          gcloud run deploy ${{ env.SERVICE_NAME }} \
-            --image ${{ env.IMAGE_TAG }} \
-            --region ${{ env.REGION }} \
+          echo "🚀 Deploying to $SERVICE_NAME..."
+          gcloud run deploy $SERVICE_NAME \
+            --image $IMAGE_NAME \
+            --region $REGION \
             --platform managed \
             --allow-unauthenticated \
             --port 80 \
-            --memory 512Mi \
+            --memory 256Mi \
             --min-instances 0 \
             --max-instances 1 \
             --quiet
@@ -82,5 +68,5 @@ jobs:
       # 7. Exibe a URL final
       - name: Show URL
         run: |
-          URL=$(gcloud run services describe ${{ env.SERVICE_NAME }} --region ${{ env.REGION }} --format 'value(status.url)')
+          URL=$(gcloud run services describe $SERVICE_NAME --region $REGION --format 'value(status.url)')
           echo "✅ Deployed successfully to: $URL"
