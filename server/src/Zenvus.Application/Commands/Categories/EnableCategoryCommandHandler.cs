@@ -1,4 +1,3 @@
-using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Zenvus.Application.DTO.Categories;
@@ -9,7 +8,7 @@ using Zenvus.Infra.Database;
 
 namespace Zenvus.Application.Commands.Categories;
 
-public class EnableCategoryCommandHandler(IRepository<ZenvusDbContext> repository, IMapper mapper) : IRequestHandler<EnableCategoryCommand, CustomResult<CategoryDto>>
+public class EnableCategoryCommandHandler(IRepository<ZenvusDbContext> repository) : IRequestHandler<EnableCategoryCommand, CustomResult<CategoryDto>>
 {
     public async Task<CustomResult<CategoryDto>> Handle(EnableCategoryCommand request, CancellationToken cancellationToken)
     {
@@ -25,7 +24,7 @@ public class EnableCategoryCommandHandler(IRepository<ZenvusDbContext> repositor
         repository.DbSet<Category>().Update(category);
 
         return await repository.SaveChangesAsync(cancellationToken) > 0
-            ? CustomResult<CategoryDto>.SuccessResult(mapper.Map<CategoryDto>(category),
+            ? CustomResult<CategoryDto>.SuccessResult(CategoryDto.From(category),
                 "Categoria foi habitado com sucesso.")
             : CustomResult<CategoryDto>.ErrorResult("Não foi possível salvar a alteração.",
                 errorType: IsResultErrorType.ServerError);

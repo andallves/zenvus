@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using Jaeger;
 using Microsoft.AspNetCore.DataProtection;
 using Serilog;
 using Zenvus.API.Configurations;

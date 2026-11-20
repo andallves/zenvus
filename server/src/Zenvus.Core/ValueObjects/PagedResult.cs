@@ -1,5 +1,3 @@
-using AutoMapper;
-
 namespace Zenvus.Core.ValueObjects;
 
 public sealed class PagedResult<T>
@@ -16,11 +14,11 @@ public sealed class PagedResult<T>
     public bool IsLastPage => CurrentPage == TotalPages;
     public bool HasMorePage => TotalPages > CurrentPage;
 
-    public PagedResult<TOut> ToDtoResult<TOut>(IMapper mapper)
+    public PagedResult<TOut> ToDtoResult<TOut>(Func<T, TOut> map)
     {
         return new PagedResult<TOut>
         {
-            Result = mapper.Map<List<TOut>>(Result),
+            Result = Result.Select(map).ToList(),
             CurrentPage = CurrentPage,
             PageSize = PageSize,
             TotalPages = TotalPages,

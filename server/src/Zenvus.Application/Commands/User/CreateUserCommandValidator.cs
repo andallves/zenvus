@@ -53,7 +53,7 @@ public class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
             RuleFor(x => x.Photo)
                 .Must(photo => photo?.Length <= 1_000_000)
                 .WithMessage("A foto deve ter no máximo 1MB.")
-                .Must(photo => photo?.ContentType == "image/jpg" || photo.ContentType == "image/jpeg" || photo.ContentType == "image/png")
+                .Must(photo => photo?.ContentType is "image/jpg" or "image/jpeg" or "image/png")
                 .WithMessage("A foto deve ser do tipo JPG ou PNG.");
         });
         

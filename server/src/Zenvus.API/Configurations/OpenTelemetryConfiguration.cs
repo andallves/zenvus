@@ -51,11 +51,8 @@ public static class OpenTelemetryConfiguration
                 tracing
                     .AddAspNetCoreInstrumentation()
                     .AddHttpClientInstrumentation()
-                    .AddEntityFrameworkCoreInstrumentation(o =>
-                    {
-                        o.SetDbStatementForText = true;
-                        o.SetDbStatementForStoredProcedure = true;
-                    })
+                    // Texto das queries (db.query.text) já é coletado por padrão nas versões atuais
+                    .AddEntityFrameworkCoreInstrumentation()
                     .AddOtlpExporter(otlpOptions =>
                     {
                         otlpOptions.Endpoint = otlpUri;
@@ -75,7 +72,7 @@ public static class OpenTelemetryConfiguration
                         options.Enrich = (activity, command) =>
                         {
                             activity.DisplayName = $"[ REDIS ] {activity.DisplayName}";
-                            activity.SetTag("redis.command", command.Command);
+                            activity.SetTag("redis.command", command.ProfiledCommand?.Command);
                         };
                     });
             })

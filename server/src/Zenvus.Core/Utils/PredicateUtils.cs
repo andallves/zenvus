@@ -11,10 +11,10 @@ public static class PredicateUtils
         public static readonly Expression<Func<T, bool>> TrueExpression = item => true;
         public static readonly Expression<Func<T, bool>> FalseExpression = item => false;
     }
-    public static Expression<Func<T, bool>> Null<T>() { return null; }
+    public static Expression<Func<T, bool>>? Null<T>() { return null; }
     public static Expression<Func<T, bool>> True<T>() { return Predicate<T>.TrueExpression; }
     public static Expression<Func<T, bool>> False<T>() { return Predicate<T>.FalseExpression; }
-    public static Expression<Func<T, bool>> And<T>(this Expression<Func<T, bool>>? left, Expression<Func<T, bool>>? right)
+    public static Expression<Func<T, bool>>? And<T>(this Expression<Func<T, bool>>? left, Expression<Func<T, bool>>? right)
     {
         if (Equals(left, right)) return left;
         if (left == null || Equals(left, True<T>())) return right;
@@ -23,7 +23,7 @@ public static class PredicateUtils
         var body = Expression.AndAlso(left.Body, right.Body.Replace(right.Parameters[0], left.Parameters[0]));
         return Expression.Lambda<Func<T, bool>>(body, left.Parameters);
     }
-    public static Expression<Func<T, bool>> Or<T>(this Expression<Func<T, bool>>? left, Expression<Func<T, bool>>? right)
+    public static Expression<Func<T, bool>>? Or<T>(this Expression<Func<T, bool>>? left, Expression<Func<T, bool>>? right)
     {
         if (Equals(left, right)) return left;
         if (left == null || Equals(left, False<T>())) return right;
@@ -35,7 +35,7 @@ public static class PredicateUtils
 
     private static Expression Replace(this Expression expression, Expression source, Expression target)
     {
-        return new ExpressionReplacer { Source = source, Target = target }.Visit(expression);
+        return new ExpressionReplacer { Source = source, Target = target }.Visit(expression)!;
     }
 
     class ExpressionReplacer : ExpressionVisitor
@@ -43,9 +43,7 @@ public static class PredicateUtils
         public Expression Source = null!;
         public Expression Target = null!;
 
-        //#pragma warning disable CS8765 // A nulidade do tipo de parâmetro não corresponde ao membro substituído (possivelmente devido a atributos de nulidade).
-        public override Expression Visit(Expression? node)
-        //#pragma warning restore CS8765 // A nulidade do tipo de parâmetro não corresponde ao membro substituído (possivelmente devido a atributos de nulidade).
+        public override Expression? Visit(Expression? node)
         {
             return node == Source ? Target : base.Visit(node);
         }

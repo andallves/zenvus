@@ -51,9 +51,6 @@ public static class Extensions
         services.AddBackgroundJobs();
         
         services
-            .AddAutoMapper(Assembly.GetExecutingAssembly());
-        
-        services
             .AddInfraLayer(configuration);
 
         return services;

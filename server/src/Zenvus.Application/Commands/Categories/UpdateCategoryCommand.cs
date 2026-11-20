@@ -1,4 +1,5 @@
 using Zenvus.Application.DTO.Categories;
+using Zenvus.Domain.Entities;
 using Zenvus.Domain.Entities.Enums;
 
 namespace Zenvus.Application.Commands.Categories;
@@ -9,4 +10,13 @@ public class UpdateCategoryCommand : BaseCommand<CategoryDto>
     public string Name { get; init; } = string.Empty;
     public string Color { get; init; } = string.Empty;
     public int Type { get; init; }
+
+    public Category ApplyTo(Category category)
+    {
+        category.Id = Id;
+        category.Name = Name;
+        category.Color = Color;
+        category.Type = (ETransactionType)Type;
+        return category;
+    }
 }

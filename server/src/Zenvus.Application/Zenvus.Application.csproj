@@ -8,8 +8,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AutoMapper" Version="12.0.1" />
-        <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+        <!-- Dapper >= 2 remove a dependência vulnerável System.Data.SqlClient trazida pelo Hangfire.MySqlStorage -->
+        <PackageReference Include="Dapper" Version="2.1.100" />
         <PackageReference Include="File.TypeChecker" Version="4.2.0" />
         <PackageReference Include="FluentEmail.Razor" Version="3.0.2" />
         <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.0.0" />
@@ -17,12 +18,10 @@
         <PackageReference Include="Hangfire.Core" Version="1.8.21" />
         <PackageReference Include="Hangfire.MySqlStorage" Version="2.0.3" />
         <PackageReference Include="iTextSharp.LGPLv2.Core" Version="3.7.4" />
-        <PackageReference Include="MailKit" Version="4.13.0" />
-        <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.NewtonsoftJson" Version="9.0.8" />
-        <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.3.0" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.8" />
-        <PackageReference Include="Microsoft.Extensions.FileProviders.Physical" Version="9.0.8" />
-        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.8" />
+        <PackageReference Include="MailKit" Version="4.18.2" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.23" />
+        <PackageReference Include="Microsoft.Extensions.FileProviders.Physical" Version="9.0.23" />
+        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.23" />
         <PackageReference Include="NetDevPack.Security.Jwt.Core" Version="8.2.2" />
         <PackageReference Include="pix-payload-generator.net" Version="1.0.21" />
         <PackageReference Include="Quartz" Version="3.15.1" />

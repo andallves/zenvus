@@ -17,6 +17,7 @@ public class GetExpensesQueryHandler(IRepository<ZenvusDbContext> repository, IA
     {
         var paged = await repository
             .GetQueryable<Expense>()
+            .Where(e => e.UserId == authenticatedUser.Id)
             .Include(e => e.Category)
             .Include(e => e.Debt)
                 .ThenInclude(d => d!.Installments

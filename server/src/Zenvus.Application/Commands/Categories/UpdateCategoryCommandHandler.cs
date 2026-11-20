@@ -1,4 +1,3 @@
-using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Zenvus.Application.DTO.Categories;
@@ -10,7 +9,7 @@ using Zenvus.Infra.Database;
 
 namespace Zenvus.Application.Commands.Categories;
 
-public class UpdateCategoryCommandHandler(IMapper mapper, IRepository<ZenvusDbContext> repository, IAuthenticatedUser authenticatedUser) : IRequestHandler<UpdateCategoryCommand, CustomResult<CategoryDto>>
+public class UpdateCategoryCommandHandler(IRepository<ZenvusDbContext> repository, IAuthenticatedUser authenticatedUser) : IRequestHandler<UpdateCategoryCommand, CustomResult<CategoryDto>>
 {
     public async Task<CustomResult<CategoryDto>> Handle(UpdateCategoryCommand command, CancellationToken cancellationToken)
     {
@@ -29,11 +28,11 @@ public class UpdateCategoryCommandHandler(IMapper mapper, IRepository<ZenvusDbCo
                 .ErrorResult("O nome da categoria já está em uso.", errorType: IsResultErrorType.Validation);
         }
         
-        mapper.Map(command, category);
+        command.ApplyTo(category);
         repository.DbSet<Category>().Update(category);
         
         return await repository.SaveChangesAsync(cancellationToken) > 0 
-            ? CustomResult<CategoryDto>.SuccessResult(mapper.Map<CategoryDto>(category)) 
+            ? CustomResult<CategoryDto>.SuccessResult(CategoryDto.From(category)) 
             : CustomResult<CategoryDto>.ErrorResult("Não foi possível atualizar Categoria.", errorType: IsResultErrorType.ServerError); 
     }
 }

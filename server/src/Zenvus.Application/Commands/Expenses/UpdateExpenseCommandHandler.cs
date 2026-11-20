@@ -23,7 +23,7 @@ public class UpdateExpenseCommandHandler(
             .DbSet<Expense>()
             .Include(e => e.Category)
             .Include(e => e.Debt)
-            .ThenInclude(d => d.Installments)
+            .ThenInclude(d => d!.Installments)
             .AsTracking()
             .FirstOrDefaultAsync(e => 
                 e.Id == command.Id && 
@@ -70,7 +70,7 @@ public class UpdateExpenseCommandHandler(
                 .DbSet<Expense>()
                 .Include(e => e.Category)
                 .Include(e => e.Debt)
-                .ThenInclude(d => d.Installments)
+                .ThenInclude(d => d!.Installments)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(e => 
                     e.Id == expense.Id && 

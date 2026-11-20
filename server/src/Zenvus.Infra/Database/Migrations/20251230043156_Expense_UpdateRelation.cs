@@ -11,6 +11,13 @@ namespace Zenvus.Infra.Database.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            // As FKs abaixo já existem (criadas em Transaction_ResolveColumnError com Restrict).
+            // Precisam ser removidas antes de recriá-las com Cascade, senão o MySQL lança
+            // "Duplicate foreign key constraint name". O drop é condicional para funcionar
+            // também em bancos onde a FK já foi removida manualmente.
+            DropForeignKeyIfExists(migrationBuilder, "Zenvus", "DebtInstallments", "FK_DebtInstallments_Debts_DebtId");
+            DropForeignKeyIfExists(migrationBuilder, "Zenvus", "Debts", "FK_Debts_Expenses_ExpenseId");
+
             migrationBuilder.AlterColumn<DateTime>(
                 name: "Date",
                 schema: "Zenvus",
@@ -110,6 +117,25 @@ namespace Zenvus.Infra.Database.Migrations
                 principalTable: "Expenses",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Restrict);
+        }
+
+        // Com MySqlSchemaBehavior.Translate a tabela física se chama "<schema>.<tabela>" no banco atual.
+        private static void DropForeignKeyIfExists(MigrationBuilder migrationBuilder, string schema, string table, string constraint)
+        {
+            var physicalTable = $"{schema}.{table}";
+            migrationBuilder.Sql($@"
+                SET @fk_exists := (
+                    SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
+                    WHERE CONSTRAINT_SCHEMA = DATABASE()
+                      AND TABLE_NAME = '{physicalTable}'
+                      AND CONSTRAINT_NAME = '{constraint}'
+                      AND CONSTRAINT_TYPE = 'FOREIGN KEY');
+                SET @drop_fk_sql := IF(@fk_exists > 0,
+                    'ALTER TABLE `{physicalTable}` DROP FOREIGN KEY `{constraint}`',
+                    'DO 0');
+                PREPARE drop_fk_stmt FROM @drop_fk_sql;
+                EXECUTE drop_fk_stmt;
+                DEALLOCATE PREPARE drop_fk_stmt;");
         }
     }
 }

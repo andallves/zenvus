@@ -1,4 +1,3 @@
-using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Zenvus.Application.DTO.User;
@@ -10,7 +9,6 @@ using IdentityUser = Zenvus.Domain.Entities.IdentityUser;
 namespace Zenvus.Application.Commands.User;
 
 public class CreateUserCommandHandler(
-    IMapper mapper,
     IPasswordHasher<IdentityUser> passwordHasher,
     IRepository<ZenvusDbContext> repository)
     : IRequestHandler<CreateUserCommand, CustomResult<UserDto>>
@@ -23,7 +21,7 @@ public class CreateUserCommandHandler(
                 .ErrorResult("As senhas não coincidem.", errorType: IsResultErrorType.Validation);
         }
         
-        var user = mapper.Map<Domain.Entities.User>(userCommand);
+        var user = userCommand.ToEntity();
         // Ensure Photo is not null to avoid DB constraint issues when the column is non-nullable
         user.Photo ??= string.Empty;
         user.Password = passwordHasher.HashPassword(user, user.Password);
@@ -36,7 +34,7 @@ public class CreateUserCommandHandler(
                 .ErrorResult("Não foi possível cadastrar usuário.", errorType: IsResultErrorType.ServerError);
         }
         
-        var dto = mapper.Map<UserDto>(user);
+        var dto = UserDto.From(user);
         return CustomResult<UserDto>
             .SuccessResult(dto, "Usuário cadastrado com sucesso!");
     }

@@ -1,4 +1,3 @@
-using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Zenvus.Application.DTO.Categories;
@@ -7,11 +6,10 @@ using Zenvus.Core.ValueObjects;
 using Zenvus.Infra.Abstractions;
 using Zenvus.Infra.Database;
 using Zenvus.Domain.Entities;
-using Zenvus.Domain.Entities.Enums;
 
 namespace Zenvus.Application.Commands.Categories;
 
-public class CreateCategoryCommandHandler(IMapper mapper, IRepository<ZenvusDbContext> repository, IAuthenticatedUser authenticatedUser)
+public class CreateCategoryCommandHandler(IRepository<ZenvusDbContext> repository, IAuthenticatedUser authenticatedUser)
     : IRequestHandler<CreateCategoryCommand, CustomResult<CategoryDto>>
 {
     public async Task<CustomResult<CategoryDto>> Handle(CreateCategoryCommand request,
@@ -24,14 +22,12 @@ public class CreateCategoryCommandHandler(IMapper mapper, IRepository<ZenvusDbCo
                 cancellationToken);
         
         if (category is null) {
-            category = mapper.Map<Category>(request);
-            category.UserId = authenticatedUser.Id;
-            category.Type = (ETransactionType)request.Type;
+            category = request.ToEntity(authenticatedUser.Id);
             repository.DbSet<Category>().Add(category);
         }
         else if (category.Disabled)
         {
-            mapper.Map(request, category);
+            request.ApplyTo(category);
             category.Enable();
             repository.DbSet<Category>().Update(category);
         }
